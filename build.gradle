@@ -1,0 +1,100 @@
+  def mainBaseProps = new Properties()
+  def osdir = ''
+  def os = System.getProperty("os.name")
+  if(os.toString().toUpperCase().startsWith("WINDOWS")) {
+    osdir = '\\'
+  }else {
+    osdir = '/'
+  }
+  new File(rootDir.toString().substring(0,rootDir.toString().lastIndexOf(osdir))+"/${mainProjectName}"+"/gradle.properties").withInputStream { 
+    stream -> mainBaseProps.load(stream) 
+  }
+  def mainBaseConfig = new ConfigSlurper().parse(mainBaseProps)
+  buildscript {
+  def baseProps = new Properties()
+  def pluginProps = new Properties()
+   def osdir = ''
+  def os = System.getProperty("os.name")
+  if(os.toString().toUpperCase().startsWith("WINDOWS")) {
+    osdir = '\\'
+  }else {
+    osdir = '/'
+  }
+  new File(rootDir.toString().substring(0,rootDir.toString().lastIndexOf(osdir))+"/${mainProjectName}"+"/gradle.properties").withInputStream { 
+    stream -> baseProps.load(stream) 
+  }
+  new File(rootDir.toString().substring(0,rootDir.toString().lastIndexOf(osdir))+"/${mainProjectName}"+"/uapconfig.properties").withInputStream { 
+    stream -> pluginProps.load(stream) 
+  }
+  def baseConfig = new ConfigSlurper().parse(baseProps)
+  def pluginConfig = new ConfigSlurper().parse(pluginProps)
+
+  if(!baseConfig.mavenRepository.equals("") && baseConfig.mavenRepository.toBoolean()) {
+    repositories {
+     maven { url baseConfig.repositoryURL }
+     mavenLocal() 
+     mavenCentral()
+  }
+  }else{
+   repositories {
+    flatDir {
+           dirs baseConfig.pluginPath
+       }
+     }
+  }
+     
+  dependencies {
+    if(!baseConfig.sgdsp.equals("") && baseConfig.sgdsp.toBoolean()) {
+      classpath group: pluginConfig.DspDepMagPluginGroup, name: pluginConfig.DspDepMagPluginName, version: pluginConfig.DspDepMagPluginVersion
+      classpath group: pluginConfig.SpringcoreGroup, name: pluginConfig.SpringcoreName, version: pluginConfig.SpringcoreVersion
+      classpath group: pluginConfig.PandorabtGradlePluginGroup, name: pluginConfig.PandorabtGradlePluginName, version: pluginConfig.PandorabtGradlePluginVersion
+      classpath group: pluginConfig.CommonsCompressGroup, name: pluginConfig.CommonsCompressName, version: pluginConfig.CommonsCompressVersion
+      classpath group: pluginConfig.AsmAllGroup, name: pluginConfig.AsmAllName, version: pluginConfig.AsmAllVersion
+      classpath group: pluginConfig.PandorabtLoadToolGroup, name: pluginConfig.PandorabtLoadToolName, version: pluginConfig.PandorabtLoadToolVersion
+      classpath group: pluginConfig.PandorabtLoadGroup, name: pluginConfig.PandorabtLoadName, version: pluginConfig.PandorabtLoadVersion
+    }else {
+      classpath group: pluginConfig.DepMagPluginGroup, name: pluginConfig.DepMagPluginName, version: pluginConfig.DepMagPluginVersion
+      classpath group: pluginConfig.SprbtLoadToolGroup, name: pluginConfig.SprbtLoadToolName, version: pluginConfig.SprbtLoadToolVersion
+      classpath group: pluginConfig.SpringcoreGroup, name: pluginConfig.SpringcoreName, version: pluginConfig.SpringcoreVersion
+      classpath group: pluginConfig.SprbtGradlePluginGroup, name: pluginConfig.SprbtGradlePluginName, version: pluginConfig.SprbtGradlePluginVersion
+    }
+  }
+  }
+
+
+  version = "${version}"
+
+  //引用公共配置
+  apply from: "../"+"${mainProjectName}"+"/baseconfig.gradle"
+  
+  if(!mainBaseConfig.sgdsp.equals("") && mainBaseConfig.sgdsp.toBoolean()) {
+    mainClassName = "${sgdspMainClass}"
+  }else {
+    mainClassName = "${mainClass}"
+  }
+  
+  //引用私有配置
+  apply from: projectDir.toString()+"/privatebuild.gradle"
+  if(!mainBaseConfig.sgdsp.equals("") && mainBaseConfig.sgdsp.toBoolean()) {
+  jar {
+      manifest {
+          attributes 'Main-Class': "${sgdspMainClass}"
+      }
+      from('src/main/java') {
+        include '**/*.xml'
+        }
+  }
+  }else {
+  jar {
+      manifest {
+          attributes 'Main-Class': "${mainClass}"
+      }
+      from('src/main/java') {
+        include '**/*.xml'
+        }
+  }
+  }
+  
+  
+
+
