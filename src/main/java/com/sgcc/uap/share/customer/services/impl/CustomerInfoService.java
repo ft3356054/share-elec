@@ -27,7 +27,6 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.customer.repositories.CustomerInfoRepository;
 import com.sgcc.uap.share.customer.services.ICustomerInfoService;
 import com.sgcc.uap.share.domain.CustomerInfo;
-import com.sgcc.uap.utils.string.StringUtil;
 
 
 /**
@@ -67,12 +66,18 @@ public class CustomerInfoService implements ICustomerInfoService{
 	@Override
 	public CustomerInfo saveCustomerInfo(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(CustomerInfo.class,map);
-		CustomerInfo customerInfo = new CustomerInfo();
+		CustomerInfo customerInfo = null;
 		if (map.containsKey("customerId")) {
 			String customerId = (String) map.get("customerId");
 			customerInfo = customerInfoRepository.findOne(customerId);
-			CrudUtils.mapToObject(map, customerInfo,  "customerId");
+			if(null!=customerInfo){
+				CrudUtils.mapToObject(map, customerInfo,  "customerId");
+			}else{
+				customerInfo = new CustomerInfo();
+				CrudUtils.transMap2Bean(map, customerInfo);
+			}
 		}else{
+			customerInfo = new CustomerInfo();
 			CrudUtils.transMap2Bean(map, customerInfo);
 		}
 		return customerInfoRepository.save(customerInfo);

@@ -122,6 +122,7 @@ public class CustomerInfoController {
 			}
 			QueryResultObject result = new QueryResultObject();
 			List<Map<String,Object>> items = params.getItems();
+			logger.info("saveOrUpdate items="+items); 
 			if(items != null && !items.isEmpty()){
 				for(Map<String,Object> map : items){
 					result.setFormItems(customerInfoService.saveCustomerInfo(map));

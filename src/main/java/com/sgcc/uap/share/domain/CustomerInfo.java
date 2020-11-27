@@ -29,8 +29,8 @@ public class CustomerInfo implements Serializable {
      * CUSTOMER_ID
      */
 	@Id
-	@GeneratedValue(generator = "idGenerator")
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")
+	/*@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "uuid")*/
     @Column(name = "CUSTOMER_ID", nullable = false, length = 64)
     private String customerId ;
     
