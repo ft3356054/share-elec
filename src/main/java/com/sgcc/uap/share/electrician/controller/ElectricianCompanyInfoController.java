@@ -39,7 +39,7 @@ import com.sgcc.uap.share.electrician.vo.ElectricianCompanyInfoVO;
  * <b>功能</b>：<br>
  * TODO
  *
- * @author 18511
+ * @author guoqing
  */
 @RestController
 @Transactional
