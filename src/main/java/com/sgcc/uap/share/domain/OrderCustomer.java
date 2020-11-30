@@ -1,16 +1,12 @@
 package com.sgcc.uap.share.domain;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -29,9 +25,9 @@ public class OrderCustomer implements Serializable {
     /** 
      * 订单ID
      */
+	/*@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "uuid")*/
 	@Id
-	@GeneratedValue(generator = "idGenerator")
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")
     @Column(name = "ORDER_ID", nullable = false, length = 64)
     private String orderId ;
     
@@ -111,25 +107,25 @@ public class OrderCustomer implements Serializable {
      * 创建时间
      */
     @Column(name = "CREATE_TIME", nullable = true, length = 19)
-    private Timestamp createTime ;
+    private String createTime ;
     
     /** 
      * 预约时间
      */
     @Column(name = "APPOINTMENT_TIME", nullable = true, length = 19)
-    private Timestamp appointmentTime ;
+    private String appointmentTime ;
     
     /** 
      * 更新时间
      */
     @Column(name = "UPDATE_TIME", nullable = true, length = 19)
-    private Timestamp updateTime ;
+    private String updateTime ;
     
     /** 
      * 结束时间
      */
     @Column(name = "FINISH_TIME", nullable = true, length = 19)
-    private Timestamp finishTime ;
+    private String finishTime ;
     
     /** 
      * 客户描述
@@ -483,7 +479,7 @@ public class OrderCustomer implements Serializable {
      * @date 2020-11-26 14:32:47
      * @author 18511
      */
-    public Timestamp getCreateTime(){
+    public String getCreateTime(){
         return this.createTime;
     }
     /**
@@ -493,7 +489,7 @@ public class OrderCustomer implements Serializable {
      * @date 2020-11-26 14:32:47
      * @author 18511
      */
-    public void setCreateTime(Timestamp createTime){
+    public void setCreateTime(String createTime){
 		this.createTime = createTime;
 	} 
     /**
@@ -503,7 +499,7 @@ public class OrderCustomer implements Serializable {
      * @date 2020-11-26 14:32:47
      * @author 18511
      */
-    public Timestamp getAppointmentTime(){
+    public String getAppointmentTime(){
         return this.appointmentTime;
     }
     /**
@@ -513,7 +509,7 @@ public class OrderCustomer implements Serializable {
      * @date 2020-11-26 14:32:47
      * @author 18511
      */
-    public void setAppointmentTime(Timestamp appointmentTime){
+    public void setAppointmentTime(String appointmentTime){
 		this.appointmentTime = appointmentTime;
 	} 
     /**
@@ -523,7 +519,7 @@ public class OrderCustomer implements Serializable {
      * @date 2020-11-26 14:32:47
      * @author 18511
      */
-    public Timestamp getUpdateTime(){
+    public String getUpdateTime(){
         return this.updateTime;
     }
     /**
@@ -533,7 +529,7 @@ public class OrderCustomer implements Serializable {
      * @date 2020-11-26 14:32:47
      * @author 18511
      */
-    public void setUpdateTime(Timestamp updateTime){
+    public void setUpdateTime(String updateTime){
 		this.updateTime = updateTime;
 	} 
     /**
@@ -543,7 +539,7 @@ public class OrderCustomer implements Serializable {
      * @date 2020-11-26 14:32:47
      * @author 18511
      */
-    public Timestamp getFinishTime(){
+    public String getFinishTime(){
         return this.finishTime;
     }
     /**
@@ -553,7 +549,7 @@ public class OrderCustomer implements Serializable {
      * @date 2020-11-26 14:32:47
      * @author 18511
      */
-    public void setFinishTime(Timestamp finishTime){
+    public void setFinishTime(String finishTime){
 		this.finishTime = finishTime;
 	} 
     /**

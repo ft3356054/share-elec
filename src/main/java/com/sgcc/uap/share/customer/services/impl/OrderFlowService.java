@@ -54,6 +54,7 @@ public class OrderFlowService implements IOrderFlowService{
 		OrderFlow orderFlow = orderFlowRepository.findOne(flowId);
 		return RestUtils.wrappQueryResult(orderFlow);
 	}
+	
 	@Override
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){
@@ -96,6 +97,8 @@ public class OrderFlowService implements IOrderFlowService{
 		} 
 		return queryCommon(queryCondition);
 	}
+	
+	
 	/**
 	 * 字符串类型模糊查询示例：
 	 * Predicate predicate = cb.like(root.get("employeeName"), "%" + 三 + "%");  查询名字中含有“三”的员工

@@ -1,5 +1,7 @@
 package com.sgcc.uap.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -26,8 +28,32 @@ public class UuidUtil {
 		String uuid = UuidUtil.getUuid36();
 		return uuid.replaceAll("-", "");
 	}
+	
+	/**
+	 * 获取46位的UUID 中间去掉字符“-”
+	 * @return
+	 */
+	public static String getUuid46(){
+		String uuid = UuidUtil.getUuid36();
+		return nowToString(new Date())+uuid.replaceAll("-", "");
+	}
+	
+	/**
+	 * date转标准格式String类型
+	 * @param time
+	 * @return
+	 */
+	public static String nowToString(Date time){
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
+		String date = null;
+		date = sdf.format(time);
+		return date;
+	}
 
 	public static void main(String[] args) {
-		System.out.println(UuidUtil.getUuid36());
+		/*System.out.println(UuidUtil.getUuid36());
+		System.out.println(UuidUtil.getUuid32());*/
+		System.out.println(UuidUtil.getUuid46());
+		
 	}
 }

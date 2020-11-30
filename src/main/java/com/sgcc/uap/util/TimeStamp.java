@@ -1,5 +1,6 @@
 package com.sgcc.uap.util;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -67,9 +68,6 @@ public class TimeStamp {
 		}
 		date = new Date(fdate.getTime());
 		return date;
-	}
-	public static void main(String[] args) {
-		System.out.println(toFormatDate("2018-05-18 00:00:00"));
 	}
 	/**
 	 * String类型转成date类型  yyyyMMddHHmmss
@@ -187,5 +185,21 @@ public class TimeStamp {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 		String time =  formatter.format(new Date());
 		return time;
-		}
 	}
+
+	/**
+	 * 时间获取
+	 * @author dong
+	 */
+	public static Timestamp getTimestamp(Date date){
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+		String time = df.format(date); 
+		Timestamp ts = Timestamp.valueOf(time);
+		return ts; 
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(TimeStamp.getTimestamp(new Date()));
+	}
+}
+

@@ -1,8 +1,6 @@
 package com.sgcc.uap.share.customer.vo;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-
 
 import com.sgcc.uap.rest.annotation.attribute.AttributeType;
 import com.sgcc.uap.rest.annotation.attribute.EditorType;
@@ -88,22 +86,22 @@ public class OrderCustomerVO extends ParentVO implements Serializable{
      * 属性创建时间
      */  
     @ViewAttribute(name ="createTime",caption="创建时间", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp createTime;    
+    private String createTime;    
     /** 
      * 属性预约时间
      */  
     @ViewAttribute(name ="appointmentTime",caption="预约时间", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp appointmentTime;    
+    private String appointmentTime;    
     /** 
      * 属性更新时间
      */  
     @ViewAttribute(name ="updateTime",caption="更新时间", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp updateTime;    
+    private String updateTime;    
     /** 
      * 属性结束时间
      */  
     @ViewAttribute(name ="finishTime",caption="结束时间", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp finishTime;    
+    private String finishTime;    
     /** 
      * 属性客户描述
      */  
@@ -367,56 +365,56 @@ public class OrderCustomerVO extends ParentVO implements Serializable{
      * 创建时间的get方法
      * @return createTime
      */
-    public Timestamp getCreateTime(){
+    public String getCreateTime(){
         return createTime;
     }
     /**
      * 创建时间的set方法
      * @param createTime
      */
-    public void setCreateTime(Timestamp createTime){
+    public void setCreateTime(String createTime){
 		this.createTime = createTime;
 	} 
     /**
      * 预约时间的get方法
      * @return appointmentTime
      */
-    public Timestamp getAppointmentTime(){
+    public String getAppointmentTime(){
         return appointmentTime;
     }
     /**
      * 预约时间的set方法
      * @param appointmentTime
      */
-    public void setAppointmentTime(Timestamp appointmentTime){
+    public void setAppointmentTime(String appointmentTime){
 		this.appointmentTime = appointmentTime;
 	} 
     /**
      * 更新时间的get方法
      * @return updateTime
      */
-    public Timestamp getUpdateTime(){
+    public String getUpdateTime(){
         return updateTime;
     }
     /**
      * 更新时间的set方法
      * @param updateTime
      */
-    public void setUpdateTime(Timestamp updateTime){
+    public void setUpdateTime(String updateTime){
 		this.updateTime = updateTime;
 	} 
     /**
      * 结束时间的get方法
      * @return finishTime
      */
-    public Timestamp getFinishTime(){
+    public String getFinishTime(){
         return finishTime;
     }
     /**
      * 结束时间的set方法
      * @param finishTime
      */
-    public void setFinishTime(Timestamp finishTime){
+    public void setFinishTime(String finishTime){
 		this.finishTime = finishTime;
 	} 
     /**

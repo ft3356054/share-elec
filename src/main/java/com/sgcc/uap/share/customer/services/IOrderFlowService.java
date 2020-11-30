@@ -53,6 +53,4 @@ public interface IOrderFlowService {
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);
 
-
-
 }

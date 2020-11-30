@@ -1,7 +1,6 @@
 package com.sgcc.uap.share.domain;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -57,7 +56,7 @@ public class OrderFlow implements Serializable {
      * OPERATOR_TIME
      */
     @Column(name = "OPERATOR_TIME", nullable = true, length = 19)
-    private Timestamp operatorTime ;
+    private String operatorTime ;
     
     /** 
      * OPERATOR_TYPE
@@ -177,7 +176,7 @@ public class OrderFlow implements Serializable {
      * @date 2020-11-26 14:32:47
      * @author 18511
      */
-    public Timestamp getOperatorTime(){
+    public String getOperatorTime(){
         return this.operatorTime;
     }
     /**
@@ -187,7 +186,7 @@ public class OrderFlow implements Serializable {
      * @date 2020-11-26 14:32:47
      * @author 18511
      */
-    public void setOperatorTime(Timestamp operatorTime){
+    public void setOperatorTime(String operatorTime){
 		this.operatorTime = operatorTime;
 	} 
     /**

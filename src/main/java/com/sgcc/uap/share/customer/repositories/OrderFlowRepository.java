@@ -16,6 +16,5 @@ import com.sgcc.uap.share.domain.OrderFlow;
  * @author 18511
  */
 public interface OrderFlowRepository extends JpaRepository<OrderFlow,String>,JpaSpecificationExecutor<OrderFlow> {
-
 	
 }

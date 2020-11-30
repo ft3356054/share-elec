@@ -1,6 +1,8 @@
 package com.sgcc.uap.share.customer.services.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +29,9 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderCustomerService;
 import com.sgcc.uap.share.domain.OrderCustomer;
-import com.sgcc.uap.utils.string.StringUtil;
+import com.sgcc.uap.share.electrician.services.impl.OrderElectricianService;
+import com.sgcc.uap.util.TimeStamp;
+import com.sgcc.uap.util.UuidUtil;
 
 
 /**
@@ -48,6 +52,11 @@ public class OrderCustomerService implements IOrderCustomerService{
 	private OrderCustomerRepository orderCustomerRepository;
 	@Autowired
 	private ValidateService validateService;
+	@Autowired
+	private OrderFlowService orderFlowService;
+	@Autowired
+	private OrderElectricianService orderElectricianService;
+	
 	
 	@Override
 	public QueryResultObject getOrderCustomerByOrderId(String orderId) {
@@ -64,19 +73,49 @@ public class OrderCustomerService implements IOrderCustomerService{
 			orderCustomerRepository.delete(id);
 		}
 	}
+	
 	@Override
 	public OrderCustomer saveOrderCustomer(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(OrderCustomer.class,map);
 		OrderCustomer orderCustomer = new OrderCustomer();
+		OrderCustomer result = new OrderCustomer();
 		if (map.containsKey("orderId")) {
 			String orderId = (String) map.get("orderId");
 			orderCustomer = orderCustomerRepository.findOne(orderId);
 			CrudUtils.mapToObject(map, orderCustomer,  "orderId");
+			result = orderCustomerRepository.save(orderCustomer);
 		}else{
+			String identityId = (String) map.get("identityId");
+//			if("0".equals(identityId)){
+//				map.put("orderTypeId", "15.5");
+//			}else if(){
+//				
+//			}
+			
+			String getNewOrderId = UuidUtil.getUuid46();
+			map.put("orderId", getNewOrderId);
 			CrudUtils.transMap2Bean(map, orderCustomer);
+			result = orderCustomerRepository.save(orderCustomer);
+			
+			Map<String,Object> mapOrderFlow = new HashMap<String,Object>();
+			mapOrderFlow.put("orDERId", getNewOrderId);
+			mapOrderFlow.put("flowType", 0);
+			mapOrderFlow.put("currStatus", 0);
+			mapOrderFlow.put("operatorId", map.get("customerId"));
+			mapOrderFlow.put("operatorTime", TimeStamp.toString(new Date()));
+			mapOrderFlow.put("operatorType", 0);
+			mapOrderFlow.put("remark", "新增orderCustomer订单");
+			orderFlowService.saveOrderFlow(mapOrderFlow);
 		}
-		return orderCustomerRepository.save(orderCustomer);
+		return result;
 	}
+	
+	
+	
+	
+	
+	
+	
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
 		if(queryCondition == null){

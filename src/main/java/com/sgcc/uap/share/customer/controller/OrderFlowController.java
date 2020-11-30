@@ -85,6 +85,7 @@ public class OrderFlowController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+
 	/**
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
@@ -167,6 +168,29 @@ public class OrderFlowController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
+	/**
+	 * @getByFlowId:根据orderId查询
+	 * @param orderId
+	 * @return WrappedResult 查询结果
+	 * @author 18511
+	 */
+	/*@RequestMapping(value = "/orderId/{orderId}")
+	public WrappedResult getByOrderId(@QueryRequestParam("params") RequestCondition requestCondition) {
+		try {
+			QueryResultObject queryResult = orderFlowService.getOrderFlowByFlowId(requestCondition);
+			logger.info("查询成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}*/
+	
 	/**
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组

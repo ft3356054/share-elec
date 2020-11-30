@@ -1,8 +1,6 @@
 package com.sgcc.uap.share.customer.vo;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-
 
 import com.sgcc.uap.rest.annotation.attribute.AttributeType;
 import com.sgcc.uap.rest.annotation.attribute.EditorType;
@@ -43,7 +41,7 @@ public class OrderFlowVO extends ParentVO implements Serializable{
      * 属性OPERATOR_TIME
      */  
     @ViewAttribute(name ="operatorTime",caption="OPERATOR_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp operatorTime;    
+    private String operatorTime;    
     /** 
      * 属性OPERATOR_TYPE
      */  
@@ -136,14 +134,14 @@ public class OrderFlowVO extends ParentVO implements Serializable{
      * OPERATOR_TIME的get方法
      * @return operatorTime
      */
-    public Timestamp getOperatorTime(){
+    public String getOperatorTime(){
         return operatorTime;
     }
     /**
      * OPERATOR_TIME的set方法
      * @param operatorTime
      */
-    public void setOperatorTime(Timestamp operatorTime){
+    public void setOperatorTime(String operatorTime){
 		this.operatorTime = operatorTime;
 	} 
     /**
