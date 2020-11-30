@@ -27,7 +27,6 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.BaseAreaPrice;
 import com.sgcc.uap.share.repositories.BaseAreaPriceRepository;
 import com.sgcc.uap.share.services.IBaseAreaPriceService;
-import com.sgcc.uap.utils.string.StringUtil;
 
 
 /**
@@ -54,6 +53,12 @@ public class BaseAreaPriceService implements IBaseAreaPriceService{
 		BaseAreaPrice baseAreaPrice = baseAreaPriceRepository.findOne(id);
 		return RestUtils.wrappQueryResult(baseAreaPrice);
 	}
+	
+	public List<BaseAreaPrice> getBaseAreaPriceByProvinceId(String provinceId) {
+		List<BaseAreaPrice> list = baseAreaPriceRepository.findByProvinceId(provinceId);
+		return list;
+	}
+	
 	@Override
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){

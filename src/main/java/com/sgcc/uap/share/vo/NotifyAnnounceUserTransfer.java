@@ -19,12 +19,13 @@ public class NotifyAnnounceUserTransfer {
 	 * @toPO:vo转为po
 	 * @param vo vo对象
 	 * @return NotifyAnnounceUser NotifyAnnounceUser对象
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 16:13:29
 	 * @author 18511
 	 */
 	public static NotifyAnnounceUser toPO(NotifyAnnounceUserVO vo) {
 		NotifyAnnounceUser notifyAnnounceUser = new NotifyAnnounceUser();
 		if(vo != null){
+			notifyAnnounceUser.setId(vo.getId());
 			notifyAnnounceUser.setAnnounceUserId(vo.getAnnounceUserId());
 			notifyAnnounceUser.setAnnounceId(vo.getAnnounceId());
 			notifyAnnounceUser.setRecipientType(vo.getRecipientType());
@@ -39,11 +40,12 @@ public class NotifyAnnounceUserTransfer {
 	 * @toVO:po转为vo
 	 * @param po po对象
 	 * @return NotifyAnnounceUserVO NotifyAnnounceUserVO对象
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 16:13:29
 	 * @author 18511
 	 */
 	public static NotifyAnnounceUserVO toVO(NotifyAnnounceUser po) {
 		NotifyAnnounceUserVO vo = new NotifyAnnounceUserVO();
+		vo.setId(po.getId());
 		vo.setAnnounceUserId(po.getAnnounceUserId());
 		vo.setAnnounceId(po.getAnnounceId());
 		vo.setRecipientType(po.getRecipientType());

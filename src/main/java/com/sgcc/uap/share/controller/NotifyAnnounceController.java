@@ -110,12 +110,12 @@ public class NotifyAnnounceController {
 	/**
 	 * @saveOrUpdate:保存或更新
 	 * @param params
-	 * @return WrappedResult 保存或更新的结果
+	 * @return WrappedResult 保存的结果
 	 * @date 2020-11-26 14:32:47
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public WrappedResult saveOrUpdate(@RequestBody FormRequestObject<Map<String,Object>> params) {
+	public WrappedResult save(@RequestBody FormRequestObject<Map<String,Object>> params) {
 		try {
 			if(params == null){
 				throw new NullArgumentException("params");
@@ -145,6 +145,8 @@ public class NotifyAnnounceController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
+	
 	/**
 	 * @query:查询
 	 * @param requestCondition

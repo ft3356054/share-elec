@@ -30,8 +30,6 @@ public class NotifyAnnounce implements Serializable {
      * ANNOUNCE_ID
      */
 	@Id
-	@GeneratedValue(generator = "idGenerator")
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")
     @Column(name = "ANNOUNCE_ID", nullable = false, length = 64)
     private String announceId ;
     

@@ -20,9 +20,14 @@ public class NotifyAnnounceUserVO extends ParentVO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
     /** 
+     * 属性ID
+     */  
+    @ViewAttribute(name ="id",caption="ID", editor=EditorType.TextEditor,nullable =false,readOnly=false, type=AttributeType.STRING)
+    private String id;    
+    /** 
      * 属性ANNOUNCE_USER_ID
      */  
-    @ViewAttribute(name ="announceUserId",caption="ANNOUNCE_USER_ID", editor=EditorType.TextEditor,nullable =false,readOnly=false, type=AttributeType.STRING)
+    @ViewAttribute(name ="announceUserId",caption="ANNOUNCE_USER_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String announceUserId;    
     /** 
      * 属性ANNOUNCE_ID
@@ -64,9 +69,27 @@ public class NotifyAnnounceUserVO extends ParentVO implements Serializable{
 	 /**
      * NotifyAnnounceUserVO完整的构造函数
      */  
-    public NotifyAnnounceUserVO(String announceUserId){
-        this.announceUserId = announceUserId;
+    public NotifyAnnounceUserVO(String id){
+        this.id = id;
     }
+    /**
+     * ID的get方法
+     * @return id
+     */
+    public String getId(){
+        return id;
+    }
+    /**
+     * ID的set方法
+     * @param id
+     */
+    public void setId(String id){
+        if(id != null && id.trim().length() == 0){
+        	this.id = null;
+        }else{
+        	this.id = id;
+        }
+	} 
     /**
      * ANNOUNCE_USER_ID的get方法
      * @return announceUserId
@@ -79,11 +102,7 @@ public class NotifyAnnounceUserVO extends ParentVO implements Serializable{
      * @param announceUserId
      */
     public void setAnnounceUserId(String announceUserId){
-        if(announceUserId != null && announceUserId.trim().length() == 0){
-        	this.announceUserId = null;
-        }else{
-        	this.announceUserId = announceUserId;
-        }
+		this.announceUserId = announceUserId;
 	} 
     /**
      * ANNOUNCE_ID的get方法
@@ -177,7 +196,8 @@ public class NotifyAnnounceUserVO extends ParentVO implements Serializable{
 	public String toString(){
 
 		  return new StringBuffer()
-	  			.append("ANNOUNCE_USER_ID"+":"+getAnnounceUserId())
+	  			.append("ID"+":"+getId())
+				.append("ANNOUNCE_USER_ID"+":"+getAnnounceUserId())
 				.append("ANNOUNCE_ID"+":"+getAnnounceId())
 				.append("RECIPIENT_TYPE"+":"+getRecipientType())
 				.append("STATE"+":"+getState())

@@ -50,8 +50,8 @@ public class NotifyAnnounceUserService implements INotifyAnnounceUserService{
 	private ValidateService validateService;
 	
 	@Override
-	public QueryResultObject getNotifyAnnounceUserByAnnounceUserId(String announceUserId) {
-		NotifyAnnounceUser notifyAnnounceUser = notifyAnnounceUserRepository.findOne(announceUserId);
+	public QueryResultObject getNotifyAnnounceUserById(String id) {
+		NotifyAnnounceUser notifyAnnounceUser = notifyAnnounceUserRepository.findOne(id);
 		return RestUtils.wrappQueryResult(notifyAnnounceUser);
 	}
 	@Override
@@ -68,10 +68,10 @@ public class NotifyAnnounceUserService implements INotifyAnnounceUserService{
 	public NotifyAnnounceUser saveNotifyAnnounceUser(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(NotifyAnnounceUser.class,map);
 		NotifyAnnounceUser notifyAnnounceUser = new NotifyAnnounceUser();
-		if (map.containsKey("announceUserId")) {
-			String announceUserId = (String) map.get("announceUserId");
-			notifyAnnounceUser = notifyAnnounceUserRepository.findOne(announceUserId);
-			CrudUtils.mapToObject(map, notifyAnnounceUser,  "announceUserId");
+		if (map.containsKey("id")) {
+			String id = (String) map.get("id");
+			notifyAnnounceUser = notifyAnnounceUserRepository.findOne(id);
+			CrudUtils.mapToObject(map, notifyAnnounceUser,  "id");
 		}else{
 			CrudUtils.transMap2Bean(map, notifyAnnounceUser);
 		}
@@ -110,7 +110,7 @@ public class NotifyAnnounceUserService implements INotifyAnnounceUserService{
 	 * @querySingle:主从表单页查询方法
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 16:13:36
 	 * @author 18511
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
@@ -155,7 +155,7 @@ public class NotifyAnnounceUserService implements INotifyAnnounceUserService{
 	 * @queryCommon:查询方法(通用的)
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 16:13:36
 	 * @author 18511
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
@@ -189,7 +189,7 @@ public class NotifyAnnounceUserService implements INotifyAnnounceUserService{
 	 * @getFilterList:获取条件列表
 	 * @param queryCondition 查询条件
 	 * @return List<QueryFilter> 查询条件列表
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 16:13:36
 	 * @author 18511
 	 */
 	private List<QueryFilter> getFilterList(RequestCondition queryCondition) {
@@ -211,7 +211,7 @@ public class NotifyAnnounceUserService implements INotifyAnnounceUserService{
 	 * @buildPageRequest:构建PageRequest
 	 * @param queryCondition 查询条件
 	 * @return PageRequest 页面请求对象
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 16:13:36
 	 * @author 18511
 	 */
 	private PageRequest buildPageRequest(RequestCondition queryCondition) {

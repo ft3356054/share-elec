@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.customer.services.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +13,8 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,8 +31,16 @@ import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderCustomerService;
+import com.sgcc.uap.share.domain.BaseAreaPrice;
+import com.sgcc.uap.share.domain.BaseIdentityPrice;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.electrician.services.impl.OrderElectricianService;
+import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
+import com.sgcc.uap.share.services.impl.BaseIdentityPriceService;
+import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
+import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
+import com.sgcc.uap.util.DateTimeUtil;
+import com.sgcc.uap.util.DecimalUtil;
 import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
 
@@ -46,6 +57,11 @@ import com.sgcc.uap.util.UuidUtil;
 @Service
 public class OrderCustomerService implements IOrderCustomerService{
 	/** 
+     * 日志
+     */
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(OrderCustomerService.class);
+	
+	/** 
      * 注入orderCustomerRepository
      */
 	@Autowired
@@ -56,6 +72,14 @@ public class OrderCustomerService implements IOrderCustomerService{
 	private OrderFlowService orderFlowService;
 	@Autowired
 	private OrderElectricianService orderElectricianService;
+	@Autowired
+	private BaseIdentityPriceService baseIdentityPriceService;
+	@Autowired
+	private BaseAreaPriceService baseAreaPriceService;
+	@Autowired
+	private NotifyAnnounceService notifyAnnounceService;
+	@Autowired
+	private NotifyAnnounceUserService notifyAnnounceUserService;
 	
 	
 	@Override
@@ -76,6 +100,8 @@ public class OrderCustomerService implements IOrderCustomerService{
 	
 	@Override
 	public OrderCustomer saveOrderCustomer(Map<String,Object> map) throws Exception{
+		logger.info("OrderCustomerService saveOrderCustomer map = " +map); 
+		
 		validateService.validateWithException(OrderCustomer.class,map);
 		OrderCustomer orderCustomer = new OrderCustomer();
 		OrderCustomer result = new OrderCustomer();
@@ -86,17 +112,20 @@ public class OrderCustomerService implements IOrderCustomerService{
 			result = orderCustomerRepository.save(orderCustomer);
 		}else{
 			String identityId = (String) map.get("identityId");
-//			if("0".equals(identityId)){
-//				map.put("orderTypeId", "15.5");
-//			}else if(){
-//				
-//			}
+			String provinceId = (String) map.get("provinceId");
+			map.put("customerPrice", getPrice(identityId, provinceId));
+			
+			map.put("orderStatus", "0");
+			map.put("payStatus", "0");
+			map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
+			map.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 			
 			String getNewOrderId = UuidUtil.getUuid46();
 			map.put("orderId", getNewOrderId);
 			CrudUtils.transMap2Bean(map, orderCustomer);
 			result = orderCustomerRepository.save(orderCustomer);
 			
+			//新增流水
 			Map<String,Object> mapOrderFlow = new HashMap<String,Object>();
 			mapOrderFlow.put("orDERId", getNewOrderId);
 			mapOrderFlow.put("flowType", 0);
@@ -106,6 +135,29 @@ public class OrderCustomerService implements IOrderCustomerService{
 			mapOrderFlow.put("operatorType", 0);
 			mapOrderFlow.put("remark", "新增orderCustomer订单");
 			orderFlowService.saveOrderFlow(mapOrderFlow);
+			
+			//新增通知
+			String announceId = UuidUtil.getUuid32();
+			
+			Map<String,Object> mapNotify = new HashMap<String,Object>();
+			mapNotify.put("announceId",announceId);
+			mapNotify.put("serderId", "SYSTEM_ADMIN");
+			mapNotify.put("title", "待付勘察费");
+			mapNotify.put("content", "待付勘察费，内容");
+			mapNotify.put("createTime", TimeStamp.toString(new Date()));
+			mapNotify.put("remark", "新增客户待付款通知");
+			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
+			
+			Map<String,Object> mapNotifyUser = new HashMap<String,Object>();
+			mapNotifyUser.put("announceUserId", map.get("customerId"));
+			mapNotifyUser.put("announceId", announceId);
+			mapNotifyUser.put("recipientType", 0);
+			mapNotifyUser.put("state", 0);
+			mapNotifyUser.put("createTime", TimeStamp.toString(new Date()));
+			mapNotifyUser.put("readTime", "");
+			mapNotifyUser.put("remark", "新增客户待付款通知");
+			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
+			
 		}
 		return result;
 	}
@@ -260,6 +312,23 @@ public class OrderCustomerService implements IOrderCustomerService{
 			pageSize = queryCondition.getPageSize();
 		}
 		return new PageRequest(pageIndex - 1, pageSize, null);
+	}
+	
+	private String getPrice(String identityId,String provinceId){
+		//获取身份价格
+		QueryResultObject getBaseIdentityPrice = baseIdentityPriceService.getBaseIdentityPriceByIdentityId(identityId);
+		BaseIdentityPrice baseIdentityPrice = (BaseIdentityPrice) (getBaseIdentityPrice.getItems().get(0));
+		String identityPrice = baseIdentityPrice.getIdentityPrice();
+		
+		//获取省份价格
+		List<BaseAreaPrice> list = baseAreaPriceService.getBaseAreaPriceByProvinceId(provinceId);
+		String areaPrice = list.get(0).getPrice();
+		
+		BigDecimal identityPriceBD=new BigDecimal(identityPrice);
+		BigDecimal areaPriceBD=new BigDecimal(areaPrice);
+		String resultBD = DecimalUtil.add(identityPriceBD,areaPriceBD).toString();
+		
+		return resultBD;
 	}
 
 

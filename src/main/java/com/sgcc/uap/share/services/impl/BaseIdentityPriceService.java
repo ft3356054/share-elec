@@ -24,9 +24,10 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
-import com.sgcc.uap.share.domain.NotifyAnnounce;
-import com.sgcc.uap.share.repositories.NotifyAnnounceRepository;
-import com.sgcc.uap.share.services.INotifyAnnounceService;
+import com.sgcc.uap.share.domain.BaseIdentityPrice;
+import com.sgcc.uap.share.repositories.BaseIdentityPriceRepository;
+import com.sgcc.uap.share.services.IBaseIdentityPriceService;
+import com.sgcc.uap.utils.string.StringUtil;
 
 
 /**
@@ -39,19 +40,19 @@ import com.sgcc.uap.share.services.INotifyAnnounceService;
  * @author 18511
  */
 @Service
-public class NotifyAnnounceService implements INotifyAnnounceService{
+public class BaseIdentityPriceService implements IBaseIdentityPriceService{
 	/** 
-     * 注入notifyAnnounceRepository
+     * 注入baseIdentityPriceRepository
      */
 	@Autowired
-	private NotifyAnnounceRepository notifyAnnounceRepository;
+	private BaseIdentityPriceRepository baseIdentityPriceRepository;
 	@Autowired
 	private ValidateService validateService;
 	
 	@Override
-	public QueryResultObject getNotifyAnnounceByAnnounceId(String announceId) {
-		NotifyAnnounce notifyAnnounce = notifyAnnounceRepository.findOne(announceId);
-		return RestUtils.wrappQueryResult(notifyAnnounce);
+	public QueryResultObject getBaseIdentityPriceByIdentityId(String identityId) {
+		BaseIdentityPrice baseIdentityPrice = baseIdentityPriceRepository.findOne(identityId);
+		return RestUtils.wrappQueryResult(baseIdentityPrice);
 	}
 	@Override
 	public void remove(IDRequestObject idObject) {
@@ -60,30 +61,22 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 		}
 		String[] ids = idObject.getIds();
 		for (String id : ids){
-			notifyAnnounceRepository.delete(id);
+			baseIdentityPriceRepository.delete(id);
 		}
 	}
-	
 	@Override
-	public NotifyAnnounce saveNotifyAnnounce(Map<String,Object> map) throws Exception{
-		validateService.validateWithException(NotifyAnnounce.class,map);
-		NotifyAnnounce notifyAnnounce = null;
-		if (map.containsKey("announceId")) {
-			String announceId = (String) map.get("announceId");
-			notifyAnnounce = notifyAnnounceRepository.findOne(announceId);
-			if(null!=notifyAnnounce){
-				CrudUtils.mapToObject(map, notifyAnnounce,  "announceId");
-			}else{
-				notifyAnnounce = new NotifyAnnounce();
-				CrudUtils.transMap2Bean(map, notifyAnnounce);
-			}
+	public BaseIdentityPrice saveBaseIdentityPrice(Map<String,Object> map) throws Exception{
+		validateService.validateWithException(BaseIdentityPrice.class,map);
+		BaseIdentityPrice baseIdentityPrice = new BaseIdentityPrice();
+		if (map.containsKey("identityId")) {
+			String identityId = (String) map.get("identityId");
+			baseIdentityPrice = baseIdentityPriceRepository.findOne(identityId);
+			CrudUtils.mapToObject(map, baseIdentityPrice,  "identityId");
 		}else{
-			notifyAnnounce = new NotifyAnnounce();
-			CrudUtils.transMap2Bean(map, notifyAnnounce);
+			CrudUtils.transMap2Bean(map, baseIdentityPrice);
 		}
-		return notifyAnnounceRepository.save(notifyAnnounce);
+		return baseIdentityPriceRepository.save(baseIdentityPrice);
 	}
-	
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
 		if(queryCondition == null){
@@ -117,14 +110,14 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 	 * @querySingle:主从表单页查询方法
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 14:16:50
 	 * @author 18511
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
 		List<QueryFilter> qList = getFilterList(queryCondition);
-		Specification<NotifyAnnounce> specification = new Specification<NotifyAnnounce>() {
+		Specification<BaseIdentityPrice> specification = new Specification<BaseIdentityPrice>() {
 			@Override
-			public Predicate toPredicate(Root<NotifyAnnounce> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<BaseIdentityPrice> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -139,12 +132,12 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<NotifyAnnounce> notifyAnnounce = notifyAnnounceRepository.findAll(specification,request);
-		List<NotifyAnnounce> result = new ArrayList<NotifyAnnounce>();
+		Page<BaseIdentityPrice> baseIdentityPrice = baseIdentityPriceRepository.findAll(specification,request);
+		List<BaseIdentityPrice> result = new ArrayList<BaseIdentityPrice>();
 		long count = 0;
 		if(null != qList && !qList.isEmpty()){
-			result = notifyAnnounce.getContent();
-			count = notifyAnnounce.getTotalElements();
+			result = baseIdentityPrice.getContent();
+			count = baseIdentityPrice.getTotalElements();
 		}
 		return RestUtils.wrappQueryResult(result, count);
 	}
@@ -162,14 +155,14 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 	 * @queryCommon:查询方法(通用的)
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 14:16:50
 	 * @author 18511
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
 		List<QueryFilter> qList = queryCondition.getQueryFilter(); 
-		Specification<NotifyAnnounce> specification = new Specification<NotifyAnnounce>() {
+		Specification<BaseIdentityPrice> specification = new Specification<BaseIdentityPrice>() {
 			@Override
-			public Predicate toPredicate(Root<NotifyAnnounce> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<BaseIdentityPrice> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -184,11 +177,11 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<NotifyAnnounce> notifyAnnounce = notifyAnnounceRepository.findAll(specification,request);
-		List<NotifyAnnounce> result = new ArrayList<NotifyAnnounce>();
+		Page<BaseIdentityPrice> baseIdentityPrice = baseIdentityPriceRepository.findAll(specification,request);
+		List<BaseIdentityPrice> result = new ArrayList<BaseIdentityPrice>();
 		long count = 0;
-		result = notifyAnnounce.getContent();
-		count = notifyAnnounce.getTotalElements();
+		result = baseIdentityPrice.getContent();
+		count = baseIdentityPrice.getTotalElements();
 		return RestUtils.wrappQueryResult(result, count);
 	}
 	
@@ -196,7 +189,7 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 	 * @getFilterList:获取条件列表
 	 * @param queryCondition 查询条件
 	 * @return List<QueryFilter> 查询条件列表
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 14:16:50
 	 * @author 18511
 	 */
 	private List<QueryFilter> getFilterList(RequestCondition queryCondition) {
@@ -218,7 +211,7 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 	 * @buildPageRequest:构建PageRequest
 	 * @param queryCondition 查询条件
 	 * @return PageRequest 页面请求对象
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 14:16:50
 	 * @author 18511
 	 */
 	private PageRequest buildPageRequest(RequestCondition queryCondition) {

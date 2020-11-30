@@ -27,12 +27,18 @@ public class NotifyAnnounceUser implements Serializable {
 	private static final long serialVersionUID = -7768637914227571159L;
 
     /** 
-     * ANNOUNCE_USER_ID
+     * ID
      */
 	@Id
 	@GeneratedValue(generator = "idGenerator")
 	@GenericGenerator(name = "idGenerator", strategy = "uuid")
-    @Column(name = "ANNOUNCE_USER_ID", nullable = false, length = 64)
+    @Column(name = "ID", nullable = false, length = 64)
+    private String id ;
+    
+    /** 
+     * ANNOUNCE_USER_ID
+     */
+    @Column(name = "ANNOUNCE_USER_ID", nullable = true, length = 64)
     private String announceUserId ;
     
     /** 
@@ -81,10 +87,34 @@ public class NotifyAnnounceUser implements Serializable {
 	
 	}
     /**
+     * @getId:ID的get方法
+     * @params
+     * @return id
+     * @date 2020-11-30 16:13:26
+     * @author 18511
+     */
+    public String getId(){
+        return this.id;
+    }
+    /**
+     * @setId:ID的set方法
+     * @param id
+     * @return
+     * @date 2020-11-30 16:13:26
+     * @author 18511
+     */
+    public void setId(String id){
+        if(id != null && id.trim().length() == 0){
+        	this.id = null;
+        }else{
+        	this.id = id;
+        }
+	} 
+    /**
      * @getAnnounceUserId:ANNOUNCE_USER_ID的get方法
      * @params
      * @return announceUserId
-     * @date 2020-11-26 14:32:47
+     * @date 2020-11-30 16:13:26
      * @author 18511
      */
     public String getAnnounceUserId(){
@@ -94,21 +124,17 @@ public class NotifyAnnounceUser implements Serializable {
      * @setAnnounceUserId:ANNOUNCE_USER_ID的set方法
      * @param announceUserId
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-11-30 16:13:26
      * @author 18511
      */
     public void setAnnounceUserId(String announceUserId){
-        if(announceUserId != null && announceUserId.trim().length() == 0){
-        	this.announceUserId = null;
-        }else{
-        	this.announceUserId = announceUserId;
-        }
+		this.announceUserId = announceUserId;
 	} 
     /**
      * @getAnnounceId:ANNOUNCE_ID的get方法
      * @params
      * @return announceId
-     * @date 2020-11-26 14:32:47
+     * @date 2020-11-30 16:13:26
      * @author 18511
      */
     public String getAnnounceId(){
@@ -118,7 +144,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @setAnnounceId:ANNOUNCE_ID的set方法
      * @param announceId
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-11-30 16:13:26
      * @author 18511
      */
     public void setAnnounceId(String announceId){
@@ -128,7 +154,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @getRecipientType:RECIPIENT_TYPE的get方法
      * @params
      * @return recipientType
-     * @date 2020-11-26 14:32:47
+     * @date 2020-11-30 16:13:26
      * @author 18511
      */
     public String getRecipientType(){
@@ -138,7 +164,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @setRecipientType:RECIPIENT_TYPE的set方法
      * @param recipientType
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-11-30 16:13:26
      * @author 18511
      */
     public void setRecipientType(String recipientType){
@@ -148,7 +174,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @getState:STATE的get方法
      * @params
      * @return state
-     * @date 2020-11-26 14:32:47
+     * @date 2020-11-30 16:13:26
      * @author 18511
      */
     public String getState(){
@@ -158,7 +184,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @setState:STATE的set方法
      * @param state
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-11-30 16:13:26
      * @author 18511
      */
     public void setState(String state){
@@ -168,7 +194,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @getCreateTime:CREATE_TIME的get方法
      * @params
      * @return createTime
-     * @date 2020-11-26 14:32:47
+     * @date 2020-11-30 16:13:26
      * @author 18511
      */
     public Timestamp getCreateTime(){
@@ -178,7 +204,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @setCreateTime:CREATE_TIME的set方法
      * @param createTime
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-11-30 16:13:26
      * @author 18511
      */
     public void setCreateTime(Timestamp createTime){
@@ -188,7 +214,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @getReadTime:READ_TIME的get方法
      * @params
      * @return readTime
-     * @date 2020-11-26 14:32:47
+     * @date 2020-11-30 16:13:26
      * @author 18511
      */
     public Timestamp getReadTime(){
@@ -198,7 +224,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @setReadTime:READ_TIME的set方法
      * @param readTime
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-11-30 16:13:26
      * @author 18511
      */
     public void setReadTime(Timestamp readTime){
@@ -208,7 +234,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @getRemark:REMARK的get方法
      * @params
      * @return remark
-     * @date 2020-11-26 14:32:47
+     * @date 2020-11-30 16:13:26
      * @author 18511
      */
     public String getRemark(){
@@ -218,7 +244,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @setRemark:REMARK的set方法
      * @param remark
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-11-30 16:13:26
      * @author 18511
      */
     public void setRemark(String remark){
@@ -247,6 +273,13 @@ public class NotifyAnnounceUser implements Serializable {
 		
 		NotifyAnnounceUser other = (NotifyAnnounceUser) obj;
 		
+		if (id == null) {
+			if (other.id != null) {
+				return false;
+			}
+		} else if (!id.equals(other.id)) {
+			return false;
+		}
 		if (announceUserId == null) {
 			if (other.announceUserId != null) {
 				return false;
@@ -305,6 +338,7 @@ public class NotifyAnnounceUser implements Serializable {
      */
 	public String toString(){
 		return "NotifyAnnounceUser ["
+			+ ", id=" + id
 			+ ", announceUserId=" + announceUserId
 			+ ", announceId=" + announceId
 			+ ", recipientType=" + recipientType
