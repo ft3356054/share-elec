@@ -10,11 +10,11 @@ import com.sgcc.uap.rest.support.ParentVO;
 
 
 /**
- * BaseArea的VO类
+ * BaseCity的VO类
  *
  * @author 18511 
  */
-public class BaseAreaVO extends ParentVO implements Serializable{
+public class BaseCityVO extends ParentVO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -24,31 +24,36 @@ public class BaseAreaVO extends ParentVO implements Serializable{
     @ViewAttribute(name ="id",caption="ID", editor=EditorType.TextEditor,nullable =false,readOnly=false, type=AttributeType.STRING)
     private String id;    
     /** 
-     * 属性AREA_ID
+     * 属性CITY_ID
      */  
-    @ViewAttribute(name ="areaId",caption="AREA_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String areaId;    
+    @ViewAttribute(name ="cityId",caption="CITY_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String cityId;    
     /** 
-     * 属性PROVINCE_NAME
+     * 属性PROVINCE_ID
      */  
-    @ViewAttribute(name ="provinceName",caption="PROVINCE_NAME", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String provinceName;    
+    @ViewAttribute(name ="provinceId",caption="PROVINCE_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String provinceId;    
+    /** 
+     * 属性CITY_NAME
+     */  
+    @ViewAttribute(name ="cityName",caption="CITY_NAME", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String cityName;    
     /** 
      * 属性REMARK
      */  
     @ViewAttribute(name ="remark",caption="REMARK", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String remark;    
     /**
-     * BaseAreaVO构造函数
+     * BaseCityVO构造函数
      */
-    public BaseAreaVO() {
+    public BaseCityVO() {
         super();
     } 
    
 	 /**
-     * BaseAreaVO完整的构造函数
+     * BaseCityVO完整的构造函数
      */  
-    public BaseAreaVO(String id){
+    public BaseCityVO(String id){
         this.id = id;
     }
     /**
@@ -70,32 +75,46 @@ public class BaseAreaVO extends ParentVO implements Serializable{
         }
 	} 
     /**
-     * AREA_ID的get方法
-     * @return areaId
+     * CITY_ID的get方法
+     * @return cityId
      */
-    public String getAreaId(){
-        return areaId;
+    public String getCityId(){
+        return cityId;
     }
     /**
-     * AREA_ID的set方法
-     * @param areaId
+     * CITY_ID的set方法
+     * @param cityId
      */
-    public void setAreaId(String areaId){
-		this.areaId = areaId;
+    public void setCityId(String cityId){
+		this.cityId = cityId;
 	} 
     /**
-     * PROVINCE_NAME的get方法
-     * @return provinceName
+     * PROVINCE_ID的get方法
+     * @return provinceId
      */
-    public String getProvinceName(){
-        return provinceName;
+    public String getProvinceId(){
+        return provinceId;
     }
     /**
-     * PROVINCE_NAME的set方法
-     * @param provinceName
+     * PROVINCE_ID的set方法
+     * @param provinceId
      */
-    public void setProvinceName(String provinceName){
-		this.provinceName = provinceName;
+    public void setProvinceId(String provinceId){
+		this.provinceId = provinceId;
+	} 
+    /**
+     * CITY_NAME的get方法
+     * @return cityName
+     */
+    public String getCityName(){
+        return cityName;
+    }
+    /**
+     * CITY_NAME的set方法
+     * @param cityName
+     */
+    public void setCityName(String cityName){
+		this.cityName = cityName;
 	} 
     /**
      * REMARK的get方法
@@ -120,8 +139,9 @@ public class BaseAreaVO extends ParentVO implements Serializable{
 
 		  return new StringBuffer()
 	  			.append("ID"+":"+getId())
-				.append("AREA_ID"+":"+getAreaId())
-				.append("PROVINCE_NAME"+":"+getProvinceName())
+				.append("CITY_ID"+":"+getCityId())
+				.append("PROVINCE_ID"+":"+getProvinceId())
+				.append("CITY_NAME"+":"+getCityName())
 				.append("REMARK"+":"+getRemark())
 		        .toString(); 
 			
