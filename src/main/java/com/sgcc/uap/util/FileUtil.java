@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ClassUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 文件相关工具类
@@ -73,4 +75,31 @@ public class FileUtil {
             }
         }
 	}
+	
+	
+	public static String uploadFile(MultipartFile file,String pictureType,String fileName) throws IOException {	
+ 
+            String oldFileName = file.getOriginalFilename();  // 文件名
+            String suffixName = oldFileName.substring(oldFileName.lastIndexOf("."));
+            
+            String staticPath = ClassUtils.getDefaultClassLoader().getResource("pictures").getPath();
+            String filePath = staticPath + File.separator + pictureType + 
+            			File.separator + UuidUtil.getUuid46() + File.separator ;//这个path就是你要存在服务器上的
+            //fileName = UUID.randomUUID() + suffixName; // 新文件名
+            fileName = fileName + suffixName; // 新文件名
+            
+            File dest = new File(filePath + fileName);
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            try {
+                file.transferTo(dest);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
+            String filename = "http://localhost:8083/pictures" + File.separator + pictureType + 
+        			File.separator + UuidUtil.getUuid46() + File.separator + fileName;
+            return filename;
+    }
 }

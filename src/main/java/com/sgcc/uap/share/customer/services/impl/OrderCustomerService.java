@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.mdd.runtime.validate.ValidateService;
@@ -29,6 +31,7 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.controller.WebSocket;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderCustomerService;
 import com.sgcc.uap.share.domain.BaseAreaPrice;
@@ -41,6 +44,7 @@ import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
 import com.sgcc.uap.util.DecimalUtil;
+import com.sgcc.uap.util.FileUtil;
 import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
 
@@ -80,7 +84,8 @@ public class OrderCustomerService implements IOrderCustomerService{
 	private NotifyAnnounceService notifyAnnounceService;
 	@Autowired
 	private NotifyAnnounceUserService notifyAnnounceUserService;
-	
+	@Autowired
+    private WebSocket webSocket;
 	
 	@Override
 	public QueryResultObject getOrderCustomerByOrderId(String orderId) {
@@ -99,22 +104,29 @@ public class OrderCustomerService implements IOrderCustomerService{
 	}
 	
 	@Override
-	public OrderCustomer saveOrderCustomer(Map<String,Object> map) throws Exception{
+	@Transactional
+	public OrderCustomer saveOrderCustomer(Map<String,Object> map,MultipartFile file) throws Exception{
 		logger.info("OrderCustomerService saveOrderCustomer map = " +map); 
-		
 		validateService.validateWithException(OrderCustomer.class,map);
 		OrderCustomer orderCustomer = new OrderCustomer();
 		OrderCustomer result = new OrderCustomer();
 		if (map.containsKey("orderId")) {
+			//修改
 			String orderId = (String) map.get("orderId");
 			orderCustomer = orderCustomerRepository.findOne(orderId);
 			CrudUtils.mapToObject(map, orderCustomer,  "orderId");
 			result = orderCustomerRepository.save(orderCustomer);
 		}else{
+			//上传图片
+			if (!file.isEmpty()) {
+				String customerDescriveIcon = FileUtil.uploadFile(file, "ORDER_CUSTOMER", "CUSTOMER_DESCRIVE_ICON");
+				map.put("customerDescriveIcon", customerDescriveIcon);
+			}
+			
+			//新增order
 			String identityId = (String) map.get("identityId");
 			String provinceId = (String) map.get("provinceId");
 			map.put("customerPrice", getPrice(identityId, provinceId));
-			
 			map.put("orderStatus", "0");
 			map.put("payStatus", "0");
 			map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
@@ -154,10 +166,12 @@ public class OrderCustomerService implements IOrderCustomerService{
 			mapNotifyUser.put("recipientType", 0);
 			mapNotifyUser.put("state", 0);
 			mapNotifyUser.put("createTime", TimeStamp.toString(new Date()));
-			mapNotifyUser.put("readTime", "");
+			//mapNotifyUser.put("readTime", "");
 			mapNotifyUser.put("remark", "新增客户待付款通知");
 			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
 			
+			//发送websocket消息
+	        //webSocket.sendMessage("有新的订单");
 		}
 		return result;
 	}

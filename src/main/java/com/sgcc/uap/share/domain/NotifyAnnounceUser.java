@@ -1,7 +1,6 @@
 package com.sgcc.uap.share.domain;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -63,13 +62,13 @@ public class NotifyAnnounceUser implements Serializable {
      * CREATE_TIME
      */
     @Column(name = "CREATE_TIME", nullable = true, length = 19)
-    private Timestamp createTime ;
+    private String createTime ;
     
     /** 
      * READ_TIME
      */
     @Column(name = "READ_TIME", nullable = true, length = 19)
-    private Timestamp readTime ;
+    private String readTime ;
     
     /** 
      * REMARK
@@ -197,7 +196,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @date 2020-11-30 16:13:26
      * @author 18511
      */
-    public Timestamp getCreateTime(){
+    public String getCreateTime(){
         return this.createTime;
     }
     /**
@@ -207,7 +206,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @date 2020-11-30 16:13:26
      * @author 18511
      */
-    public void setCreateTime(Timestamp createTime){
+    public void setCreateTime(String createTime){
 		this.createTime = createTime;
 	} 
     /**
@@ -217,7 +216,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @date 2020-11-30 16:13:26
      * @author 18511
      */
-    public Timestamp getReadTime(){
+    public String getReadTime(){
         return this.readTime;
     }
     /**
@@ -227,7 +226,7 @@ public class NotifyAnnounceUser implements Serializable {
      * @date 2020-11-30 16:13:26
      * @author 18511
      */
-    public void setReadTime(Timestamp readTime){
+    public void setReadTime(String readTime){
 		this.readTime = readTime;
 	} 
     /**

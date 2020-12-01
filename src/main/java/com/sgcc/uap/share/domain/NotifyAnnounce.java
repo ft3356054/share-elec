@@ -1,16 +1,12 @@
 package com.sgcc.uap.share.domain;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -55,7 +51,7 @@ public class NotifyAnnounce implements Serializable {
      * CREATE_TIME
      */
     @Column(name = "CREATE_TIME", nullable = true, length = 19)
-    private Timestamp createTime ;
+    private String createTime ;
     
     /** 
      * REMARK
@@ -163,7 +159,7 @@ public class NotifyAnnounce implements Serializable {
      * @date 2020-11-26 14:32:47
      * @author 18511
      */
-    public Timestamp getCreateTime(){
+    public String getCreateTime(){
         return this.createTime;
     }
     /**
@@ -173,7 +169,7 @@ public class NotifyAnnounce implements Serializable {
      * @date 2020-11-26 14:32:47
      * @author 18511
      */
-    public void setCreateTime(Timestamp createTime){
+    public void setCreateTime(String createTime){
 		this.createTime = createTime;
 	} 
     /**
