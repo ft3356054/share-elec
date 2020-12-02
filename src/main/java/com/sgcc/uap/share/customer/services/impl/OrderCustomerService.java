@@ -45,6 +45,7 @@ import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
 import com.sgcc.uap.util.DecimalUtil;
 import com.sgcc.uap.util.FileUtil;
+import com.sgcc.uap.util.SorterUtil;
 import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
 
@@ -117,9 +118,10 @@ public class OrderCustomerService implements IOrderCustomerService{
 			CrudUtils.mapToObject(map, orderCustomer,  "orderId");
 			result = orderCustomerRepository.save(orderCustomer);
 		}else{
+			String getNewOrderId = UuidUtil.getUuid46();
 			//上传图片
 			if (!file.isEmpty()) {
-				String customerDescriveIcon = FileUtil.uploadFile(file, "ORDER_CUSTOMER", "CUSTOMER_DESCRIVE_ICON");
+				String customerDescriveIcon = FileUtil.uploadFile(file, getNewOrderId,"ORDER_CUSTOMER", "CUSTOMER_DESCRIVE_ICON");
 				map.put("customerDescriveIcon", customerDescriveIcon);
 			}
 			
@@ -131,8 +133,6 @@ public class OrderCustomerService implements IOrderCustomerService{
 			map.put("payStatus", "0");
 			map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
 			map.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
-			
-			String getNewOrderId = UuidUtil.getUuid46();
 			map.put("orderId", getNewOrderId);
 			CrudUtils.transMap2Bean(map, orderCustomer);
 			result = orderCustomerRepository.save(orderCustomer);
@@ -238,6 +238,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
 		Page<OrderCustomer> orderCustomer = orderCustomerRepository.findAll(specification,request);
+		//Page<OrderCustomer> orderCustomer = orderCustomerRepository.findAllByCreateTimeAtDesc(specification,request);
 		List<OrderCustomer> result = new ArrayList<OrderCustomer>();
 		long count = 0;
 		if(null != qList && !qList.isEmpty()){
@@ -283,6 +284,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
 		Page<OrderCustomer> orderCustomer = orderCustomerRepository.findAll(specification,request);
+		//Page<OrderCustomer> orderCustomer = orderCustomerRepository.findAllByCreateTimeAtDesc(specification,request);
 		List<OrderCustomer> result = new ArrayList<OrderCustomer>();
 		long count = 0;
 		result = orderCustomer.getContent();
@@ -325,7 +327,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			pageIndex = queryCondition.getPageIndex();
 			pageSize = queryCondition.getPageSize();
 		}
-		return new PageRequest(pageIndex - 1, pageSize, null);
+		return new PageRequest(pageIndex - 1, pageSize, SorterUtil.sortBy(queryCondition));
 	}
 	
 	private String getPrice(String identityId,String provinceId){

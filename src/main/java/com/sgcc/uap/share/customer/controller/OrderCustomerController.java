@@ -36,10 +36,9 @@ import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.customer.services.IOrderCustomerService;
 import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
+import com.sgcc.uap.util.FileUtil;
 import com.sgcc.uap.util.JsonUtils;
 import com.sgcc.uap.util.UuidUtil;
-
-import net.sf.json.JSONObject;
 
 
 /**
@@ -68,6 +67,8 @@ public class OrderCustomerController {
 	 */
 	@Value("${uapmicServer.dev}")
 	private boolean isDev;
+	
+	
 	/** 
      * OrderCustomer服务
      */
@@ -194,16 +195,10 @@ public class OrderCustomerController {
     		@RequestParam(value = "items", required = false) String items,
     		@RequestParam("myFile") MultipartFile file
     		) throws IOException {	
-		
-			//List<Map<String,Object>> items = params.getItems();
-			//解析json数据
-	    	JSONObject json = JSONObject.fromObject(items);
-	    	String createArr=json.getString("addressLongitude");
-	    	String modifyArr=json.getString("customerDescrive");
-            String fileName = file.getOriginalFilename();  // 文件名
-            System.out.println(json+"---"+createArr+"---"+modifyArr+"---"+fileName);
+			String customerDescriveIcon = FileUtil.uploadFile(file, UuidUtil.getUuid46(),"ORDER_CUSTOMER", "CUSTOMER_DESCRIVE_ICON");
+            System.out.println("customerDescriveIcon---"+customerDescriveIcon+"---");
             
-            return "123";
+            return customerDescriveIcon;
 	}
 	
     @RequestMapping(value = "/photo", method = RequestMethod.POST)

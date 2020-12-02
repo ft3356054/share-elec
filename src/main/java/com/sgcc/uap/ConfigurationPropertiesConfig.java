@@ -4,6 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Created by yizhan on 2018/3/26.
+ * EDAS配置类
  */
 @ConfigurationProperties(prefix = "prefix")
 public class ConfigurationPropertiesConfig {

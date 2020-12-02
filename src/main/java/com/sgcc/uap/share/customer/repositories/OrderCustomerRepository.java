@@ -17,5 +17,7 @@ import com.sgcc.uap.share.domain.OrderCustomer;
  */
 public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,String>,JpaSpecificationExecutor<OrderCustomer> {
 
+	//Page<OrderCustomer> findAllByCreateTimeAtDesc(Specification<OrderCustomer> specification, PageRequest request);
+
 	
 }
