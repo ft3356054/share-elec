@@ -171,7 +171,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
 			
 			//发送websocket消息
-	        //webSocket.sendMessage("有新的订单");
+	        webSocket.sendMessage("有新的订单");
 		}
 		return result;
 	}
