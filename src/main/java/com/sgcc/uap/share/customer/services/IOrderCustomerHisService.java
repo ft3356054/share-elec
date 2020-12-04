@@ -2,12 +2,11 @@ package com.sgcc.uap.share.customer.services;
 
 import java.util.Map;
 
-import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
-import com.sgcc.uap.share.domain.OrderCustomer;
+import com.sgcc.uap.share.domain.OrderCustomerHis;
 
 
 /**
@@ -19,48 +18,41 @@ import com.sgcc.uap.share.domain.OrderCustomer;
  *
  * @author 18511
  */
-public interface IOrderCustomerService {
+public interface IOrderCustomerHisService {
 
 	/**
-	 * @getOrderCustomerByOrderId:根据主键 查询
+	 * @getOrderCustomerHisByOrderId:根据主键 查询
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-04 14:22:15
 	 * @author 18511
 	 */
-	public QueryResultObject getOrderCustomerByOrderId(String orderId);
-	/**
-	 * @getOrderCustomerByOrderId:根据主键 查询 现表和历史表
-	 * @param queryCondition 查询条件
-	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
-	 * @author 18511
-	 */
-	public QueryResultObject getAllOrderCustomerByCustomerId(RequestCondition queryCondition);
+	public QueryResultObject getOrderCustomerHisByOrderId(String orderId);
 	/**
 	 * @remove:根据idObject删除
 	 * @param idObject 主键id
 	 * @return void
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-04 14:22:15
 	 * @author 18511
 	 */
 	public void remove(IDRequestObject idObject);
 	/**
 	 * @save:保存或更新
 	 * @param map 保存或更新的数据
-	 * @return OrderCustomer OrderCustomer对象
-	 * @date 2020-11-26 14:32:47
+	 * @return OrderCustomerHis OrderCustomerHis对象
+	 * @date 2020-12-04 14:22:15
 	 * @author 18511
 	 */
-	public OrderCustomer saveOrderCustomer(Map<String,Object> map,MultipartFile file) throws Exception;
+	public OrderCustomerHis saveOrderCustomerHis(Map<String,Object> map) throws Exception;
 	/**
 	 * @query:根据查询条件 查询
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-04 14:22:15
 	 * @author 18511
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);
+	
 
 
 

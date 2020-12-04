@@ -3,7 +3,6 @@ package com.sgcc.uap.share.customer.services.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +44,7 @@ import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
 import com.sgcc.uap.util.DecimalUtil;
 import com.sgcc.uap.util.FileUtil;
+import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.SorterUtil;
 import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
@@ -94,6 +94,24 @@ public class OrderCustomerService implements IOrderCustomerService{
 		return RestUtils.wrappQueryResult(orderCustomer);
 	}
 	@Override
+	public QueryResultObject getAllOrderCustomerByCustomerId(RequestCondition queryCondition) {
+		if(queryCondition == null){
+			throw new NullArgumentException("queryCondition");
+		}
+		
+		Integer pageIndex = queryCondition.getPageIndex()-1;
+		Integer pageSize = queryCondition.getPageSize();
+		QueryFilter queryFilter = queryCondition.getQueryFilter().get(0); 
+		String customerId = (String) queryFilter.getValue();
+		
+		List<OrderCustomer> result = orderCustomerRepository.getAllOrderCustomerByCustomerId(pageIndex,pageSize,customerId);
+		long count = 0;
+		count = result.size();
+		return RestUtils.wrappQueryResult(result, count);
+		
+	}
+	
+	@Override
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){
 			throw new NullArgumentException("idObject");
@@ -138,36 +156,20 @@ public class OrderCustomerService implements IOrderCustomerService{
 			result = orderCustomerRepository.save(orderCustomer);
 			
 			//新增流水
-			Map<String,Object> mapOrderFlow = new HashMap<String,Object>();
-			mapOrderFlow.put("orDERId", getNewOrderId);
-			mapOrderFlow.put("flowType", 0);
-			mapOrderFlow.put("currStatus", 0);
-			mapOrderFlow.put("operatorId", map.get("customerId"));
-			mapOrderFlow.put("operatorTime", TimeStamp.toString(new Date()));
-			mapOrderFlow.put("operatorType", 0);
-			mapOrderFlow.put("remark", "新增orderCustomer订单");
+			
+			Map<String,Object> mapOrderFlow = 
+					MapUtil.flowAdd(getNewOrderId, 0, 0, (String)map.get("customerId"), TimeStamp.toString(new Date()), 0,  "新增orderCustomer订单");
 			orderFlowService.saveOrderFlow(mapOrderFlow);
 			
 			//新增通知
 			String announceId = UuidUtil.getUuid32();
 			
-			Map<String,Object> mapNotify = new HashMap<String,Object>();
-			mapNotify.put("announceId",announceId);
-			mapNotify.put("serderId", "SYSTEM_ADMIN");
-			mapNotify.put("title", "待付勘察费");
-			mapNotify.put("content", "待付勘察费，内容");
-			mapNotify.put("createTime", TimeStamp.toString(new Date()));
-			mapNotify.put("remark", "新增客户待付款通知");
+			Map<String,Object> mapNotify =
+					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", "待付勘察费", "待付勘察费，内容", TimeStamp.toString(new Date()), "新增客户待付款通知");
 			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 			
-			Map<String,Object> mapNotifyUser = new HashMap<String,Object>();
-			mapNotifyUser.put("announceUserId", map.get("customerId"));
-			mapNotifyUser.put("announceId", announceId);
-			mapNotifyUser.put("recipientType", 0);
-			mapNotifyUser.put("state", 0);
-			mapNotifyUser.put("createTime", TimeStamp.toString(new Date()));
-			//mapNotifyUser.put("readTime", "");
-			mapNotifyUser.put("remark", "新增客户待付款通知");
+			Map<String,Object> mapNotifyUser = 
+					MapUtil.notifyUserAdd((String)map.get("customerId"), announceId, 0, 0, TimeStamp.toString(new Date()), "新增客户待付款通知");
 			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
 			
 			//发送websocket消息

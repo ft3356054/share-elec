@@ -1,6 +1,5 @@
 package com.sgcc.uap.share.customer.services.impl;
 
-import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +24,9 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
-import com.sgcc.uap.share.customer.repositories.CustomerInfoRepository;
-import com.sgcc.uap.share.customer.services.ICustomerInfoService;
-import com.sgcc.uap.share.domain.CustomerInfo;
+import com.sgcc.uap.share.customer.repositories.OrderCustomerHisRepository;
+import com.sgcc.uap.share.customer.services.IOrderCustomerHisService;
+import com.sgcc.uap.share.domain.OrderCustomerHis;
 
 
 /**
@@ -40,19 +39,19 @@ import com.sgcc.uap.share.domain.CustomerInfo;
  * @author 18511
  */
 @Service
-public class CustomerInfoService implements ICustomerInfoService{
+public class OrderCustomerHisService implements IOrderCustomerHisService{
 	/** 
-     * 注入customerInfoRepository
+     * 注入orderCustomerHisRepository
      */
 	@Autowired
-	private CustomerInfoRepository customerInfoRepository;
+	private OrderCustomerHisRepository orderCustomerHisRepository;
 	@Autowired
 	private ValidateService validateService;
 	
 	@Override
-	public QueryResultObject getCustomerInfoByCustomerId(String customerId) {
-		CustomerInfo customerInfo = customerInfoRepository.findOne(customerId);
-		return RestUtils.wrappQueryResult(customerInfo);
+	public QueryResultObject getOrderCustomerHisByOrderId(String orderId) {
+		OrderCustomerHis orderCustomerHis = orderCustomerHisRepository.findOne(orderId);
+		return RestUtils.wrappQueryResult(orderCustomerHis);
 	}
 	@Override
 	public void remove(IDRequestObject idObject) {
@@ -61,27 +60,21 @@ public class CustomerInfoService implements ICustomerInfoService{
 		}
 		String[] ids = idObject.getIds();
 		for (String id : ids){
-			customerInfoRepository.delete(id);
+			orderCustomerHisRepository.delete(id);
 		}
 	}
 	@Override
-	public CustomerInfo saveCustomerInfo(Map<String,Object> map) throws Exception{
-		validateService.validateWithException(CustomerInfo.class,map);
-		CustomerInfo customerInfo = null;
-		if (map.containsKey("customerId")) {
-			String customerId = (String) map.get("customerId");
-			customerInfo = customerInfoRepository.findOne(customerId);
-			if(null!=customerInfo){
-				CrudUtils.mapToObject(map, customerInfo,  "customerId");
-			}else{
-				customerInfo = new CustomerInfo();
-				CrudUtils.transMap2Bean(map, customerInfo);
-			}
+	public OrderCustomerHis saveOrderCustomerHis(Map<String,Object> map) throws Exception{
+		validateService.validateWithException(OrderCustomerHis.class,map);
+		OrderCustomerHis orderCustomerHis = new OrderCustomerHis();
+		if (map.containsKey("orderId")) {
+			String orderId = (String) map.get("orderId");
+			orderCustomerHis = orderCustomerHisRepository.findOne(orderId);
+			CrudUtils.mapToObject(map, orderCustomerHis,  "orderId");
 		}else{
-			customerInfo = new CustomerInfo();
-			CrudUtils.transMap2Bean(map, customerInfo);
+			CrudUtils.transMap2Bean(map, orderCustomerHis);
 		}
-		return customerInfoRepository.save(customerInfo);
+		return orderCustomerHisRepository.save(orderCustomerHis);
 	}
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
@@ -116,14 +109,14 @@ public class CustomerInfoService implements ICustomerInfoService{
 	 * @querySingle:主从表单页查询方法
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-04 14:22:15
 	 * @author 18511
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
 		List<QueryFilter> qList = getFilterList(queryCondition);
-		Specification<CustomerInfo> specification = new Specification<CustomerInfo>() {
+		Specification<OrderCustomerHis> specification = new Specification<OrderCustomerHis>() {
 			@Override
-			public Predicate toPredicate(Root<CustomerInfo> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<OrderCustomerHis> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -138,12 +131,12 @@ public class CustomerInfoService implements ICustomerInfoService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<CustomerInfo> customerInfo = customerInfoRepository.findAll(specification,request);
-		List<CustomerInfo> result = new ArrayList<CustomerInfo>();
+		Page<OrderCustomerHis> orderCustomerHis = orderCustomerHisRepository.findAll(specification,request);
+		List<OrderCustomerHis> result = new ArrayList<OrderCustomerHis>();
 		long count = 0;
 		if(null != qList && !qList.isEmpty()){
-			result = customerInfo.getContent();
-			count = customerInfo.getTotalElements();
+			result = orderCustomerHis.getContent();
+			count = orderCustomerHis.getTotalElements();
 		}
 		return RestUtils.wrappQueryResult(result, count);
 	}
@@ -161,14 +154,14 @@ public class CustomerInfoService implements ICustomerInfoService{
 	 * @queryCommon:查询方法(通用的)
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-04 14:22:15
 	 * @author 18511
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
 		List<QueryFilter> qList = queryCondition.getQueryFilter(); 
-		Specification<CustomerInfo> specification = new Specification<CustomerInfo>() {
+		Specification<OrderCustomerHis> specification = new Specification<OrderCustomerHis>() {
 			@Override
-			public Predicate toPredicate(Root<CustomerInfo> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<OrderCustomerHis> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -183,11 +176,11 @@ public class CustomerInfoService implements ICustomerInfoService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<CustomerInfo> customerInfo = customerInfoRepository.findAll(specification,request);
-		List<CustomerInfo> result = new ArrayList<CustomerInfo>();
+		Page<OrderCustomerHis> orderCustomerHis = orderCustomerHisRepository.findAll(specification,request);
+		List<OrderCustomerHis> result = new ArrayList<OrderCustomerHis>();
 		long count = 0;
-		result = customerInfo.getContent();
-		count = customerInfo.getTotalElements();
+		result = orderCustomerHis.getContent();
+		count = orderCustomerHis.getTotalElements();
 		return RestUtils.wrappQueryResult(result, count);
 	}
 	
@@ -195,7 +188,7 @@ public class CustomerInfoService implements ICustomerInfoService{
 	 * @getFilterList:获取条件列表
 	 * @param queryCondition 查询条件
 	 * @return List<QueryFilter> 查询条件列表
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-04 14:22:15
 	 * @author 18511
 	 */
 	private List<QueryFilter> getFilterList(RequestCondition queryCondition) {
@@ -217,7 +210,7 @@ public class CustomerInfoService implements ICustomerInfoService{
 	 * @buildPageRequest:构建PageRequest
 	 * @param queryCondition 查询条件
 	 * @return PageRequest 页面请求对象
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-04 14:22:15
 	 * @author 18511
 	 */
 	private PageRequest buildPageRequest(RequestCondition queryCondition) {
