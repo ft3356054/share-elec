@@ -25,8 +25,8 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.ElectricianInfo;
+import com.sgcc.uap.share.electrician.repositories.ElectricianInfoRepository;
 import com.sgcc.uap.share.electrician.services.IElectricianInfoService;
-import com.sgcc.uap.share.repositories.ElectricianInfoRepository;
 import com.sgcc.uap.utils.string.StringUtil;
 
 

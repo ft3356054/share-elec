@@ -19,7 +19,7 @@ public class ElectricianStatusTransfer {
 	 * @toPO:vo转为po
 	 * @param vo vo对象
 	 * @return ElectricianStatus ElectricianStatus对象
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	public static ElectricianStatus toPO(ElectricianStatusVO vo) {
@@ -29,6 +29,8 @@ public class ElectricianStatusTransfer {
 			electricianStatus.setElectricianStatus(vo.getElectricianStatus());
 			electricianStatus.setAddressLongitude(vo.getAddressLongitude());
 			electricianStatus.setAddressLatitude(vo.getAddressLatitude());
+			electricianStatus.setOnlineTime(vo.getOnlineTime());
+			electricianStatus.setOfflineTime(vo.getOfflineTime());
 			electricianStatus.setRemark(vo.getRemark());
         }
 		return electricianStatus;
@@ -37,7 +39,7 @@ public class ElectricianStatusTransfer {
 	 * @toVO:po转为vo
 	 * @param po po对象
 	 * @return ElectricianStatusVO ElectricianStatusVO对象
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	public static ElectricianStatusVO toVO(ElectricianStatus po) {
@@ -46,6 +48,8 @@ public class ElectricianStatusTransfer {
 		vo.setElectricianStatus(po.getElectricianStatus());
 		vo.setAddressLongitude(po.getAddressLongitude());
 		vo.setAddressLatitude(po.getAddressLatitude());
+		vo.setOnlineTime(po.getOnlineTime());
+		vo.setOfflineTime(po.getOfflineTime());
 		vo.setRemark(po.getRemark());
 		return vo;
 	}

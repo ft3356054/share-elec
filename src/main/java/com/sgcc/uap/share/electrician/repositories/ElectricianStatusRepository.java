@@ -1,9 +1,9 @@
-package com.sgcc.uap.share.repositories;
+package com.sgcc.uap.share.electrician.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import com.sgcc.uap.share.domain.ElectricianInfo;
+import com.sgcc.uap.share.domain.ElectricianStatus;
 
 
 /**
@@ -15,7 +15,7 @@ import com.sgcc.uap.share.domain.ElectricianInfo;
  *	
  * @author 18511
  */
-public interface ElectricianInfoRepository extends JpaRepository<ElectricianInfo,String>,JpaSpecificationExecutor<ElectricianInfo> {
+public interface ElectricianStatusRepository extends JpaRepository<ElectricianStatus,String>,JpaSpecificationExecutor<ElectricianStatus> {
 
 	
 }

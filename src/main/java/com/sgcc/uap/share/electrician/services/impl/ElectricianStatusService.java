@@ -25,8 +25,8 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.ElectricianStatus;
+import com.sgcc.uap.share.electrician.repositories.ElectricianStatusRepository;
 import com.sgcc.uap.share.electrician.services.IElectricianStatusService;
-import com.sgcc.uap.share.repositories.ElectricianStatusRepository;
 import com.sgcc.uap.utils.string.StringUtil;
 
 
@@ -110,7 +110,7 @@ public class ElectricianStatusService implements IElectricianStatusService{
 	 * @querySingle:主从表单页查询方法
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
@@ -155,7 +155,7 @@ public class ElectricianStatusService implements IElectricianStatusService{
 	 * @queryCommon:查询方法(通用的)
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
@@ -189,7 +189,7 @@ public class ElectricianStatusService implements IElectricianStatusService{
 	 * @getFilterList:获取条件列表
 	 * @param queryCondition 查询条件
 	 * @return List<QueryFilter> 查询条件列表
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	private List<QueryFilter> getFilterList(RequestCondition queryCondition) {
@@ -211,7 +211,7 @@ public class ElectricianStatusService implements IElectricianStatusService{
 	 * @buildPageRequest:构建PageRequest
 	 * @param queryCondition 查询条件
 	 * @return PageRequest 页面请求对象
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	private PageRequest buildPageRequest(RequestCondition queryCondition) {

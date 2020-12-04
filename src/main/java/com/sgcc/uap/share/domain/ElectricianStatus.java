@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.domain;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,6 +54,18 @@ public class ElectricianStatus implements Serializable {
     private String addressLatitude ;
     
     /** 
+     * ONLINE_TIME
+     */
+    @Column(name = "ONLINE_TIME", nullable = true, length = 19)
+    private Timestamp onlineTime ;
+    
+    /** 
+     * OFFLINE_TIME
+     */
+    @Column(name = "OFFLINE_TIME", nullable = true, length = 19)
+    private Timestamp offlineTime ;
+    
+    /** 
      * REMARK
      */
     @Column(name = "REMARK", nullable = true, length = 64)
@@ -71,7 +84,7 @@ public class ElectricianStatus implements Serializable {
      * @getElectricianId:ELECTRICIAN_ID的get方法
      * @params
      * @return electricianId
-     * @date 2020-12-04 17:18:43
+     * @date 2020-12-04 17:27:43
      * @author 18511
      */
     public String getElectricianId(){
@@ -81,7 +94,7 @@ public class ElectricianStatus implements Serializable {
      * @setElectricianId:ELECTRICIAN_ID的set方法
      * @param electricianId
      * @return
-     * @date 2020-12-04 17:18:43
+     * @date 2020-12-04 17:27:43
      * @author 18511
      */
     public void setElectricianId(String electricianId){
@@ -95,7 +108,7 @@ public class ElectricianStatus implements Serializable {
      * @getElectricianStatus:ELECTRICIAN_STATUS的get方法
      * @params
      * @return electricianStatus
-     * @date 2020-12-04 17:18:43
+     * @date 2020-12-04 17:27:43
      * @author 18511
      */
     public String getElectricianStatus(){
@@ -105,7 +118,7 @@ public class ElectricianStatus implements Serializable {
      * @setElectricianStatus:ELECTRICIAN_STATUS的set方法
      * @param electricianStatus
      * @return
-     * @date 2020-12-04 17:18:43
+     * @date 2020-12-04 17:27:43
      * @author 18511
      */
     public void setElectricianStatus(String electricianStatus){
@@ -115,7 +128,7 @@ public class ElectricianStatus implements Serializable {
      * @getAddressLongitude:ADDRESS_LONGITUDE的get方法
      * @params
      * @return addressLongitude
-     * @date 2020-12-04 17:18:43
+     * @date 2020-12-04 17:27:43
      * @author 18511
      */
     public String getAddressLongitude(){
@@ -125,7 +138,7 @@ public class ElectricianStatus implements Serializable {
      * @setAddressLongitude:ADDRESS_LONGITUDE的set方法
      * @param addressLongitude
      * @return
-     * @date 2020-12-04 17:18:43
+     * @date 2020-12-04 17:27:43
      * @author 18511
      */
     public void setAddressLongitude(String addressLongitude){
@@ -135,7 +148,7 @@ public class ElectricianStatus implements Serializable {
      * @getAddressLatitude:ADDRESS_LATITUDE的get方法
      * @params
      * @return addressLatitude
-     * @date 2020-12-04 17:18:43
+     * @date 2020-12-04 17:27:43
      * @author 18511
      */
     public String getAddressLatitude(){
@@ -145,17 +158,57 @@ public class ElectricianStatus implements Serializable {
      * @setAddressLatitude:ADDRESS_LATITUDE的set方法
      * @param addressLatitude
      * @return
-     * @date 2020-12-04 17:18:43
+     * @date 2020-12-04 17:27:43
      * @author 18511
      */
     public void setAddressLatitude(String addressLatitude){
 		this.addressLatitude = addressLatitude;
 	} 
     /**
+     * @getOnlineTime:ONLINE_TIME的get方法
+     * @params
+     * @return onlineTime
+     * @date 2020-12-04 17:27:43
+     * @author 18511
+     */
+    public Timestamp getOnlineTime(){
+        return this.onlineTime;
+    }
+    /**
+     * @setOnlineTime:ONLINE_TIME的set方法
+     * @param onlineTime
+     * @return
+     * @date 2020-12-04 17:27:43
+     * @author 18511
+     */
+    public void setOnlineTime(Timestamp onlineTime){
+		this.onlineTime = onlineTime;
+	} 
+    /**
+     * @getOfflineTime:OFFLINE_TIME的get方法
+     * @params
+     * @return offlineTime
+     * @date 2020-12-04 17:27:43
+     * @author 18511
+     */
+    public Timestamp getOfflineTime(){
+        return this.offlineTime;
+    }
+    /**
+     * @setOfflineTime:OFFLINE_TIME的set方法
+     * @param offlineTime
+     * @return
+     * @date 2020-12-04 17:27:43
+     * @author 18511
+     */
+    public void setOfflineTime(Timestamp offlineTime){
+		this.offlineTime = offlineTime;
+	} 
+    /**
      * @getRemark:REMARK的get方法
      * @params
      * @return remark
-     * @date 2020-12-04 17:18:43
+     * @date 2020-12-04 17:27:43
      * @author 18511
      */
     public String getRemark(){
@@ -165,7 +218,7 @@ public class ElectricianStatus implements Serializable {
      * @setRemark:REMARK的set方法
      * @param remark
      * @return
-     * @date 2020-12-04 17:18:43
+     * @date 2020-12-04 17:27:43
      * @author 18511
      */
     public void setRemark(String remark){
@@ -222,6 +275,20 @@ public class ElectricianStatus implements Serializable {
 		} else if (!addressLatitude.equals(other.addressLatitude)) {
 			return false;
 		}
+		if (onlineTime == null) {
+			if (other.onlineTime != null) {
+				return false;
+			}
+		} else if (!onlineTime.equals(other.onlineTime)) {
+			return false;
+		}
+		if (offlineTime == null) {
+			if (other.offlineTime != null) {
+				return false;
+			}
+		} else if (!offlineTime.equals(other.offlineTime)) {
+			return false;
+		}
 		if (remark == null) {
 			if (other.remark != null) {
 				return false;
@@ -242,6 +309,8 @@ public class ElectricianStatus implements Serializable {
 			+ ", electricianStatus=" + electricianStatus
 			+ ", addressLongitude=" + addressLongitude
 			+ ", addressLatitude=" + addressLatitude
+			+ ", onlineTime=" + onlineTime
+			+ ", offlineTime=" + offlineTime
 			+ ", remark=" + remark;
 	}
    

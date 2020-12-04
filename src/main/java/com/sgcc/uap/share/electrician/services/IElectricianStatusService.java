@@ -24,7 +24,7 @@ public interface IElectricianStatusService {
 	 * @getElectricianStatusByElectricianId:根据主键 查询
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	public QueryResultObject getElectricianStatusByElectricianId(String electricianId);
@@ -32,7 +32,7 @@ public interface IElectricianStatusService {
 	 * @remove:根据idObject删除
 	 * @param idObject 主键id
 	 * @return void
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	public void remove(IDRequestObject idObject);
@@ -40,7 +40,7 @@ public interface IElectricianStatusService {
 	 * @save:保存或更新
 	 * @param map 保存或更新的数据
 	 * @return ElectricianStatus ElectricianStatus对象
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	public ElectricianStatus saveElectricianStatus(Map<String,Object> map) throws Exception;
@@ -48,7 +48,7 @@ public interface IElectricianStatusService {
 	 * @query:根据查询条件 查询
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);

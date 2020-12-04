@@ -67,7 +67,7 @@ public class ElectricianStatusController {
 	 * @getByElectricianId:根据electricianId查询
 	 * @param electricianId
 	 * @return WrappedResult 查询结果
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/{electricianId}")
@@ -89,7 +89,7 @@ public class ElectricianStatusController {
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
@@ -111,7 +111,7 @@ public class ElectricianStatusController {
 	 * @saveOrUpdate:保存或更新
 	 * @param params
 	 * @return WrappedResult 保存或更新的结果
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -149,7 +149,7 @@ public class ElectricianStatusController {
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	@RequestMapping("/")
@@ -171,7 +171,7 @@ public class ElectricianStatusController {
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -200,7 +200,7 @@ public class ElectricianStatusController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-04 17:27:43
 	 * @author 18511
 	 */
 	@InitBinder

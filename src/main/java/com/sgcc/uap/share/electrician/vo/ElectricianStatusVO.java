@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.electrician.vo;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 
 import com.sgcc.uap.rest.annotation.attribute.AttributeType;
@@ -38,6 +39,16 @@ public class ElectricianStatusVO extends ParentVO implements Serializable{
      */  
     @ViewAttribute(name ="addressLatitude",caption="ADDRESS_LATITUDE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String addressLatitude;    
+    /** 
+     * 属性ONLINE_TIME
+     */  
+    @ViewAttribute(name ="onlineTime",caption="ONLINE_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
+    private Timestamp onlineTime;    
+    /** 
+     * 属性OFFLINE_TIME
+     */  
+    @ViewAttribute(name ="offlineTime",caption="OFFLINE_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
+    private Timestamp offlineTime;    
     /** 
      * 属性REMARK
      */  
@@ -117,6 +128,34 @@ public class ElectricianStatusVO extends ParentVO implements Serializable{
 		this.addressLatitude = addressLatitude;
 	} 
     /**
+     * ONLINE_TIME的get方法
+     * @return onlineTime
+     */
+    public Timestamp getOnlineTime(){
+        return onlineTime;
+    }
+    /**
+     * ONLINE_TIME的set方法
+     * @param onlineTime
+     */
+    public void setOnlineTime(Timestamp onlineTime){
+		this.onlineTime = onlineTime;
+	} 
+    /**
+     * OFFLINE_TIME的get方法
+     * @return offlineTime
+     */
+    public Timestamp getOfflineTime(){
+        return offlineTime;
+    }
+    /**
+     * OFFLINE_TIME的set方法
+     * @param offlineTime
+     */
+    public void setOfflineTime(Timestamp offlineTime){
+		this.offlineTime = offlineTime;
+	} 
+    /**
      * REMARK的get方法
      * @return remark
      */
@@ -142,6 +181,8 @@ public class ElectricianStatusVO extends ParentVO implements Serializable{
 				.append("ELECTRICIAN_STATUS"+":"+getElectricianStatus())
 				.append("ADDRESS_LONGITUDE"+":"+getAddressLongitude())
 				.append("ADDRESS_LATITUDE"+":"+getAddressLatitude())
+				.append("ONLINE_TIME"+":"+getOnlineTime())
+				.append("OFFLINE_TIME"+":"+getOfflineTime())
 				.append("REMARK"+":"+getRemark())
 		        .toString(); 
 			
