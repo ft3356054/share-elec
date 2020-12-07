@@ -1,9 +1,9 @@
 package com.sgcc.uap.share.customer.services.impl;
 
-import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -12,9 +12,12 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.sgcc.uap.exception.NullArgumentException;
@@ -49,12 +52,21 @@ public class CustomerInfoService implements ICustomerInfoService{
 	@Autowired
 	private ValidateService validateService;
 	
+	@Autowired
+    private StringRedisTemplate stringRedisTemplate;
+	
 	@Override
+	@Cacheable(cacheNames = "customerInfo" ,  keyGenerator = "wiselyKeyGenerator") //redis缓存
 	public QueryResultObject getCustomerInfoByCustomerId(String customerId) {
 		CustomerInfo customerInfo = customerInfoRepository.findOne(customerId);
+		//stringRedisTemplate.opsForValue().set("aaa", "111");
+		//stringRedisTemplate.opsForValue().set("mykeys", "value", 1L, TimeUnit.DAYS);
 		return RestUtils.wrappQueryResult(customerInfo);
 	}
+	
+	
 	@Override
+	@CacheEvict(cacheNames = "customerInfo",keyGenerator = "wiselyKeyGenerator" , allEntries = true) //redis缓存
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){
 			throw new NullArgumentException("idObject");
@@ -64,7 +76,9 @@ public class CustomerInfoService implements ICustomerInfoService{
 			customerInfoRepository.delete(id);
 		}
 	}
+	
 	@Override
+	@CacheEvict(cacheNames = "customerInfo",keyGenerator = "wiselyKeyGenerator" , allEntries = true) //redis缓存
 	public CustomerInfo saveCustomerInfo(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(CustomerInfo.class,map);
 		CustomerInfo customerInfo = null;

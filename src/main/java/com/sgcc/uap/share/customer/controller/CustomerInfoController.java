@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sgcc.uap.exception.NullArgumentException;
@@ -30,7 +33,8 @@ import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.customer.services.ICustomerInfoService;
 import com.sgcc.uap.share.customer.vo.CustomerInfoVO;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * <b>概述</b>：<br>
@@ -63,6 +67,8 @@ public class CustomerInfoController {
      */
 	@Autowired
 	private ICustomerInfoService customerInfoService;
+	
+	
 	/**
 	 * @getByCustomerId:根据customerId查询
 	 * @param customerId
@@ -85,6 +91,7 @@ public class CustomerInfoController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
 	/**
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
