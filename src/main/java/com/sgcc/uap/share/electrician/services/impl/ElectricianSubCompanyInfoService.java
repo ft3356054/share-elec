@@ -24,9 +24,9 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
-import com.sgcc.uap.share.domain.ElectricianInfo;
-import com.sgcc.uap.share.electrician.repositories.ElectricianInfoRepository;
-import com.sgcc.uap.share.electrician.services.IElectricianInfoService;
+import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
+import com.sgcc.uap.share.electrician.repositories.ElectricianSubCompanyInfoRepository;
+import com.sgcc.uap.share.electrician.services.IElectricianSubCompanyInfoService;
 import com.sgcc.uap.utils.string.StringUtil;
 
 
@@ -40,19 +40,19 @@ import com.sgcc.uap.utils.string.StringUtil;
  * @author 18511
  */
 @Service
-public class ElectricianInfoService implements IElectricianInfoService{
+public class ElectricianSubCompanyInfoService implements IElectricianSubCompanyInfoService{
 	/** 
-     * 注入electricianInfoRepository
+     * 注入electricianSubCompanyInfoRepository
      */
 	@Autowired
-	private ElectricianInfoRepository electricianInfoRepository;
+	private ElectricianSubCompanyInfoRepository electricianSubCompanyInfoRepository;
 	@Autowired
 	private ValidateService validateService;
 	
 	@Override
-	public QueryResultObject getElectricianInfoByElectricianId(String electricianId) {
-		ElectricianInfo electricianInfo = electricianInfoRepository.findOne(electricianId);
-		return RestUtils.wrappQueryResult(electricianInfo);
+	public QueryResultObject getElectricianSubCompanyInfoBySubCompanyId(String subCompanyId) {
+		ElectricianSubCompanyInfo electricianSubCompanyInfo = electricianSubCompanyInfoRepository.findOne(subCompanyId);
+		return RestUtils.wrappQueryResult(electricianSubCompanyInfo);
 	}
 	@Override
 	public void remove(IDRequestObject idObject) {
@@ -61,21 +61,21 @@ public class ElectricianInfoService implements IElectricianInfoService{
 		}
 		String[] ids = idObject.getIds();
 		for (String id : ids){
-			electricianInfoRepository.delete(id);
+			electricianSubCompanyInfoRepository.delete(id);
 		}
 	}
 	@Override
-	public ElectricianInfo saveElectricianInfo(Map<String,Object> map) throws Exception{
-		validateService.validateWithException(ElectricianInfo.class,map);
-		ElectricianInfo electricianInfo = new ElectricianInfo();
-		if (map.containsKey("electricianId")) {
-			String electricianId = (String) map.get("electricianId");
-			electricianInfo = electricianInfoRepository.findOne(electricianId);
-			CrudUtils.mapToObject(map, electricianInfo,  "electricianId");
+	public ElectricianSubCompanyInfo saveElectricianSubCompanyInfo(Map<String,Object> map) throws Exception{
+		validateService.validateWithException(ElectricianSubCompanyInfo.class,map);
+		ElectricianSubCompanyInfo electricianSubCompanyInfo = new ElectricianSubCompanyInfo();
+		if (map.containsKey("subCompanyId")) {
+			String subCompanyId = (String) map.get("subCompanyId");
+			electricianSubCompanyInfo = electricianSubCompanyInfoRepository.findOne(subCompanyId);
+			CrudUtils.mapToObject(map, electricianSubCompanyInfo,  "subCompanyId");
 		}else{
-			CrudUtils.transMap2Bean(map, electricianInfo);
+			CrudUtils.transMap2Bean(map, electricianSubCompanyInfo);
 		}
-		return electricianInfoRepository.save(electricianInfo);
+		return electricianSubCompanyInfoRepository.save(electricianSubCompanyInfo);
 	}
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
@@ -110,14 +110,14 @@ public class ElectricianInfoService implements IElectricianInfoService{
 	 * @querySingle:主从表单页查询方法
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-07 10:54:21
+	 * @date 2020-12-07 10:54:19
 	 * @author 18511
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
 		List<QueryFilter> qList = getFilterList(queryCondition);
-		Specification<ElectricianInfo> specification = new Specification<ElectricianInfo>() {
+		Specification<ElectricianSubCompanyInfo> specification = new Specification<ElectricianSubCompanyInfo>() {
 			@Override
-			public Predicate toPredicate(Root<ElectricianInfo> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<ElectricianSubCompanyInfo> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -132,12 +132,12 @@ public class ElectricianInfoService implements IElectricianInfoService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<ElectricianInfo> electricianInfo = electricianInfoRepository.findAll(specification,request);
-		List<ElectricianInfo> result = new ArrayList<ElectricianInfo>();
+		Page<ElectricianSubCompanyInfo> electricianSubCompanyInfo = electricianSubCompanyInfoRepository.findAll(specification,request);
+		List<ElectricianSubCompanyInfo> result = new ArrayList<ElectricianSubCompanyInfo>();
 		long count = 0;
 		if(null != qList && !qList.isEmpty()){
-			result = electricianInfo.getContent();
-			count = electricianInfo.getTotalElements();
+			result = electricianSubCompanyInfo.getContent();
+			count = electricianSubCompanyInfo.getTotalElements();
 		}
 		return RestUtils.wrappQueryResult(result, count);
 	}
@@ -155,14 +155,14 @@ public class ElectricianInfoService implements IElectricianInfoService{
 	 * @queryCommon:查询方法(通用的)
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-07 10:54:21
+	 * @date 2020-12-07 10:54:19
 	 * @author 18511
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
 		List<QueryFilter> qList = queryCondition.getQueryFilter(); 
-		Specification<ElectricianInfo> specification = new Specification<ElectricianInfo>() {
+		Specification<ElectricianSubCompanyInfo> specification = new Specification<ElectricianSubCompanyInfo>() {
 			@Override
-			public Predicate toPredicate(Root<ElectricianInfo> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<ElectricianSubCompanyInfo> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -177,11 +177,11 @@ public class ElectricianInfoService implements IElectricianInfoService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<ElectricianInfo> electricianInfo = electricianInfoRepository.findAll(specification,request);
-		List<ElectricianInfo> result = new ArrayList<ElectricianInfo>();
+		Page<ElectricianSubCompanyInfo> electricianSubCompanyInfo = electricianSubCompanyInfoRepository.findAll(specification,request);
+		List<ElectricianSubCompanyInfo> result = new ArrayList<ElectricianSubCompanyInfo>();
 		long count = 0;
-		result = electricianInfo.getContent();
-		count = electricianInfo.getTotalElements();
+		result = electricianSubCompanyInfo.getContent();
+		count = electricianSubCompanyInfo.getTotalElements();
 		return RestUtils.wrappQueryResult(result, count);
 	}
 	
@@ -189,7 +189,7 @@ public class ElectricianInfoService implements IElectricianInfoService{
 	 * @getFilterList:获取条件列表
 	 * @param queryCondition 查询条件
 	 * @return List<QueryFilter> 查询条件列表
-	 * @date 2020-12-07 10:54:21
+	 * @date 2020-12-07 10:54:19
 	 * @author 18511
 	 */
 	private List<QueryFilter> getFilterList(RequestCondition queryCondition) {
@@ -211,7 +211,7 @@ public class ElectricianInfoService implements IElectricianInfoService{
 	 * @buildPageRequest:构建PageRequest
 	 * @param queryCondition 查询条件
 	 * @return PageRequest 页面请求对象
-	 * @date 2020-12-07 10:54:21
+	 * @date 2020-12-07 10:54:19
 	 * @author 18511
 	 */
 	private PageRequest buildPageRequest(RequestCondition queryCondition) {

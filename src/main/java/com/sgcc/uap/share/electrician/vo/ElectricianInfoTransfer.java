@@ -19,7 +19,7 @@ public class ElectricianInfoTransfer {
 	 * @toPO:vo转为po
 	 * @param vo vo对象
 	 * @return ElectricianInfo ElectricianInfo对象
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-07 10:54:21
 	 * @author 18511
 	 */
 	public static ElectricianInfo toPO(ElectricianInfoVO vo) {
@@ -43,7 +43,7 @@ public class ElectricianInfoTransfer {
 	 * @toVO:po转为vo
 	 * @param po po对象
 	 * @return ElectricianInfoVO ElectricianInfoVO对象
-	 * @date 2020-12-04 17:18:43
+	 * @date 2020-12-07 10:54:21
 	 * @author 18511
 	 */
 	public static ElectricianInfoVO toVO(ElectricianInfo po) {

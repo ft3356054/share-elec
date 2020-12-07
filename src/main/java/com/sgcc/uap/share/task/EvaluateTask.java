@@ -7,7 +7,7 @@ import java.util.TimerTask;
  * 15天内可以投诉
  * 15天后，默认好评
  * */
-public class evaluateTask  extends TimerTask{
+public class EvaluateTask  extends TimerTask{
 	
 
 	@Override

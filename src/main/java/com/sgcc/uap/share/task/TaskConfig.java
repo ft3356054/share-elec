@@ -5,21 +5,10 @@ import java.util.Date;
 import java.util.Timer;
 
 public class TaskConfig {
-	private String limitUrl; 
-	
 	
 	private static final long PERIOD_DAY = 24 * 60 * 60 * 1000;
 	
 	public void init(){
-		Timer timer = new Timer();  
-        //MyTask task = new MyTask();
-        Calendar nowTime = Calendar.getInstance();
-        nowTime.add(Calendar.MINUTE, 1);
-        Date dat =nowTime.getTime();
-        System.out.println(dat);
-        long interval=1000*60*10;//10分钟查一次
-        //timer.schedule(task, dat, interval); 
-        
         Calendar calendar = Calendar.getInstance();  
         calendar.set(Calendar.HOUR_OF_DAY, 0); //凌晨0点  
         calendar.set(Calendar.MINUTE, 0);  

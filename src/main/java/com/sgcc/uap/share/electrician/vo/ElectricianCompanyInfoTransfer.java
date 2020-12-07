@@ -19,7 +19,7 @@ public class ElectricianCompanyInfoTransfer {
 	 * @toPO:vo转为po
 	 * @param vo vo对象
 	 * @return ElectricianCompanyInfo ElectricianCompanyInfo对象
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-07 10:54:22
 	 * @author 18511
 	 */
 	public static ElectricianCompanyInfo toPO(ElectricianCompanyInfoVO vo) {
@@ -34,7 +34,22 @@ public class ElectricianCompanyInfoTransfer {
 			electricianCompanyInfo.setCompanyLevel(vo.getCompanyLevel());
 			electricianCompanyInfo.setRatingCertificate(vo.getRatingCertificate());
 			electricianCompanyInfo.setCompanyContract(vo.getCompanyContract());
-			electricianCompanyInfo.setRemark(vo.getRemark());
+			electricianCompanyInfo.setLegalPerson(vo.getLegalPerson());
+			electricianCompanyInfo.setCreditCode(vo.getCreditCode());
+			electricianCompanyInfo.setStructureCode(vo.getStructureCode());
+			electricianCompanyInfo.setOnBusinessBegin(vo.getOnBusinessBegin());
+			electricianCompanyInfo.setOnBusinessEnd(vo.getOnBusinessEnd());
+			electricianCompanyInfo.setBusinessCope(vo.getBusinessCope());
+			electricianCompanyInfo.setQualiCode(vo.getQualiCode());
+			electricianCompanyInfo.setQualiIndustry(vo.getQualiIndustry());
+			electricianCompanyInfo.setQualiLevel(vo.getQualiLevel());
+			electricianCompanyInfo.setCertificateCode(vo.getCertificateCode());
+			electricianCompanyInfo.setRegiseterTime(vo.getRegiseterTime());
+			electricianCompanyInfo.setRemark1(vo.getRemark1());
+			electricianCompanyInfo.setRemark2(vo.getRemark2());
+			electricianCompanyInfo.setRemark3(vo.getRemark3());
+			electricianCompanyInfo.setRemark4(vo.getRemark4());
+			electricianCompanyInfo.setRemark5(vo.getRemark5());
         }
 		return electricianCompanyInfo;
 	}
@@ -42,7 +57,7 @@ public class ElectricianCompanyInfoTransfer {
 	 * @toVO:po转为vo
 	 * @param po po对象
 	 * @return ElectricianCompanyInfoVO ElectricianCompanyInfoVO对象
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-07 10:54:22
 	 * @author 18511
 	 */
 	public static ElectricianCompanyInfoVO toVO(ElectricianCompanyInfo po) {
@@ -56,7 +71,22 @@ public class ElectricianCompanyInfoTransfer {
 		vo.setCompanyLevel(po.getCompanyLevel());
 		vo.setRatingCertificate(po.getRatingCertificate());
 		vo.setCompanyContract(po.getCompanyContract());
-		vo.setRemark(po.getRemark());
+		vo.setLegalPerson(po.getLegalPerson());
+		vo.setCreditCode(po.getCreditCode());
+		vo.setStructureCode(po.getStructureCode());
+		vo.setOnBusinessBegin(po.getOnBusinessBegin());
+		vo.setOnBusinessEnd(po.getOnBusinessEnd());
+		vo.setBusinessCope(po.getBusinessCope());
+		vo.setQualiCode(po.getQualiCode());
+		vo.setQualiIndustry(po.getQualiIndustry());
+		vo.setQualiLevel(po.getQualiLevel());
+		vo.setCertificateCode(po.getCertificateCode());
+		vo.setRegiseterTime(po.getRegiseterTime());
+		vo.setRemark1(po.getRemark1());
+		vo.setRemark2(po.getRemark2());
+		vo.setRemark3(po.getRemark3());
+		vo.setRemark4(po.getRemark4());
+		vo.setRemark5(po.getRemark5());
 		return vo;
 	}
 }
