@@ -110,7 +110,7 @@ public class ElectricianInfoService implements IElectricianInfoService{
 	 * @querySingle:主从表单页查询方法
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-07 10:54:21
+	 * @date 2020-12-07 11:01:01
 	 * @author 18511
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
@@ -155,7 +155,7 @@ public class ElectricianInfoService implements IElectricianInfoService{
 	 * @queryCommon:查询方法(通用的)
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-07 10:54:21
+	 * @date 2020-12-07 11:01:01
 	 * @author 18511
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
@@ -189,7 +189,7 @@ public class ElectricianInfoService implements IElectricianInfoService{
 	 * @getFilterList:获取条件列表
 	 * @param queryCondition 查询条件
 	 * @return List<QueryFilter> 查询条件列表
-	 * @date 2020-12-07 10:54:21
+	 * @date 2020-12-07 11:01:01
 	 * @author 18511
 	 */
 	private List<QueryFilter> getFilterList(RequestCondition queryCondition) {
@@ -211,7 +211,7 @@ public class ElectricianInfoService implements IElectricianInfoService{
 	 * @buildPageRequest:构建PageRequest
 	 * @param queryCondition 查询条件
 	 * @return PageRequest 页面请求对象
-	 * @date 2020-12-07 10:54:21
+	 * @date 2020-12-07 11:01:01
 	 * @author 18511
 	 */
 	private PageRequest buildPageRequest(RequestCondition queryCondition) {

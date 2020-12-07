@@ -34,10 +34,10 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
     @ViewAttribute(name ="electricianPhonenumber",caption="ELECTRICIAN_PHONENUMBER", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String electricianPhonenumber;    
     /** 
-     * 属性COMPANY_ID
+     * 属性SUB_COMPANY_ID
      */  
-    @ViewAttribute(name ="companyId",caption="COMPANY_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String companyId;    
+    @ViewAttribute(name ="subCompanyId",caption="SUB_COMPANY_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String subCompanyId;    
     /** 
      * 属性COMPANY_NAME
      */  
@@ -133,18 +133,18 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
 		this.electricianPhonenumber = electricianPhonenumber;
 	} 
     /**
-     * COMPANY_ID的get方法
-     * @return companyId
+     * SUB_COMPANY_ID的get方法
+     * @return subCompanyId
      */
-    public String getCompanyId(){
-        return companyId;
+    public String getSubCompanyId(){
+        return subCompanyId;
     }
     /**
-     * COMPANY_ID的set方法
-     * @param companyId
+     * SUB_COMPANY_ID的set方法
+     * @param subCompanyId
      */
-    public void setCompanyId(String companyId){
-		this.companyId = companyId;
+    public void setSubCompanyId(String subCompanyId){
+		this.subCompanyId = subCompanyId;
 	} 
     /**
      * COMPANY_NAME的get方法
@@ -255,7 +255,7 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
 	  			.append("ELECTRICIAN_ID"+":"+getElectricianId())
 				.append("ELECTRICIAN_NAME"+":"+getElectricianName())
 				.append("ELECTRICIAN_PHONENUMBER"+":"+getElectricianPhonenumber())
-				.append("COMPANY_ID"+":"+getCompanyId())
+				.append("SUB_COMPANY_ID"+":"+getSubCompanyId())
 				.append("COMPANY_NAME"+":"+getCompanyName())
 				.append("RATING_CERTIFICATE"+":"+getRatingCertificate())
 				.append("COMPANY_CONTRACT"+":"+getCompanyContract())
