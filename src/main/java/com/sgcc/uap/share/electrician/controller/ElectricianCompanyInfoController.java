@@ -167,6 +167,33 @@ public class ElectricianCompanyInfoController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
+	/**
+	 * @query:查询
+	 * @param 公司名称 公司等级 注册开始时间 注册结束时间
+	 * @return WrappedResult 查询结果
+	 * @date 2020-12-07 10:54:22
+	 * @author 18511
+	 * http://localhost:8083/electricianCompanyInfo/queryMore/?params={"pageIndex":1,"pageSize":20,
+	 * "filter":["companyName=123","companyLevel=1","regiseterTimeBegin=2020-11-10 18:20:00","regiseterTimeEnd=2020-12-10 18:20:00"],
+	 * "sorter":"DESC=createTime"}	
+	 */
+	@RequestMapping("/queryMore")
+	public WrappedResult queryMore(@QueryRequestParam("params") RequestCondition requestCondition) {
+		try {
+			QueryResultObject queryResult = electricianCompanyInfoService.queryMore(requestCondition);
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
 	/**
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组

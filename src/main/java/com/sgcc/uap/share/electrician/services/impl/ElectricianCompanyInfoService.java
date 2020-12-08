@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.electrician.services.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,6 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
 import com.sgcc.uap.share.electrician.repositories.ElectricianCompanyInfoRepository;
 import com.sgcc.uap.share.electrician.services.IElectricianCompanyInfoService;
-import com.sgcc.uap.utils.string.StringUtil;
 
 
 /**
@@ -223,5 +223,34 @@ public class ElectricianCompanyInfoService implements IElectricianCompanyInfoSer
 		return new PageRequest(pageIndex - 1, pageSize, null);
 	}
 
-
+	@Override
+	public QueryResultObject queryMore(RequestCondition queryCondition) {
+		if(queryCondition == null){
+			throw new NullArgumentException("queryCondition");
+		}
+		Map<String,String> map = new HashMap<String,String>();
+		
+		Integer pageIndex = queryCondition.getPageIndex()-1;
+		Integer pageSize = queryCondition.getPageSize();
+		/*map.put("pageIndex",pageIndex.toString());
+		map.put("pageSize",pageSize.toString());*/
+				
+		Object o = queryCondition.getFilter();
+		if(o != null && o instanceof List){
+			List<String> filter = (List<String>)o;
+			if(!filter.isEmpty()){
+				int size = filter.size();
+				for (String param : filter) {
+					String[] params =  param.split("=");
+					map.put(params[0], params[1]);
+				}
+			}
+		} 
+		
+		List<ElectricianCompanyInfo> result = electricianCompanyInfoRepository.queryMore(pageIndex,pageSize,
+				map.get("companyName"),map.get("companyLevel"),map.get("regiseterTimeBegin"),map.get("regiseterTimeEnd"));
+		long count = 0;
+		count = result.size();
+		return RestUtils.wrappQueryResult(result, count);
+	}
 }

@@ -1,7 +1,11 @@
 package com.sgcc.uap.share.electrician.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
 
@@ -17,5 +21,12 @@ import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
  */
 public interface ElectricianCompanyInfoRepository extends JpaRepository<ElectricianCompanyInfo,String>,JpaSpecificationExecutor<ElectricianCompanyInfo> {
 
+	@Query(value = "SELECT * FROM Electrician_Company_Info WHERE company_Name like %:companyName%  "
+			+ " and company_Level =:companyLevel and regiseter_Time between :regiseterTimeBegin and :regiseterTimeEnd "
+			+ " limit :pageIndex,:pageSize",
+			nativeQuery = true)
+	List<ElectricianCompanyInfo> queryMore(@Param("pageIndex")int pageIndex,@Param("pageSize")int pageSize,
+			@Param("companyName")String companyName,@Param("companyLevel")String companyLevel,
+			@Param("regiseterTimeBegin")String regiseterTimeBegin,@Param("regiseterTimeEnd")String regiseterTimeEnd);
 	
 }

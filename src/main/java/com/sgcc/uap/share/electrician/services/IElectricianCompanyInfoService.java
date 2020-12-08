@@ -52,7 +52,14 @@ public interface IElectricianCompanyInfoService {
 	 * @author 18511
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);
-
+	/**
+	 * @query:根据查询条件 查询
+	 * @param queryCondition 查询条件
+	 * @return QueryResultObject 查询结果
+	 * @date 2020-12-07 10:54:22
+	 * @author 18511
+	 */
+	public QueryResultObject queryMore(RequestCondition queryCondition);
 
 
 }
