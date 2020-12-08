@@ -2,6 +2,8 @@ package com.sgcc.uap;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 
@@ -17,6 +19,8 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @SpringBootApplication(scanBasePackages={"com.sgcc.uap","com.sgcc.uap.rest.annotation","com.sgcc.uap.mdd.runtime"})
 //@EnableDiscoveryClient
 @EnableRedisHttpSession(maxInactiveIntervalInSeconds = 86400*30) //HttpSession存放的信息直接放入redis中
+@EnableScheduling
+@EnableAsync //开启异步调用
 public class Application {
 	
 	public static void main(String[] args) {
