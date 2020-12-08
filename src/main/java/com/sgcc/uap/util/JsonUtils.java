@@ -95,7 +95,7 @@ import net.sf.json.JSONObject;
     }
 	
 
-	/**json string 转换为 对象
+    /**json string 转换为 对象
 	* @param jsonObj
 	* @param type
 	* @return
@@ -105,5 +105,17 @@ import net.sf.json.JSONObject;
 		T obj =(T)JSONObject.toBean(jsonObject, type);
 		return obj;
 	}
+	
+	/**json string 转换为 对象
+	* @param jsonObj
+	* @param type
+	* @return
+	*/
+	public static String mapToJson(Map<String, String>  map) {
+		JSONObject json = JSONObject.fromObject(map);
+		return json.toString();
+	}
+	
+	
 
 }

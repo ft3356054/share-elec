@@ -1,13 +1,15 @@
 package com.sgcc.uap.share.customer.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sgcc.uap.exception.NullArgumentException;
@@ -29,12 +30,13 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
+import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.customer.services.ICustomerInfoService;
 import com.sgcc.uap.share.customer.vo.CustomerInfoVO;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import com.sgcc.uap.util.JsonUtils;
+import com.sgcc.uap.util.MapUtil;
 
 /**
  * <b>概述</b>：<br>
@@ -67,6 +69,9 @@ public class CustomerInfoController {
      */
 	@Autowired
 	private ICustomerInfoService customerInfoService;
+	
+	@Autowired
+    private StringRedisTemplate stringRedisTemplate;
 	
 	
 	/**
@@ -216,4 +221,57 @@ public class CustomerInfoController {
 		binder.setDisallowedFields(DISALLOWED_PARAMS);
 	}
 
+	
+	/**
+	 * @saveOrUpdate:保存位置
+	 * @param params
+	 * @return WrappedResult 保存或更新的结果
+	 * @date 2020-11-26 14:32:47
+	 * @author 18511
+	 * http://localhost:8083/customerInfo/locationPut/?params={"filter":["customerId=customerId001","lon=13.144","lat=251.21465"]}	
+	 */
+	@RequestMapping(value = "/locationPut")
+	public WrappedResult locationPut(@QueryRequestParam("params") RequestCondition requestCondition) {
+		try {
+			Map<String, String> map = MapUtil.getParam(requestCondition);
+			String jsonMap = JsonUtils.mapToJson(map);
+			stringRedisTemplate.opsForValue().set(map.get("customerId"), jsonMap, 1L, TimeUnit.HOURS);
+			List result = new ArrayList();
+			long count = 1;
+			logger.info("存储位置信息保存成功"); 
+			return WrappedResult.successWrapedResult(RestUtils.wrappQueryResult(result, count));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "存储位置信息异常";
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
+	/**
+	 * @saveOrUpdate:获取位置测试
+	 * @param params
+	 * @return WrappedResult 保存或更新的结果
+	 * @date 2020-11-26 14:32:47
+	 * @author 18511
+	 * http://localhost:8083/customerInfo/locationGet/customerId001
+	 */
+	@RequestMapping(value = "/locationGet/{customerId}")
+	public WrappedResult locationGetTest(@PathVariable String customerId) {
+		try {
+			Map<String, Object> map = new HashMap<String, Object>();
+			String json = stringRedisTemplate.opsForValue().get(customerId);
+			map = JsonUtils.parseJSONstr2Map(json);
+			logger.info("经度:"+map.get("lon")); 
+			logger.info("纬度:"+map.get("lat")); 
+			
+			
+			List result = new ArrayList();
+			long count = 1;
+			return WrappedResult.successWrapedResult(RestUtils.wrappQueryResult(result, count));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "存储位置信息异常";
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
 }

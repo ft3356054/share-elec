@@ -1,7 +1,10 @@
 package com.sgcc.uap.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.sgcc.uap.rest.support.RequestCondition;
 
 /**
  * 对 map 的工具类
@@ -55,6 +58,25 @@ public class MapUtil {
 		//mapNotifyUser.put("readTime", "");
 		mapNotifyUser.put("remark", remark);
 		return mapNotifyUser;
+	}
+	
+	/**
+	 * 获取前端传入参数
+	 */
+	public static Map<String,String> getParam(RequestCondition queryCondition){
+		Map<String,String> map = new HashMap<String,String>();
+		Object o = queryCondition.getFilter();
+		if(o != null && o instanceof List){
+			List<String> filter = (List<String>)o;
+			if(!filter.isEmpty()){
+				int size = filter.size();
+				for (String param : filter) {
+					String[] params =  param.split("=");
+					map.put(params[0], params[1]);
+				}
+			}
+		} 
+		return map;
 	}
 	
 	
