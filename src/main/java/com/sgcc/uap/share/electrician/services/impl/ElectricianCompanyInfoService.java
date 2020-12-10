@@ -3,7 +3,7 @@ package com.sgcc.uap.share.electrician.services.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import org.slf4j.Logger;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
@@ -64,19 +64,39 @@ public class ElectricianCompanyInfoService implements IElectricianCompanyInfoSer
 			electricianCompanyInfoRepository.delete(id);
 		}
 	}
+	
+	
 	@Override
 	public ElectricianCompanyInfo saveElectricianCompanyInfo(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(ElectricianCompanyInfo.class,map);
-		ElectricianCompanyInfo electricianCompanyInfo = new ElectricianCompanyInfo();
+		//ElectricianCompanyInfo electricianCompanyInfo = new ElectricianCompanyInfo();
+		ElectricianCompanyInfo electricianCompanyInfo = null;
+		
+		//String str=electricianCompanyInfo.toString();
+		//logger.info("electricianCompanyInfo内容是："+str);		
+		//System.out.println("----------------electricianCompanyInfo内容是："+str);
+		String companyId2 = (String) map.get("companyId");
+		System.out.println("-------***************-----companyId2："+companyId2);
+		
 		if (map.containsKey("companyId")) {
 			String companyId = (String) map.get("companyId");
 			electricianCompanyInfo = electricianCompanyInfoRepository.findOne(companyId);
-			CrudUtils.mapToObject(map, electricianCompanyInfo,  "companyId");
+			//CrudUtils.mapToObject(map, electricianCompanyInfo,  "companyId");
+			if(electricianCompanyInfo!=null){
+				CrudUtils.mapToObject(map, electricianCompanyInfo,  "companyId");
+			}else{
+				electricianCompanyInfo=new ElectricianCompanyInfo();
+				CrudUtils.transMap2Bean(map, electricianCompanyInfo);
+			}			
 		}else{
+			electricianCompanyInfo=new ElectricianCompanyInfo();
 			CrudUtils.transMap2Bean(map, electricianCompanyInfo);
 		}
 		return electricianCompanyInfoRepository.save(electricianCompanyInfo);
 	}
+	
+	
+	
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
 		if(queryCondition == null){
