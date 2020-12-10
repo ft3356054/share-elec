@@ -26,7 +26,7 @@ public class EvaluateTask  extends TimerTask{
 
 	@Override
     @Async
-    @Scheduled(fixedDelay = 60000) //每1分钟执行一次
+    @Scheduled(fixedDelay = 60000*60*24) //每1分钟执行一次
 	public void run() {
 		Integer updateCount = 0;
 		updateCount = orderCustomerRepository.getNotEvaluate(5, "默认好评",  "默认好评", 8, 15);
