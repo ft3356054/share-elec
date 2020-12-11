@@ -1,5 +1,8 @@
 package com.sgcc.uap.share.repositories;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -16,6 +19,6 @@ import com.sgcc.uap.share.domain.NotifyAnnounce;
  * @author 18511
  */
 public interface NotifyAnnounceRepository extends JpaRepository<NotifyAnnounce,String>,JpaSpecificationExecutor<NotifyAnnounce> {
-
+	public List<NotifyAnnounce> findByAnnounceIdIn(Collection<String> id);
 	
 }

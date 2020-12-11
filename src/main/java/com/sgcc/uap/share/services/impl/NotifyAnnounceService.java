@@ -54,6 +54,11 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 		return RestUtils.wrappQueryResult(notifyAnnounce);
 	}
 	@Override
+	public QueryResultObject getNotifyAnnounceByAnnounceIds(List<String> list) {
+		List<NotifyAnnounce> notifyAnnounce = notifyAnnounceRepository.findByAnnounceIdIn(list);
+		return RestUtils.wrappQueryResult(notifyAnnounce);
+	}
+	@Override
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){
 			throw new NullArgumentException("idObject");

@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.services;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -28,6 +29,7 @@ public interface INotifyAnnounceUserService {
 	 * @author 18511
 	 */
 	public QueryResultObject getNotifyAnnounceUserById(String id);
+	public List<NotifyAnnounceUser> getNotifyAnnounceUserByUserId(String id);
 	/**
 	 * @remove:根据idObject删除
 	 * @param idObject 主键id

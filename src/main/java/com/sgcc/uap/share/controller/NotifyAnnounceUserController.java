@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,8 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
+import com.sgcc.uap.share.domain.NotifyAnnounceUser;
+import com.sgcc.uap.share.services.INotifyAnnounceService;
 import com.sgcc.uap.share.services.INotifyAnnounceUserService;
 import com.sgcc.uap.share.vo.NotifyAnnounceUserVO;
 
@@ -63,6 +66,10 @@ public class NotifyAnnounceUserController {
      */
 	@Autowired
 	private INotifyAnnounceUserService notifyAnnounceUserService;
+	@Autowired
+	private INotifyAnnounceService notifyAnnounceService;
+	
+	
 	/**
 	 * @getById:根据id查询
 	 * @param id
@@ -85,6 +92,38 @@ public class NotifyAnnounceUserController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+
+	/**
+	 * @getById:根据userId查询
+	 * @param id
+	 * @return WrappedResult 查询结果
+	 * @date 2020-11-30 16:13:38
+	 * @author 18511
+	 */
+	@RequestMapping(value = "/userId/{id}")
+	public WrappedResult getByUserId(@PathVariable String id) {
+		try {
+			List<NotifyAnnounceUser> notifyAnnounceUserList = notifyAnnounceUserService.getNotifyAnnounceUserByUserId(id);
+			List<String> list = new ArrayList<String>(); 
+			
+			if(notifyAnnounceUserList.size()>0){
+				for(NotifyAnnounceUser notifyAnnounceUser :notifyAnnounceUserList){
+					list.add(notifyAnnounceUser.getAnnounceId());
+				}
+			}
+			QueryResultObject result = notifyAnnounceService.getNotifyAnnounceByAnnounceIds(list);
+			logger.info("查询成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
 	/**
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称

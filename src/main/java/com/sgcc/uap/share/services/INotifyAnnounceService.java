@@ -1,7 +1,7 @@
 package com.sgcc.uap.share.services;
 
+import java.util.List;
 import java.util.Map;
-
 
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
@@ -28,6 +28,7 @@ public interface INotifyAnnounceService {
 	 * @author 18511
 	 */
 	public QueryResultObject getNotifyAnnounceByAnnounceId(String announceId);
+	public QueryResultObject getNotifyAnnounceByAnnounceIds(List<String> list);
 	/**
 	 * @remove:根据idObject删除
 	 * @param idObject 主键id

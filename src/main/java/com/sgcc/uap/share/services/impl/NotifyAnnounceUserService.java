@@ -27,7 +27,6 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.NotifyAnnounceUser;
 import com.sgcc.uap.share.repositories.NotifyAnnounceUserRepository;
 import com.sgcc.uap.share.services.INotifyAnnounceUserService;
-import com.sgcc.uap.utils.string.StringUtil;
 
 
 /**
@@ -54,6 +53,12 @@ public class NotifyAnnounceUserService implements INotifyAnnounceUserService{
 		NotifyAnnounceUser notifyAnnounceUser = notifyAnnounceUserRepository.findOne(id);
 		return RestUtils.wrappQueryResult(notifyAnnounceUser);
 	}
+	@Override
+	public List<NotifyAnnounceUser> getNotifyAnnounceUserByUserId(String id) {
+		List<NotifyAnnounceUser> notifyAnnounceUser = notifyAnnounceUserRepository.findByAnnounceUserId(id);
+		return notifyAnnounceUser;
+	}
+	
 	@Override
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){
