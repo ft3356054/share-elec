@@ -1,11 +1,13 @@
 package com.sgcc.uap.share.electrician.services;
 
+import java.util.List;
 import java.util.Map;
 
 
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
+import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 
 
@@ -52,7 +54,19 @@ public interface IOrderElectricianService {
 	 * @author 18511
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);
+	
+	
+	
+	/**
+	 * 以下是测试代码
+	 */
+	//public QueryResultObject findByElectricianId(String electricianId)
+public List<OrderElectrician> findByElectricianEvaluateIsNullAndOrderElectricianTypeEquals(String orderElectricianType);
 
+public List<OrderCustomer> findByOrderStatusOrderByCreateTime(int id1,int id2);
+public List<OrderElectrician> findByElectricianIdAndOrderElectricianTypeEqualsOrderByCreateTime(String electricianId,String orderElectricianType);
+public List<OrderElectrician> findByElectricianIdAndOrderByCreateTimeAsc(String electricianId);
+public List<OrderElectrician> findByElectricianId(String electricianId);
 
 
 }

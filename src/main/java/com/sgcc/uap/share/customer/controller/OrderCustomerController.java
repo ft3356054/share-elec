@@ -151,8 +151,7 @@ public class OrderCustomerController {
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public WrappedResult saveOrUpdate(
-		@RequestParam(value = "items", required = false) String items,
-		@RequestParam("myFile") MultipartFile file
+		@RequestParam(value = "items", required = false) String items,@RequestParam("myFile") MultipartFile file
 		) throws IOException {	
 	
 		try {

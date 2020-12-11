@@ -12,8 +12,10 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.sgcc.uap.exception.NullArgumentException;
@@ -24,10 +26,15 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
+import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
+import com.sgcc.uap.util.SorterUtil;
 import com.sgcc.uap.utils.string.StringUtil;
+
+import ch.qos.logback.classic.Logger;
 
 
 /**
@@ -49,6 +56,9 @@ public class OrderElectricianService implements IOrderElectricianService{
 	@Autowired
 	private ValidateService validateService;
 	
+	@Autowired
+	private OrderCustomerRepository orderCustomerRepository;
+	
 	@Override
 	public QueryResultObject getOrderElectricianByOrderElectricianId(String orderElectricianId) {
 		OrderElectrician orderElectrician = orderElectricianRepository.findOne(orderElectricianId);
@@ -67,24 +77,48 @@ public class OrderElectricianService implements IOrderElectricianService{
 	@Override
 	public OrderElectrician saveOrderElectrician(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(OrderElectrician.class,map);
-		OrderElectrician orderElectrician = new OrderElectrician();
+		/*
+		 * 开始改动地方
+		 * TODO
+		 */
+		
+		//OrderElectrician orderElectrician = new OrderElectrician();
+		OrderElectrician orderElectrician = null;
+		
+		
 		if (map.containsKey("orderElectricianId")) {
 			String orderElectricianId = (String) map.get("orderElectricianId");
 			orderElectrician = orderElectricianRepository.findOne(orderElectricianId);
-			CrudUtils.mapToObject(map, orderElectrician,  "orderElectricianId");
+			if(null!=orderElectrician){
+				CrudUtils.mapToObject(map, orderElectrician,  "orderElectricianId");
+			}else{
+				orderElectrician = new OrderElectrician();
+				CrudUtils.transMap2Bean(map, orderElectrician);
+			}
+			
+			//CrudUtils.mapToObject(map, orderElectrician,  "orderElectricianId");
 		}else{
+			orderElectrician = new OrderElectrician();
 			CrudUtils.transMap2Bean(map, orderElectrician);
 		}
 		return orderElectricianRepository.save(orderElectrician);
 	}
+	
+	
+	
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
+		System.out.println("我使用的是query方法");
 		if(queryCondition == null){
 			throw new NullArgumentException("queryCondition");
 		}
 		Object o = queryCondition.getFilter();
+	
+		
 		if(o != null && o instanceof List){
 			List<Map<String, Object>> filter = (List<Map<String, Object>>)o;
+			String str = filter.toString();
+			System.out.println("*-*-*-*-*-*-*-*-str*************"+str);
 			if(!filter.isEmpty()){
 				for (Map<String, Object> map : filter) {
 					List<Map<String, Object>> filter1 = (List<Map<String, Object>>) map.get("criterions");
@@ -114,6 +148,9 @@ public class OrderElectricianService implements IOrderElectricianService{
 	 * @author 18511
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
+		
+		System.out.println("我使用的是querySingle方法");
+		
 		List<QueryFilter> qList = getFilterList(queryCondition);
 		Specification<OrderElectrician> specification = new Specification<OrderElectrician>() {
 			@Override
@@ -159,7 +196,17 @@ public class OrderElectricianService implements IOrderElectricianService{
 	 * @author 18511
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
-		List<QueryFilter> qList = queryCondition.getQueryFilter(); 
+		System.out.println("我使用的是queryCommon方法");
+		List<QueryFilter> qList = queryCondition.getQueryFilter();
+		System.out.println("**********qList************"+qList);
+		System.out.println("");
+		
+		
+		QueryFilter queryFilter = qList.get(0);
+		String fieldName = queryFilter.getFieldName();
+		System.out.println("**********fieldName************"+fieldName);
+		System.out.println("");
+		
 		Specification<OrderElectrician> specification = new Specification<OrderElectrician>() {
 			@Override
 			public Predicate toPredicate(Root<OrderElectrician> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -220,8 +267,67 @@ public class OrderElectricianService implements IOrderElectricianService{
 			pageIndex = queryCondition.getPageIndex();
 			pageSize = queryCondition.getPageSize();
 		}
-		return new PageRequest(pageIndex - 1, pageSize, null);
+		return new PageRequest(pageIndex - 1, pageSize, SorterUtil.sortBy(queryCondition));
 	}
-
-
+	
+	
+	
+	/**
+	 * electricianEvaluate
+	 * 以下是测试代码
+	 */
+	
+	//@Query(value="select * from order_electrician oe where oe.ELECTRICIAN_ID=?1")
+	//public List<OrderElectrician> findByPriceRange
+	/**
+	 * 待评价按钮
+	 */
+	@Override
+	public List<OrderElectrician> findByElectricianEvaluateIsNullAndOrderElectricianTypeEquals(String orderElectricianType){
+		List<OrderElectrician> list=orderElectricianRepository.findByElectricianEvaluateIsNullAndOrderElectricianTypeEquals(orderElectricianType);
+		return list;
+		
+	}
+	
+	
+	/**
+	 * 首页--我的订单按钮
+	 * electricianId
+	 */
+	
+	@Override
+	public List<OrderCustomer> findByOrderStatusOrderByCreateTime(int id1, int id2) {
+		// TODO Auto-generated method stub
+		List<OrderCustomer> list=orderCustomerRepository.findByOrderStatusOrderByCreateTime( id1,id2);
+		return list;
+	}
+	
+	
+	@Override
+	public List<OrderElectrician> findByElectricianIdAndOrderElectricianTypeEqualsOrderByCreateTime(String electricianId,String orderElectricianType){
+		List<OrderElectrician> list=orderElectricianRepository.findByElectricianIdAndOrderElectricianTypeEqualsOrderByCreateTime(electricianId,orderElectricianType);
+		return list;
+		
+	}
+	
+	/**
+	 * 我的订单页面    查询的是当前电工所有的订单+历史订单
+	 * 查询未完结的订单
+	 */
+	
+	public List<OrderElectrician> findByElectricianIdAndOrderByCreateTimeAsc(String electricianId){
+		
+		//List<OrderElectrician> list=orderElectricianRepository.getAllOrderElectricianByElectricianId(pageIndex,pageSize,customerId);
+		
+		return null;
+	}
+	@Override
+	public List<OrderElectrician> findByElectricianId(String electricianId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	
+	
 }

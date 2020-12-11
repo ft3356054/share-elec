@@ -153,7 +153,10 @@ public class OrderElectricianVO extends ParentVO implements Serializable{
      * 属性ORDER_ID
      */  
     @ViewAttribute(name ="orDERId",caption="ORDER_ID", editor=EditorType.ComboEditor,nullable =false,readOnly=false, type=AttributeType.STRING)
-    private String orDERId;    
+    private String orDERId; 
+    
+    private String distance;
+    
     /**
      * OrderElectricianVO构造函数
      */
@@ -584,9 +587,18 @@ public class OrderElectricianVO extends ParentVO implements Serializable{
 				.append("REMARK_NUM1"+":"+getRemarkNum1())
 				.append("REMARK_NUM2"+":"+getRemarkNum2())
 				.append("ORDER_ID"+":"+getOrDERId())
+				.append("distance"+":"+getDistance())
 		        .toString(); 
 			
-    } 
+    }
+
+	public String getDistance() {
+		return distance;
+	}
+
+	public void setDistance(String distance) {
+		this.distance = distance;
+	} 
    
 
 
