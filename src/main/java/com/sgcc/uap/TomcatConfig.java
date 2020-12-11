@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 //@Configuration  
 public class TomcatConfig {  
   
-    @Bean  
+    //@Bean  
     public EmbeddedServletContainerFactory servletContainer() {  
         TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory() {// 1  
             protected void postProcessContext(Context context) {  
