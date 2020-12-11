@@ -47,6 +47,9 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	,nativeQuery = true)
 	Integer getNotEvaluate(@Param("customerGrade")int customerGrade,@Param("customerEvaluateTitle")String customerEvaluateTitle,
 			@Param("customerEvaluate")String customerEvaluate,@Param("orderStatus")int orderStatus,@Param("day")int day);
+
+	@Query(value="select * from order_customer where ORDER_STATUS=:id1 and order by :id2 asc")
+	List<OrderCustomer> findByOrderStatusOrderByCreateTime(@Param("id1")int id1, @Param("id2")int id2);
 	
 	
 	

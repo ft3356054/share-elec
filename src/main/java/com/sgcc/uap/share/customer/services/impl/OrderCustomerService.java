@@ -357,9 +357,9 @@ public class OrderCustomerService implements IOrderCustomerService{
 	public OrderCustomer findByOrderId(String orderId) {
 		
 		// TODO Auto-generated method stub
-		OrderCustomer orderCustomer=orderCustomerRepository.findByOrderId(orderId);
+		//OrderCustomer orderCustomer=orderCustomerRepository.findByOrderId(orderId);
 		
-		return orderCustomer;
+		return null;
 	}
 	public void saveOrderCustomertwice(OrderCustomer orderCustomer) {
 		// TODO Auto-generated method stub
