@@ -680,8 +680,9 @@ public class OrderElectricianController {
 					String orderId=(String) map.get("orderId");
 					OrderElectrician orElectrician=orderElectricianService.findByOrDERIdAndOrderElectricianType(orderId);
 					//查询出来订单存在，则直接返回错误信息
+					
 					if(orElectrician!=null){
-						String errorMessage = "订单存在";
+						String errorMessage = "订单已被抢";
 						if(isDev){
 							
 						}
