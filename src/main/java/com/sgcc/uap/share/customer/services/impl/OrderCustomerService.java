@@ -34,9 +34,11 @@ import com.sgcc.uap.share.controller.WebSocket;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderCustomerService;
 import com.sgcc.uap.share.domain.BaseAreaPrice;
+import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.BaseIdentityPrice;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.electrician.services.impl.OrderElectricianService;
+import com.sgcc.uap.share.services.IBaseEnumsService;
 import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
 import com.sgcc.uap.share.services.impl.BaseIdentityPriceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
@@ -87,6 +89,8 @@ public class OrderCustomerService implements IOrderCustomerService{
 	private NotifyAnnounceUserService notifyAnnounceUserService;
 	@Autowired
     private WebSocket webSocket;
+	@Autowired
+	private IBaseEnumsService baseEnumsService;
 	
 	@Override
 	public QueryResultObject getOrderCustomerByOrderId(String orderId) {
@@ -146,30 +150,34 @@ public class OrderCustomerService implements IOrderCustomerService{
 			//新增order
 			String identityId = (String) map.get("identityId");
 			String provinceId = (String) map.get("provinceId");
+			String orderStatus = (String) map.get("orderStatus");
+			String payStatus = (String) map.get("payStatus");
 			map.put("customerPrice", getPrice(identityId, provinceId));
-			map.put("orderStatus", "0");
-			map.put("payStatus", "0");
+			map.put("orderStatus", orderStatus);
+			map.put("payStatus", payStatus);
 			map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
 			map.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 			map.put("orderId", getNewOrderId);
 			CrudUtils.transMap2Bean(map, orderCustomer);
 			result = orderCustomerRepository.save(orderCustomer);
 			
-			//新增流水
+			//获取Enum通知类
+			BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0", orderStatus);
 			
+			//新增流水
 			Map<String,Object> mapOrderFlow = 
-					MapUtil.flowAdd(getNewOrderId, 0, 0, (String)map.get("customerId"), TimeStamp.toString(new Date()), 0,  "新增orderCustomer订单");
+					MapUtil.flowAdd(getNewOrderId, 0, 0, (String)map.get("customerId"), TimeStamp.toString(new Date()), 0,  baseEnums.getEnumsA());
 			orderFlowService.saveOrderFlow(mapOrderFlow);
 			
 			//新增通知
 			String announceId = UuidUtil.getUuid32();
 			
 			Map<String,Object> mapNotify =
-					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", "待付勘察费", "待付勘察费，内容", TimeStamp.toString(new Date()), "新增客户待付款通知");
+					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(),baseEnums.getEnumsC(), TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 			
 			Map<String,Object> mapNotifyUser = 
-					MapUtil.notifyUserAdd((String)map.get("customerId"), announceId, 0, 0, TimeStamp.toString(new Date()), "新增客户待付款通知");
+					MapUtil.notifyUserAdd((String)map.get("customerId"), announceId, 0, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
 			
 			//发送websocket消息
@@ -357,7 +365,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	public OrderCustomer findByOrderId(String orderId) {
 		
 		// TODO Auto-generated method stub
-		//OrderCustomer orderCustomer=orderCustomerRepository.findByOrderId(orderId);
+		OrderCustomer orderCustomer=orderCustomerRepository.findOne(orderId);
 		
 		return null;
 	}
