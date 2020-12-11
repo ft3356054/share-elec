@@ -1,15 +1,27 @@
 package com.sgcc.uap.share.electrician.controller;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -31,10 +43,12 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
+import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.customer.services.impl.OrderFlowService;
+import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderFlow;
@@ -42,7 +56,9 @@ import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.share.electrician.vo.OrderElectricianVO;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
+import com.sgcc.uap.util.JsonUtils;
 import com.sgcc.uap.util.MapUtil;
+import com.sgcc.uap.util.PointUtil;
 import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
 
@@ -99,6 +115,9 @@ public class OrderElectricianController {
 	
 	@Autowired
 	private NotifyAnnounceUserService notifyAnnounceUserService;
+	
+	@Autowired
+    private StringRedisTemplate stringRedisTemplate;
 	
 	/**
 	 * @getByOrderElectricianId:根据orderElectricianId查询
@@ -289,6 +308,7 @@ public class OrderElectricianController {
 	 * @throws Exception 
 	 * 
 	 */
+	/*
 	@RequestMapping(value="/qiangdanrecept",name="电工接受了用户的订单")
 	
 	public String qiangdanrecept(@RequestParam(value="orderId" )String orderId,
@@ -386,7 +406,7 @@ public class OrderElectricianController {
 		mapNotifyUser.put("remark", "新增客户待付款通知");
 		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 		*/
-		
+		/*
 		Map<String,Object> mapNotifyUser = 
 				MapUtil.notifyUserAdd((String)orderCustomer.getCustomerId(), announceId, 0, 0, TimeStamp.toString(new Date()), "新增客户待付款通知");
 		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
@@ -394,6 +414,7 @@ public class OrderElectricianController {
 		return "1";   //1表示接单成功，页面可以判断订单是否成功
 		
 	}
+*/
 	
 	
 	/**
@@ -411,30 +432,285 @@ public class OrderElectricianController {
 	}
 	
 	/**
-	 * 我的订单    ---->从首页点击过去后默认显示的是全部订单
-	 * 		参数：电工ID
+	 * 开始用统一的数据结构做返回
+	 * http://localhost:8083/electricianCompanyInfo/queryMore/?params={"pageIndex":1,"pageSize":20,
+	 * "filter":[""electricianId=2256"","orderElectricianType=8","regiseterTimeBegin=2020-11-10 18:20:00","regiseterTimeEnd=2020-12-10 18:20:00"],
+	 * "sorter":"DESC=createTime"}
+	 */
+	
+	@RequestMapping("/queryMore")
+	public WrappedResult queryMore(@QueryRequestParam("params") RequestCondition requestCondition,@RequestParam("electricianId")String electricianId) {
+		Random r=new Random();
+		
+		try {
+			//1.先查询当前电工的电工订单，查询条件是根据当前电工的Id,查询订单状态不是9的订单
+			//1.1查询电工所有待办订单
+			QueryResultObject queryResult = orderElectricianService.queryMore(requestCondition,electricianId);
+			
+			//
+			//1.2查询出来的电工订单，如果订单状态是2(系统派单)，则随机生成公里数
+			
+			
+			List<OrderElectrician> list=queryResult.getItems();
+			List<OrderElectricianVO> oevList=new ArrayList<>();
+			 
+			 
+			for (OrderElectrician orderElectrician : list) {
+				OrderElectricianVO oev=new OrderElectricianVO();
+				BeanUtils.copyProperties(orderElectrician, oev);
+				
+				if(oev.getOrderElectricianType().equals("2")){
+					//随机生成50公里以下的数值
+					oev.setDistance((r.nextInt(50)+1)+"KM");
+					//oevList[i].add(oev);
+				}
+				
+				System.out.println("************oov的值是：**********"+oev);
+				oevList.add(oev);
+				
+			}
+			
+			
+			queryResult.setItems(oevList);
+			
+			
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
+	
+	
+	
+	@RequestMapping("/queryWaitToDo")
+	public WrappedResult queryWaitToDo(@QueryRequestParam("params") RequestCondition requestCondition,@RequestParam("electricianId")String electricianId) {
+			
+		try {
+			
+			
+			QueryResultObject queryResult = orderElectricianService.queryWaitToDo(requestCondition,electricianId);
+			
+			
+			
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
+	 * @saveOrUpdate:保存位置
+	 * @param params
+	 * @return WrappedResult 保存或更新的结果
+	 * @date 2020-11-26 14:32:47
+	 * @author 18511
+	 * http://localhost:8083/customerInfo/locationPut/?params={"filter":["customerId=customerId001","lon=13.144","lat=251.21465"]}	
+	 */
+	
+	@RequestMapping(value = "/locationPut")
+	public WrappedResult locationPut(@QueryRequestParam("params") RequestCondition requestCondition) {
+		try {
+			Map<String, String> map = MapUtil.getParam(requestCondition);
+			String jsonMap = JsonUtils.mapToJson(map);
+			stringRedisTemplate.opsForValue().set(map.get("electricianId"), jsonMap, 1L, TimeUnit.HOURS);
+			List result = new ArrayList();
+			long count = 1;
+			logger.info("存储位置信息保存成功"); 
+			return WrappedResult.successWrapedResult(RestUtils.wrappQueryResult(result, count));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "存储位置信息异常";
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
+	
+	/**
+	 * @saveOrUpdate:获取位置测试
+	 * @param params
+	 * @return WrappedResult 保存或更新的结果
+	 * @date 2020-11-26 14:32:47
+	 * @author 18511
+	 * http://localhost:8083/customerInfo/locationGet/customerId001
+	 */
+	
+	@RequestMapping(value = "/locationGet/{electricianId}")
+	public WrappedResult locationGetTest(@PathVariable String electricianId) {
+		try {
+			Map<String, Object> map = new HashMap<String, Object>();
+			String json = stringRedisTemplate.opsForValue().get(electricianId);
+			map = JsonUtils.parseJSONstr2Map(json);
+			logger.info("经度:"+map.get("lon")); 
+			logger.info("纬度:"+map.get("lat")); 
+			
+			
+			List result = new ArrayList();
+			long count = 1;
+			return WrappedResult.successWrapedResult(RestUtils.wrappQueryResult(result, count));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "存储位置信息异常";
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
+
+	
+	
+	
+	
+	
+	/**
+	 * 进行抢单页面，进行展示
+	 * 		查询条件：查询所有客户订单，订单状态是1和11的订单，然后根据经纬度计算距离
+	 * select * from order_customer where ORDER_STATUS like 1%;
+	 */
+	@RequestMapping("/queryAllOrder/{electricianId}")
+	public WrappedResult queryAllOrder(@PathVariable String electricianId){
+		
+		stringRedisTemplate.opsForValue().get(electricianId);
+		
+		Map<String, Object> electricianLocation = new HashMap<String, Object>();
+		String json = stringRedisTemplate.opsForValue().get(electricianId);
+		electricianLocation = JsonUtils.parseJSONstr2Map(json);
+		logger.info("经度:"+electricianLocation.get("lon")); 
+		logger.info("纬度:"+electricianLocation.get("lat")); 
+		
+		try {
+			
+			//1.查询客户订单
+			QueryResultObject queryResult=orderCustomerService.findByOrderStatusLike();
+			
+			List<OrderCustomer> orderCustomersList=queryResult.getItems();
+			List<OrderCustomerVO> ovcList=new ArrayList<>();
+			//list
+			 Map<Double, OrderCustomerVO> map = new TreeMap<Double, OrderCustomerVO>(
+		                new Comparator<Double>() {
+		                    public int compare(Double obj1, Double obj2) {
+		                        // 降序排序
+		                        return obj1.compareTo(obj2);
+		                    }
+		                });
+			
+			 Double distanceDouble=null;
+			
+			for (OrderCustomer orderCustomer : orderCustomersList) {
+				OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
+				BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
+				//获取订单 的位置,即经纬度，进行对比
+				String orderCustomerLon=orderCustomerVO.getAddressLongitude();
+				String orderCustomerLat=orderCustomerVO.getAddressLatitude();
+				logger.info("从数据库获取的经度:"+orderCustomerLon);
+				logger.info("从数据库获取的纬度:"+orderCustomerLat);
+				
+				distanceDouble=PointUtil.getDistanceString(String.valueOf(electricianLocation.get("lon")), String.valueOf(electricianLocation.get("lat")), orderCustomerLon, orderCustomerLat);
+				System.out.println("计算的距离是："+distanceDouble);
+				orderCustomerVO.setDistance(String.valueOf(distanceDouble)+"KM");
+      
+				        map.put(distanceDouble, orderCustomerVO);
+	
+			}
+			
+			Set<Double> keySet = map.keySet();
+	        Iterator<Double> iter = keySet.iterator();
+	        while (iter.hasNext()) {
+	            Double key = iter.next();
+	            System.out.println(key + ":" + map.get(key));
+	            ovcList.add(map.get(key));
+	        }
+	        queryResult.setItems(ovcList);
+
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+
+	}
+	
+	
+	/**
+	 * 进行抢单按钮，点击后将客户订单生成到电工订单中
 	 * 
 	 */
 	
-	@RequestMapping(value="/queryAllOrder",name="查询当前电工所有的订单：未完成+历史订单")
-	public List<OrderElectrician> queryAllOrder(@RequestParam(value="electricianId") String electricianId){
-		//1.查询新的电工订单，
-		
-		List<OrderElectrician> listNew=orderElectricianService.findByElectricianIdAndOrderByCreateTimeAsc(electricianId);
-		
-		
-		//2.查询电工订单的历史
-		
-		List<OrderElectrician> listOld=orderElectricianService.findByElectricianId(electricianId);
-		for (OrderElectrician orderElectrician : listOld) {
-			listNew.add(orderElectrician);
+	@RequestMapping(value = "/saveOrderCustomer", method = RequestMethod.POST)
+	public WrappedResult saveOrUpdateOrderCustomer(@RequestBody FormRequestObject<Map<String,Object>> params,@RequestParam(value="electricianId")String electricianId) {
+
+		//logger.info("传送过来的electricianId数据是："+electricianId);
+		System.out.println("传送过来的electricianId数据是："+electricianId);
+		try {
+			if(params == null){
+				throw new NullArgumentException("params");
+			}
+			QueryResultObject result = new QueryResultObject();
+			List<Map<String,Object>> items = params.getItems();
+			if(items != null && !items.isEmpty()){
+				
+				for(Map<String,Object> map : items){
+					//查询电工订单，如果订单状态是2，则代表已经接单了
+					String orderId=(String) map.get("orderId");
+					OrderElectrician orElectrician=orderElectricianService.findByOrDERIdAndOrderElectricianType(orderId);
+					//查询出来订单存在，则直接返回错误信息
+					if(orElectrician!=null){
+						String errorMessage = "订单存在";
+						if(isDev){
+							
+						}
+						return WrappedResult.failedWrappedResult(errorMessage);
+					}
+					
+					result.setFormItems(orderElectricianService.saveOrderElectrician2(map,electricianId));
+				}
+			}
 			
+			
+			
+			logger.info("保存数据成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (ServiceValidatorBaseException e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "校验异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedValidateWrappedResult(errorMessage);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "保存异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
 		}
-		
-		
-		return listNew;
-		
 	}
-	
 	
 }

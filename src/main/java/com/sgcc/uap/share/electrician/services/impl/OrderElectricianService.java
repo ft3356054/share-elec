@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.electrician.services.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,9 @@ import org.springframework.data.domain.Page;
 //import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.mdd.runtime.validate.ValidateService;
@@ -25,23 +28,28 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.controller.WebSocket;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
+import com.sgcc.uap.share.customer.services.impl.OrderFlowService;
+import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
+import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
+import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
+import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
+import com.sgcc.uap.util.DateTimeUtil;
+import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.SorterUtil;
+import com.sgcc.uap.util.TimeStamp;
+import com.sgcc.uap.util.UuidUtil;
+import com.sgcc.uap.utils.string.StringUtil;
+
+import ch.qos.logback.classic.Logger;
 
 
-/**
- * <b>概述</b>：<br>
- * TODO
- * <p>
- * <b>功能</b>：<br>
- * TODO
- *
- * @author 18511
- */
+
 @Service
 public class OrderElectricianService implements IOrderElectricianService{
 	/** 
@@ -55,6 +63,21 @@ public class OrderElectricianService implements IOrderElectricianService{
 	@Autowired
 	private OrderCustomerRepository orderCustomerRepository;
 	
+	@Autowired
+	private ElectricianInfoService electricianInfoService;
+	
+	@Autowired
+	private OrderFlowService orderFlowService;
+	
+	@Autowired
+	private NotifyAnnounceService notifyAnnounceService;
+	
+	@Autowired
+	private NotifyAnnounceUserService notifyAnnounceUserService;
+	
+	@Autowired
+	private WebSocket webSocket;
+	 
 	@Override
 	public QueryResultObject getOrderElectricianByOrderElectricianId(String orderElectricianId) {
 		OrderElectrician orderElectrician = orderElectricianRepository.findOne(orderElectricianId);
@@ -70,19 +93,29 @@ public class OrderElectricianService implements IOrderElectricianService{
 			orderElectricianRepository.delete(id);
 		}
 	}
+	
+	
+	
+	
+	
 	@Override
-	public OrderElectrician saveOrderElectrician(Map<String,Object> map) throws Exception{
-		validateService.validateWithException(OrderElectrician.class,map);
+	@Transactional
+	public OrderElectrician saveOrderElectrician2(Map<String,Object> map,String electricianId) throws Exception{
+		
+		
+			validateService.validateWithException(OrderElectrician.class,map);
+		
 		/*
 		 * 开始改动地方
 		 * TODO
 		 */
 		
-		//OrderElectrician orderElectrician = new OrderElectrician();
-		OrderElectrician orderElectrician = null;
+		OrderElectrician orderElectrician = new OrderElectrician();
+		OrderElectrician result = new OrderElectrician();
 		
 		
 		if (map.containsKey("orderElectricianId")) {
+			//说明是个旧的订单
 			String orderElectricianId = (String) map.get("orderElectricianId");
 			orderElectrician = orderElectricianRepository.findOne(orderElectricianId);
 			if(null!=orderElectrician){
@@ -93,11 +126,56 @@ public class OrderElectricianService implements IOrderElectricianService{
 			}
 			
 			//CrudUtils.mapToObject(map, orderElectrician,  "orderElectricianId");
-		}else{
-			orderElectrician = new OrderElectrician();
+		}else{//说明是个新的订单
+			String getNewOrderId=UuidUtil.getUuid46();
+			//开始新增电工订单
+			//先查询电工的信息
+			QueryResultObject electricianResult = electricianInfoService.getElectricianInfoByElectricianId(electricianId);
+			 List<ElectricianInfo> electricianList=electricianResult.getItems();
+			 ElectricianInfo electricianInfo=null;
+			 if(electricianList.size()==1){
+				  electricianInfo=electricianList.get(0);
+			 }
+			map.put("electricianId", electricianInfo.getElectricianId());
+			map.put("electricianName", electricianInfo.getElectricianName());
+			map.put("electricianPhonenumber", electricianInfo.getElectricianPhonenumber());
+			map.put("otherElectricianId", null);
+			map.put("orderElectricianType", "2");
+			map.put("payStatus", 1);//TODO  还没有确认订单的状态
+			map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
+			map.put("updateTime", null);
+			map.put("finishTime", null);
+			
+			
 			CrudUtils.transMap2Bean(map, orderElectrician);
+			result = orderElectricianRepository.save(orderElectrician);
+			
+			//新增流水
+			Map<String,Object> mapOrderFlow = 
+					MapUtil.flowAdd(getNewOrderId, 0, 0, (String)map.get("customerId"), TimeStamp.toString(new Date()), 0,  "新增orderCustomer订单");
+			orderFlowService.saveOrderFlow(mapOrderFlow);
+			
+			
+			
+			//新增通知
+			String announceId = UuidUtil.getUuid32();
+			
+			Map<String,Object> mapNotify =
+					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", "待付勘察费", "待付勘察费，内容", TimeStamp.toString(new Date()), "新增客户待付款通知");
+			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
+			
+			Map<String,Object> mapNotifyUser = 
+					MapUtil.notifyUserAdd((String)map.get("customerId"), announceId, 0, 0, TimeStamp.toString(new Date()), "新增客户待付款通知");
+			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
+			
+			//发送websocket消息
+	        webSocket.sendMessage("有新的订单");
+			
+			
 		}
-		return orderElectricianRepository.save(orderElectrician);
+		return result;
+		
+	
 	}
 	
 	
@@ -294,7 +372,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 	@Override
 	public List<OrderCustomer> findByOrderStatusOrderByCreateTime(int id1, int id2) {
 		// TODO Auto-generated method stub
-		List<OrderCustomer> list=null;//orderCustomerRepository.findByOrderStatusOrderByCreateTime( id1,id2);
+		List<OrderCustomer> list=orderCustomerRepository.findByOrderStatusOrderByCreateTime( id1,id2);
 		return list;
 	}
 	
@@ -323,7 +401,77 @@ public class OrderElectricianService implements IOrderElectricianService{
 		return null;
 	}
 	
+	@Override
+	public QueryResultObject queryMore(RequestCondition queryCondition,String electricianId){
+		
+		if(queryCondition == null){
+			throw new NullArgumentException("queryCondition");
+		}
+		
+		Integer pageIndex = queryCondition.getPageIndex()-1;
+		Integer pageSize = queryCondition.getPageSize();
+
+		Map<String, String> map = MapUtil.getParam(queryCondition);
+		
+		List<OrderElectrician> result = orderElectricianRepository.queryMore(pageIndex,pageSize,
+				electricianId,map.get("orderElectricianType"));
+		long count = 0;
+		count = result.size();
+		return RestUtils.wrappQueryResult(result, count);
+		
+	}
+	
+	
+	@Override
+	public QueryResultObject queryWaitToDo(RequestCondition queryCondition,String electricianId){
+		
+		if(queryCondition == null){
+			throw new NullArgumentException("queryCondition");
+		}
+		
+		Integer pageIndex = queryCondition.getPageIndex()-1;
+		Integer pageSize = queryCondition.getPageSize();
+
+		Map<String, String> map = MapUtil.getParam(queryCondition);
+		
+		List<OrderElectrician> result = orderElectricianRepository.queryWaitToDo(pageIndex,pageSize,
+				electricianId,map.get("orderElectricianType"));
+		long count = 0;
+		count = result.size();
+		return RestUtils.wrappQueryResult(result, count);
+		
+	}
+	@Override
+	public QueryResultObject queryMore(RequestCondition requestCondition) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	@Override
+	public OrderElectrician findByOrDERIdAndOrderElectricianType(String orderId){
+		OrderElectrician orderElectrician=orderElectricianRepository.findByOrDERIdAndOrderElectricianType(orderId);
+		return orderElectrician;
+		
+	}
+	@Override
+	public OrderElectrician saveOrderElectrician(Map<String, Object> map) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	}
+
 	
 	
 	
-}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
