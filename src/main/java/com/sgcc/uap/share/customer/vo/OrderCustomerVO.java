@@ -161,7 +161,11 @@ public class OrderCustomerVO extends ParentVO implements Serializable{
      * 属性REMARK_NUM2
      */  
     @ViewAttribute(name ="remarkNum2",caption="REMARK_NUM2", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String remarkNum2;    
+    private String remarkNum2;
+    
+    private String distance;
+    
+    
     /**
      * OrderCustomerVO构造函数
      */
@@ -622,9 +626,18 @@ public class OrderCustomerVO extends ParentVO implements Serializable{
 				.append("REMARK_STR3"+":"+getRemarkStr3())
 				.append("REMARK_NUM1"+":"+getRemarkNum1())
 				.append("REMARK_NUM2"+":"+getRemarkNum2())
+				.append("Distance"+":"+getDistance())
 		        .toString(); 
 			
-    } 
+    }
+
+	public String getDistance() {
+		return distance;
+	}
+
+	public void setDistance(String distance) {
+		this.distance = distance;
+	} 
    
 
 
