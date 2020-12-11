@@ -15,7 +15,6 @@ import org.springframework.data.domain.Page;
 //import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.sgcc.uap.exception.NullArgumentException;
@@ -32,9 +31,6 @@ import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.util.SorterUtil;
-import com.sgcc.uap.utils.string.StringUtil;
-
-import ch.qos.logback.classic.Logger;
 
 
 /**
@@ -298,7 +294,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 	@Override
 	public List<OrderCustomer> findByOrderStatusOrderByCreateTime(int id1, int id2) {
 		// TODO Auto-generated method stub
-		List<OrderCustomer> list=orderCustomerRepository.findByOrderStatusOrderByCreateTime( id1,id2);
+		List<OrderCustomer> list=null;//orderCustomerRepository.findByOrderStatusOrderByCreateTime( id1,id2);
 		return list;
 	}
 	

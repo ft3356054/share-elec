@@ -365,7 +365,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	public OrderCustomer findByOrderId(String orderId) {
 		
 		// TODO Auto-generated method stub
-		OrderCustomer orderCustomer=orderCustomerRepository.findByOrderId(orderId);
+		OrderCustomer orderCustomer=orderCustomerRepository.findOne(orderId);
 		
 		return orderCustomer;
 	}
