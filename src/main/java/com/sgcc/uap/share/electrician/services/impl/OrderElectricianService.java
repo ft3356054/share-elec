@@ -101,7 +101,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 	@Override
 	@Transactional
 	public OrderElectrician saveOrderElectrician2(Map<String,Object> map,String electricianId) throws Exception{
-		
+		System.out.println("我进入了service中");
 		
 			validateService.validateWithException(OrderElectrician.class,map);
 		
@@ -136,6 +136,8 @@ public class OrderElectricianService implements IOrderElectricianService{
 			 if(electricianList.size()==1){
 				  electricianInfo=electricianList.get(0);
 			 }
+			 //map.put("", value)
+			 map.put("orderElectricianId", getNewOrderId);
 			map.put("electricianId", electricianInfo.getElectricianId());
 			map.put("electricianName", electricianInfo.getElectricianName());
 			map.put("electricianPhonenumber", electricianInfo.getElectricianPhonenumber());
@@ -143,17 +145,21 @@ public class OrderElectricianService implements IOrderElectricianService{
 			map.put("orderElectricianType", "2");
 			map.put("payStatus", 1);//TODO  还没有确认订单的状态
 			map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
-			map.put("updateTime", null);
-			map.put("finishTime", null);
+			map.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
+			map.put("finishTime", DateTimeUtil.formatDateTime(new Date()));
 			
 			
 			CrudUtils.transMap2Bean(map, orderElectrician);
 			result = orderElectricianRepository.save(orderElectrician);
+			System.out.println("我执行完了新增电工订单");
+			System.out.println("");
 			
 			//新增流水
 			Map<String,Object> mapOrderFlow = 
-					MapUtil.flowAdd(getNewOrderId, 0, 0, (String)map.get("customerId"), TimeStamp.toString(new Date()), 0,  "新增orderCustomer订单");
+					MapUtil.flowAdd((String) map.get("orderId"), 0, 0, (String)map.get("customerId"), TimeStamp.toString(new Date()), 0,  "新增orderCustomer订单");
 			orderFlowService.saveOrderFlow(mapOrderFlow);
+			System.out.println("我执行完了新增流水");
+			System.out.println("");
 			
 			
 			
@@ -166,7 +172,10 @@ public class OrderElectricianService implements IOrderElectricianService{
 			
 			Map<String,Object> mapNotifyUser = 
 					MapUtil.notifyUserAdd((String)map.get("customerId"), announceId, 0, 0, TimeStamp.toString(new Date()), "新增客户待付款通知");
-			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
+			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+			
+			System.out.println("我执行完了新增通知");
+			System.out.println("");
 			
 			//发送websocket消息
 	        webSocket.sendMessage("有新的订单");
