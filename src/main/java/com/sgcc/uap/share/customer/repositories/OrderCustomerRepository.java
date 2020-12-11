@@ -2,10 +2,12 @@ package com.sgcc.uap.share.customer.repositories;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-
 import org.springframework.data.repository.query.Param;
 
 import com.sgcc.uap.share.domain.OrderCustomer;
@@ -34,6 +36,18 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 			nativeQuery = true)
 	List<OrderCustomer> getAllOrderCustomerByCustomerId(@Param("pageIndex")int pageIndex,@Param("pageSize")int pageSize,@Param("customerId")String customerId);
 	
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE order_customer t1 SET t1.CUSTOMER_GRADE =:customerGrade ,"
+			+ " t1.CUSTOMER_EVALUATE_TITLE=:customerEvaluateTitle,t1.CUSTOMER_EVALUATE=:customerEvaluate,t1.ORDER_STATUS=9 "
+			+ " WHERE t1.ORDER_ID IN  "
+			+ " (SELECT T3.ORDER_ID FROM ( "
+			+ " SELECT t2.ORDER_ID FROM order_customer t2 WHERE t2.ORDER_STATUS=:orderStatus  "
+			+ " AND DATE_SUB(t2.FINISH_TIME, INTERVAL :day DAY) >= CURDATE()  "
+			+ " ) AS T3) "
+	,nativeQuery = true)
+	Integer getNotEvaluate(@Param("customerGrade")int customerGrade,@Param("customerEvaluateTitle")String customerEvaluateTitle,
+			@Param("customerEvaluate")String customerEvaluate,@Param("orderStatus")int orderStatus,@Param("day")int day);
 
 	
 	/**
