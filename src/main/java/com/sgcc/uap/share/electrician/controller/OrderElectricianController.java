@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.rest.annotation.ColumnRequestParam;
@@ -897,6 +898,47 @@ public class OrderElectricianController {
 		}
 		
 	}
+	
+	/**
+	 * 电工评价，采用POST方式接收
+	 */
+	@RequestMapping(value="/electrician_evaluate",name="电工评价客户",method = RequestMethod.POST)
+	
+public WrappedResult electrician_evaluate(
+		@RequestParam(value = "items", required = false) String items,@RequestParam("myFile") MultipartFile file
+		){
+		
+		try {
+			QueryResultObject result = new QueryResultObject();
+			
+			if(items != null && !items.isEmpty()){
+				Map<String,Object> map = JsonUtils.parseJSONstr2Map(items); 
+				//result.setFormItems(orderCustomerService.saveOrderCustomer(map,file));
+				//保存电工的评价和图片
+				result.setFormItems(orderElectricianService.saveElectricianEvaluate(map,file));
+			}
+			
+			logger.info("保存数据成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (ServiceValidatorBaseException e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "校验异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedValidateWrappedResult(errorMessage);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "保存异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+		
+		
+	}
+	
 	
 	
 	

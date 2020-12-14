@@ -3,6 +3,7 @@ package com.sgcc.uap.share.electrician.services;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
@@ -74,6 +75,7 @@ public OrderElectrician saveOrderElectrician2(Map<String, Object> map,String ele
 public OrderElectrician findByOrDERIdAndOrderElectricianType(String orderId);
 public OrderElectrician findOrderId(String electricianId);
 public QueryResultObject queryAllDoing(String electricianId);
+public Object saveElectricianEvaluate(Map<String, Object> map, MultipartFile file) ;
 
 
 }

@@ -11,6 +11,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 //import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.mdd.runtime.validate.ValidateService;
@@ -30,6 +32,7 @@ import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.controller.WebSocket;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
+import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.customer.services.impl.OrderFlowService;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
@@ -43,13 +46,14 @@ import com.sgcc.uap.share.services.impl.BaseEnumsService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
+import com.sgcc.uap.util.FileUtil;
 import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.SorterUtil;
 import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
 import com.sgcc.uap.utils.string.StringUtil;
 
-import ch.qos.logback.classic.Logger;
+
 
 
 
@@ -58,6 +62,9 @@ public class OrderElectricianService implements IOrderElectricianService{
 	/** 
      * 注入orderElectricianRepository
      */
+	
+	//private final static Logger logger = (Logger) LoggerFactory.getLogger(OrderCustomerService.class);
+	
 	@Autowired
 	private OrderElectricianRepository orderElectricianRepository;
 	@Autowired
@@ -495,7 +502,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+	@Override
 public OrderElectrician findOrderId(String electricianId) {
 		
 		// TODO Auto-generated method stub
@@ -503,13 +510,79 @@ public OrderElectrician findOrderId(String electricianId) {
 		return orderIdString;
 	}
 	
-
+	@Override
 public QueryResultObject queryAllDoing(String electricianId) {
 	List<OrderElectrician> result=orderElectricianRepository.queryAllDoing(electricianId);
 	long count=0;
 	count=result.size();
 	return RestUtils.wrappQueryResult(result,count);
+	
+	
 }
+	/**
+	 * 保存电工提交的评价信息
+	 */
+	@Override
+	public Object saveElectricianEvaluate(Map<String, Object> map, MultipartFile file){
+		OrderElectrician result=null;
+		try {
+			
+		
+		//logger.info("OrderCustomerService saveOrderCustomer map = " +map); 
+		validateService.validateWithException(OrderElectrician.class,map);
+		
+		
+		//修改订单的状态
+		OrderElectrician orderElectrician=new OrderElectrician();
+		result=new OrderElectrician();
+		CrudUtils.transMap2Bean(map, orderElectrician);
+	
+		String getNewOrderId =orderElectrician.getOrDERId();
+			//上传图片
+			if (!file.isEmpty()) {
+				String electrician_descrive_icon = FileUtil.uploadFile(file, getNewOrderId,"ORDER_ELECTRICIAN", "ELECTRICIAN_DESCRIVE_ICON");
+				map.put("ELECTRICIAN_DESCRIVE_ICON", electrician_descrive_icon);
+			}
+			
+			//新增order
+		
+			//电工评价后将状态置9
+			map.put("orderElectricianType", 9);
+			
+			map.put("finishTime", DateTimeUtil.formatDateTime(new Date()));
+			
+			result = orderElectricianRepository.save(orderElectrician);
+			
+			//获取Enum通知类
+			BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("20", "1");	
+			
+			//新增流水
+			Map<String,Object> mapOrderFlow = 
+					MapUtil.flowAdd(getNewOrderId, 0, 0, (String)map.get("electricianId"), TimeStamp.toString(new Date()), 0,  baseEnums.getEnumsA());
+			orderFlowService.saveOrderFlow(mapOrderFlow);
+			
+			//新增通知
+			String announceId = UuidUtil.getUuid32();
+			
+			Map<String,Object> mapNotify =
+					MapUtil.notifyAdd(announceId, (String)map.get("electricianId"), baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), getNewOrderId);
+			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
+			
+			Map<String,Object> mapNotifyUser = 
+					MapUtil.notifyUserAdd((String)map.get("electricianId"), announceId, 0, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
+			
+			//发送websocket消息
+	        webSocket.sendMessage("电工已评价");
+		
+
+		
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return result;
+		
+	}
 	
 	
 	
