@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.customer.services;
+package com.sgcc.uap.share.services;
 
 import java.util.Map;
 
@@ -6,7 +6,7 @@ import java.util.Map;
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
-import com.sgcc.uap.share.domain.OrderComplaint;
+import com.sgcc.uap.share.domain.BaseLabel;
 
 
 /**
@@ -18,37 +18,37 @@ import com.sgcc.uap.share.domain.OrderComplaint;
  *
  * @author 18511
  */
-public interface IOrderComplaintService {
+public interface IBaseLabelService {
 
 	/**
-	 * @getOrderComplaintByOrderComplaintId:根据主键 查询
+	 * @getBaseLabelById:根据主键 查询
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-14 11:25:14
+	 * @date 2020-12-14 11:25:15
 	 * @author 18511
 	 */
-	public QueryResultObject getOrderComplaintByOrderComplaintId(String orderComplaintId);
+	public QueryResultObject getBaseLabelById(String id);
 	/**
 	 * @remove:根据idObject删除
 	 * @param idObject 主键id
 	 * @return void
-	 * @date 2020-12-14 11:25:14
+	 * @date 2020-12-14 11:25:15
 	 * @author 18511
 	 */
 	public void remove(IDRequestObject idObject);
 	/**
 	 * @save:保存或更新
 	 * @param map 保存或更新的数据
-	 * @return OrderComplaint OrderComplaint对象
-	 * @date 2020-12-14 11:25:14
+	 * @return BaseLabel BaseLabel对象
+	 * @date 2020-12-14 11:25:15
 	 * @author 18511
 	 */
-	public OrderComplaint saveOrderComplaint(Map<String,Object> map) throws Exception;
+	public BaseLabel saveBaseLabel(Map<String,Object> map) throws Exception;
 	/**
 	 * @query:根据查询条件 查询
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-14 11:25:14
+	 * @date 2020-12-14 11:25:15
 	 * @author 18511
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);

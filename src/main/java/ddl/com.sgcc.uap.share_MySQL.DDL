@@ -1,14 +1,25 @@
 
-    drop table if exists NOTIFY_ANNOUNCE_USER;
+    drop table if exists BASE_LABEL;
 
-    create table NOTIFY_ANNOUNCE_USER (
+    drop table if exists ORDER_COMPLAINT;
+
+    create table BASE_LABEL (
         ID varchar(64) not null comment 'ID',
-        ANNOUNCE_USER_ID varchar(64) comment 'ANNOUNCE_USER_ID',
-        ANNOUNCE_ID varchar(64) comment 'ANNOUNCE_ID',
-        RECIPIENT_TYPE varchar(2) comment 'RECIPIENT_TYPE',
-        STATE varchar(2) comment 'STATE',
-        CREATE_TIME datetime comment 'CREATE_TIME',
-        READ_TIME datetime comment 'READ_TIME',
+        LABEL_ID varchar(64) comment 'LABEL_ID',
+        LABEL_NAME varchar(64) comment 'LABEL_NAME',
+        LABEL_STATUS varchar(2) comment 'LABEL_STATUS',
         REMARK text comment 'REMARK',
         primary key (ID)
-    ) comment='NotifyAnnounceUser';
+    ) comment='BaseLabel';
+
+    create table ORDER_COMPLAINT (
+        ORDER_COMPLAINT_ID varchar(64) not null comment 'ORDER_COMPLAINT_ID',
+        ORDER_ID varchar(64) not null comment 'ORDER_ID',
+        COMPLAINT_TYPE varchar(2) comment 'COMPLAINT_TYPE',
+        COMPLAINT_DETAIL text comment 'COMPLAINT_DETAIL',
+        COMPLAINT_PICTURE text comment 'COMPLAINT_PICTURE',
+        SERVICE_ID varchar(64) comment 'SERVICE_ID',
+        RESULTS_DETAIL text comment 'RESULTS_DETAIL',
+        REMARK text comment 'REMARK',
+        primary key (ORDER_COMPLAINT_ID)
+    ) comment='OrderComplaint';

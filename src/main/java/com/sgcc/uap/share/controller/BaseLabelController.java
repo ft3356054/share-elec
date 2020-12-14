@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.customer.controller;
+package com.sgcc.uap.share.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -28,8 +28,8 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.customer.services.IOrderComplaintService;
-import com.sgcc.uap.share.customer.vo.OrderComplaintVO;
+import com.sgcc.uap.share.services.IBaseLabelService;
+import com.sgcc.uap.share.vo.BaseLabelVO;
 
 
 /**
@@ -43,12 +43,12 @@ import com.sgcc.uap.share.customer.vo.OrderComplaintVO;
  */
 @RestController
 @Transactional
-@RequestMapping("/orderComplaint")
-public class OrderComplaintController {
+@RequestMapping("/baseLabel")
+public class BaseLabelController {
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(OrderComplaintController.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseLabelController.class);
 	/**
 	 * 方法绑定属性中不允许的参数
 	 */
@@ -59,21 +59,21 @@ public class OrderComplaintController {
 	@Value("${uapmicServer.dev}")
 	private boolean isDev;
 	/** 
-     * OrderComplaint服务
+     * BaseLabel服务
      */
 	@Autowired
-	private IOrderComplaintService orderComplaintService;
+	private IBaseLabelService baseLabelService;
 	/**
-	 * @getByOrderComplaintId:根据orderComplaintId查询
-	 * @param orderComplaintId
+	 * @getById:根据id查询
+	 * @param id
 	 * @return WrappedResult 查询结果
 	 * @date 2020-12-14 11:25:15
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/{orderComplaintId}")
-	public WrappedResult getByOrderComplaintId(@PathVariable String orderComplaintId) {
+	@RequestMapping(value = "/{id}")
+	public WrappedResult getById(@PathVariable String id) {
 		try {
-			QueryResultObject result = orderComplaintService.getOrderComplaintByOrderComplaintId(orderComplaintId);
+			QueryResultObject result = baseLabelService.getBaseLabelById(id);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -95,7 +95,7 @@ public class OrderComplaintController {
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public WrappedResult deleteByIds(@RequestBody IDRequestObject idObject) {
 		try {
-			orderComplaintService.remove(idObject);
+			baseLabelService.remove(idObject);
 			logger.info("删除成功");  
 			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
@@ -124,7 +124,7 @@ public class OrderComplaintController {
 			List<Map<String,Object>> items = params.getItems();
 			if(items != null && !items.isEmpty()){
 				for(Map<String,Object> map : items){
-					result.setFormItems(orderComplaintService.saveOrderComplaint(map));
+					result.setFormItems(baseLabelService.saveBaseLabel(map));
 				}
 			}
 			logger.info("保存数据成功"); 
@@ -155,7 +155,7 @@ public class OrderComplaintController {
 	@RequestMapping("/")
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			QueryResultObject queryResult = orderComplaintService.query(requestCondition);
+			QueryResultObject queryResult = baseLabelService.query(requestCondition);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
@@ -182,7 +182,7 @@ public class OrderComplaintController {
 				throw new NullArgumentException("columns");
 			}
 			List<ViewAttributeData> datas = null;
-			datas = ViewAttributeUtils.getViewAttributes(columns, OrderComplaintVO.class);
+			datas = ViewAttributeUtils.getViewAttributes(columns, BaseLabelVO.class);
 			WrappedResult wrappedResult = WrappedResult
 					.successWrapedResult(new ViewMetaData(datas));
 			return wrappedResult;

@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.customer.services.impl;
+package com.sgcc.uap.share.services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +24,8 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
-import com.sgcc.uap.share.customer.repositories.OrderComplaintRepository;
-import com.sgcc.uap.share.customer.services.IOrderComplaintService;
-import com.sgcc.uap.share.domain.OrderComplaint;
+import com.sgcc.uap.share.domain.BaseLabel;
+import com.sgcc.uap.share.repositories.BaseLabelRepository;
 import com.sgcc.uap.utils.string.StringUtil;
 
 
@@ -40,19 +39,19 @@ import com.sgcc.uap.utils.string.StringUtil;
  * @author 18511
  */
 @Service
-public class OrderComplaintService implements IOrderComplaintService{
+public class BaseLabelService implements IBaseLabelService{
 	/** 
-     * 注入orderComplaintRepository
+     * 注入baseLabelRepository
      */
 	@Autowired
-	private OrderComplaintRepository orderComplaintRepository;
+	private BaseLabelRepository baseLabelRepository;
 	@Autowired
 	private ValidateService validateService;
 	
 	@Override
-	public QueryResultObject getOrderComplaintByOrderComplaintId(String orderComplaintId) {
-		OrderComplaint orderComplaint = orderComplaintRepository.findOne(orderComplaintId);
-		return RestUtils.wrappQueryResult(orderComplaint);
+	public QueryResultObject getBaseLabelById(String id) {
+		BaseLabel baseLabel = baseLabelRepository.findOne(id);
+		return RestUtils.wrappQueryResult(baseLabel);
 	}
 	@Override
 	public void remove(IDRequestObject idObject) {
@@ -61,21 +60,21 @@ public class OrderComplaintService implements IOrderComplaintService{
 		}
 		String[] ids = idObject.getIds();
 		for (String id : ids){
-			orderComplaintRepository.delete(id);
+			baseLabelRepository.delete(id);
 		}
 	}
 	@Override
-	public OrderComplaint saveOrderComplaint(Map<String,Object> map) throws Exception{
-		validateService.validateWithException(OrderComplaint.class,map);
-		OrderComplaint orderComplaint = new OrderComplaint();
-		if (map.containsKey("orderComplaintId")) {
-			String orderComplaintId = (String) map.get("orderComplaintId");
-			orderComplaint = orderComplaintRepository.findOne(orderComplaintId);
-			CrudUtils.mapToObject(map, orderComplaint,  "orderComplaintId");
+	public BaseLabel saveBaseLabel(Map<String,Object> map) throws Exception{
+		validateService.validateWithException(BaseLabel.class,map);
+		BaseLabel baseLabel = new BaseLabel();
+		if (map.containsKey("id")) {
+			String id = (String) map.get("id");
+			baseLabel = baseLabelRepository.findOne(id);
+			CrudUtils.mapToObject(map, baseLabel,  "id");
 		}else{
-			CrudUtils.transMap2Bean(map, orderComplaint);
+			CrudUtils.transMap2Bean(map, baseLabel);
 		}
-		return orderComplaintRepository.save(orderComplaint);
+		return baseLabelRepository.save(baseLabel);
 	}
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
@@ -110,14 +109,14 @@ public class OrderComplaintService implements IOrderComplaintService{
 	 * @querySingle:主从表单页查询方法
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-14 11:25:14
+	 * @date 2020-12-14 11:25:15
 	 * @author 18511
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
 		List<QueryFilter> qList = getFilterList(queryCondition);
-		Specification<OrderComplaint> specification = new Specification<OrderComplaint>() {
+		Specification<BaseLabel> specification = new Specification<BaseLabel>() {
 			@Override
-			public Predicate toPredicate(Root<OrderComplaint> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<BaseLabel> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -132,12 +131,12 @@ public class OrderComplaintService implements IOrderComplaintService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<OrderComplaint> orderComplaint = orderComplaintRepository.findAll(specification,request);
-		List<OrderComplaint> result = new ArrayList<OrderComplaint>();
+		Page<BaseLabel> baseLabel = baseLabelRepository.findAll(specification,request);
+		List<BaseLabel> result = new ArrayList<BaseLabel>();
 		long count = 0;
 		if(null != qList && !qList.isEmpty()){
-			result = orderComplaint.getContent();
-			count = orderComplaint.getTotalElements();
+			result = baseLabel.getContent();
+			count = baseLabel.getTotalElements();
 		}
 		return RestUtils.wrappQueryResult(result, count);
 	}
@@ -155,14 +154,14 @@ public class OrderComplaintService implements IOrderComplaintService{
 	 * @queryCommon:查询方法(通用的)
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-14 11:25:14
+	 * @date 2020-12-14 11:25:15
 	 * @author 18511
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
 		List<QueryFilter> qList = queryCondition.getQueryFilter(); 
-		Specification<OrderComplaint> specification = new Specification<OrderComplaint>() {
+		Specification<BaseLabel> specification = new Specification<BaseLabel>() {
 			@Override
-			public Predicate toPredicate(Root<OrderComplaint> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<BaseLabel> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -177,11 +176,11 @@ public class OrderComplaintService implements IOrderComplaintService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<OrderComplaint> orderComplaint = orderComplaintRepository.findAll(specification,request);
-		List<OrderComplaint> result = new ArrayList<OrderComplaint>();
+		Page<BaseLabel> baseLabel = baseLabelRepository.findAll(specification,request);
+		List<BaseLabel> result = new ArrayList<BaseLabel>();
 		long count = 0;
-		result = orderComplaint.getContent();
-		count = orderComplaint.getTotalElements();
+		result = baseLabel.getContent();
+		count = baseLabel.getTotalElements();
 		return RestUtils.wrappQueryResult(result, count);
 	}
 	
@@ -189,7 +188,7 @@ public class OrderComplaintService implements IOrderComplaintService{
 	 * @getFilterList:获取条件列表
 	 * @param queryCondition 查询条件
 	 * @return List<QueryFilter> 查询条件列表
-	 * @date 2020-12-14 11:25:14
+	 * @date 2020-12-14 11:25:15
 	 * @author 18511
 	 */
 	private List<QueryFilter> getFilterList(RequestCondition queryCondition) {
@@ -211,7 +210,7 @@ public class OrderComplaintService implements IOrderComplaintService{
 	 * @buildPageRequest:构建PageRequest
 	 * @param queryCondition 查询条件
 	 * @return PageRequest 页面请求对象
-	 * @date 2020-12-14 11:25:14
+	 * @date 2020-12-14 11:25:15
 	 * @author 18511
 	 */
 	private PageRequest buildPageRequest(RequestCondition queryCondition) {

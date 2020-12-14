@@ -24,6 +24,11 @@ public class OrderComplaintVO extends ParentVO implements Serializable{
     @ViewAttribute(name ="orderComplaintId",caption="ORDER_COMPLAINT_ID", editor=EditorType.TextEditor,nullable =false,readOnly=false, type=AttributeType.STRING)
     private String orderComplaintId;    
     /** 
+     * 属性ORDER_ID
+     */  
+    @ViewAttribute(name ="orderId",caption="ORDER_ID", editor=EditorType.TextEditor,nullable =false,readOnly=false, type=AttributeType.STRING)
+    private String orderId;    
+    /** 
      * 属性COMPLAINT_TYPE
      */  
     @ViewAttribute(name ="complaintType",caption="COMPLAINT_TYPE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
@@ -33,6 +38,11 @@ public class OrderComplaintVO extends ParentVO implements Serializable{
      */  
     @ViewAttribute(name ="complaintDetail",caption="COMPLAINT_DETAIL", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String complaintDetail;    
+    /** 
+     * 属性COMPLAINT_PICTURE
+     */  
+    @ViewAttribute(name ="complaintPicture",caption="COMPLAINT_PICTURE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String complaintPicture;    
     /** 
      * 属性SERVICE_ID
      */  
@@ -48,11 +58,6 @@ public class OrderComplaintVO extends ParentVO implements Serializable{
      */  
     @ViewAttribute(name ="remark",caption="REMARK", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String remark;    
-    /** 
-     * 属性ORDER_ID
-     */  
-    @ViewAttribute(name ="orDERId",caption="ORDER_ID", editor=EditorType.ComboEditor,nullable =false,readOnly=false, type=AttributeType.STRING)
-    private String orDERId;    
     /**
      * OrderComplaintVO构造函数
      */
@@ -85,6 +90,20 @@ public class OrderComplaintVO extends ParentVO implements Serializable{
         }
 	} 
     /**
+     * ORDER_ID的get方法
+     * @return orderId
+     */
+    public String getOrderId(){
+        return orderId;
+    }
+    /**
+     * ORDER_ID的set方法
+     * @param orderId
+     */
+    public void setOrderId(String orderId){
+		this.orderId = orderId;
+	} 
+    /**
      * COMPLAINT_TYPE的get方法
      * @return complaintType
      */
@@ -111,6 +130,20 @@ public class OrderComplaintVO extends ParentVO implements Serializable{
      */
     public void setComplaintDetail(String complaintDetail){
 		this.complaintDetail = complaintDetail;
+	} 
+    /**
+     * COMPLAINT_PICTURE的get方法
+     * @return complaintPicture
+     */
+    public String getComplaintPicture(){
+        return complaintPicture;
+    }
+    /**
+     * COMPLAINT_PICTURE的set方法
+     * @param complaintPicture
+     */
+    public void setComplaintPicture(String complaintPicture){
+		this.complaintPicture = complaintPicture;
 	} 
     /**
      * SERVICE_ID的get方法
@@ -154,20 +187,6 @@ public class OrderComplaintVO extends ParentVO implements Serializable{
     public void setRemark(String remark){
 		this.remark = remark;
 	} 
-    /**
-     * ORDER_ID的get方法
-     * @return orDERId
-     */
-    public String getOrDERId(){
-        return orDERId;
-    }
-    /**
-     * ORDER_ID的set方法
-     * @param orDERId
-     */
-    public void setOrDERId(String orDERId){
-		this.orDERId = orDERId;
-	} 
 
     /**
      * toString方法
@@ -177,12 +196,13 @@ public class OrderComplaintVO extends ParentVO implements Serializable{
 
 		  return new StringBuffer()
 	  			.append("ORDER_COMPLAINT_ID"+":"+getOrderComplaintId())
+				.append("ORDER_ID"+":"+getOrderId())
 				.append("COMPLAINT_TYPE"+":"+getComplaintType())
 				.append("COMPLAINT_DETAIL"+":"+getComplaintDetail())
+				.append("COMPLAINT_PICTURE"+":"+getComplaintPicture())
 				.append("SERVICE_ID"+":"+getServiceId())
 				.append("RESULTS_DETAIL"+":"+getResultsDetail())
 				.append("REMARK"+":"+getRemark())
-				.append("ORDER_ID"+":"+getOrDERId())
 		        .toString(); 
 			
     } 

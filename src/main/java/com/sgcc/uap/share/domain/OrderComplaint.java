@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.NotBlank;
 
 
 /**
@@ -35,6 +36,13 @@ public class OrderComplaint implements Serializable {
     private String orderComplaintId ;
     
     /** 
+     * ORDER_ID
+     */
+    @Column(name = "ORDER_ID", nullable = false, length = 64)
+	@NotBlank(message="不能为空")
+    private String orderId ;
+    
+    /** 
      * COMPLAINT_TYPE
      */
     @Column(name = "COMPLAINT_TYPE", nullable = true, length = 2)
@@ -45,6 +53,12 @@ public class OrderComplaint implements Serializable {
      */
     @Column(name = "COMPLAINT_DETAIL", nullable = true, length = 512)
     private String complaintDetail ;
+    
+    /** 
+     * COMPLAINT_PICTURE
+     */
+    @Column(name = "COMPLAINT_PICTURE", nullable = true, length = 512)
+    private String complaintPicture ;
     
     /** 
      * SERVICE_ID
@@ -64,12 +78,6 @@ public class OrderComplaint implements Serializable {
     @Column(name = "REMARK", nullable = true, length = 512)
     private String remark ;
     
-    /** 
-     * ORDER_ID
-     */
-    @Column(name = "ORDER_ID", nullable = false, length = 64)
-    private String orDERId ;
-    
 	/**
 	  *虚拟主键
 	  */
@@ -83,7 +91,7 @@ public class OrderComplaint implements Serializable {
      * @getOrderComplaintId:ORDER_COMPLAINT_ID的get方法
      * @params
      * @return orderComplaintId
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-14 11:25:11
      * @author 18511
      */
     public String getOrderComplaintId(){
@@ -93,7 +101,7 @@ public class OrderComplaint implements Serializable {
      * @setOrderComplaintId:ORDER_COMPLAINT_ID的set方法
      * @param orderComplaintId
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-14 11:25:11
      * @author 18511
      */
     public void setOrderComplaintId(String orderComplaintId){
@@ -104,10 +112,30 @@ public class OrderComplaint implements Serializable {
         }
 	} 
     /**
+     * @getOrderId:ORDER_ID的get方法
+     * @params
+     * @return orderId
+     * @date 2020-12-14 11:25:11
+     * @author 18511
+     */
+    public String getOrderId(){
+        return this.orderId;
+    }
+    /**
+     * @setOrderId:ORDER_ID的set方法
+     * @param orderId
+     * @return
+     * @date 2020-12-14 11:25:11
+     * @author 18511
+     */
+    public void setOrderId(String orderId){
+		this.orderId = orderId;
+	} 
+    /**
      * @getComplaintType:COMPLAINT_TYPE的get方法
      * @params
      * @return complaintType
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-14 11:25:11
      * @author 18511
      */
     public String getComplaintType(){
@@ -117,7 +145,7 @@ public class OrderComplaint implements Serializable {
      * @setComplaintType:COMPLAINT_TYPE的set方法
      * @param complaintType
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-14 11:25:11
      * @author 18511
      */
     public void setComplaintType(String complaintType){
@@ -127,7 +155,7 @@ public class OrderComplaint implements Serializable {
      * @getComplaintDetail:COMPLAINT_DETAIL的get方法
      * @params
      * @return complaintDetail
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-14 11:25:11
      * @author 18511
      */
     public String getComplaintDetail(){
@@ -137,17 +165,37 @@ public class OrderComplaint implements Serializable {
      * @setComplaintDetail:COMPLAINT_DETAIL的set方法
      * @param complaintDetail
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-14 11:25:11
      * @author 18511
      */
     public void setComplaintDetail(String complaintDetail){
 		this.complaintDetail = complaintDetail;
 	} 
     /**
+     * @getComplaintPicture:COMPLAINT_PICTURE的get方法
+     * @params
+     * @return complaintPicture
+     * @date 2020-12-14 11:25:11
+     * @author 18511
+     */
+    public String getComplaintPicture(){
+        return this.complaintPicture;
+    }
+    /**
+     * @setComplaintPicture:COMPLAINT_PICTURE的set方法
+     * @param complaintPicture
+     * @return
+     * @date 2020-12-14 11:25:11
+     * @author 18511
+     */
+    public void setComplaintPicture(String complaintPicture){
+		this.complaintPicture = complaintPicture;
+	} 
+    /**
      * @getServiceId:SERVICE_ID的get方法
      * @params
      * @return serviceId
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-14 11:25:11
      * @author 18511
      */
     public String getServiceId(){
@@ -157,7 +205,7 @@ public class OrderComplaint implements Serializable {
      * @setServiceId:SERVICE_ID的set方法
      * @param serviceId
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-14 11:25:11
      * @author 18511
      */
     public void setServiceId(String serviceId){
@@ -167,7 +215,7 @@ public class OrderComplaint implements Serializable {
      * @getResultsDetail:RESULTS_DETAIL的get方法
      * @params
      * @return resultsDetail
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-14 11:25:11
      * @author 18511
      */
     public String getResultsDetail(){
@@ -177,7 +225,7 @@ public class OrderComplaint implements Serializable {
      * @setResultsDetail:RESULTS_DETAIL的set方法
      * @param resultsDetail
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-14 11:25:11
      * @author 18511
      */
     public void setResultsDetail(String resultsDetail){
@@ -187,7 +235,7 @@ public class OrderComplaint implements Serializable {
      * @getRemark:REMARK的get方法
      * @params
      * @return remark
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-14 11:25:11
      * @author 18511
      */
     public String getRemark(){
@@ -197,31 +245,11 @@ public class OrderComplaint implements Serializable {
      * @setRemark:REMARK的set方法
      * @param remark
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-14 11:25:11
      * @author 18511
      */
     public void setRemark(String remark){
 		this.remark = remark;
-	} 
-    /**
-     * @getOrDERId:ORDER_ID的get方法
-     * @params
-     * @return orDERId
-     * @date 2020-11-26 14:32:47
-     * @author 18511
-     */
-    public String getOrDERId(){
-        return this.orDERId;
-    }
-    /**
-     * @setOrDERId:ORDER_ID的set方法
-     * @param orDERId
-     * @return
-     * @date 2020-11-26 14:32:47
-     * @author 18511
-     */
-    public void setOrDERId(String orDERId){
-		this.orDERId = orDERId;
 	} 
 	public String getMxVirtualId() {
         return this.mxVirtualId;
@@ -253,6 +281,13 @@ public class OrderComplaint implements Serializable {
 		} else if (!orderComplaintId.equals(other.orderComplaintId)) {
 			return false;
 		}
+		if (orderId == null) {
+			if (other.orderId != null) {
+				return false;
+			}
+		} else if (!orderId.equals(other.orderId)) {
+			return false;
+		}
 		if (complaintType == null) {
 			if (other.complaintType != null) {
 				return false;
@@ -265,6 +300,13 @@ public class OrderComplaint implements Serializable {
 				return false;
 			}
 		} else if (!complaintDetail.equals(other.complaintDetail)) {
+			return false;
+		}
+		if (complaintPicture == null) {
+			if (other.complaintPicture != null) {
+				return false;
+			}
+		} else if (!complaintPicture.equals(other.complaintPicture)) {
 			return false;
 		}
 		if (serviceId == null) {
@@ -288,13 +330,6 @@ public class OrderComplaint implements Serializable {
 		} else if (!remark.equals(other.remark)) {
 			return false;
 		}
-		if (orDERId == null) {
-			if (other.orDERId != null) {
-				return false;
-			}
-		} else if (!orDERId.equals(other.orDERId)) {
-			return false;
-		}
 		return true;
 	}
     
@@ -305,12 +340,13 @@ public class OrderComplaint implements Serializable {
 	public String toString(){
 		return "OrderComplaint ["
 			+ ", orderComplaintId=" + orderComplaintId
+			+ ", orderId=" + orderId
 			+ ", complaintType=" + complaintType
 			+ ", complaintDetail=" + complaintDetail
+			+ ", complaintPicture=" + complaintPicture
 			+ ", serviceId=" + serviceId
 			+ ", resultsDetail=" + resultsDetail
-			+ ", remark=" + remark
-			+ ", orDERId=" + orDERId;
+			+ ", remark=" + remark;
 	}
    
     
