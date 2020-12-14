@@ -146,6 +146,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 				Map<String, Object> newMap = (Map) getStatus.get("map");
 				CrudUtils.mapToObject(newMap, orderCustomer,  "orderId");
 				result = orderCustomerRepository.save(orderCustomer);
+				sendNotify(newMap, orderCustomer);
 			}else{
 				throw new Exception((String) getStatus.get("desc"));
 			}
@@ -384,11 +385,25 @@ public class OrderCustomerService implements IOrderCustomerService{
 				map.put("updateTime", dateString);
 				map.put("finishTime", dateString);
 				result.put("key", "0");
-				result.put("desc", "该订单处于不可取消状态");
+				result.put("desc", "该订单处于可取消状态");
 				result.put("map", map);
 			}else{
 				result.put("key", "1");
-				result.put("desc", "该订单处于不可取消状态");
+				result.put("desc", "该订单不处于可取消状态");
+			}
+		}else if("8".equals(orderStatus)){
+			ArrayList<String> sites = new ArrayList<>();
+	        sites.add("24"); //待用户验收
+			if(sites.contains(orderCustomer.getOrderStatus())){
+				String dateString = TimeStamp.toString(new Date());
+				map.put("updateTime", dateString);
+				map.put("finishTime", dateString);
+				result.put("key", "0");
+				result.put("desc", "该订单处于可验收状态");
+				result.put("map", map);
+			}else{
+				result.put("key", "1");
+				result.put("desc", "该订单不处于可验收状态");
 			}
 		}
 		
@@ -397,7 +412,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	
 	private void sendNotify(Map map,OrderCustomer orderCustomer) throws Exception{
 		//获取Enum通知类
-		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0", "0");	
+		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0", (String) map.get("orderStatus"));	
 		
 		//新增流水
 		Map<String,Object> mapOrderFlow = 
@@ -414,6 +429,9 @@ public class OrderCustomerService implements IOrderCustomerService{
 		Map<String,Object> mapNotifyUser = 
 				MapUtil.notifyUserAdd(orderCustomer.getCustomerId(), announceId, 0, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+		
+		//发送websocket消息
+        webSocket.sendMessage(baseEnums.getEnumsB());
 	}
 	
 	
