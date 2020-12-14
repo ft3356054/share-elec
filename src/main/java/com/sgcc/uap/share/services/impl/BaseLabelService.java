@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.services;
+package com.sgcc.uap.share.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,7 @@ import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.BaseLabel;
 import com.sgcc.uap.share.repositories.BaseLabelRepository;
+import com.sgcc.uap.share.services.IBaseLabelService;
 import com.sgcc.uap.utils.string.StringUtil;
 
 
