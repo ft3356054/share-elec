@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.electrician.repositories;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,10 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
-import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
-import com.sgcc.uap.share.domain.OrderElectricianHis;
 
 
 /**
@@ -67,8 +65,10 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	
 	
 	
-
-
-
+	//通过orderId 和状态查询
+	//public OrderElectrician findByOrderIdAndOrderElectricianTypeIn(String orDERId,Collection<String> orderElectricianType);
+	
+	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_TYPE in :orderElectricianType",nativeQuery = true)
+	public OrderElectrician findByOrderIdAndOrderElectricianTypeNotIn(@Param("orderId")String orderId,@Param("orderElectricianType")Collection<String> orderElectricianType);
 	
 }

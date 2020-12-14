@@ -5,12 +5,10 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.NotBlank;
 
 
@@ -31,8 +29,8 @@ public class OrderComplaint implements Serializable {
      * ORDER_COMPLAINT_ID
      */
 	@Id
-	@GeneratedValue(generator = "idGenerator")
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")
+	/*@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "uuid")*/
     @Column(name = "ORDER_COMPLAINT_ID", nullable = false, length = 64)
     private String orderComplaintId ;
     

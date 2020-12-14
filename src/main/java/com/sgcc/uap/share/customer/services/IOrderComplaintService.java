@@ -2,6 +2,7 @@ package com.sgcc.uap.share.customer.services;
 
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
@@ -43,7 +44,8 @@ public interface IOrderComplaintService {
 	 * @date 2020-12-14 12:00:46
 	 * @author 18511
 	 */
-	public OrderComplaint saveOrderComplaint(Map<String,Object> map) throws Exception;
+	//public OrderComplaint saveOrderComplaint(Map<String,Object> map) throws Exception;
+	public OrderComplaint saveOrderComplaint(Map<String,Object> map,MultipartFile file) throws Exception;
 	/**
 	 * @query:根据查询条件 查询
 	 * @param queryCondition 查询条件

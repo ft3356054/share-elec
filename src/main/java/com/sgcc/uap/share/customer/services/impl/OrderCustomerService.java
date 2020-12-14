@@ -146,7 +146,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 				Map<String, Object> newMap = (Map) getStatus.get("map");
 				CrudUtils.mapToObject(newMap, orderCustomer,  "orderId");
 				result = orderCustomerRepository.save(orderCustomer);
-				sendNotify(newMap, orderCustomer);
+				sendNotify(newMap, orderCustomer,2,1);
 			}else{
 				throw new Exception((String) getStatus.get("desc"));
 			}
@@ -188,7 +188,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 			
 			Map<String,Object> mapNotifyUser = 
-					MapUtil.notifyUserAdd((String)map.get("customerId"), announceId, 0, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+					MapUtil.notifyUserAdd((String)map.get("customerId"), announceId, 1, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
 			
 			//发送websocket消息
@@ -410,13 +410,20 @@ public class OrderCustomerService implements IOrderCustomerService{
 		return result;
 	}
 	
-	private void sendNotify(Map map,OrderCustomer orderCustomer) throws Exception{
+	/**
+	 * @param map
+	 * @param orderCustomer
+	 * @param oper 0增 1删 2改
+	 * @param getPeople 1客户 2电工 
+	 * @throws Exception
+	 */
+	private void sendNotify(Map map,OrderCustomer orderCustomer,int oper,int getPeople) throws Exception{
 		//获取Enum通知类
 		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0", (String) map.get("orderStatus"));	
 		
 		//新增流水
 		Map<String,Object> mapOrderFlow = 
-				MapUtil.flowAdd(orderCustomer.getOrderId(), 0, 0, orderCustomer.getCustomerId(), TimeStamp.toString(new Date()), 0,  baseEnums.getEnumsA());
+				MapUtil.flowAdd(orderCustomer.getOrderId(), 0,  (int) map.get("orderStatus"), orderCustomer.getCustomerId(), TimeStamp.toString(new Date()), oper,  baseEnums.getEnumsA());
 		orderFlowService.saveOrderFlow(mapOrderFlow);
 		
 		//新增通知
@@ -427,7 +434,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 		notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 		
 		Map<String,Object> mapNotifyUser = 
-				MapUtil.notifyUserAdd(orderCustomer.getCustomerId(), announceId, 0, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+				MapUtil.notifyUserAdd(orderCustomer.getCustomerId(), announceId, getPeople, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 		
 		//发送websocket消息
