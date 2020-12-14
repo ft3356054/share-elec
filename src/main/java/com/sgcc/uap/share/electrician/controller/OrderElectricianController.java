@@ -53,6 +53,8 @@ import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderFlow;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
+import com.sgcc.uap.share.electrician.services.impl.ElectricianInfoService;
+import com.sgcc.uap.share.electrician.services.impl.OrderElectricianHisService;
 import com.sgcc.uap.share.electrician.vo.OrderElectricianVO;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
@@ -118,6 +120,12 @@ public class OrderElectricianController {
 	
 	@Autowired
     private StringRedisTemplate stringRedisTemplate;
+	
+	@Autowired
+	private OrderElectricianHisService  orderElectricianHisService;
+	
+	@Autowired
+	private ElectricianInfoService ElectricianInfoService;
 	
 	/**
 	 * @getByOrderElectricianId:根据orderElectricianId查询
@@ -713,5 +721,193 @@ public class OrderElectricianController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
+	
+	/**
+	 * 订单详情，查询的是状态21和2的客户订单，因为只有客户订单里有预约时间这个字段，应该是新的订单，电工已经接单，电工这边还未预约时间
+	 * 此订单应该是电工已经接了的，所以可以传电工的ID
+	 */
+	
+	@RequestMapping(value="/findOrderAllInfo/{electricianId}",name="查询电工所接订单的信息")
+	public WrappedResult findOrderAllInfo(@PathVariable String electricianId){
+		try {
+		
+		
+		//1.根据电工ID查询电工订单表中的order_id,然后载根据order_id查询客户订单，进行显示
+		//1.1 查询电工订单，只返回order_id
+		 OrderElectrician order_idsString=orderElectricianService.findOrderId(electricianId);
+		//获取order_id
+		String orderId=order_idsString.getOrDERId();
+		//获取客户订单的信息
+		
+		//OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
+		
+		//QueryResultObject queryResult
+		QueryResultObject queryResult=orderCustomerService.findByOrderId(orderId);
+		List<OrderCustomer> listOrderCustomers=queryResult.getItems();
+		List<OrderCustomerVO> list=new ArrayList<>();
+		for (OrderCustomer orderCustomer2 : listOrderCustomers) {
+			
+			OrderCustomerVO orderCustomerVO=null;
+			BeanUtils.copyProperties(orderCustomer2, orderCustomerVO);
+			list.add(orderCustomerVO);
+		}
+		
+		
+		
+		
+		queryResult.setItems(list);
+		
+		return WrappedResult.successWrapedResult(queryResult);
+		}
+		catch (ServiceValidatorBaseException e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "校验异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedValidateWrappedResult(errorMessage);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
+	
+	
+	/**
+	 * 我的订单模块
+	 * 全部已完成的订单  ，，，根据电工ID查询所有订单
+	 */
+	@RequestMapping(value="/queryAllHaveDone/{electricianId}",name="查询所有已经完结的订单")
+	public WrappedResult queryAllHaveDone(@PathVariable String electricianId){
+		
+		try {
+	
+		
+		QueryResultObject queryResult=orderElectricianHisService.findqQueryAllHaveDone(electricianId);
+		
+		return WrappedResult.successWrapedResult(queryResult);
+		
+	}
+	catch (Exception e) {
+		logger.error(e.getMessage(), e);
+		String errorMessage = "查询异常";
+		if(isDev){
+			errorMessage = e.getMessage();
+		}
+		return WrappedResult.failedWrappedResult(errorMessage);
+	}
+	}
+
+	
+	
+	/**
+	 * 我的订单模块
+	 * 全部已完成的订单  ，，，根据电工ID查询所有订单
+	 */
+	@RequestMapping(value="/queryAllDoing/{electricianId}",name="查询所有正在进行的订单")
+	public WrappedResult queryAllDoing(@PathVariable String electricianId){
+		
+		try {
+	
+		
+		QueryResultObject queryResult=orderElectricianService.queryAllDoing(electricianId);
+		
+		return WrappedResult.successWrapedResult(queryResult);
+		
+	}
+	catch (Exception e) {
+		logger.error(e.getMessage(), e);
+		String errorMessage = "查询异常";
+		if(isDev){
+			errorMessage = e.getMessage();
+		}
+		return WrappedResult.failedWrappedResult(errorMessage);
+	}
+	}
+
+	
+	
+	
+	
+	/**
+	 * 我的订单模块
+	 * 全部已取消的订单  ，，，根据电工ID查询所有订单
+	 */
+	@RequestMapping(value="/queryAllHaveEsc/{electricianId}",name="查询所有已经取消的订单")
+	public WrappedResult queryAllHaveEsc(@PathVariable String electricianId){
+		
+		try {
+			
+		
+		
+		
+		QueryResultObject queryResult=orderElectricianHisService.queryAllHaveEsc(electricianId);
+		
+		return WrappedResult.successWrapedResult(queryResult);
+		
+	}
+		catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+}
+	
+	
+	
+	/**
+	 * 电工个人信息查询
+	 * 
+	 */
+	@RequestMapping(value="/queryElectricianInfo/{electricianId}",name="查询电工的个人信息")
+	public WrappedResult queryElectricianInfo(@PathVariable String electricianId){
+		try {
+			
+			QueryResultObject queryResult=ElectricianInfoService.queryElectricianInfo(electricianId);
+			
+			
+			
+			return WrappedResult.successWrapedResult(queryResult);
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

@@ -361,12 +361,15 @@ public class OrderCustomerService implements IOrderCustomerService{
 	 * @param orderId
 	 * @return
 	 */
-	public OrderCustomer findByOrderId(String orderId) {
+	public QueryResultObject findByOrderId(String orderId) {
 		
 		// TODO Auto-generated method stub
-		OrderCustomer orderCustomer=orderCustomerRepository.findByOrderId(orderId);
+		List<OrderCustomer> result=(List<OrderCustomer>) orderCustomerRepository.findByOrderId(orderId);
+		long count=0;
+		count=result.size();
+		return RestUtils.wrappQueryResult(result,count);
 		
-		return orderCustomer;
+		
 	}
 	
 	public QueryResultObject findByOrderStatusLike() {
@@ -375,6 +378,12 @@ public class OrderCustomerService implements IOrderCustomerService{
 		long count=0;
 		count=result.size();
 		return RestUtils.wrappQueryResult(result,count);
+	}
+	public OrderCustomer findOrderId(String electricianId) {
+		
+		// TODO Auto-generated method stub
+		OrderCustomer orderIdString=orderCustomerRepository.findOne(electricianId);
+		return orderIdString;
 	}
 
 

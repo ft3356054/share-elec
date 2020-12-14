@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sgcc.uap.exception.NullArgumentException;
@@ -28,7 +30,10 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
+import com.sgcc.uap.share.domain.ElectricianInfo;
+import com.sgcc.uap.share.domain.ElectricianStatus;
 import com.sgcc.uap.share.electrician.services.IElectricianInfoService;
+import com.sgcc.uap.share.electrician.services.impl.ElectricianStatusService;
 import com.sgcc.uap.share.electrician.vo.ElectricianInfoVO;
 
 
@@ -63,6 +68,9 @@ public class ElectricianInfoController {
      */
 	@Autowired
 	private IElectricianInfoService electricianInfoService;
+	
+	@Autowired
+	private ElectricianStatusService electricianStatusService;
 	/**
 	 * @getByElectricianId:根据electricianId查询
 	 * @param electricianId
@@ -207,5 +215,56 @@ public class ElectricianInfoController {
 	public void initBinder(WebDataBinder binder){
 		binder.setDisallowedFields(DISALLOWED_PARAMS);
 	}
+	
+	
+	
+	/**
+	 * 变更电工的在线状态，目前还不知道经纬度如何获取
+	 * 
+	 */
+	@RequestMapping(value="/changeStatus/{electricianId}",name="改变电工的工作状态")
+	@ResponseBody
+	public String changeStatus(@PathVariable String electricianId,@RequestParam(value="statu") String statu){
+		try {
+			ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
+			ElectricianStatus eleElectricianStatus=electricianStatusService.findOne(electricianId);
+			if (statu.equals("接单中")) {
+				electricianInfo.setElectricianStatus("1");//1代表接单中
+				eleElectricianStatus.setElectricianStatus("1");
+				
+				//保存状态
+				electricianInfoService.save(electricianInfo);
+				electricianStatusService.save(eleElectricianStatus);
+				
+			}
+			if (statu.equals("休息中")) {
+				
+				electricianInfo.setElectricianStatus("0");//0代表休息中
+				eleElectricianStatus.setElectricianStatus("0");
+				
+				//保存状态
+				electricianInfoService.save(electricianInfo);
+				electricianStatusService.save(eleElectricianStatus);
+				
+			}
+			
+			return "true";
+			
+		}  catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return "false";
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
 
 }

@@ -24,6 +24,7 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.domain.ElectricianStatus;
 import com.sgcc.uap.share.electrician.repositories.ElectricianStatusRepository;
 import com.sgcc.uap.share.electrician.services.IElectricianStatusService;
@@ -222,6 +223,18 @@ public class ElectricianStatusService implements IElectricianStatusService{
 		}
 		return new PageRequest(pageIndex - 1, pageSize, null);
 	}
+	public ElectricianStatus findOne(String electricianId) {
+		// TODO Auto-generated method stub
+		ElectricianStatus electricianStatus=electricianStatusRepository.findOne(electricianId);
+		return electricianStatus;
+	}
+	public void save(ElectricianStatus eleElectricianStatus) {
+		// TODO Auto-generated method stub
+		electricianStatusRepository.save(eleElectricianStatus);
+		
+	}
+	
+	
 
 
 }

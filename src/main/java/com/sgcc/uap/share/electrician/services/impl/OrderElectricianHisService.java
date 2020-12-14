@@ -24,6 +24,7 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectricianHis;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianHisRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianHisService;
@@ -221,6 +222,21 @@ public class OrderElectricianHisService implements IOrderElectricianHisService{
 			pageSize = queryCondition.getPageSize();
 		}
 		return new PageRequest(pageIndex - 1, pageSize, null);
+	}
+	/**
+	 * guoqing2020/12/14
+	 */
+	public QueryResultObject  findqQueryAllHaveDone(String electricianId) {
+		List<OrderElectricianHis> result=orderElectricianHisRepository.findqQueryAllHaveDone(electricianId);
+		long count=0;
+		count=result.size();
+		return RestUtils.wrappQueryResult(result,count);
+	}
+	public QueryResultObject queryAllHaveEsc(String electricianId) {
+		List<OrderElectricianHis> result=orderElectricianHisRepository.queryAllHaveEsc(electricianId);
+		long count=0;
+		count=result.size();
+		return RestUtils.wrappQueryResult(result,count);
 	}
 
 

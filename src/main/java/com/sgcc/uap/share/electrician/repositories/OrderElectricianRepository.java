@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
+import com.sgcc.uap.share.domain.OrderElectricianHis;
 
 
 /**
@@ -59,6 +60,11 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	
 	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_TYPE=2",nativeQuery = true)
 	OrderElectrician findByOrDERIdAndOrderElectricianType(@Param("orderId")String orderId);
+
+	
+	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_TYPE != 9",nativeQuery=true)
+	List<OrderElectrician> queryAllDoing(String electricianId);
+	
 	
 	
 

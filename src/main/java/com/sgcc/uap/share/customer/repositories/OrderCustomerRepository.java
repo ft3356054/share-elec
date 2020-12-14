@@ -67,6 +67,8 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	@Query(value="select * from order_customer where ORDER_STATUS = 1 or ORDER_STATUS = 11",nativeQuery=true)
 	List<OrderCustomer> findByOrderStatusLike();
 
+	
+
 
 	
 }

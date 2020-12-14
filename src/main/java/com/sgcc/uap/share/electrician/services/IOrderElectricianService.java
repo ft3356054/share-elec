@@ -72,6 +72,8 @@ QueryResultObject queryMore(RequestCondition queryCondition, String electricianI
 public QueryResultObject queryWaitToDo(RequestCondition requestCondition, String electricianId);
 public OrderElectrician saveOrderElectrician2(Map<String, Object> map,String electricianId) throws Exception ;
 public OrderElectrician findByOrDERIdAndOrderElectricianType(String orderId);
+public OrderElectrician findOrderId(String electricianId);
+public QueryResultObject queryAllDoing(String electricianId);
 
 
 }

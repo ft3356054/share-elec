@@ -36,6 +36,7 @@ import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
 import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
+import com.sgcc.uap.share.domain.OrderElectricianHis;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.share.services.impl.BaseEnumsService;
@@ -494,6 +495,24 @@ public class OrderElectricianService implements IOrderElectricianService{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+public OrderElectrician findOrderId(String electricianId) {
+		
+		// TODO Auto-generated method stub
+		OrderElectrician orderIdString=orderElectricianRepository.findOne(electricianId);
+		return orderIdString;
+	}
+	
+
+public QueryResultObject queryAllDoing(String electricianId) {
+	List<OrderElectrician> result=orderElectricianRepository.queryAllDoing(electricianId);
+	long count=0;
+	count=result.size();
+	return RestUtils.wrappQueryResult(result,count);
+}
+	
+	
+	
 	
 	}
 

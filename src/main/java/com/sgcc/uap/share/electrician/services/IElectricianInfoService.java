@@ -52,6 +52,8 @@ public interface IElectricianInfoService {
 	 * @author 18511
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);
+	public ElectricianInfo findInfo(String electricianId);
+	public void save(ElectricianInfo electricianInfo);
 
 
 
