@@ -1,0 +1,803 @@
+package com.sgcc.uap.share.domain;
+
+import java.io.Serializable;
+import java.sql.Timestamp;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.GenericGenerator;
+
+
+/**
+ * OrderAuditElectrician的POJO类
+ * @author 18511 
+ */
+@Entity
+@Table(name = "order_audit_electrician")
+public class OrderAuditElectrician implements Serializable {
+
+    /** 
+     * serialVersionUID
+     */
+	private static final long serialVersionUID = -7768637914227571159L;
+
+    /** 
+     * ORDER_ID
+     */
+	@Id
+	@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "uuid")
+    @Column(name = "ORDER_ID", nullable = false, length = 64)
+    private String orderId ;
+    
+    /** 
+     * ORDER_TYPE
+     */
+    @Column(name = "ORDER_TYPE", nullable = true, length = 2)
+    private String orderType ;
+    
+    /** 
+     * CREATE_TIME
+     */
+    @Column(name = "CREATE_TIME", nullable = true, length = 19)
+    private Timestamp createTime ;
+    
+    /** 
+     * UPDATE_TIME
+     */
+    @Column(name = "UPDATE_TIME", nullable = true, length = 19)
+    private Timestamp updateTime ;
+    
+    /** 
+     * FINISH_TIME
+     */
+    @Column(name = "FINISH_TIME", nullable = true, length = 19)
+    private Timestamp finishTime ;
+    
+    /** 
+     * AUDITOR_ID
+     */
+    @Column(name = "AUDITOR_ID", nullable = true, length = 64)
+    private String auditorId ;
+    
+    /** 
+     * AUDITOR_COMMENT
+     */
+    @Column(name = "AUDITOR_COMMENT", nullable = true, length = 512)
+    private String auditorComment ;
+    
+    /** 
+     * SUB_COMPANY_ID
+     */
+    @Column(name = "SUB_COMPANY_ID", nullable = true, length = 64)
+    private String subCompanyId ;
+    
+    /** 
+     * COMPANY_ID
+     */
+    @Column(name = "COMPANY_ID", nullable = true, length = 64)
+    private String companyId ;
+    
+    /** 
+     * COMPANY_NAME
+     */
+    @Column(name = "COMPANY_NAME", nullable = true, length = 256)
+    private String companyName ;
+    
+    /** 
+     * COMPANY_PHONENUMBER
+     */
+    @Column(name = "COMPANY_PHONENUMBER", nullable = true, length = 32)
+    private String companyPhonenumber ;
+    
+    /** 
+     * COMPANY_ADDRESS
+     */
+    @Column(name = "COMPANY_ADDRESS", nullable = true, length = 256)
+    private String companyAddress ;
+    
+    /** 
+     * ADDRESS_LONGITUDE
+     */
+    @Column(name = "ADDRESS_LONGITUDE", nullable = true, length = 32)
+    private String addressLongitude ;
+    
+    /** 
+     * ADDRESS_LATITUDE
+     */
+    @Column(name = "ADDRESS_LATITUDE", nullable = true, length = 32)
+    private String addressLatitude ;
+    
+    /** 
+     * COMPANY_LEVEL
+     */
+    @Column(name = "COMPANY_LEVEL", nullable = true, length = 10)
+    private String companyLevel ;
+    
+    /** 
+     * RATING_CERTIFICATE
+     */
+    @Column(name = "RATING_CERTIFICATE", nullable = true, length = 512)
+    private String ratingCertificate ;
+    
+    /** 
+     * COMPANY_CONTRACT
+     */
+    @Column(name = "COMPANY_CONTRACT", nullable = true, length = 512)
+    private String companyContract ;
+    
+    /** 
+     * REMARK
+     */
+    @Column(name = "REMARK", nullable = true, length = 512)
+    private String remark ;
+    
+    /** 
+     * REMARK1
+     */
+    @Column(name = "REMARK1", nullable = true, length = 512)
+    private String remark1 ;
+    
+    /** 
+     * REMARK2
+     */
+    @Column(name = "REMARK2", nullable = true, length = 512)
+    private String remark2 ;
+    
+    /** 
+     * REMARK3
+     */
+    @Column(name = "REMARK3", nullable = true, length = 512)
+    private String remark3 ;
+    
+	/**
+	  *虚拟主键
+	  */
+	@Transient
+	private String mxVirtualId;
+	
+	public OrderAuditElectrician(){
+	
+	}
+    /**
+     * @getOrderId:ORDER_ID的get方法
+     * @params
+     * @return orderId
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getOrderId(){
+        return this.orderId;
+    }
+    /**
+     * @setOrderId:ORDER_ID的set方法
+     * @param orderId
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setOrderId(String orderId){
+        if(orderId != null && orderId.trim().length() == 0){
+        	this.orderId = null;
+        }else{
+        	this.orderId = orderId;
+        }
+	} 
+    /**
+     * @getOrderType:ORDER_TYPE的get方法
+     * @params
+     * @return orderType
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getOrderType(){
+        return this.orderType;
+    }
+    /**
+     * @setOrderType:ORDER_TYPE的set方法
+     * @param orderType
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setOrderType(String orderType){
+		this.orderType = orderType;
+	} 
+    /**
+     * @getCreateTime:CREATE_TIME的get方法
+     * @params
+     * @return createTime
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public Timestamp getCreateTime(){
+        return this.createTime;
+    }
+    /**
+     * @setCreateTime:CREATE_TIME的set方法
+     * @param createTime
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setCreateTime(Timestamp createTime){
+		this.createTime = createTime;
+	} 
+    /**
+     * @getUpdateTime:UPDATE_TIME的get方法
+     * @params
+     * @return updateTime
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public Timestamp getUpdateTime(){
+        return this.updateTime;
+    }
+    /**
+     * @setUpdateTime:UPDATE_TIME的set方法
+     * @param updateTime
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setUpdateTime(Timestamp updateTime){
+		this.updateTime = updateTime;
+	} 
+    /**
+     * @getFinishTime:FINISH_TIME的get方法
+     * @params
+     * @return finishTime
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public Timestamp getFinishTime(){
+        return this.finishTime;
+    }
+    /**
+     * @setFinishTime:FINISH_TIME的set方法
+     * @param finishTime
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setFinishTime(Timestamp finishTime){
+		this.finishTime = finishTime;
+	} 
+    /**
+     * @getAuditorId:AUDITOR_ID的get方法
+     * @params
+     * @return auditorId
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getAuditorId(){
+        return this.auditorId;
+    }
+    /**
+     * @setAuditorId:AUDITOR_ID的set方法
+     * @param auditorId
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setAuditorId(String auditorId){
+		this.auditorId = auditorId;
+	} 
+    /**
+     * @getAuditorComment:AUDITOR_COMMENT的get方法
+     * @params
+     * @return auditorComment
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getAuditorComment(){
+        return this.auditorComment;
+    }
+    /**
+     * @setAuditorComment:AUDITOR_COMMENT的set方法
+     * @param auditorComment
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setAuditorComment(String auditorComment){
+		this.auditorComment = auditorComment;
+	} 
+    /**
+     * @getSubCompanyId:SUB_COMPANY_ID的get方法
+     * @params
+     * @return subCompanyId
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getSubCompanyId(){
+        return this.subCompanyId;
+    }
+    /**
+     * @setSubCompanyId:SUB_COMPANY_ID的set方法
+     * @param subCompanyId
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setSubCompanyId(String subCompanyId){
+		this.subCompanyId = subCompanyId;
+	} 
+    /**
+     * @getCompanyId:COMPANY_ID的get方法
+     * @params
+     * @return companyId
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getCompanyId(){
+        return this.companyId;
+    }
+    /**
+     * @setCompanyId:COMPANY_ID的set方法
+     * @param companyId
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setCompanyId(String companyId){
+		this.companyId = companyId;
+	} 
+    /**
+     * @getCompanyName:COMPANY_NAME的get方法
+     * @params
+     * @return companyName
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getCompanyName(){
+        return this.companyName;
+    }
+    /**
+     * @setCompanyName:COMPANY_NAME的set方法
+     * @param companyName
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setCompanyName(String companyName){
+		this.companyName = companyName;
+	} 
+    /**
+     * @getCompanyPhonenumber:COMPANY_PHONENUMBER的get方法
+     * @params
+     * @return companyPhonenumber
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getCompanyPhonenumber(){
+        return this.companyPhonenumber;
+    }
+    /**
+     * @setCompanyPhonenumber:COMPANY_PHONENUMBER的set方法
+     * @param companyPhonenumber
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setCompanyPhonenumber(String companyPhonenumber){
+		this.companyPhonenumber = companyPhonenumber;
+	} 
+    /**
+     * @getCompanyAddress:COMPANY_ADDRESS的get方法
+     * @params
+     * @return companyAddress
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getCompanyAddress(){
+        return this.companyAddress;
+    }
+    /**
+     * @setCompanyAddress:COMPANY_ADDRESS的set方法
+     * @param companyAddress
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setCompanyAddress(String companyAddress){
+		this.companyAddress = companyAddress;
+	} 
+    /**
+     * @getAddressLongitude:ADDRESS_LONGITUDE的get方法
+     * @params
+     * @return addressLongitude
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getAddressLongitude(){
+        return this.addressLongitude;
+    }
+    /**
+     * @setAddressLongitude:ADDRESS_LONGITUDE的set方法
+     * @param addressLongitude
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setAddressLongitude(String addressLongitude){
+		this.addressLongitude = addressLongitude;
+	} 
+    /**
+     * @getAddressLatitude:ADDRESS_LATITUDE的get方法
+     * @params
+     * @return addressLatitude
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getAddressLatitude(){
+        return this.addressLatitude;
+    }
+    /**
+     * @setAddressLatitude:ADDRESS_LATITUDE的set方法
+     * @param addressLatitude
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setAddressLatitude(String addressLatitude){
+		this.addressLatitude = addressLatitude;
+	} 
+    /**
+     * @getCompanyLevel:COMPANY_LEVEL的get方法
+     * @params
+     * @return companyLevel
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getCompanyLevel(){
+        return this.companyLevel;
+    }
+    /**
+     * @setCompanyLevel:COMPANY_LEVEL的set方法
+     * @param companyLevel
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setCompanyLevel(String companyLevel){
+		this.companyLevel = companyLevel;
+	} 
+    /**
+     * @getRatingCertificate:RATING_CERTIFICATE的get方法
+     * @params
+     * @return ratingCertificate
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getRatingCertificate(){
+        return this.ratingCertificate;
+    }
+    /**
+     * @setRatingCertificate:RATING_CERTIFICATE的set方法
+     * @param ratingCertificate
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setRatingCertificate(String ratingCertificate){
+		this.ratingCertificate = ratingCertificate;
+	} 
+    /**
+     * @getCompanyContract:COMPANY_CONTRACT的get方法
+     * @params
+     * @return companyContract
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getCompanyContract(){
+        return this.companyContract;
+    }
+    /**
+     * @setCompanyContract:COMPANY_CONTRACT的set方法
+     * @param companyContract
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setCompanyContract(String companyContract){
+		this.companyContract = companyContract;
+	} 
+    /**
+     * @getRemark:REMARK的get方法
+     * @params
+     * @return remark
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getRemark(){
+        return this.remark;
+    }
+    /**
+     * @setRemark:REMARK的set方法
+     * @param remark
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setRemark(String remark){
+		this.remark = remark;
+	} 
+    /**
+     * @getRemark1:REMARK1的get方法
+     * @params
+     * @return remark1
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getRemark1(){
+        return this.remark1;
+    }
+    /**
+     * @setRemark1:REMARK1的set方法
+     * @param remark1
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setRemark1(String remark1){
+		this.remark1 = remark1;
+	} 
+    /**
+     * @getRemark2:REMARK2的get方法
+     * @params
+     * @return remark2
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getRemark2(){
+        return this.remark2;
+    }
+    /**
+     * @setRemark2:REMARK2的set方法
+     * @param remark2
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setRemark2(String remark2){
+		this.remark2 = remark2;
+	} 
+    /**
+     * @getRemark3:REMARK3的get方法
+     * @params
+     * @return remark3
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public String getRemark3(){
+        return this.remark3;
+    }
+    /**
+     * @setRemark3:REMARK3的set方法
+     * @param remark3
+     * @return
+     * @date 2020-12-14 09:55:38
+     * @author 18511
+     */
+    public void setRemark3(String remark3){
+		this.remark3 = remark3;
+	} 
+	public String getMxVirtualId() {
+        return this.mxVirtualId;
+    }
+    
+    public void setMxVirtualId(String mxVirtualId) {
+        this.mxVirtualId = mxVirtualId;
+    } 
+    /**
+     * Hibernate通过该方法判断对象是否相等
+     * @return boolean
+     */  
+    public boolean equals(Object obj) {
+        if (this == obj)
+			return true;
+		
+        if (obj == null || !(obj instanceof OrderAuditElectrician))
+	        return false; 
+	        
+		if (getClass() != obj.getClass())
+			return false;
+		
+		OrderAuditElectrician other = (OrderAuditElectrician) obj;
+		
+		if (orderId == null) {
+			if (other.orderId != null) {
+				return false;
+			}
+		} else if (!orderId.equals(other.orderId)) {
+			return false;
+		}
+		if (orderType == null) {
+			if (other.orderType != null) {
+				return false;
+			}
+		} else if (!orderType.equals(other.orderType)) {
+			return false;
+		}
+		if (createTime == null) {
+			if (other.createTime != null) {
+				return false;
+			}
+		} else if (!createTime.equals(other.createTime)) {
+			return false;
+		}
+		if (updateTime == null) {
+			if (other.updateTime != null) {
+				return false;
+			}
+		} else if (!updateTime.equals(other.updateTime)) {
+			return false;
+		}
+		if (finishTime == null) {
+			if (other.finishTime != null) {
+				return false;
+			}
+		} else if (!finishTime.equals(other.finishTime)) {
+			return false;
+		}
+		if (auditorId == null) {
+			if (other.auditorId != null) {
+				return false;
+			}
+		} else if (!auditorId.equals(other.auditorId)) {
+			return false;
+		}
+		if (auditorComment == null) {
+			if (other.auditorComment != null) {
+				return false;
+			}
+		} else if (!auditorComment.equals(other.auditorComment)) {
+			return false;
+		}
+		if (subCompanyId == null) {
+			if (other.subCompanyId != null) {
+				return false;
+			}
+		} else if (!subCompanyId.equals(other.subCompanyId)) {
+			return false;
+		}
+		if (companyId == null) {
+			if (other.companyId != null) {
+				return false;
+			}
+		} else if (!companyId.equals(other.companyId)) {
+			return false;
+		}
+		if (companyName == null) {
+			if (other.companyName != null) {
+				return false;
+			}
+		} else if (!companyName.equals(other.companyName)) {
+			return false;
+		}
+		if (companyPhonenumber == null) {
+			if (other.companyPhonenumber != null) {
+				return false;
+			}
+		} else if (!companyPhonenumber.equals(other.companyPhonenumber)) {
+			return false;
+		}
+		if (companyAddress == null) {
+			if (other.companyAddress != null) {
+				return false;
+			}
+		} else if (!companyAddress.equals(other.companyAddress)) {
+			return false;
+		}
+		if (addressLongitude == null) {
+			if (other.addressLongitude != null) {
+				return false;
+			}
+		} else if (!addressLongitude.equals(other.addressLongitude)) {
+			return false;
+		}
+		if (addressLatitude == null) {
+			if (other.addressLatitude != null) {
+				return false;
+			}
+		} else if (!addressLatitude.equals(other.addressLatitude)) {
+			return false;
+		}
+		if (companyLevel == null) {
+			if (other.companyLevel != null) {
+				return false;
+			}
+		} else if (!companyLevel.equals(other.companyLevel)) {
+			return false;
+		}
+		if (ratingCertificate == null) {
+			if (other.ratingCertificate != null) {
+				return false;
+			}
+		} else if (!ratingCertificate.equals(other.ratingCertificate)) {
+			return false;
+		}
+		if (companyContract == null) {
+			if (other.companyContract != null) {
+				return false;
+			}
+		} else if (!companyContract.equals(other.companyContract)) {
+			return false;
+		}
+		if (remark == null) {
+			if (other.remark != null) {
+				return false;
+			}
+		} else if (!remark.equals(other.remark)) {
+			return false;
+		}
+		if (remark1 == null) {
+			if (other.remark1 != null) {
+				return false;
+			}
+		} else if (!remark1.equals(other.remark1)) {
+			return false;
+		}
+		if (remark2 == null) {
+			if (other.remark2 != null) {
+				return false;
+			}
+		} else if (!remark2.equals(other.remark2)) {
+			return false;
+		}
+		if (remark3 == null) {
+			if (other.remark3 != null) {
+				return false;
+			}
+		} else if (!remark3.equals(other.remark3)) {
+			return false;
+		}
+		return true;
+	}
+    
+    /**
+     * toString方法
+     * @return String
+     */
+	public String toString(){
+		return "OrderAuditElectrician ["
+			+ ", orderId=" + orderId
+			+ ", orderType=" + orderType
+			+ ", createTime=" + createTime
+			+ ", updateTime=" + updateTime
+			+ ", finishTime=" + finishTime
+			+ ", auditorId=" + auditorId
+			+ ", auditorComment=" + auditorComment
+			+ ", subCompanyId=" + subCompanyId
+			+ ", companyId=" + companyId
+			+ ", companyName=" + companyName
+			+ ", companyPhonenumber=" + companyPhonenumber
+			+ ", companyAddress=" + companyAddress
+			+ ", addressLongitude=" + addressLongitude
+			+ ", addressLatitude=" + addressLatitude
+			+ ", companyLevel=" + companyLevel
+			+ ", ratingCertificate=" + ratingCertificate
+			+ ", companyContract=" + companyContract
+			+ ", remark=" + remark
+			+ ", remark1=" + remark1
+			+ ", remark2=" + remark2
+			+ ", remark3=" + remark3;
+	}
+   
+    
+    /**
+     * hashcode方法
+     * @return int
+     * 
+     */
+    @Override
+    public int hashCode(){
+		return super.hashCode();
+	}
+}

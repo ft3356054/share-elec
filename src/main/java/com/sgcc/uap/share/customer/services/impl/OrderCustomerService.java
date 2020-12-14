@@ -147,7 +147,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 				CrudUtils.mapToObject(newMap, orderCustomer,  "orderId");
 				result = orderCustomerRepository.save(orderCustomer);
 			}else{
-				new Exception((String) getStatus.get("desc"));
+				throw new Exception((String) getStatus.get("desc"));
 			}
 			
 			
@@ -387,7 +387,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 				result.put("desc", "该订单处于不可取消状态");
 				result.put("map", map);
 			}else{
-				result.put("key", "0");
+				result.put("key", "1");
 				result.put("desc", "该订单处于不可取消状态");
 			}
 		}
