@@ -50,10 +50,26 @@ public class UuidUtil {
 		return date;
 	}
 
-	public static void main(String[] args) {
-		/*System.out.println(UuidUtil.getUuid36());
-		System.out.println(UuidUtil.getUuid32());*/
+	/*public static void main(String[] args) {
+		System.out.println(UuidUtil.getUuid36());
+		System.out.println(UuidUtil.getUuid32());
 		System.out.println(UuidUtil.getUuid46());
 		
-	}
+	}*/
+	
+	
+    public static String getUUID(){
+        return UUID.randomUUID().toString().replace("-","");
+    }
+
+    public static Integer getUUIDInOrderId(){
+        Integer orderId=UUID.randomUUID().toString().hashCode();
+        orderId = orderId < 0 ? -orderId : orderId; //String.hashCode() 值会为空
+        return orderId;
+    }
+
+    public static void main(String[] args){
+        for (int i = 0; i<100; i++)
+        System.out.println(UuidUtil.getUUIDInOrderId());
+    }
 }

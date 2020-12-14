@@ -17,7 +17,9 @@ import net.sf.json.JSONObject;
 	*/
 	public class JsonUtils {
 		public static void main(String[] args) {
-		String jsonStr = "{\"status\":\"0\",\"data\":{\"name\":\"tom\",\"age\":18}}";
+		String jsonStr = "{\"customerId\":\"customer002\",\"customerName\":\"联系人赵四\",\"customerPhonenumber\":\"18812345678\",\"customerEvaluateTitle\":\"电表坏了\",\n\"customerDescrive\":\"在电信行业中,数据往往根据用户的区域进行分区存储，现有表ClientInfo, 根据其对应的Region 字段进行列值分区，在对应的查询和修改过程中， \nwhere条件中需要region字段值，这样有助于提高查询速度。现在问题就是： 有的表分区，有的表不分区， 如何在改动系统最小情况下， 让系统支持分区字段。\",\n\"orderTypeId\":\"0\",\"voltage\":\"220V\",\"identityId\":\"0\",\"customerAddress\":\"天津市河东区天津站后广场华龙道 \",\"appointmentTime\":\"2020/11/8  14:00:00\",\n\"customerDescriveIcon\":\"\"}";
+				
+				//"{\"status\":\"0\",\"data\":{\"name\":\"tom\",\"age\":18}}";
 	
 		// ================================
 		// 1.如果是拿出来最外层的 map
@@ -26,18 +28,18 @@ import net.sf.json.JSONObject;
 		System.out.println(result.get("data"));
 	
 		// 2.如果进步一拿到内层的 map
-		Map<Object, Object> data = jsonToMap(result.get("data"));
+		/*Map<Object, Object> data = jsonToMap(result.get("data"));
 		System.out.println(data.get("name"));
-		System.out.println(data.get("age"));
+		System.out.println(data.get("age"));*/
 		// ================================
 	
-		Long beginTime = System.currentTimeMillis();
+		//Long beginTime = System.currentTimeMillis();
 		// 3.转换为对象
 		String personStr = "{\"id\":12,\"name\":\"mary\"}";
 		/*Person person = jsonToBean(personStr, Person.class);
 		System.out.println(person);*/
 	
-		System.out.println("耗时：" +( System.currentTimeMillis() - beginTime));
+		//System.out.println("耗时：" +( System.currentTimeMillis() - beginTime));
 	
 		}
 

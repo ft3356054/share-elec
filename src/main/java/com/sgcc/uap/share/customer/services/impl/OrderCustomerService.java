@@ -3,6 +3,7 @@ package com.sgcc.uap.share.customer.services.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -138,8 +139,18 @@ public class OrderCustomerService implements IOrderCustomerService{
 			//修改
 			String orderId = (String) map.get("orderId");
 			orderCustomer = orderCustomerRepository.findOne(orderId);
-			CrudUtils.mapToObject(map, orderCustomer,  "orderId");
-			result = orderCustomerRepository.save(orderCustomer);
+			
+			Map<String, Object> getStatus = orderStatus(map, orderCustomer);
+			
+			if("0".equals(getStatus.get("key"))){
+				Map<String, Object> newMap = (Map) getStatus.get("map");
+				CrudUtils.mapToObject(newMap, orderCustomer,  "orderId");
+				result = orderCustomerRepository.save(orderCustomer);
+			}else{
+				new Exception((String) getStatus.get("desc"));
+			}
+			
+			
 		}else{
 			String getNewOrderId = UuidUtil.getUuid46();
 			//上传图片
@@ -355,6 +366,56 @@ public class OrderCustomerService implements IOrderCustomerService{
 		
 		return resultBD;
 	}
+	
+	
+	private Map<String,Object> orderStatus(Map map,OrderCustomer orderCustomer) throws Exception{
+		Map<String,Object> result = new HashMap<String, Object>();
+		
+		String orderStatus = (String) map.get("orderStatus");
+		
+		if("4".equals(orderStatus)){
+	        ArrayList<String> sites = new ArrayList<>();
+	        sites.add("0");
+	        sites.add("1");
+	        sites.add("11");
+			//用户主动取消订单，只有在状态为0,1,11 时可以取消
+			if(sites.contains(orderCustomer.getOrderStatus())){
+				String dateString = TimeStamp.toString(new Date());
+				map.put("updateTime", dateString);
+				map.put("finishTime", dateString);
+				result.put("key", "0");
+				result.put("desc", "该订单处于不可取消状态");
+				result.put("map", map);
+			}else{
+				result.put("key", "0");
+				result.put("desc", "该订单处于不可取消状态");
+			}
+		}
+		
+		return result;
+	}
+	
+	private void sendNotify(Map map,OrderCustomer orderCustomer) throws Exception{
+		//获取Enum通知类
+		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0", "0");	
+		
+		//新增流水
+		Map<String,Object> mapOrderFlow = 
+				MapUtil.flowAdd(orderCustomer.getOrderId(), 0, 0, orderCustomer.getCustomerId(), TimeStamp.toString(new Date()), 0,  baseEnums.getEnumsA());
+		orderFlowService.saveOrderFlow(mapOrderFlow);
+		
+		//新增通知
+		String announceId = UuidUtil.getUuid32();
+		
+		Map<String,Object> mapNotify =
+				MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), orderCustomer.getOrderId());
+		notifyAnnounceService.saveNotifyAnnounce(mapNotify);
+		
+		Map<String,Object> mapNotifyUser = 
+				MapUtil.notifyUserAdd(orderCustomer.getCustomerId(), announceId, 0, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+	}
+	
 	
 	/**
 	 * 郭庆
