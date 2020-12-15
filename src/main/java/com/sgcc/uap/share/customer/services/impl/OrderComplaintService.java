@@ -186,7 +186,8 @@ public class OrderComplaintService implements IOrderComplaintService{
 						String announceId = UuidUtil.getUuid32();
 						
 						Map<String,Object> mapNotify =
-								MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), orderCustomer.getOrderId());
+								MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
+										"1",orderCustomer.getOrderId(),"");
 						notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 						
 						Map<String,Object> mapNotifyUser = 

@@ -1,6 +1,8 @@
 package com.sgcc.uap.share.vo;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+
 
 import com.sgcc.uap.rest.annotation.attribute.AttributeType;
 import com.sgcc.uap.rest.annotation.attribute.EditorType;
@@ -41,7 +43,17 @@ public class NotifyAnnounceVO extends ParentVO implements Serializable{
      * 属性CREATE_TIME
      */  
     @ViewAttribute(name ="createTime",caption="CREATE_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private String createTime;    
+    private Timestamp createTime;    
+    /** 
+     * 属性NOTIFY_TYPE
+     */  
+    @ViewAttribute(name ="notifyType",caption="NOTIFY_TYPE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String notifyType;    
+    /** 
+     * 属性ORDER_ID
+     */  
+    @ViewAttribute(name ="orderId",caption="ORDER_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String orderId;    
     /** 
      * 属性REMARK
      */  
@@ -124,15 +136,43 @@ public class NotifyAnnounceVO extends ParentVO implements Serializable{
      * CREATE_TIME的get方法
      * @return createTime
      */
-    public String getCreateTime(){
+    public Timestamp getCreateTime(){
         return createTime;
     }
     /**
      * CREATE_TIME的set方法
      * @param createTime
      */
-    public void setCreateTime(String createTime){
+    public void setCreateTime(Timestamp createTime){
 		this.createTime = createTime;
+	} 
+    /**
+     * NOTIFY_TYPE的get方法
+     * @return notifyType
+     */
+    public String getNotifyType(){
+        return notifyType;
+    }
+    /**
+     * NOTIFY_TYPE的set方法
+     * @param notifyType
+     */
+    public void setNotifyType(String notifyType){
+		this.notifyType = notifyType;
+	} 
+    /**
+     * ORDER_ID的get方法
+     * @return orderId
+     */
+    public String getOrderId(){
+        return orderId;
+    }
+    /**
+     * ORDER_ID的set方法
+     * @param orderId
+     */
+    public void setOrderId(String orderId){
+		this.orderId = orderId;
 	} 
     /**
      * REMARK的get方法
@@ -161,6 +201,8 @@ public class NotifyAnnounceVO extends ParentVO implements Serializable{
 				.append("TITLE"+":"+getTitle())
 				.append("CONTENT"+":"+getContent())
 				.append("CREATE_TIME"+":"+getCreateTime())
+				.append("NOTIFY_TYPE"+":"+getNotifyType())
+				.append("ORDER_ID"+":"+getOrderId())
 				.append("REMARK"+":"+getRemark())
 		        .toString(); 
 			

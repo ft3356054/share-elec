@@ -143,6 +143,13 @@ public class OrderCustomerService implements IOrderCustomerService{
 			Map<String, Object> getStatus = orderStatus(map, orderCustomer);
 			
 			if("0".equals(getStatus.get("key"))){
+				//上传图片
+				if (!file.isEmpty()) {
+					String fileName = (String) map.get("fileName");
+					String iconUrl = FileUtil.uploadFile(file, orderId,"ORDER_CUSTOMER",fileName);
+					map.put(fileName, iconUrl);
+				}
+				
 				Map<String, Object> newMap = (Map) getStatus.get("map");
 				CrudUtils.mapToObject(newMap, orderCustomer,  "orderId");
 				result = orderCustomerRepository.save(orderCustomer);
@@ -156,7 +163,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			String getNewOrderId = UuidUtil.getUuid46();
 			//上传图片
 			if (!file.isEmpty()) {
-				String customerDescriveIcon = FileUtil.uploadFile(file, getNewOrderId,"ORDER_CUSTOMER", "CUSTOMER_DESCRIVE_ICON");
+				String customerDescriveIcon = FileUtil.uploadFile(file, getNewOrderId,"ORDER_CUSTOMER", "customerDescriveIcon");
 				map.put("customerDescriveIcon", customerDescriveIcon);
 			}
 			
@@ -184,7 +191,8 @@ public class OrderCustomerService implements IOrderCustomerService{
 			String announceId = UuidUtil.getUuid32();
 			
 			Map<String,Object> mapNotify =
-					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), getNewOrderId);
+					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
+							"1",getNewOrderId,"");
 			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 			
 			Map<String,Object> mapNotifyUser = 
@@ -397,13 +405,26 @@ public class OrderCustomerService implements IOrderCustomerService{
 			if(sites.contains(orderCustomer.getOrderStatus())){
 				String dateString = TimeStamp.toString(new Date());
 				map.put("updateTime", dateString);
-				map.put("finishTime", dateString);
 				result.put("key", "0");
 				result.put("desc", "该订单处于可验收状态");
 				result.put("map", map);
 			}else{
 				result.put("key", "1");
 				result.put("desc", "该订单不处于可验收状态");
+			}
+		}else if("9".equals(orderStatus)){
+			ArrayList<String> sites = new ArrayList<>();
+	        sites.add("8"); //待用户评价
+			if(sites.contains(orderCustomer.getOrderStatus())){
+				String dateString = TimeStamp.toString(new Date());
+				map.put("updateTime", dateString);
+				map.put("finishTime", dateString);
+				result.put("key", "0");
+				result.put("desc", "该订单处于待评价状态");
+				result.put("map", map);
+			}else{
+				result.put("key", "1");
+				result.put("desc", "该订单不处于待评价状态");
 			}
 		}
 		
@@ -418,19 +439,31 @@ public class OrderCustomerService implements IOrderCustomerService{
 	 * @throws Exception
 	 */
 	private void sendNotify(Map map,OrderCustomer orderCustomer,int oper,int getPeople) throws Exception{
+		String status =(String)map.get("orderStatus");
+		//1维修 2支付 3验收 4评价
+		String notifyType ="1";
+		if("23".equals(status)){
+			notifyType ="2";
+		}else if("24".equals(status)){
+			notifyType ="3";
+		}else if("8".equals(status)){
+			notifyType ="4";
+		}
+		
 		//获取Enum通知类
-		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0", (String) map.get("orderStatus"));	
+		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0",  status);	
 		
 		//新增流水
 		Map<String,Object> mapOrderFlow = 
-				MapUtil.flowAdd(orderCustomer.getOrderId(), 0,  (int) map.get("orderStatus"), orderCustomer.getCustomerId(), TimeStamp.toString(new Date()), oper,  baseEnums.getEnumsA());
+				MapUtil.flowAdd(orderCustomer.getOrderId(), 0,  Integer.parseInt(status), orderCustomer.getCustomerId(), TimeStamp.toString(new Date()), oper,  baseEnums.getEnumsA());
 		orderFlowService.saveOrderFlow(mapOrderFlow);
 		
 		//新增通知
 		String announceId = UuidUtil.getUuid32();
 		
 		Map<String,Object> mapNotify =
-				MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), orderCustomer.getOrderId());
+				MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
+						notifyType,orderCustomer.getOrderId(),"");
 		notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 		
 		Map<String,Object> mapNotifyUser = 

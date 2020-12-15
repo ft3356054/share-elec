@@ -32,17 +32,18 @@ public class MapUtil {
 	 * 新增通知
 	 */
 	public static Map<String,Object> notifyAdd(String announceId,String serderId,String title,String content,
-			String createTime,String remark){
+			String createTime,String notifyType,String orderId,String remark){
 		Map<String,Object> mapNotify = new HashMap<String,Object>();
 		mapNotify.put("announceId",announceId);
 		mapNotify.put("serderId", announceId);
 		mapNotify.put("title", title);
 		mapNotify.put("content", content);
 		mapNotify.put("createTime", createTime);
+		mapNotify.put("notifyType", notifyType);
+		mapNotify.put("orderId", orderId);
 		mapNotify.put("remark", remark);
 		return mapNotify;
 	}
-	
 	
 	/**
 	 * 新增通知USER
