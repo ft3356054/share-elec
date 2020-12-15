@@ -52,6 +52,8 @@ public interface IBaseOrderTypeService {
 	 * @author 18511
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);
+	
+	public QueryResultObject queryAll();
 
 
 

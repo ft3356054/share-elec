@@ -35,7 +35,7 @@ public class MapUtil {
 			String createTime,String notifyType,String orderId,String remark){
 		Map<String,Object> mapNotify = new HashMap<String,Object>();
 		mapNotify.put("announceId",announceId);
-		mapNotify.put("serderId", announceId);
+		mapNotify.put("serderId", serderId);
 		mapNotify.put("title", title);
 		mapNotify.put("content", content);
 		mapNotify.put("createTime", createTime);

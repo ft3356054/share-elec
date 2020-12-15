@@ -27,7 +27,6 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.BaseIdentityDetail;
 import com.sgcc.uap.share.repositories.BaseIdentityDetailRepository;
 import com.sgcc.uap.share.services.IBaseIdentityDetailService;
-import com.sgcc.uap.utils.string.StringUtil;
 
 
 /**
@@ -96,6 +95,13 @@ public class BaseIdentityDetailService implements IBaseIdentityDetailService{
 		} 
 		return queryCommon(queryCondition);
 	}
+	
+	@Override
+	public QueryResultObject queryAll() {
+		List<BaseIdentityDetail> list = baseIdentityDetailRepository.findAll();
+		return RestUtils.wrappQueryResult(list);
+	}
+	
 	/**
 	 * 字符串类型模糊查询示例：
 	 * Predicate predicate = cb.like(root.get("employeeName"), "%" + 三 + "%");  查询名字中含有“三”的员工

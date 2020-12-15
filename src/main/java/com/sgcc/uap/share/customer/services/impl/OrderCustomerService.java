@@ -192,7 +192,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			
 			Map<String,Object> mapNotify =
 					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
-							"1",getNewOrderId,"");
+							"2",getNewOrderId,"");
 			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 			
 			Map<String,Object> mapNotifyUser = 

@@ -21,4 +21,5 @@ public interface NotifyAnnounceUserRepository extends JpaRepository<NotifyAnnoun
 
 	public List<NotifyAnnounceUser> findByAnnounceUserId(String announceUserId);
 	
+	public NotifyAnnounceUser findByAnnounceUserIdAndAnnounceId(String announceUserId,String announceId);
 }
