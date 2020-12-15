@@ -27,7 +27,7 @@ public interface INotifyAnnounceService {
 	 * @date 2020-11-26 14:32:47
 	 * @author 18511
 	 */
-	public QueryResultObject getNotifyAnnounceByAnnounceId(String announceId);
+	public QueryResultObject getNotifyAnnounceByAnnounceId(String announceId,String announceUserId);
 	public QueryResultObject getNotifyAnnounceByAnnounceIds(List<String> list);
 	/**
 	 * @remove:根据idObject删除

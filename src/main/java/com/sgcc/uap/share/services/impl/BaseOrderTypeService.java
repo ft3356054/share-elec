@@ -27,7 +27,6 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.BaseOrderType;
 import com.sgcc.uap.share.repositories.BaseOrderTypeRepository;
 import com.sgcc.uap.share.services.IBaseOrderTypeService;
-import com.sgcc.uap.utils.string.StringUtil;
 
 
 /**
@@ -95,6 +94,12 @@ public class BaseOrderTypeService implements IBaseOrderTypeService{
 			}
 		} 
 		return queryCommon(queryCondition);
+	}
+	
+	@Override
+	public QueryResultObject queryAll() {
+		List<BaseOrderType> list = baseOrderTypeRepository.findAll();
+		return RestUtils.wrappQueryResult(list);
 	}
 	/**
 	 * 字符串类型模糊查询示例：

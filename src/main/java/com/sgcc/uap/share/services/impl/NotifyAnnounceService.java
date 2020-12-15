@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.services.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -25,8 +26,11 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.NotifyAnnounce;
+import com.sgcc.uap.share.domain.NotifyAnnounceUser;
 import com.sgcc.uap.share.repositories.NotifyAnnounceRepository;
+import com.sgcc.uap.share.repositories.NotifyAnnounceUserRepository;
 import com.sgcc.uap.share.services.INotifyAnnounceService;
+import com.sgcc.uap.util.DateTimeUtil;
 
 
 /**
@@ -47,10 +51,20 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 	private NotifyAnnounceRepository notifyAnnounceRepository;
 	@Autowired
 	private ValidateService validateService;
+	@Autowired
+	private NotifyAnnounceUserRepository notifyAnnounceUserRepository;
 	
 	@Override
-	public QueryResultObject getNotifyAnnounceByAnnounceId(String announceId) {
+	public QueryResultObject getNotifyAnnounceByAnnounceId(String announceId,String announceUserId) {
 		NotifyAnnounce notifyAnnounce = notifyAnnounceRepository.findOne(announceId);
+		if(null!=notifyAnnounce&&!"".equals(announceUserId)){
+			NotifyAnnounceUser notifyAnnounceUser = notifyAnnounceUserRepository.findByAnnounceUserIdAndAnnounceId(announceUserId, announceId);
+			if("0".equals(notifyAnnounceUser.getState())){
+				notifyAnnounceUser.setState("1");
+				notifyAnnounceUser.setReadTime(DateTimeUtil.formatDateTime(new Date()));
+				notifyAnnounceUserRepository.save(notifyAnnounceUser);
+			}
+		}
 		return RestUtils.wrappQueryResult(notifyAnnounce);
 	}
 	@Override

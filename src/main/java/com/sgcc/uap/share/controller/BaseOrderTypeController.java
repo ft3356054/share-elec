@@ -167,6 +167,23 @@ public class BaseOrderTypeController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
+	@RequestMapping("/queryAll/")
+	public WrappedResult queryAll() {
+		try {
+			QueryResultObject queryResult = baseOrderTypeService.queryAll();
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
 	/**
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组

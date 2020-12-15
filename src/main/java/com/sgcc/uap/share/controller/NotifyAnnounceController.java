@@ -30,6 +30,7 @@ import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.services.INotifyAnnounceService;
 import com.sgcc.uap.share.vo.NotifyAnnounceVO;
+import com.sgcc.uap.util.MapUtil;
 
 
 /**
@@ -63,6 +64,8 @@ public class NotifyAnnounceController {
      */
 	@Autowired
 	private INotifyAnnounceService notifyAnnounceService;
+	
+	
 	/**
 	 * @getByAnnounceId:根据announceId查询
 	 * @param announceId
@@ -73,7 +76,7 @@ public class NotifyAnnounceController {
 	@RequestMapping(value = "/{announceId}")
 	public WrappedResult getByAnnounceId(@PathVariable String announceId) {
 		try {
-			QueryResultObject result = notifyAnnounceService.getNotifyAnnounceByAnnounceId(announceId);
+			QueryResultObject result = notifyAnnounceService.getNotifyAnnounceByAnnounceId(announceId,"");
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -85,6 +88,33 @@ public class NotifyAnnounceController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	/**
+	 * @getByAnnounceId:根据announceId查询，并更新user notify
+	 * @param announceId
+	 * @return WrappedResult 查询结果
+	 * @date 2020-11-26 14:32:47
+	 * @author 18511
+	 */
+	@RequestMapping(value = "/read/")
+	public WrappedResult getByAnnounceId(@QueryRequestParam("params") RequestCondition requestCondition) {
+		try {
+			Map<String, String> map = MapUtil.getParam(requestCondition);
+			String announceId = map.get("announceId");
+			String announceUserId = map.get("announceUserId");
+			
+			QueryResultObject result = notifyAnnounceService.getNotifyAnnounceByAnnounceId(announceId,announceUserId);
+			logger.info("查询成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
 	/**
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
