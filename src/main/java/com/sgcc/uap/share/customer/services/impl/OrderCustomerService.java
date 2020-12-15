@@ -504,6 +504,14 @@ public class OrderCustomerService implements IOrderCustomerService{
 		OrderCustomer orderIdString=orderCustomerRepository.findOne(electricianId);
 		return orderIdString;
 	}
-
+	
+	/*
+	public QueryResultObject queryOrderDetails(String orderId) {
+		List<OrderCustomer> result=orderCustomerRepository.findByOrderDetails(orderId);
+		long count=0;
+		count=result.size();
+		return RestUtils.wrappQueryResult(result,count);
+	}
+*/
 
 }

@@ -3,6 +3,7 @@ package com.sgcc.uap.share.electrician.repositories;
 import java.util.Collection;
 import java.util.List;
 
+import org.aspectj.weaver.tools.Trace;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -62,6 +63,16 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	
 	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_TYPE != 9",nativeQuery=true)
 	List<OrderElectrician> queryAllDoing(String electricianId);
+
+	/**
+	 * 根据订单id获取电工订单
+	 * @param orderId
+	 * @return
+	 */
+	@Query(value="select * from order_electrician where ORDER_ID=?",nativeQuery=true)
+	OrderElectrician findByOrderId(String orderId);
+
+	
 	
 	
 	

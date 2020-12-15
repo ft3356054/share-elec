@@ -736,7 +736,7 @@ public class OrderElectricianController {
 		
 		//1.根据电工ID查询电工订单表中的order_id,然后载根据order_id查询客户订单，进行显示
 		//1.1 查询电工订单，只返回order_id
-		 OrderElectrician order_idsString=orderElectricianService.findOrderId(electricianId);
+		 OrderElectrician order_idsString=orderElectricianService.findByOrderId(electricianId);
 		//获取order_id
 		String orderId=order_idsString.getOrDERId();
 		//获取客户订单的信息
@@ -875,18 +875,7 @@ public class OrderElectricianController {
 			
 			QueryResultObject queryResult=ElectricianInfoService.queryElectricianInfo(electricianId);
 			
-			
-			
 			return WrappedResult.successWrapedResult(queryResult);
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -935,11 +924,64 @@ public WrappedResult electrician_evaluate(
 			}
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
-		
+
+	}
+	
+	/**
+	 * 订单详情   查询的是电工状态为0，还未预约的状态
+	 * 
+	 */
+	
+	@RequestMapping(value="/orderDetails/{orderId}",name="电工订单详情页")
+	public WrappedResult queryOrderDetails(@PathVariable(value="orderId") String orderId){
+		try {
+			//查询客户订单
+			QueryResultObject queryResult=orderCustomerService.getOrderCustomerByOrderId(orderId);
+			List<OrderCustomer> orderCustomersList=queryResult.getItems();
+			List<OrderCustomerVO> orderCustomersVOList=new ArrayList<>();
+			
+			OrderCustomer orderCustomer=orderCustomersList.get(0);
+			OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
+			//如果客户订单是11，则说明是一个旧的订单，还需要查询电工订单，查询出电工描述
+			if (orderCustomer.getOrderStatus().equals("11")) {//说明是一个老订单，则需要查询电工订单
+				OrderElectrician electrician=orderElectricianService.findByOrderId(orderId);
+				//将查询出来的电工描述插入到VO中
+				orderCustomerVO.setCustomerDescrive(electrician.getElectricianDescrive());
+				
+				
+			} 
+			//else {//订单直接转换vo，返回到前端
+
+			//}
+			
+			BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
+			orderCustomersVOList.add(orderCustomerVO);
+			queryResult.setItems(orderCustomersVOList);
+			
+			System.out.println("我查询成功了");
+			return WrappedResult.successWrapedResult(queryResult);
+			
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "保存异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
 		
 	}
 	
 	
+	/**
+	 * 电工预约时间去维修
+	 */
+	@RequestMapping(value="/booking",name="电工预约去维修")
+	public WrappedResult booking(){
+		
+		return null;
+	}
 	
 	
 	
