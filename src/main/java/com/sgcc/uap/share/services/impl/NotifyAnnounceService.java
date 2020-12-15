@@ -27,10 +27,15 @@ import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.NotifyAnnounce;
 import com.sgcc.uap.share.domain.NotifyAnnounceUser;
+import com.sgcc.uap.share.domain.OrderElectrician;
+import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.repositories.NotifyAnnounceRepository;
 import com.sgcc.uap.share.repositories.NotifyAnnounceUserRepository;
 import com.sgcc.uap.share.services.INotifyAnnounceService;
 import com.sgcc.uap.util.DateTimeUtil;
+import com.sgcc.uap.util.MapUtil;
+import com.sgcc.uap.util.TimeStamp;
+import com.sgcc.uap.util.UuidUtil;
 
 
 /**
@@ -53,6 +58,12 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 	private ValidateService validateService;
 	@Autowired
 	private NotifyAnnounceUserRepository notifyAnnounceUserRepository;
+	@Autowired
+	private OrderElectricianRepository orderElectricianRepository;
+	@Autowired
+	private NotifyAnnounceUserService notifyAnnounceUserService;
+	
+	
 	
 	@Override
 	public QueryResultObject getNotifyAnnounceByAnnounceId(String announceId,String announceUserId) {
@@ -249,5 +260,35 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 		return new PageRequest(pageIndex - 1, pageSize, null);
 	}
 
-
+	@Override
+	public QueryResultObject hastenByCustomer(String orderId) {
+		try {
+			ArrayList<String> orderElectricianType = new ArrayList<String>();
+			orderElectricianType.add("4");
+			orderElectricianType.add("5");
+			OrderElectrician orderElectrician = orderElectricianRepository.findByOrderIdAndOrderElectricianTypeNotIn(orderId, orderElectricianType);
+			
+			if(null!=orderElectrician){
+				String electricianId = orderElectrician.getElectricianId();
+				
+				//新增通知
+				String announceId = UuidUtil.getUuid32();
+				
+				Map<String,Object> mapNotify =
+						MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", "用户催单", "用户催单", TimeStamp.toString(new Date()), "1",orderId,"");
+				
+				saveNotifyAnnounce(mapNotify);
+				
+				
+				Map<String,Object> mapNotifyUser = 
+						MapUtil.notifyUserAdd(electricianId, announceId, 2, 0, TimeStamp.toString(new Date()), "用户催单");
+				notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+				
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return RestUtils.wrappQueryResult(null);
+	}
 }

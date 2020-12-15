@@ -54,6 +54,6 @@ public interface INotifyAnnounceService {
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);
 
-
+	public QueryResultObject hastenByCustomer(String orderId);
 
 }
