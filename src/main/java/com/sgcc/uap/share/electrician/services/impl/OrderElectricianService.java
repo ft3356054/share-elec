@@ -203,8 +203,20 @@ public class OrderElectricianService implements IOrderElectricianService{
 			//新增通知
 			String announceId = UuidUtil.getUuid32();
 			
+			String status=(String) map.get("orderStatus");
+			String notifyType="1";
+			if ("23".equals(status)) {
+				notifyType="2";
+				
+			}else if ("24".equals(status)) {
+				notifyType="3";
+			}else if ("8".equals(status)) {
+				notifyType="4";
+			}
+			
 			Map<String,Object> mapNotify =
-					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), getNewOrderId);
+					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
+							notifyType,orderElectrician.getOrDERId(),getNewOrderId);
 			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 			
 			Map<String,Object> mapNotifyUser = 
@@ -564,8 +576,20 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			//新增通知
 			String announceId = UuidUtil.getUuid32();
 			
+			String status=(String) map.get("orderStatus");
+			String notifyType="1";
+			if ("23".equals(status)) {
+				notifyType="2";
+				
+			}else if ("24".equals(status)) {
+				notifyType="3";
+			}else if ("8".equals(status)) {
+				notifyType="4";
+			}
+			
 			Map<String,Object> mapNotify =
-					MapUtil.notifyAdd(announceId, (String)map.get("electricianId"), baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), getNewOrderId);
+					MapUtil.notifyAdd(announceId, (String)map.get("electricianId"), baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()),
+							notifyType,orderElectrician.getOrDERId(),getNewOrderId);
 			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 			
 			Map<String,Object> mapNotifyUser = 

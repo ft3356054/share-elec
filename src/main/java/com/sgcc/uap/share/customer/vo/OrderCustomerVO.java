@@ -164,6 +164,11 @@ public class OrderCustomerVO extends ParentVO implements Serializable{
     private String remarkNum2;  
     
     private String distance;
+    
+    /**
+     * 用来存放勘察情况描述的
+     */
+    private String electrician_descrive;
     /**
      * OrderCustomerVO构造函数
      */
@@ -629,6 +634,7 @@ public class OrderCustomerVO extends ParentVO implements Serializable{
 				.append("REMARK_NUM1"+":"+getRemarkNum1())
 				.append("REMARK_NUM2"+":"+getRemarkNum2())
 				.append("Distance"+":"+getDistance())
+				.append("getElectrician_descrive"+":"+getElectrician_descrive())
 		        .toString(); 
 			
     }
@@ -639,6 +645,14 @@ public class OrderCustomerVO extends ParentVO implements Serializable{
 
 	public void setDistance(String distance) {
 		this.distance = distance;
+	}
+
+	public String getElectrician_descrive() {
+		return electrician_descrive;
+	}
+
+	public void setElectrician_descrive(String electrician_descrive) {
+		this.electrician_descrive = electrician_descrive;
 	} 
    
 
