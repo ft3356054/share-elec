@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.customer.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -14,13 +15,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.rest.annotation.ColumnRequestParam;
 import com.sgcc.uap.rest.annotation.QueryRequestParam;
 import com.sgcc.uap.rest.annotation.attribute.ViewAttributeData;
-import com.sgcc.uap.rest.support.FormRequestObject;
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
@@ -30,6 +32,7 @@ import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.customer.services.IOrderComplaintService;
 import com.sgcc.uap.share.customer.vo.OrderComplaintVO;
+import com.sgcc.uap.util.JsonUtils;
 
 
 /**
@@ -115,6 +118,37 @@ public class OrderComplaintController {
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public WrappedResult saveOrUpdate(
+		@RequestParam(value = "items", required = false) String items,@RequestParam("myFile") MultipartFile file
+		) throws IOException {	
+	
+		try {
+			QueryResultObject result = new QueryResultObject();
+			
+			if(items != null && !items.isEmpty()){
+				Map<String,Object> map = JsonUtils.parseJSONstr2Map(items); 
+				result.setFormItems(orderComplaintService.saveOrderComplaint(map,file));
+			}
+			
+			logger.info("保存数据成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (ServiceValidatorBaseException e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "校验异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedValidateWrappedResult(errorMessage);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "保存异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	/*@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public WrappedResult saveOrUpdate(@RequestBody FormRequestObject<Map<String,Object>> params) {
 		try {
 			if(params == null){
@@ -144,7 +178,7 @@ public class OrderComplaintController {
 			}
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
-	}
+	}*/
 	/**
 	 * @query:查询
 	 * @param requestCondition

@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.customer.services.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -9,12 +10,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.mdd.runtime.validate.ValidateService;
@@ -24,10 +27,25 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.controller.WebSocket;
 import com.sgcc.uap.share.customer.repositories.OrderComplaintRepository;
+import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderComplaintService;
+import com.sgcc.uap.share.domain.BaseEnums;
+import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.domain.OrderComplaint;
-import com.sgcc.uap.utils.string.StringUtil;
+import com.sgcc.uap.share.domain.OrderCustomer;
+import com.sgcc.uap.share.domain.OrderElectrician;
+import com.sgcc.uap.share.electrician.repositories.ElectricianInfoRepository;
+import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
+import com.sgcc.uap.share.services.IBaseEnumsService;
+import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
+import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
+import com.sgcc.uap.util.DateTimeUtil;
+import com.sgcc.uap.util.FileUtil;
+import com.sgcc.uap.util.MapUtil;
+import com.sgcc.uap.util.TimeStamp;
+import com.sgcc.uap.util.UuidUtil;
 
 
 /**
@@ -47,6 +65,23 @@ public class OrderComplaintService implements IOrderComplaintService{
 	@Autowired
 	private OrderComplaintRepository orderComplaintRepository;
 	@Autowired
+	private OrderCustomerRepository orderCustomerRepository;
+	@Autowired
+	private OrderElectricianRepository orderElectricianRepository;
+	@Autowired
+	private ElectricianInfoRepository electricianInfoRepository;
+	@Autowired
+    private IBaseEnumsService baseEnumsService;
+	@Autowired
+	private NotifyAnnounceService notifyAnnounceService;
+	@Autowired
+	private NotifyAnnounceUserService notifyAnnounceUserService;
+	@Autowired
+    private WebSocket webSocket;
+	@Autowired
+	private OrderFlowService orderFlowService;
+	
+	@Autowired
 	private ValidateService validateService;
 	
 	@Override
@@ -64,7 +99,7 @@ public class OrderComplaintService implements IOrderComplaintService{
 			orderComplaintRepository.delete(id);
 		}
 	}
-	@Override
+	/*@Override
 	public OrderComplaint saveOrderComplaint(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(OrderComplaint.class,map);
 		OrderComplaint orderComplaint = new OrderComplaint();
@@ -76,7 +111,114 @@ public class OrderComplaintService implements IOrderComplaintService{
 			CrudUtils.transMap2Bean(map, orderComplaint);
 		}
 		return orderComplaintRepository.save(orderComplaint);
+	}*/
+	@Override
+	@Transactional
+	public OrderComplaint saveOrderComplaint(Map<String,Object> map,MultipartFile file) throws Exception{
+		validateService.validateWithException(OrderComplaint.class,map);
+		OrderComplaint orderComplaint = new OrderComplaint();
+		OrderComplaint result = new OrderComplaint();
+		if (map.containsKey("orderComplaintId")) {
+			//修改
+			String orderComplaintId = (String) map.get("orderComplaintId");
+			orderComplaint = orderComplaintRepository.findOne(orderComplaintId);
+			CrudUtils.mapToObject(map, orderComplaint,  "orderComplaintId");
+			result = orderComplaintRepository.save(orderComplaint);
+			
+			//上传图片
+			if (!file.isEmpty()) {
+				String customerDescriveIcon = FileUtil.uploadFile(file, orderComplaintId,"ORDER_COMPLAINT", "COMPLAINT_PICTURE");
+				map.put("customerDescriveIcon", customerDescriveIcon);
+			}
+			
+		}else{
+			String orderId = (String) map.get("orderId");
+			String complaintDetail = (String) map.get("complaintDetail");
+			String getNewOrderId = UuidUtil.getUuid46();
+			
+			//查询order表
+			OrderCustomer orderCustomer = orderCustomerRepository.findOne(orderId);
+			if(null!=orderCustomer){
+				ArrayList<String> sites = new ArrayList<>();
+		        sites.add("0");
+		        sites.add("1");
+		        sites.add("11");
+				if(!sites.contains(orderCustomer.getOrderStatus())){
+					map.put("customerId", orderCustomer.getCustomerId());
+					map.put("customerName", orderCustomer.getCustomerName());
+					map.put("customerPhonenumber", orderCustomer.getCustomerPhonenumber());
+					
+					List<String> listStatus = new ArrayList<String>();
+					listStatus.add("1");
+					listStatus.add("4");
+					listStatus.add("5");
+					OrderElectrician orderElectrician = orderElectricianRepository.findByOrderIdAndOrderElectricianTypeNotIn(orderId, listStatus);
+					if(null!=orderElectrician){
+						ElectricianInfo electricianInfo = electricianInfoRepository.findOne(orderElectrician.getElectricianId());
+						map.put("companyId", electricianInfo.getSubCompanyId());
+						map.put("companyName", electricianInfo.getCompanyName());
+						map.put("complaintType", "0");
+						map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
+						map.put("complaintStatus", "0");
+						map.put("orderComplaintId", getNewOrderId);
+						map.put("orderId", orderId);
+						map.put("complaintDetail", complaintDetail);
+						CrudUtils.transMap2Bean(map, orderComplaint);
+						result = orderComplaintRepository.save(orderComplaint);
+						
+						
+						//上传图片
+						if (!file.isEmpty()) {
+							String iconUrl = FileUtil.uploadFile(file, getNewOrderId,"ORDER_COMPLAINT", "COMPLAINT_PICTURE");
+							map.put("complaintPicture", iconUrl);
+						}
+						
+						
+						//获取Enum通知类
+						BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("2", "0");	
+						
+						//新增流水
+						Map<String,Object> mapOrderFlow = 
+								MapUtil.flowAdd(orderCustomer.getOrderId(), 0, Integer.parseInt(orderCustomer.getOrderStatus()), (String)map.get("customerId"), TimeStamp.toString(new Date()), 0,  baseEnums.getEnumsA());
+						orderFlowService.saveOrderFlow(mapOrderFlow);
+						
+						//新增通知
+						String announceId = UuidUtil.getUuid32();
+						
+						Map<String,Object> mapNotify =
+								MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), orderCustomer.getOrderId());
+						notifyAnnounceService.saveNotifyAnnounce(mapNotify);
+						
+						Map<String,Object> mapNotifyUser = 
+								MapUtil.notifyUserAdd((String)map.get("customerId"), announceId, 0, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+						notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
+						
+						//发送websocket消息
+				        webSocket.sendMessage("投诉成功");
+						
+					}else{
+						throw new Exception("未查询到电工订单");
+					}
+					
+				}else{
+					//订单完结15日后，搬迁到历史表
+					throw new Exception("当前订单不可被投诉");
+				}
+				
+			}else{
+				//订单完结15日后，搬迁到历史表
+				throw new Exception("投诉期已过");
+			}
+		}
+		return result;
 	}
+	
+	
+	
+	
+	
+	
+	
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
 		if(queryCondition == null){
