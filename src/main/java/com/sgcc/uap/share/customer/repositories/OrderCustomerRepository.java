@@ -68,6 +68,16 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	List<OrderCustomer> findByOrderStatusLike();
 
 	
+	/**
+	 * 查询详情页
+	 * @param orderElectricianId
+	 * @return
+	 */
+	/*
+	@Query(value="select * from order_customer where ORDER_ID=?",nativeQuery=true)
+	List<OrderCustomer> findByOrderDetails(String orderId);
+*/
+	
 
 
 	

@@ -503,10 +503,10 @@ public class OrderElectricianService implements IOrderElectricianService{
 		return null;
 	}
 	@Override
-public OrderElectrician findOrderId(String electricianId) {
+	public OrderElectrician findByOrderId(String orderId) {
 		
 		// TODO Auto-generated method stub
-		OrderElectrician orderIdString=orderElectricianRepository.findOne(electricianId);
+		OrderElectrician orderIdString=orderElectricianRepository.findByOrderId(orderId);
 		return orderIdString;
 	}
 	
