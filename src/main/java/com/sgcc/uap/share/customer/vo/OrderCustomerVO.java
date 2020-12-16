@@ -169,6 +169,20 @@ public class OrderCustomerVO extends ParentVO implements Serializable{
      * 用来存放勘察情况描述的
      */
     private String electrician_descrive;
+    
+    /**
+     * 用来存放退单原因
+     */
+    private String chargeback_reason;
+    
+    
+    private String constructionContent;
+    
+    
+    
+    
+    
+    
     /**
      * OrderCustomerVO构造函数
      */
@@ -635,6 +649,8 @@ public class OrderCustomerVO extends ParentVO implements Serializable{
 				.append("REMARK_NUM2"+":"+getRemarkNum2())
 				.append("Distance"+":"+getDistance())
 				.append("getElectrician_descrive"+":"+getElectrician_descrive())
+				.append("CHARGEBACK_REASON"+":"+getChargeback_reason())
+				.append("CONSTRUCTION_CONTENT"+":"+getConstructionContent())
 		        .toString(); 
 			
     }
@@ -653,6 +669,22 @@ public class OrderCustomerVO extends ParentVO implements Serializable{
 
 	public void setElectrician_descrive(String electrician_descrive) {
 		this.electrician_descrive = electrician_descrive;
+	}
+
+	public String getChargeback_reason() {
+		return chargeback_reason;
+	}
+
+	public void setChargeback_reason(String chargeback_reason) {
+		this.chargeback_reason = chargeback_reason;
+	}
+
+	public String getConstructionContent() {
+		return constructionContent;
+	}
+
+	public void setConstructionContent(String constructionContent) {
+		this.constructionContent = constructionContent;
 	} 
    
 

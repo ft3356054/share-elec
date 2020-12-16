@@ -69,8 +69,8 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	 * @param orderId
 	 * @return
 	 */
-	@Query(value="select * from order_electrician where ORDER_ID=?",nativeQuery=true)
-	OrderElectrician findByOrderId(String orderId);
+	@Query(value="select * from order_electrician where ORDER_ID=? and ORDER_ELECTRICIAN_TYPE=?",nativeQuery=true)
+	OrderElectrician findByOrderId(String orderId,String orderelectriciantype);
 
 	
 	

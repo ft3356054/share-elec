@@ -55,6 +55,14 @@ public class OrderElectrician implements Serializable {
     @Column(name = "ELECTRICIAN_PHONENUMBER", nullable = true, length = 32)
     private String electricianPhonenumber ;
     
+    /**
+     * 
+     */
+    @Column(name = "CONSTRUCTION_CONTENT", nullable = true, length = 32)
+    private String constructionContent ;
+    
+    
+    
     /** 
      * 电工地址
      */
@@ -776,6 +784,7 @@ public class OrderElectrician implements Serializable {
 		} else if (!orderElectricianId.equals(other.orderElectricianId)) {
 			return false;
 		}
+		
 		if (electricianId == null) {
 			if (other.electricianId != null) {
 				return false;
@@ -790,6 +799,7 @@ public class OrderElectrician implements Serializable {
 		} else if (!electricianName.equals(other.electricianName)) {
 			return false;
 		}
+		
 		if (electricianPhonenumber == null) {
 			if (other.electricianPhonenumber != null) {
 				return false;
@@ -797,6 +807,20 @@ public class OrderElectrician implements Serializable {
 		} else if (!electricianPhonenumber.equals(other.electricianPhonenumber)) {
 			return false;
 		}
+		//CONSTRUCTION_CONTENT     constructionContent
+		if (constructionContent == null) {
+			if (other.constructionContent != null) {
+				return false;
+			}
+		} else if (!constructionContent.equals(other.constructionContent)) {
+			return false;
+		}
+		
+		
+		
+		
+		
+		
 		if (electricianAddress == null) {
 			if (other.electricianAddress != null) {
 				return false;
@@ -993,8 +1017,20 @@ public class OrderElectrician implements Serializable {
 			+ ", remarkStr3=" + remarkStr3
 			+ ", remarkNum1=" + remarkNum1
 			+ ", remarkNum2=" + remarkNum2
+			+ ", constructionContent=" + constructionContent
 			+ ", orDERId=" + orDERId;
 	}
+	
+	//CONSTRUCTION_CONTENT   ConstructionContent
+	
+	
+	 public String getConstructionContent(){
+        return this.constructionContent;
+    }
+	
+	 public void setConstructionContent(String constructionContent){
+			this.constructionContent = constructionContent;
+		}
    
     
     /**

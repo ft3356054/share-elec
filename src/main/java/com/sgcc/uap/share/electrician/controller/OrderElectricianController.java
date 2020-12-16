@@ -44,12 +44,14 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
+import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.customer.services.impl.OrderFlowService;
 import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
+import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderFlow;
@@ -180,7 +182,7 @@ public class OrderElectricianController {
 	 * @date 2020-11-26 14:32:47
 	 * @author 18511
 	 */
-	
+	/*
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public WrappedResult saveOrUpdate(@RequestBody FormRequestObject<Map<String,Object>> params) {
 
@@ -213,6 +215,7 @@ public class OrderElectricianController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
 	
 	/*public WrappedResult saveOrUpdate(@RequestBody FormRequestObject<Map<String,Object>> params) {*/
 	
@@ -942,6 +945,7 @@ public WrappedResult electrician_evaluate(
 			
 			OrderCustomer orderCustomer=orderCustomersList.get(0);
 			OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
+			
 			//如果客户订单是11，则说明是一个旧的订单，还需要查询电工订单，查询出电工描述
 			if (orderCustomer.getOrderStatus().equals("11")) {//说明是一个老订单，则需要查询电工订单
 				OrderElectrician electrician=orderElectricianService.findByOrderId(orderId);
@@ -976,21 +980,94 @@ public WrappedResult electrician_evaluate(
 	
 	/**
 	 * 电工预约时间去维修
+	 * 直接传送一个VO对象,设置订单状态是21
+	 * 
+	 * http://localhost:8083/orderCustomer/save
+
+		{"orderId":"2020120115365773cd37ab87f44dbaaed5c9976b70de26","orderStatus":"8"}
 	 */
 	@RequestMapping(value="/booking",name="电工预约去维修")
-	public WrappedResult booking(){
+	public WrappedResult booking(@RequestParam(value = "items", required = false) String items,@RequestParam("myFile") MultipartFile file){
+	
 		
-		return null;
+		try {
+			
+			QueryResultObject result = new QueryResultObject();
+			
+			if(items != null && !items.isEmpty()){
+				Map<String,Object> map = JsonUtils.parseJSONstr2Map(items); 
+				//在这里进行分化，分别保存客户订单和电工订单
+				//获取订单的状态
+				Map<String,Object> orderCustomerMap=new HashMap<>();
+				Map<String,Object> orderElectricianMap=new HashMap<>();
+				
+				
+				String orderElectricianType=(String) map.get("orderElectricianType");//获取电工订单的订单状态是否是5
+				if(orderElectricianType.equals("5")){//说明是电工的退单，则将旧订单查出来后保存成新 的订单
+					//查询出客户订单的详情
+					String orderId=(String) map.get("orderId");
+					QueryResultObject resultObject=new QueryResultObject();
+					resultObject=orderCustomerService.findByOrderId(orderId);
+					List<OrderCustomer> orderCustomers=resultObject.getItems();
+					//获取一个客户订单
+					OrderCustomer orderCustomerNew=orderCustomers.get(0);
+					
+					//获取电工订单,状态是：5的订单
+					OrderElectrician orderElectrician=orderElectricianService.findByOrderId(orderId,orderElectricianType);
+					
+					//查询电工的详细信息
+					String electricianId=(String) map.get("electricianId");
+					ElectricianInfo electricianInfo=ElectricianInfoService.findInfo(electricianId);
+					
+					//创建一个新的电工订单
+					orderElectricianMap.put("orderId", orderId);
+					orderElectricianMap.put("electricianId",electricianId);
+					orderElectricianMap.put("electricianName",electricianInfo.getElectricianName() );
+					orderElectricianMap.put("electricianPhonenumber",electricianInfo.getElectricianPhonenumber());
+					orderElectricianMap.put("electricianAddress",electricianInfo);
+					orderElectricianMap.put("electricianPrice",orderCustomerNew.getCustomerPrice());
+					orderElectricianMap.put("orderTypeId",0);
+					orderElectricianMap.put("payStatus",orderCustomerNew.getPayStatus());
+					orderElectricianMap.put("createTime",orderCustomerNew.getCreateTime());
+					orderElectricianMap.put("electricianDescrive",orderElectrician.getElectricianDescrive());
+					orderElectricianMap.put("electricianDescriveIcon",orderElectrician.getElectricianDescriveIcon());
+					orderElectricianMap.put("chargebackReason",orderElectrician.getChargebackReason());
+					
+					
+					
+					
+					
+				}
+				//如果状态是：1，等待接单（用户已支付上门费）状态转为2 
+				orderCustomerMap.put("appointmentTime", map.get("appointmentTime"));//给客户订单设置更新时间
+					orderCustomerMap.put("orderStatus", "2");
+					orderElectricianMap.put("orderElectricianType", "21");
+					result.setFormItems(orderCustomerService.saveOrderCustomer(map,file));
+					result.setFormItems(orderElectricianService.saveOrderElectrician(orderElectricianMap,file));
+				
+				
+				
+				
+				//result.setFormItems(orderCustomerService.saveOrderCustomer(map,file));
+			}
+			
+			logger.info("保存数据成功"); 
+			return WrappedResult.successWrapedResult(result);
+		}
+		
+		catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "保存异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+			
+		
+		
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
+	}
 	
 	
 	

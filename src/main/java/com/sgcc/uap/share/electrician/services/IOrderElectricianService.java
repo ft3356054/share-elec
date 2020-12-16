@@ -46,7 +46,7 @@ public interface IOrderElectricianService {
 	 * @date 2020-11-26 14:32:47
 	 * @author 18511
 	 */
-	public OrderElectrician saveOrderElectrician(Map<String,Object> map) throws Exception;
+	public OrderElectrician saveOrderElectrician(Map<String,Object> map,MultipartFile file) throws Exception;
 	/**
 	 * @query:根据查询条件 查询
 	 * @param queryCondition 查询条件
@@ -73,10 +73,12 @@ QueryResultObject queryMore(RequestCondition queryCondition, String electricianI
 public QueryResultObject queryWaitToDo(RequestCondition requestCondition, String electricianId);
 public OrderElectrician saveOrderElectrician2(Map<String, Object> map,String electricianId) throws Exception ;
 public OrderElectrician findByOrDERIdAndOrderElectricianType(String orderId);
-public OrderElectrician findByOrderId(String orderId);
+
 public QueryResultObject queryAllDoing(String electricianId);
 public Object saveElectricianEvaluate(Map<String, Object> map, MultipartFile file) ;
-
+OrderElectrician findByOrderId(String orderId, String orderelectriciantype);
+//重写方法
+OrderElectrician findByOrderId(String orderId);
 
 
 }
