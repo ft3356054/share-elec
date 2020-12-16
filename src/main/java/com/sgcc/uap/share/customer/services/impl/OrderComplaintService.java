@@ -134,7 +134,7 @@ public class OrderComplaintService implements IOrderComplaintService{
 		}else{
 			String orderId = (String) map.get("orderId");
 			String complaintDetail = (String) map.get("complaintDetail");
-			String getNewOrderId = UuidUtil.getUuid46();
+			String getNewOrderId = UuidUtil.getIntUuid32();
 			
 			//查询order表
 			OrderCustomer orderCustomer = orderCustomerRepository.findOne(orderId);

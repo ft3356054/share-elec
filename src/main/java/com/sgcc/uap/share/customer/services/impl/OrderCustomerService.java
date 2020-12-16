@@ -160,7 +160,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			
 			
 		}else{
-			String getNewOrderId = UuidUtil.getUuid46();
+			String getNewOrderId = UuidUtil.getIntUuid32();
 			//上传图片
 			if (!file.isEmpty()) {
 				String customerDescriveIcon = FileUtil.uploadFile(file, getNewOrderId,"ORDER_CUSTOMER", "customerDescriveIcon");
