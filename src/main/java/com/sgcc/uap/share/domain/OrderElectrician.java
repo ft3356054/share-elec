@@ -196,8 +196,10 @@ public class OrderElectrician implements Serializable {
     /** 
      * CONSTRUCTION_CONTENT
      */
+    /*
     @Column(name = "CONSTRUCTION_CONTENT", nullable = true, length = 512)
     private String constructionContent ;
+    */
     
     /** 
      * ORDER_ID
@@ -1054,7 +1056,7 @@ public class OrderElectrician implements Serializable {
 	
 	//CONSTRUCTION_CONTENT   ConstructionContent
 	
-	
+	/*
 	 public String getConstructionContent(){
         return this.constructionContent;
     }
@@ -1062,6 +1064,7 @@ public class OrderElectrician implements Serializable {
 	 public void setConstructionContent(String constructionContent){
 			this.constructionContent = constructionContent;
 		}
+		*/
    
     
     /**
