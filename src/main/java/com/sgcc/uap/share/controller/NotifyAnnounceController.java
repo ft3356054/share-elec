@@ -178,6 +178,29 @@ public class NotifyAnnounceController {
 	
 	
 	/**
+	 * @getByAnnounceId:根据announceId查询
+	 * @param announceId
+	 * @return WrappedResult 查询结果
+	 * @date 2020-11-26 14:32:47
+	 * @author 18511
+	 */
+	@RequestMapping(value = "/hasten/{orderId}")
+	public WrappedResult hastenByCustomer(@PathVariable String orderId) {
+		try {
+			QueryResultObject result = notifyAnnounceService.hastenByCustomer(orderId);
+			logger.info("查询成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
+	/**
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果

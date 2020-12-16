@@ -30,10 +30,8 @@ public class OrderElectrician implements Serializable {
      * 电工订单ID
      */
 	@Id
-	/*
-	@GeneratedValue(generator = "idGenerator")
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")
-	*/
+	/*@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "uuid")*/
     @Column(name = "ORDER_ELECTRICIAN_ID", nullable = false, length = 64)
     private String orderElectricianId ;
     
@@ -196,6 +194,12 @@ public class OrderElectrician implements Serializable {
     private String remarkNum2 ;
     
     /** 
+     * CONSTRUCTION_CONTENT
+     */
+    @Column(name = "CONSTRUCTION_CONTENT", nullable = true, length = 512)
+    private String constructionContent ;
+    
+    /** 
      * ORDER_ID
      */
     @Column(name = "ORDER_ID", nullable = false, length = 64)
@@ -214,7 +218,7 @@ public class OrderElectrician implements Serializable {
      * @getOrderElectricianId:电工订单ID的get方法
      * @params
      * @return orderElectricianId
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getOrderElectricianId(){
@@ -224,7 +228,7 @@ public class OrderElectrician implements Serializable {
      * @setOrderElectricianId:电工订单ID的set方法
      * @param orderElectricianId
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setOrderElectricianId(String orderElectricianId){
@@ -238,7 +242,7 @@ public class OrderElectrician implements Serializable {
      * @getElectricianId:电工ID的get方法
      * @params
      * @return electricianId
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getElectricianId(){
@@ -248,7 +252,7 @@ public class OrderElectrician implements Serializable {
      * @setElectricianId:电工ID的set方法
      * @param electricianId
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setElectricianId(String electricianId){
@@ -258,7 +262,7 @@ public class OrderElectrician implements Serializable {
      * @getElectricianName:电工名称的get方法
      * @params
      * @return electricianName
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getElectricianName(){
@@ -268,7 +272,7 @@ public class OrderElectrician implements Serializable {
      * @setElectricianName:电工名称的set方法
      * @param electricianName
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setElectricianName(String electricianName){
@@ -278,7 +282,7 @@ public class OrderElectrician implements Serializable {
      * @getElectricianPhonenumber:电工电话的get方法
      * @params
      * @return electricianPhonenumber
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getElectricianPhonenumber(){
@@ -288,7 +292,7 @@ public class OrderElectrician implements Serializable {
      * @setElectricianPhonenumber:电工电话的set方法
      * @param electricianPhonenumber
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setElectricianPhonenumber(String electricianPhonenumber){
@@ -298,7 +302,7 @@ public class OrderElectrician implements Serializable {
      * @getElectricianAddress:电工地址的get方法
      * @params
      * @return electricianAddress
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getElectricianAddress(){
@@ -308,7 +312,7 @@ public class OrderElectrician implements Serializable {
      * @setElectricianAddress:电工地址的set方法
      * @param electricianAddress
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setElectricianAddress(String electricianAddress){
@@ -318,7 +322,7 @@ public class OrderElectrician implements Serializable {
      * @getOtherElectricianId:其他电工ID的get方法
      * @params
      * @return otherElectricianId
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getOtherElectricianId(){
@@ -328,7 +332,7 @@ public class OrderElectrician implements Serializable {
      * @setOtherElectricianId:其他电工ID的set方法
      * @param otherElectricianId
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setOtherElectricianId(String otherElectricianId){
@@ -338,7 +342,7 @@ public class OrderElectrician implements Serializable {
      * @getOrderTypeId:订单类型ID的get方法
      * @params
      * @return orderTypeId
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getOrderTypeId(){
@@ -348,7 +352,7 @@ public class OrderElectrician implements Serializable {
      * @setOrderTypeId:订单类型ID的set方法
      * @param orderTypeId
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setOrderTypeId(String orderTypeId){
@@ -358,7 +362,7 @@ public class OrderElectrician implements Serializable {
      * @getElectricianPrice:维修费的get方法
      * @params
      * @return electricianPrice
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getElectricianPrice(){
@@ -368,7 +372,7 @@ public class OrderElectrician implements Serializable {
      * @setElectricianPrice:维修费的set方法
      * @param electricianPrice
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setElectricianPrice(String electricianPrice){
@@ -378,7 +382,7 @@ public class OrderElectrician implements Serializable {
      * @getOrderElectricianType:订单状态的get方法
      * @params
      * @return orderElectricianType
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getOrderElectricianType(){
@@ -388,7 +392,7 @@ public class OrderElectrician implements Serializable {
      * @setOrderElectricianType:订单状态的set方法
      * @param orderElectricianType
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setOrderElectricianType(String orderElectricianType){
@@ -398,7 +402,7 @@ public class OrderElectrician implements Serializable {
      * @getPayStatus:支付状态的get方法
      * @params
      * @return payStatus
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getPayStatus(){
@@ -408,7 +412,7 @@ public class OrderElectrician implements Serializable {
      * @setPayStatus:支付状态的set方法
      * @param payStatus
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setPayStatus(String payStatus){
@@ -418,7 +422,7 @@ public class OrderElectrician implements Serializable {
      * @getCreateTime:创建时间的get方法
      * @params
      * @return createTime
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public Timestamp getCreateTime(){
@@ -428,7 +432,7 @@ public class OrderElectrician implements Serializable {
      * @setCreateTime:创建时间的set方法
      * @param createTime
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setCreateTime(Timestamp createTime){
@@ -438,7 +442,7 @@ public class OrderElectrician implements Serializable {
      * @getBeginTime:开始施工时间的get方法
      * @params
      * @return beginTime
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public Timestamp getBeginTime(){
@@ -448,7 +452,7 @@ public class OrderElectrician implements Serializable {
      * @setBeginTime:开始施工时间的set方法
      * @param beginTime
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setBeginTime(Timestamp beginTime){
@@ -458,7 +462,7 @@ public class OrderElectrician implements Serializable {
      * @getUpdateTime:更新时间的get方法
      * @params
      * @return updateTime
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public Timestamp getUpdateTime(){
@@ -468,7 +472,7 @@ public class OrderElectrician implements Serializable {
      * @setUpdateTime:更新时间的set方法
      * @param updateTime
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setUpdateTime(Timestamp updateTime){
@@ -478,7 +482,7 @@ public class OrderElectrician implements Serializable {
      * @getFinishTime:完工时间的get方法
      * @params
      * @return finishTime
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public Timestamp getFinishTime(){
@@ -488,7 +492,7 @@ public class OrderElectrician implements Serializable {
      * @setFinishTime:完工时间的set方法
      * @param finishTime
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setFinishTime(Timestamp finishTime){
@@ -498,7 +502,7 @@ public class OrderElectrician implements Serializable {
      * @getElectricianDescrive:电工描述的get方法
      * @params
      * @return electricianDescrive
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getElectricianDescrive(){
@@ -508,7 +512,7 @@ public class OrderElectrician implements Serializable {
      * @setElectricianDescrive:电工描述的set方法
      * @param electricianDescrive
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setElectricianDescrive(String electricianDescrive){
@@ -518,7 +522,7 @@ public class OrderElectrician implements Serializable {
      * @getElectricianDescriveIcon:电工拍照的get方法
      * @params
      * @return electricianDescriveIcon
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getElectricianDescriveIcon(){
@@ -528,7 +532,7 @@ public class OrderElectrician implements Serializable {
      * @setElectricianDescriveIcon:电工拍照的set方法
      * @param electricianDescriveIcon
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setElectricianDescriveIcon(String electricianDescriveIcon){
@@ -538,7 +542,7 @@ public class OrderElectrician implements Serializable {
      * @getElectricianGrade:电工评分的get方法
      * @params
      * @return electricianGrade
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getElectricianGrade(){
@@ -548,7 +552,7 @@ public class OrderElectrician implements Serializable {
      * @setElectricianGrade:电工评分的set方法
      * @param electricianGrade
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setElectricianGrade(String electricianGrade){
@@ -558,7 +562,7 @@ public class OrderElectrician implements Serializable {
      * @getElectricianEvaluate:电工评价的get方法
      * @params
      * @return electricianEvaluate
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getElectricianEvaluate(){
@@ -568,7 +572,7 @@ public class OrderElectrician implements Serializable {
      * @setElectricianEvaluate:电工评价的set方法
      * @param electricianEvaluate
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setElectricianEvaluate(String electricianEvaluate){
@@ -578,7 +582,7 @@ public class OrderElectrician implements Serializable {
      * @getChargebackReason:退单原因的get方法
      * @params
      * @return chargebackReason
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getChargebackReason(){
@@ -588,7 +592,7 @@ public class OrderElectrician implements Serializable {
      * @setChargebackReason:退单原因的set方法
      * @param chargebackReason
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setChargebackReason(String chargebackReason){
@@ -598,7 +602,7 @@ public class OrderElectrician implements Serializable {
      * @getOrderContract:订单合同的get方法
      * @params
      * @return orderContract
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getOrderContract(){
@@ -608,7 +612,7 @@ public class OrderElectrician implements Serializable {
      * @setOrderContract:订单合同的set方法
      * @param orderContract
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setOrderContract(String orderContract){
@@ -618,7 +622,7 @@ public class OrderElectrician implements Serializable {
      * @getInspectionReport:验收报告的get方法
      * @params
      * @return inspectionReport
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getInspectionReport(){
@@ -628,7 +632,7 @@ public class OrderElectrician implements Serializable {
      * @setInspectionReport:验收报告的set方法
      * @param inspectionReport
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setInspectionReport(String inspectionReport){
@@ -638,7 +642,7 @@ public class OrderElectrician implements Serializable {
      * @getRemarkStr1:REMARK_STR1的get方法
      * @params
      * @return remarkStr1
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getRemarkStr1(){
@@ -648,7 +652,7 @@ public class OrderElectrician implements Serializable {
      * @setRemarkStr1:REMARK_STR1的set方法
      * @param remarkStr1
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setRemarkStr1(String remarkStr1){
@@ -658,7 +662,7 @@ public class OrderElectrician implements Serializable {
      * @getRemarkStr2:REMARK_STR2的get方法
      * @params
      * @return remarkStr2
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getRemarkStr2(){
@@ -668,7 +672,7 @@ public class OrderElectrician implements Serializable {
      * @setRemarkStr2:REMARK_STR2的set方法
      * @param remarkStr2
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setRemarkStr2(String remarkStr2){
@@ -678,7 +682,7 @@ public class OrderElectrician implements Serializable {
      * @getRemarkStr3:REMARK_STR3的get方法
      * @params
      * @return remarkStr3
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getRemarkStr3(){
@@ -688,7 +692,7 @@ public class OrderElectrician implements Serializable {
      * @setRemarkStr3:REMARK_STR3的set方法
      * @param remarkStr3
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setRemarkStr3(String remarkStr3){
@@ -698,7 +702,7 @@ public class OrderElectrician implements Serializable {
      * @getRemarkNum1:REMARK_NUM1的get方法
      * @params
      * @return remarkNum1
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getRemarkNum1(){
@@ -708,7 +712,7 @@ public class OrderElectrician implements Serializable {
      * @setRemarkNum1:REMARK_NUM1的set方法
      * @param remarkNum1
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setRemarkNum1(String remarkNum1){
@@ -718,7 +722,7 @@ public class OrderElectrician implements Serializable {
      * @getRemarkNum2:REMARK_NUM2的get方法
      * @params
      * @return remarkNum2
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getRemarkNum2(){
@@ -728,17 +732,37 @@ public class OrderElectrician implements Serializable {
      * @setRemarkNum2:REMARK_NUM2的set方法
      * @param remarkNum2
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setRemarkNum2(String remarkNum2){
 		this.remarkNum2 = remarkNum2;
 	} 
     /**
+     * @getConstructionContent:CONSTRUCTION_CONTENT的get方法
+     * @params
+     * @return constructionContent
+     * @date 2020-12-15 17:38:15
+     * @author 18511
+     */
+    public String getConstructionContent(){
+        return this.constructionContent;
+    }
+    /**
+     * @setConstructionContent:CONSTRUCTION_CONTENT的set方法
+     * @param constructionContent
+     * @return
+     * @date 2020-12-15 17:38:15
+     * @author 18511
+     */
+    public void setConstructionContent(String constructionContent){
+		this.constructionContent = constructionContent;
+	} 
+    /**
      * @getOrDERId:ORDER_ID的get方法
      * @params
      * @return orDERId
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public String getOrDERId(){
@@ -748,7 +772,7 @@ public class OrderElectrician implements Serializable {
      * @setOrDERId:ORDER_ID的set方法
      * @param orDERId
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-15 17:38:15
      * @author 18511
      */
     public void setOrDERId(String orDERId){
@@ -973,6 +997,13 @@ public class OrderElectrician implements Serializable {
 				return false;
 			}
 		} else if (!remarkNum2.equals(other.remarkNum2)) {
+			return false;
+		}
+		if (constructionContent == null) {
+			if (other.constructionContent != null) {
+				return false;
+			}
+		} else if (!constructionContent.equals(other.constructionContent)) {
 			return false;
 		}
 		if (orDERId == null) {
