@@ -995,49 +995,60 @@ public WrappedResult electrician_evaluate(
 			QueryResultObject result = new QueryResultObject();
 			
 			if(items != null && !items.isEmpty()){
-				Map<String,Object> map = JsonUtils.parseJSONstr2Map(items); 
+				Map<String,Object> map = JsonUtils.parseJSONstr2Map(items);
+				System.out.println(map.toString());
+				
 				//在这里进行分化，分别保存客户订单和电工订单
 				//获取订单的状态
 				Map<String,Object> orderCustomerMap=new HashMap<>();
 				Map<String,Object> orderElectricianMap=new HashMap<>();
 				
 				
-				String orderElectricianType=(String) map.get("orderElectricianType");//获取电工订单的订单状态是否是5
-				if(orderElectricianType.equals("5")){//说明是电工的退单，则将旧订单查出来后保存成新 的订单
-					//查询出客户订单的详情
-					String orderId=(String) map.get("orderId");
-					QueryResultObject resultObject=new QueryResultObject();
-					resultObject=orderCustomerService.findByOrderId(orderId);
-					List<OrderCustomer> orderCustomers=resultObject.getItems();
-					//获取一个客户订单
-					OrderCustomer orderCustomerNew=orderCustomers.get(0);
+				//先获取method方法是啥
+				String method=(String) map.get("method");
+				if(method.equals("预约")){
 					
-					//获取电工订单,状态是：5的订单
-					OrderElectrician orderElectrician=orderElectricianService.findByOrderId(orderId,orderElectricianType);
-					
-					//查询电工的详细信息
-					String electricianId=(String) map.get("electricianId");
-					ElectricianInfo electricianInfo=ElectricianInfoService.findInfo(electricianId);
-					
-					//创建一个新的电工订单
-					orderElectricianMap.put("orderId", orderId);
-					orderElectricianMap.put("electricianId",electricianId);
-					orderElectricianMap.put("electricianName",electricianInfo.getElectricianName() );
-					orderElectricianMap.put("electricianPhonenumber",electricianInfo.getElectricianPhonenumber());
-					orderElectricianMap.put("electricianAddress",electricianInfo);
-					orderElectricianMap.put("electricianPrice",orderCustomerNew.getCustomerPrice());
-					orderElectricianMap.put("orderTypeId",0);
-					orderElectricianMap.put("payStatus",orderCustomerNew.getPayStatus());
-					orderElectricianMap.put("createTime",orderCustomerNew.getCreateTime());
-					orderElectricianMap.put("electricianDescrive",orderElectrician.getElectricianDescrive());
-					orderElectricianMap.put("electricianDescriveIcon",orderElectrician.getElectricianDescriveIcon());
-					orderElectricianMap.put("chargebackReason",orderElectrician.getChargebackReason());
-					
-					
-					
+					String orderElectricianType=(String) map.get("orderElectricianType");//获取电工订单的订单状态是否是5
+					if(orderElectricianType.equals("5")){//说明是电工的退单，则将旧订单查出来后保存成新 的订单
+						//查询出客户订单的详情
+						String orderId=(String) map.get("orderId");
+						QueryResultObject resultObject=new QueryResultObject();
+						resultObject=orderCustomerService.findByOrderId(orderId);
+						List<OrderCustomer> orderCustomers=resultObject.getItems();
+						//获取一个客户订单
+						OrderCustomer orderCustomerNew=orderCustomers.get(0);
+						
+						//获取电工订单,状态是：5的订单
+						OrderElectrician orderElectrician=orderElectricianService.findByOrderId(orderId,orderElectricianType);
+						
+						//查询电工的详细信息
+						String electricianId=(String) map.get("electricianId");
+						ElectricianInfo electricianInfo=ElectricianInfoService.findInfo(electricianId);
+						
+						//创建一个新的电工订单
+						orderElectricianMap.put("orderId", orderId);
+						orderElectricianMap.put("electricianId",electricianId);
+						orderElectricianMap.put("electricianName",electricianInfo.getElectricianName() );
+						orderElectricianMap.put("electricianPhonenumber",electricianInfo.getElectricianPhonenumber());
+						orderElectricianMap.put("electricianAddress",electricianInfo);
+						orderElectricianMap.put("electricianPrice",orderCustomerNew.getCustomerPrice());
+						orderElectricianMap.put("orderTypeId",0);
+						orderElectricianMap.put("payStatus",orderCustomerNew.getPayStatus());
+						orderElectricianMap.put("createTime",orderCustomerNew.getCreateTime());
+						orderElectricianMap.put("electricianDescrive",orderElectrician.getElectricianDescrive());
+						orderElectricianMap.put("electricianDescriveIcon",orderElectrician.getElectricianDescriveIcon());
+						orderElectricianMap.put("chargebackReason",orderElectrician.getChargebackReason());
+						
+					}
 					
 					
 				}
+				
+				
+				
+				
+				
+				
 				//如果状态是：1，等待接单（用户已支付上门费）状态转为2 
 				orderCustomerMap.put("appointmentTime", map.get("appointmentTime"));//给客户订单设置更新时间
 					orderCustomerMap.put("orderStatus", "2");
