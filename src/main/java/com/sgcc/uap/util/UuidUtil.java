@@ -2,6 +2,7 @@ package com.sgcc.uap.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -10,6 +11,9 @@ import java.util.UUID;
  *
  */
 public class UuidUtil {
+	private static char[] numbers = null;
+	private static Random randGen = null;
+	private static Object initLock = new Object();
 	
 	/**
 	 * 获取36位的UUID
@@ -30,10 +34,40 @@ public class UuidUtil {
 	}
 	
 	/**
-	 * 获取46位的UUID 中间去掉字符“-”
+	 * 获取32位的纯数字UUID
 	 * @return
 	 */
-	public static String getUuid46(){
+	public static String getIntUuid32(){
+		return nowToString(new Date())+randomIntegerString(18);
+	}
+	
+	/**
+     * 产生随机数字串
+     * @param length
+     * @return
+     */
+    public static final String randomIntegerString(int length) {
+        if (length < 1) {
+            return "";
+        }
+        //Init of pseudo random number generator.
+        if (randGen == null) {
+            synchronized (initLock) {
+                if (randGen == null) {
+                    randGen = new Random();
+                    numbers = ("0123456789").toCharArray();
+                }
+            }
+        }
+        //Create a char buffer to put random letters and numbers in.
+        char[] randBuffer = new char[length];
+        for (int i = 0; i < randBuffer.length; i++) {
+            randBuffer[i] = numbers[randGen.nextInt(9)];
+        }
+        return new String(randBuffer);
+    }
+	
+	public static String getUuid46_bak(){
 		String uuid = UuidUtil.getUuid36();
 		return nowToString(new Date())+uuid.replaceAll("-", "");
 	}
@@ -50,26 +84,12 @@ public class UuidUtil {
 		return date;
 	}
 
-	/*public static void main(String[] args) {
-		System.out.println(UuidUtil.getUuid36());
-		System.out.println(UuidUtil.getUuid32());
-		System.out.println(UuidUtil.getUuid46());
+	public static void main(String[] args) {
+		//System.out.println(UuidUtil.getUuid36());
+		//System.out.println(UuidUtil.getUuid32());
+		for(int i =0;i<10 ;i++)
+		System.out.println(UuidUtil.getIntUuid32());
 		
-	}*/
+	}
 	
-	
-    public static String getUUID(){
-        return UUID.randomUUID().toString().replace("-","");
-    }
-
-    public static Integer getUUIDInOrderId(){
-        Integer orderId=UUID.randomUUID().toString().hashCode();
-        orderId = orderId < 0 ? -orderId : orderId; //String.hashCode() 值会为空
-        return orderId;
-    }
-
-    public static void main(String[] args){
-        for (int i = 0; i<100; i++)
-        System.out.println(UuidUtil.getUUIDInOrderId());
-    }
 }

@@ -218,7 +218,7 @@ public class OrderCustomerController {
     		@RequestParam(value = "items", required = false) String items,
     		@RequestParam("myFile") MultipartFile file
     		) throws IOException {	
-			String customerDescriveIcon = FileUtil.uploadFile(file, UuidUtil.getUuid46(),"ORDER_CUSTOMER", "CUSTOMER_DESCRIVE_ICON");
+			String customerDescriveIcon = FileUtil.uploadFile(file, UuidUtil.getIntUuid32(),"ORDER_CUSTOMER", "CUSTOMER_DESCRIVE_ICON");
             System.out.println("customerDescriveIcon---"+customerDescriveIcon+"---");
             
             return customerDescriveIcon;
@@ -239,7 +239,7 @@ public class OrderCustomerController {
             
             String staticPath = ClassUtils.getDefaultClassLoader().getResource("pictures").getPath();
             String filePath = staticPath + File.separator + "CUSTOMER_DESCRIVE_ICON" + 
-            			File.separator + UuidUtil.getUuid46() + File.separator ;//这个path就是你要存在服务器上的
+            			File.separator + UuidUtil.getIntUuid32() + File.separator ;//这个path就是你要存在服务器上的
             fileName = UUID.randomUUID() + suffixName; // 新文件名
             
             File dest = new File(filePath + fileName);
