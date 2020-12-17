@@ -34,6 +34,7 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderCustomerService;
+import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
 import com.sgcc.uap.share.domain.BaseAreaPrice;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.BaseIdentityPrice;
@@ -99,19 +100,42 @@ public class OrderCustomerService implements IOrderCustomerService{
 	}
 	@Override
 	public QueryResultObject getAllOrderCustomerByCustomerId(RequestCondition queryCondition) {
-		if(queryCondition == null){
-			throw new NullArgumentException("queryCondition");
-		}
+		List<OrderCustomer> result = new ArrayList<>();
+		List<OrderCustomerVO> resultVO = new ArrayList<>();
+		long count = 0;
+		
+		String pageType = queryCondition.getParentID();
+		List<String> custStatus = new ArrayList<>();
+		List<String> elecStatus = new ArrayList<>();
 		
 		Integer pageIndex = queryCondition.getPageIndex()-1;
 		Integer pageSize = queryCondition.getPageSize();
 		QueryFilter queryFilter = queryCondition.getQueryFilter().get(0); 
 		String customerId = (String) queryFilter.getValue();
 		
-		List<OrderCustomer> result = orderCustomerRepository.getAllOrderCustomerByCustomerId(pageIndex,pageSize,customerId);
-		long count = 0;
-		count = result.size();
-		return RestUtils.wrappQueryResult(result, count);
+		/*
+		 0、23 待支付
+			24 待验收
+			8 待评价
+		 * */
+		if("beginPage".equals(pageType)){
+			custStatus.add("0");
+			custStatus.add("23");
+			custStatus.add("24");
+			custStatus.add("8");
+			
+			elecStatus.add("1");
+			elecStatus.add("4");
+			elecStatus.add("5");
+			resultVO = orderCustomerRepository.getOrderCustomerVOByCustomerIdAndEnot(pageIndex,pageSize,customerId,custStatus,elecStatus);
+			count = resultVO.size();
+			return RestUtils.wrappQueryResult(resultVO, count);
+		}else{
+			result = orderCustomerRepository.getAllOrderCustomerByCustomerId(pageIndex,pageSize,customerId);
+			count = result.size();
+			return RestUtils.wrappQueryResult(result, count);
+		}
+		
 		
 	}
 	

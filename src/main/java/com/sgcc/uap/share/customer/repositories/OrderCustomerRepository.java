@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.customer.repositories;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
 import com.sgcc.uap.share.domain.OrderCustomer;
 
 
@@ -30,11 +32,22 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	Page<User> findByEmailLike(Pageable pageable, @Param("emailLike")String emailLike);*/
 	// + " UNION SELECT * FROM order_customer_his WHERE CUSTOMER_ID :customerId "
 	
-	@Query(value = "SELECT * FROM order_customer WHERE CUSTOMER_ID =:customerId  "
+	@Query(value = "SELECT * FROM order_customer WHERE CUSTOMER_ID =:customerId "
 			+ " UNION SELECT * FROM order_customer_his WHERE CUSTOMER_ID =:customerId "
 			+ " limit :pageIndex,:pageSize",
 			nativeQuery = true)
-	List<OrderCustomer> getAllOrderCustomerByCustomerId(@Param("pageIndex")int pageIndex,@Param("pageSize")int pageSize,@Param("customerId")String customerId);
+	List<OrderCustomer> getAllOrderCustomerByCustomerId(@Param("pageIndex")int pageIndex,@Param("pageSize")int pageSize
+			,@Param("customerId")String customerId);
+	
+	
+	@Query(value = "SELECT c.*,e.ELECTRICIAN_DESCRIVE,e.ELECTRICIAN_DESCRIVE_ICON,e.ELECTRICIAN_PRICE FROM order_customer c  "
+			+ " LEFT JOIN order_electrician e ON c.ORDER_ID = e.ORDER_ID "
+			+ " WHERE c.CUSTOMER_ID =:customerId  AND c.order_Status IN :statusList  "
+			+ " AND e.ORDER_ELECTRICIAN_TYPE NOT IN :elecStatus "
+			+ " limit :pageIndex,:pageSize",
+			nativeQuery = true)
+	List<OrderCustomerVO> getOrderCustomerVOByCustomerIdAndEnot(@Param("pageIndex")int pageIndex,@Param("pageSize")int pageSize
+			,@Param("customerId")String customerId,@Param("statusList")Collection<String> statusList,@Param("elecStatus")Collection<String> elecStatus);
 	
 	@Transactional
 	@Modifying
