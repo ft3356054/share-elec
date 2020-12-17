@@ -54,6 +54,19 @@ public interface INotifyAnnounceService {
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);
 
+	/**
+	 * @param orderId
+	 * @return
+	 */
 	public QueryResultObject hastenByCustomer(String orderId);
+	
+	/**
+	 * 自定义通知发送
+	 * @param orderId
+	 * @param enumType
+	 * @param enumStatus
+	 * @return
+	 */
+	public QueryResultObject userDefinedNotify(String orderId,String enumType,String enumStatus);
 
 }
