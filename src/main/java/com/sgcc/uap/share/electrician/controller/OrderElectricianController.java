@@ -1006,10 +1006,11 @@ public WrappedResult electrician_evaluate(
 				
 				//先获取method方法是啥
 				String method=(String) map.get("method");
+				
 				if(method.equals("预约")){
-					
+					System.out.println("我现在进行的是预约成功的方法");
 					String orderElectricianType=(String) map.get("orderElectricianType");//获取电工订单的订单状态是否是5
-					if(orderElectricianType.equals("5")){//说明是电工的退单，则将旧订单查出来后保存成新 的订单
+					//if(orderElectricianType.equals("5")){//说明是电工的退单，则将旧订单查出来后保存成新 的订单
 						//查询出客户订单的详情
 						String orderId=(String) map.get("orderId");
 						QueryResultObject resultObject=new QueryResultObject();
@@ -1018,14 +1019,20 @@ public WrappedResult electrician_evaluate(
 						//获取一个客户订单
 						OrderCustomer orderCustomerNew=orderCustomers.get(0);
 						
-						//获取电工订单,状态是：5的订单
-						OrderElectrician orderElectrician=orderElectricianService.findByOrderId(orderId,orderElectricianType);
+						//获取电工订单,状态是：5的订单,根据完工时间进行排序
+						List<OrderElectrician> list=orderElectricianService.findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(orderId,orderElectricianType);
+						
+						if(list.size()!=0){
+							//获取最新的状态是5的订单，则说明是老订单,则创建一个新的订单
+							OrderElectrician orderElectrician=list.get(0);
+						
 						
 						//查询电工的详细信息
 						String electricianId=(String) map.get("electricianId");
 						ElectricianInfo electricianInfo=ElectricianInfoService.findInfo(electricianId);
 						
 						//创建一个新的电工订单
+						orderElectricianMap.put("orderElectricianId", UuidUtil.getIntUuid32());
 						orderElectricianMap.put("orderId", orderId);
 						orderElectricianMap.put("electricianId",electricianId);
 						orderElectricianMap.put("electricianName",electricianInfo.getElectricianName() );
@@ -1041,26 +1048,87 @@ public WrappedResult electrician_evaluate(
 						
 					}
 					
+					//如果状态是：1，等待接单（用户已支付上门费）状态转为2 
+						orderCustomerMap.put("appointmentTime", map.get("appointmentTime"));//给客户订单设置更新时间
+						orderCustomerMap.put("orderStatus", "21");
+						orderCustomerMap.put("orderId", map.get("orderId"));
+						
+						orderElectricianMap.put("orderId", map.get("orderId"));
+						orderElectricianMap.put("orderElectricianType", "21");
+						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+					result.setFormItems(orderCustomer);
+					result.setFormItems(orderElectrician);
+					
+				}
+				if (method.equals("现场勘查")) {//此时电工和客户订单的状态都是22，电工到达现场，勘察
+					
+					//将map中的数据分别送到两个类中，在进行更新
+					//客户订单需要跟新的信息
+					orderCustomerMap.put("orderStatus", map.get("orderStatus"));
+					orderCustomerMap.put("orderId", map.get("orderId"));
+					
+					//电工订单需要更新的信息
+					orderElectricianMap.put("orderId", map.get("orderId"));
+					orderElectricianMap.put("orderElectricianType", "23");
+					orderElectricianMap.put("electricianDescrive", map.get("electricianDescrive"));
+					
+					
+					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+					result.setFormItems(orderCustomer);
+					
+				}
+				
+				if(method.equals("现场勘查退回订单")){
+					//客户订单将状态改变成：11   电工订单将订单状态改变成：5
+					
+					//将map中的数据分别送到两个类中，在进行更新
+					//客户订单需要跟新的信息
+					orderCustomerMap.put("orderStatus", map.get("orderStatus"));
+					orderCustomerMap.put("orderId", map.get("orderId"));
+					
+					//电工订单需要更新的信息
+					orderElectricianMap.put("orderId", map.get("orderId"));
+					orderElectricianMap.put("orderElectricianType",map.get("orderElectricianType"));
+					orderElectricianMap.put("electricianDescrive", map.get("electricianDescrive"));
+					orderElectricianMap.put("electricianId", map.get("electricianId"));
+					
+					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+					System.out.println("我执行完了保存操作");
+					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+					result.setFormItems(orderCustomer);
+					
+					
+					
+					
+				}
+				if(method.equals("上传合同")){//状态应该从22---->23电工上传合同（报价）
+					
+					//将map中的数据分别送到两个类中，在进行更新
+					//客户订单需要跟新的信息
+					orderCustomerMap.put("orderStatus", map.get("orderStatus"));
+					orderCustomerMap.put("orderId", map.get("orderId"));
+					
+					//电工订单需要更新的信息
+					orderElectricianMap.put("orderId", map.get("orderId"));
+					orderElectricianMap.put("orderElectricianType",map.get("orderElectricianType"));
+					orderElectricianMap.put("electricianDescrive", map.get("electricianDescrive"));
+					orderElectricianMap.put("electricianId", map.get("electricianId"));
+					
+					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+					System.out.println("我执行完了保存操作");
+					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+					result.setFormItems(orderCustomer);
+					
 					
 				}
 				
 				
 				
 				
-				
-				
-				//如果状态是：1，等待接单（用户已支付上门费）状态转为2 
-				orderCustomerMap.put("appointmentTime", map.get("appointmentTime"));//给客户订单设置更新时间
-					orderCustomerMap.put("orderStatus", "2");
-					orderElectricianMap.put("orderElectricianType", "21");
-					result.setFormItems(orderCustomerService.saveOrderCustomer(map,file));
-					result.setFormItems(orderElectricianService.saveOrderElectrician(orderElectricianMap,file));
-				
-				
-				
-				
-				//result.setFormItems(orderCustomerService.saveOrderCustomer(map,file));
 			}
+			
 			
 			logger.info("保存数据成功"); 
 			return WrappedResult.successWrapedResult(result);

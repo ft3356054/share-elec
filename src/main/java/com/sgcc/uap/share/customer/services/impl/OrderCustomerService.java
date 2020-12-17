@@ -233,6 +233,15 @@ public class OrderCustomerService implements IOrderCustomerService{
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
 		if(queryCondition == null){
@@ -510,7 +519,9 @@ public class OrderCustomerService implements IOrderCustomerService{
 	public QueryResultObject findByOrderId(String orderId) {
 		
 		// TODO Auto-generated method stub
-		List<OrderCustomer> result=(List<OrderCustomer>) orderCustomerRepository.findByOrderId(orderId);
+		OrderCustomer orderCustomer = orderCustomerRepository.findByOrderId(orderId);
+		List<OrderCustomer> result=new ArrayList<>();
+		result.add(orderCustomer);
 		long count=0;
 		count=result.size();
 		return RestUtils.wrappQueryResult(result,count);
@@ -540,5 +551,9 @@ public class OrderCustomerService implements IOrderCustomerService{
 		return RestUtils.wrappQueryResult(result,count);
 	}
 */
+	
+	/**
+	 * 
+	 */
 
 }
