@@ -170,6 +170,12 @@ public class OrderCustomer implements Serializable {
     private String orderComplaintId ;
     
     /** 
+     * 订单来源
+     */
+    @Column(name = "ORDER_FROM", nullable = true, length = 2)
+    private String orderFrom ;
+    
+    /** 
      * REMARK_STR1
      */
     @Column(name = "REMARK_STR1", nullable = true, length = 128)
@@ -199,6 +205,35 @@ public class OrderCustomer implements Serializable {
     @Column(name = "REMARK_NUM2", nullable = true, length = 8)
     private String remarkNum2 ;
     
+    /*************************************************** 
+     * 新增数据库没有的字段
+     */
+    @Column(name = "ELECTRICIAN_DESCRIVE", nullable = true, length = 512)
+    private String electricianDescrive ;
+    @Column(name = "ELECTRICIAN_DESCRIVE_ICON", nullable = true, length = 512)
+    private String electricianDescriveIcon ;
+    @Column(name = "ELECTRICIAN_PRICE", nullable = true, length = 6)
+    private String electricianPrice ;
+	public String getElectricianDescrive() {
+		return electricianDescrive;
+	}
+	public void setElectricianDescrive(String electricianDescrive) {
+		this.electricianDescrive = electricianDescrive;
+	}
+	public String getElectricianDescriveIcon() {
+		return electricianDescriveIcon;
+	}
+	public void setElectricianDescriveIcon(String electricianDescriveIcon) {
+		this.electricianDescriveIcon = electricianDescriveIcon;
+	}
+	public String getElectricianPrice() {
+		return electricianPrice;
+	}
+	public void setElectricianPrice(String electricianPrice) {
+		this.electricianPrice = electricianPrice;
+	}
+
+
 	/**
 	  *虚拟主键
 	  */
@@ -799,7 +834,14 @@ public class OrderCustomer implements Serializable {
     public void setMxVirtualId(String mxVirtualId) {
         this.mxVirtualId = mxVirtualId;
     } 
-    /**
+    
+    public String getOrderFrom() {
+		return orderFrom;
+	}
+	public void setOrderFrom(String orderFrom) {
+		this.orderFrom = orderFrom;
+	}
+	/**
      * Hibernate通过该方法判断对象是否相等
      * @return boolean
      */  

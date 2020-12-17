@@ -119,6 +119,34 @@ public class OrderCustomerController {
 		}
 	}
 	
+	/**
+	 * 首页订单展示
+	 * @getByOrderId:根据orderId查询
+	 * @param orderId
+	 * @return WrappedResult 查询结果
+	 * @date 2020-11-26 14:32:47
+	 * @author 18511
+	 */
+	@RequestMapping("/queryAllToBegin")
+	public WrappedResult queryAllToBegin(@QueryRequestParam("params") RequestCondition requestCondition) {
+		try {
+			if(requestCondition == null){
+				throw new NullArgumentException("queryCondition");
+			}
+			requestCondition.setParentID("beginPage");
+			QueryResultObject queryResult = orderCustomerService.getAllOrderCustomerByCustomerId(requestCondition);
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
 	
 	/**
 	 * @deleteByIds:删除
