@@ -238,6 +238,11 @@ public class ElectricianInfoService implements IElectricianInfoService{
 	public void save(ElectricianInfo electricianInfo){
 		electricianInfoRepository.save(electricianInfo);
 	}
+	public ElectricianInfo findByElectricianPhonenumber(String telephone) {
+		// TODO Auto-generated method stub
+		ElectricianInfo electricianInfo=electricianInfoRepository.findByElectricianPhonenumber(telephone);
+		return electricianInfo;
+	}
 
 
 }

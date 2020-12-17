@@ -82,6 +82,7 @@ OrderElectrician findByOrderId(String orderId);
 OrderCustomer saveOrderCustomerByOrderElectricianService(Map<String, Object> map, MultipartFile file) throws Exception;
 public List<OrderElectrician> findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(String orderId,
 		String orderElectricianType);
+public OrderElectrician findByElectricianIdAndOrderId(String electricianId, String orderId);
 
 
 }

@@ -34,6 +34,7 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.controller.WebSocket;
+import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.customer.services.impl.OrderFlowService;
@@ -98,9 +99,6 @@ public class OrderElectricianService implements IOrderElectricianService{
 	
 	@Autowired
 	private NotifyAnnounceUserService notifyAnnounceUserService;
-	
-	@Autowired
-	private WebSocket webSocket;
 	
 	@Autowired
 	private BaseAreaPriceService baseAreaPriceService;
@@ -244,7 +242,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 
 			//发送websocket消息
-	        webSocket.sendMessage("有新的订单");
+	        
 			
 			
 		}
@@ -473,7 +471,8 @@ public class OrderElectricianService implements IOrderElectricianService{
 	@Override
 	public List<OrderElectrician> findByElectricianId(String electricianId) {
 		// TODO Auto-generated method stub
-		return null;
+		List<OrderElectrician> list=orderElectricianRepository.findByElectricianId(electricianId);
+		return list;
 	}
 	
 	@Override
@@ -529,6 +528,54 @@ public class OrderElectricianService implements IOrderElectricianService{
 		return orderElectrician;
 		
 	}
+	
+	
+	@Override
+	@Transactional
+	public OrderCustomer saveOrderCustomerByOrderElectricianService(Map<String,Object> map,MultipartFile file) throws Exception{
+		
+		validateService.validateWithException(OrderCustomer.class,map);
+		OrderCustomer orderCustomer = new OrderCustomer();
+		OrderCustomer result = new OrderCustomer();
+		
+		
+			
+			String orderId = (String) map.get("orderId");
+			orderCustomer=orderCustomerRepository.findByOrderId(orderId);
+			
+			/*客户这边不用
+			
+			//23 电工上传合同（报价）
+			if("23".equals(map.get("orderStatus"))){
+			//if("23".equals(map.get("orderStatus"))){
+				//上传图片
+				if (!file.isEmpty()) {
+					String fileName = (String) map.get("fileName");
+					String iconUrl = FileUtil.uploadFile(file, orderId,"ORDER_CUSTOMER",fileName);
+					map.put(fileName, iconUrl);
+				}
+				
+				
+				
+			}
+			*/
+			
+			
+			
+			CrudUtils.mapToObject(map, orderCustomer,  "orderId");
+			result = orderCustomerRepository.save(orderCustomer);
+			sendNotify(map, orderCustomer,2,1);
+			
+			
+		
+		return result;
+	}
+	
+	
+	
+	
+	
+	
 	@Override
 	public OrderElectrician saveOrderElectrician(Map<String, Object> map,MultipartFile file) throws Exception {
 		System.out.println("要执行保存OrderElectrician方法");
@@ -541,12 +588,11 @@ public class OrderElectricianService implements IOrderElectricianService{
 			
 			
 			
-			if("23".equals(orderElectrician.getOrderElectricianType())){
+			if("23".equals(map.get("orderElectricianType"))){
 				//上传图片
 				if (!file.isEmpty()) {
-					String fileName = (String) map.get("fileName");
-					String iconUrl = FileUtil.uploadFile(file, orderId,"ORDER_ELECTRICIAN",fileName);
-					map.put(fileName, iconUrl);
+					String orderContract = FileUtil.uploadFile(file, orderElectrician.getOrDERId(),"ORDER_ELECTRICIAN", "orderContract");
+					map.put("orderContract", orderContract);
 				}
 				
 				
@@ -581,8 +627,8 @@ public class OrderElectricianService implements IOrderElectricianService{
 			*/	
 			
 			//发送websocket消息
-	        webSocket.sendMessage("有新的订单");
-		
+	      
+	        WebSocketServer.sendInfo("下单成功",(String)map.get("electricianId"));
 		return result;
 	}
 
@@ -671,7 +717,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
 			
 			//发送websocket消息
-	        webSocket.sendMessage("电工已评价");
+			//WebSocketServer.sendInfo("下单成功",(String)map.get("electricianId"));
 		
 
 		
@@ -722,7 +768,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 		
 		//发送websocket消息
-        webSocket.sendMessage(baseEnums.getEnumsB());
+		//WebSocketServer.sendInfo("下单成功",(String)map.get("electricianId"));
 	}
 	@Override
 	public OrderElectrician findByOrderId(String orderId) {
@@ -744,42 +790,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * 1.  要是预约的话就只会给更改客户订单信息中的预约时间
 	 */
 
-	@Override
-	@Transactional
-	public OrderCustomer saveOrderCustomerByOrderElectricianService(Map<String,Object> map,MultipartFile file) throws Exception{
-		
-		validateService.validateWithException(OrderCustomer.class,map);
-		OrderCustomer orderCustomer = new OrderCustomer();
-		OrderCustomer result = new OrderCustomer();
-		
-		
-			
-			String orderId = (String) map.get("orderId");
-			orderCustomer=orderCustomerRepository.findByOrderId(orderId);
-			
-			
-			
-			//23 电工上传合同（报价）
-			if("23".equals(orderCustomer.getOrderStatus())){
-			//if("23".equals(map.get("orderStatus"))){
-				//上传图片
-				if (!file.isEmpty()) {
-					String fileName = (String) map.get("fileName");
-					String iconUrl = FileUtil.uploadFile(file, orderId,"ORDER_CUSTOMER",fileName);
-					map.put(fileName, iconUrl);
-				}
-				
-				
-				
-			}
-			CrudUtils.mapToObject(map, orderCustomer,  "orderId");
-			result = orderCustomerRepository.save(orderCustomer);
-			sendNotify(map, orderCustomer,2,1);
-			
-			
-		
-		return result;
-	}
+	
 	
 	private Map<String,Object> orderStatus(Map map,OrderElectrician orderElectrician) throws Exception{
 		Map<String,Object> result = new HashMap<String, Object>();
@@ -879,7 +890,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 		
 		//发送websocket消息
-        webSocket.sendMessage(baseEnums.getEnumsB());
+		//WebSocketServer.sendInfo("下单成功",(String)map.get("electricianId"));
 	}
 	
 	private String getPrice(String identityId,String provinceId){
@@ -906,7 +917,14 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		return list;
 	}
 	
-	
+	/**
+	 * 根据电工ID和订单ID查询出一个电工订单
+	 */
+	public OrderElectrician findByElectricianIdAndOrderId(String electricianId, String orderId){
+		OrderElectrician orderElectrician=orderElectricianRepository.findByElectricianIdAndOrderId(electricianId,orderId);
+		return orderElectrician;
+		
+	}
 	
 	
 	

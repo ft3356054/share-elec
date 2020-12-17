@@ -58,6 +58,7 @@ import com.sgcc.uap.share.domain.OrderFlow;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.share.electrician.services.impl.ElectricianInfoService;
 import com.sgcc.uap.share.electrician.services.impl.OrderElectricianHisService;
+import com.sgcc.uap.share.electrician.services.impl.OrderElectricianService;
 import com.sgcc.uap.share.electrician.vo.OrderElectricianVO;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
@@ -128,7 +129,7 @@ public class OrderElectricianController {
 	private OrderElectricianHisService  orderElectricianHisService;
 	
 	@Autowired
-	private ElectricianInfoService ElectricianInfoService;
+	private ElectricianInfoService electricianInfoService;
 	
 	/**
 	 * @getByOrderElectricianId:根据orderElectricianId查询
@@ -876,7 +877,7 @@ public class OrderElectricianController {
 	public WrappedResult queryElectricianInfo(@PathVariable String electricianId){
 		try {
 			
-			QueryResultObject queryResult=ElectricianInfoService.queryElectricianInfo(electricianId);
+			QueryResultObject queryResult=electricianInfoService.queryElectricianInfo(electricianId);
 			
 			return WrappedResult.successWrapedResult(queryResult);
 			
@@ -1029,7 +1030,7 @@ public WrappedResult electrician_evaluate(
 						
 						//查询电工的详细信息
 						String electricianId=(String) map.get("electricianId");
-						ElectricianInfo electricianInfo=ElectricianInfoService.findInfo(electricianId);
+						ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
 						
 						//创建一个新的电工订单
 						orderElectricianMap.put("orderElectricianId", UuidUtil.getIntUuid32());
@@ -1115,6 +1116,7 @@ public WrappedResult electrician_evaluate(
 					orderElectricianMap.put("orderElectricianType",map.get("orderElectricianType"));
 					orderElectricianMap.put("electricianDescrive", map.get("electricianDescrive"));
 					orderElectricianMap.put("electricianId", map.get("electricianId"));
+					orderElectricianMap.put("electricianPrice", map.get("electricianPrice"));
 					
 					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
 					System.out.println("我执行完了保存操作");
@@ -1124,8 +1126,79 @@ public WrappedResult electrician_evaluate(
 					
 				}
 				
+				if(method.equals("电工人员保存")){// 每点一下就触发一次
+					
+					//电工订单需要更新的信息
+					orderElectricianMap.put("orderId", map.get("orderId"));
+					orderElectricianMap.put("electricianId", map.get("electricianId"));
+					orderElectricianMap.put("electricianName", map.get("name"));
+					//orderElectricianMap.put("telephone", map.get("telephone"));
+					
+					//根据电工ID查询当下电工的信息
+					ElectricianInfo electricianInfoOld=electricianInfoService.findInfo((String)map.get("electricianId"));
+					
+					String electricianId=(String)map.get("electricianId");
+					 String orderId=(String)map.get("orderId");
+					//查询当前电工订单，
+					OrderElectrician orderElectrician=orderElectricianService.findByElectricianIdAndOrderId(electricianId,orderId);
+					
+					String telephone=(String)map.get("telephone");
+					//根据电话号查询是否有当前电工
+					ElectricianInfo electricianInfo=electricianInfoService.findByElectricianPhonenumber(telephone);
+
+					//先对比新查出来的电工姓名和电话是否对的上
+					if (orderElectricianMap.get("electricianName").equals(electricianInfo.getElectricianName())) {//查询信息对等
+						map.put("otherElectricianId", electricianInfo.getElectricianId());
+						orderElectrician.setOtherElectricianId(electricianInfo.getElectricianId()+",");
+						orderElectricianMap.put("otherElectricianId", orderElectrician.getOtherElectricianId());
+						orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						
+					}else {//信息不对等，则返回错误
+						WrappedResult.failedWrappedResult("人员信息不符~");
+					}
+				}
 				
-				
+				/**
+				 * 删除人员
+				 */
+					if(method.equals("电工人员删除")){// 每点一下就触发一次
+					
+					//电工订单需要更新的信息
+					orderElectricianMap.put("orderId", map.get("orderId"));
+					orderElectricianMap.put("electricianId", map.get("electricianId"));
+					orderElectricianMap.put("electricianName", map.get("name"));
+					//orderElectricianMap.put("telephone", map.get("telephone"));
+					
+					//根据电工ID查询当下电工的信息
+					ElectricianInfo electricianInfoOld=electricianInfoService.findInfo((String)map.get("electricianId"));
+					
+					String electricianId=(String)map.get("electricianId");
+					 String orderId=(String)map.get("orderId");
+					//查询当前电工订单，
+					OrderElectrician orderElectrician=orderElectricianService.findByElectricianIdAndOrderId(electricianId,orderId);
+					
+					String telephone=(String)map.get("telephone");
+					//根据电话号查询是否有当前电工
+					ElectricianInfo electricianInfo=electricianInfoService.findByElectricianPhonenumber(telephone);
+
+					//先对比新查出来的电工姓名和电话是否对的上
+					if (orderElectricianMap.get("electricianName").equals(electricianInfo.getElectricianName())) {//查询信息对等
+						map.put("otherElectricianId", electricianInfo.getElectricianId());
+						
+						//获取要删除id
+						
+						String deleteElectricianId=electricianInfo.getElectricianId()+",";
+						
+						orderElectrician.setOtherElectricianId(electricianInfo.getElectricianId()+",");
+						orderElectricianMap.put("otherElectricianId", orderElectrician.getOtherElectricianId());
+						orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						
+					}else {//信息不对等，则返回错误
+						WrappedResult.failedWrappedResult("人员信息不符~");
+					}
+				}
+
+
 				
 			}
 			
