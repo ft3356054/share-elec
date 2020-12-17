@@ -30,8 +30,10 @@ public class OrderElectrician implements Serializable {
      * 电工订单ID
      */
 	@Id
-	/*@GeneratedValue(generator = "idGenerator")
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")*/
+	/*
+	@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "uuid")
+	*/
     @Column(name = "ORDER_ELECTRICIAN_ID", nullable = false, length = 64)
     private String orderElectricianId ;
     

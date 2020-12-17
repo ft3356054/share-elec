@@ -68,8 +68,9 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	 * @param orderId
 	 * @return
 	 */
-	@Query(value="select * from order_electrician where ORDER_ID=? and ORDER_ELECTRICIAN_TYPE=?",nativeQuery=true)
-	OrderElectrician findByOrderId(String orderId,String orderelectriciantype);
+	//@Query(value="select * from order_electrician where ORDER_ID=? and ORDER_ELECTRICIAN_TYPE=?",nativeQuery=true)
+	@Query(value="select * from order_electrician where ORDER_ID=? and ELECTRICIAN_ID=?",nativeQuery=true)
+	OrderElectrician findByOrderId(String orderId,String electricianId);
 
 	
 	
@@ -81,5 +82,12 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	
 	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_TYPE not in :orderElectricianType",nativeQuery = true)
 	public OrderElectrician findByOrderIdAndOrderElectricianTypeNotIn(@Param("orderId")String orderId,@Param("orderElectricianType")Collection<String> orderElectricianType);
+	
+	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_TYPE = :orderElectricianType order by FINISH_TIME desc",nativeQuery = true)
+	List<OrderElectrician> findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(@Param("orderId")String orderId,
+			@Param("orderElectricianType")String orderElectricianType);
+
+	
+	
 	
 }

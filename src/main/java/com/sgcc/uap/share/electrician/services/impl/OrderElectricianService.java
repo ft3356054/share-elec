@@ -1,7 +1,9 @@
 package com.sgcc.uap.share.electrician.services.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +37,9 @@ import com.sgcc.uap.share.controller.WebSocket;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.customer.services.impl.OrderFlowService;
+import com.sgcc.uap.share.domain.BaseAreaPrice;
 import com.sgcc.uap.share.domain.BaseEnums;
+import com.sgcc.uap.share.domain.BaseIdentityPrice;
 import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
 import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
@@ -44,10 +48,13 @@ import com.sgcc.uap.share.domain.OrderElectricianHis;
 import com.sgcc.uap.share.electrician.controller.OrderElectricianController;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
+import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
 import com.sgcc.uap.share.services.impl.BaseEnumsService;
+import com.sgcc.uap.share.services.impl.BaseIdentityPriceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
+import com.sgcc.uap.util.DecimalUtil;
 import com.sgcc.uap.util.FileUtil;
 import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.SorterUtil;
@@ -94,6 +101,12 @@ public class OrderElectricianService implements IOrderElectricianService{
 	
 	@Autowired
 	private WebSocket webSocket;
+	
+	@Autowired
+	private BaseAreaPriceService baseAreaPriceService;
+	
+	@Autowired
+	private BaseIdentityPriceService baseIdentityPriceService;
 	
 	@Autowired
 	private BaseEnumsService baseEnumsService;
@@ -147,7 +160,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 			
 			//CrudUtils.mapToObject(map, orderElectrician,  "orderElectricianId");
 		}else{//说明是个新的订单
-			String getNewOrderId=UuidUtil.getUuid46();
+			String getNewOrderId=UuidUtil.getUuid32();
 			//开始新增电工订单
 			//先查询电工的信息
 			QueryResultObject electricianResult = electricianInfoService.getElectricianInfoByElectricianId(electricianId);
@@ -518,61 +531,40 @@ public class OrderElectricianService implements IOrderElectricianService{
 	}
 	@Override
 	public OrderElectrician saveOrderElectrician(Map<String, Object> map,MultipartFile file) throws Exception {
-		logger.info("OrderCustomerService saveOrderCustomer map = " +map); 
-		validateService.validateWithException(OrderCustomer.class,map);
+		System.out.println("要执行保存OrderElectrician方法");
+		validateService.validateWithException(OrderElectrician.class,map);
 		OrderElectrician orderElectrician = new OrderElectrician();
 		OrderElectrician result = new OrderElectrician();
-		if (map.containsKey("orderId")) {
-			//修改
+		
 			String orderId = (String) map.get("orderId");
-			orderElectrician = orderElectricianRepository.findOne(orderId);
+			orderElectrician=orderElectricianRepository.findByOrderId(orderId, (String)map.get("electricianId"));
 			
-			Map<String, Object> getStatus = orderStatus(map, orderElectrician);
 			
-			if("23".equals(getStatus.get("key"))){
+			
+			if("23".equals(orderElectrician.getOrderElectricianType())){
 				//上传图片
 				if (!file.isEmpty()) {
 					String fileName = (String) map.get("fileName");
-					String iconUrl = FileUtil.uploadFile(file, orderId,"ORDER_CUSTOMER",fileName);
+					String iconUrl = FileUtil.uploadFile(file, orderId,"ORDER_ELECTRICIAN",fileName);
 					map.put(fileName, iconUrl);
 				}
 				
-				Map<String, Object> newMap = (Map) getStatus.get("map");
-				CrudUtils.mapToObject(newMap, orderElectrician,  "orderId");
-				result = orderElectricianRepository.save(orderElectrician);
-				sendNotify(newMap, orderElectrician,2,1);
-			}else{
-				throw new Exception((String) getStatus.get("desc"));
+				
+				
 			}
-			
-			
-		}else{
-			String getNewOrderId = UuidUtil.getUuid46();
-			//上传图片
-			if (!file.isEmpty()) {
-				String electricianDescriveIcon = FileUtil.uploadFile(file, getNewOrderId,"ORDER_ELECTRICIAN", "electricianDescriveIcon");
-				map.put("electricianDescriveIcon", electricianDescriveIcon);
-			}
-			/*
-			//新增order
-			String identityId = (String) map.get("identityId");
-			String provinceId = (String) map.get("provinceId");
-			map.put("customerPrice", getPrice(identityId, provinceId));
-			map.put("orderStatus", "0");
-			map.put("payStatus", "0");
-			map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
-			map.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
-			map.put("orderId", getNewOrderId);
-			CrudUtils.transMap2Bean(map, orderCustomer);
-			*/
+			CrudUtils.mapToObject(map, orderElectrician,  "orderId");
 			result = orderElectricianRepository.save(orderElectrician);
+			//sendNotify(map, orderElectrician,2,1);
+			
+			
+		/*
 			
 			//获取Enum通知类
 			BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0", "0");	
 			
 			//新增流水
 			Map<String,Object> mapOrderFlow = 
-					MapUtil.flowAdd(getNewOrderId, 0, 0, (String)map.get("electricianId"), TimeStamp.toString(new Date()), 0,  baseEnums.getEnumsA());
+					MapUtil.flowAdd((String)map.get("orderElectricianType"), 0, 0, (String)map.get("electricianId"), TimeStamp.toString(new Date()), 0,  baseEnums.getEnumsA());
 			orderFlowService.saveOrderFlow(mapOrderFlow);
 			
 			//新增通知
@@ -580,23 +572,22 @@ public class OrderElectricianService implements IOrderElectricianService{
 			
 			Map<String,Object> mapNotify =
 					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
-							"2",getNewOrderId,"");
+							"2",(String)map.get("orderElectricianType"),"");
 			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 			
 			Map<String,Object> mapNotifyUser = 
 					MapUtil.notifyUserAdd((String)map.get("electricianId"), announceId, 1, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
-			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
+			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+			*/	
 			
 			//发送websocket消息
 	        webSocket.sendMessage("有新的订单");
-		}
+		
 		return result;
 	}
+
 	
-	private Map<String, Object> orderStatus(Map<String, Object> map, OrderElectrician orderElectrician) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 	@Override
 	public OrderElectrician findByOrderId(String orderId,String orderelectriciantype) {
 		
@@ -739,6 +730,190 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		//orderElectricianRepository.findByOrderId(orderId)
 		return null;
 	}
+	
+	/**
+	 * 通过保存custromer
+	 * @param map
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 * 
+	 */
+	
+	/**
+	 * 1.  要是预约的话就只会给更改客户订单信息中的预约时间
+	 */
+
+	@Override
+	@Transactional
+	public OrderCustomer saveOrderCustomerByOrderElectricianService(Map<String,Object> map,MultipartFile file) throws Exception{
+		
+		validateService.validateWithException(OrderCustomer.class,map);
+		OrderCustomer orderCustomer = new OrderCustomer();
+		OrderCustomer result = new OrderCustomer();
+		
+		
+			
+			String orderId = (String) map.get("orderId");
+			orderCustomer=orderCustomerRepository.findByOrderId(orderId);
+			
+			
+			
+			//23 电工上传合同（报价）
+			if("23".equals(orderCustomer.getOrderStatus())){
+			//if("23".equals(map.get("orderStatus"))){
+				//上传图片
+				if (!file.isEmpty()) {
+					String fileName = (String) map.get("fileName");
+					String iconUrl = FileUtil.uploadFile(file, orderId,"ORDER_CUSTOMER",fileName);
+					map.put(fileName, iconUrl);
+				}
+				
+				
+				
+			}
+			CrudUtils.mapToObject(map, orderCustomer,  "orderId");
+			result = orderCustomerRepository.save(orderCustomer);
+			sendNotify(map, orderCustomer,2,1);
+			
+			
+		
+		return result;
+	}
+	
+	private Map<String,Object> orderStatus(Map map,OrderElectrician orderElectrician) throws Exception{
+		Map<String,Object> result = new HashMap<String, Object>();
+		
+		String orderStatus = (String) map.get("orderStatus");
+		
+		if("4".equals(orderStatus)){
+	        ArrayList<String> sites = new ArrayList<>();
+	        sites.add("0");
+	        sites.add("1");
+	        sites.add("11");
+			//用户主动取消订单，只有在状态为0,1,11 时可以取消
+			if(sites.contains(orderElectrician.getOrderElectricianType())){
+				String dateString = TimeStamp.toString(new Date());
+				map.put("updateTime", dateString);
+				map.put("finishTime", dateString);
+				result.put("key", "0");
+				result.put("desc", "该订单处于可取消状态");
+				result.put("map", map);
+			}else{
+				result.put("key", "1");
+				result.put("desc", "该订单不处于可取消状态");
+			}
+		}else if("8".equals(orderStatus)){
+			ArrayList<String> sites = new ArrayList<>();
+	        sites.add("24"); //待用户验收
+			if(sites.contains(orderElectrician.getOrderElectricianType())){
+				String dateString = TimeStamp.toString(new Date());
+				map.put("updateTime", dateString);
+				result.put("key", "0");
+				result.put("desc", "该订单处于可验收状态");
+				result.put("map", map);
+			}else{
+				result.put("key", "1");
+				result.put("desc", "该订单不处于可验收状态");
+			}
+		}else if("9".equals(orderStatus)){
+			ArrayList<String> sites = new ArrayList<>();
+	        sites.add("8"); //待用户评价
+			if(sites.contains(orderElectrician.getOrderElectricianType())){
+				String dateString = TimeStamp.toString(new Date());
+				map.put("updateTime", dateString);
+				map.put("finishTime", dateString);
+				result.put("key", "0");
+				result.put("desc", "该订单处于待评价状态");
+				result.put("map", map);
+			}else if ("21".equals(orderStatus)) {
+				
+			}
+			
+			else{
+				result.put("key", "1");
+				result.put("desc", "该订单不处于待评价状态");
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * @param map
+	 * @param orderCustomer
+	 * @param oper 0增 1删 2改
+	 * @param getPeople 1客户 2电工 
+	 * @throws Exception
+	 */
+	private void sendNotify(Map map,OrderCustomer orderCustomer,int oper,int getPeople) throws Exception{
+		String status =(String)map.get("orderStatus");
+		//1维修 2支付 3验收 4评价
+		String notifyType ="1";
+		if("23".equals(status)){
+			notifyType ="2";
+		}else if("24".equals(status)){
+			notifyType ="3";
+		}else if("8".equals(status)){
+			notifyType ="4";
+		}
+		
+		//获取Enum通知类
+		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0",  status);	
+		
+		//新增流水
+		Map<String,Object> mapOrderFlow = 
+				MapUtil.flowAdd(orderCustomer.getOrderId(), 0,  Integer.parseInt(status), orderCustomer.getCustomerId(), TimeStamp.toString(new Date()), oper,  baseEnums.getEnumsA());
+		orderFlowService.saveOrderFlow(mapOrderFlow);
+		
+		//新增通知
+		String announceId = UuidUtil.getUuid32();
+		
+		Map<String,Object> mapNotify =
+				MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
+						notifyType,orderCustomer.getOrderId(),"");
+		notifyAnnounceService.saveNotifyAnnounce(mapNotify);
+		
+		Map<String,Object> mapNotifyUser = 
+				MapUtil.notifyUserAdd(orderCustomer.getCustomerId(), announceId, getPeople, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+		
+		//发送websocket消息
+        webSocket.sendMessage(baseEnums.getEnumsB());
+	}
+	
+	private String getPrice(String identityId,String provinceId){
+		//获取身份价格
+		QueryResultObject getBaseIdentityPrice = baseIdentityPriceService.getBaseIdentityPriceByIdentityId(identityId);
+		BaseIdentityPrice baseIdentityPrice = (BaseIdentityPrice) (getBaseIdentityPrice.getItems().get(0));
+		String identityPrice = baseIdentityPrice.getIdentityPrice();
+		
+		//获取省份价格
+		List<BaseAreaPrice> list = baseAreaPriceService.getBaseAreaPriceByProvinceId(provinceId);
+		String areaPrice = list.get(0).getPrice();
+		
+		BigDecimal identityPriceBD=new BigDecimal(identityPrice);
+		BigDecimal areaPriceBD=new BigDecimal(areaPrice);
+		String resultBD = DecimalUtil.add(identityPriceBD,areaPriceBD).toString();
+		
+		return resultBD;
+	}
+	@Override
+	public List<OrderElectrician> findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(String orderId,
+			String orderElectricianType) {
+		// TODO Auto-generated method stub
+		List<OrderElectrician> list=orderElectricianRepository.findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(orderId,orderElectricianType);
+		return list;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
