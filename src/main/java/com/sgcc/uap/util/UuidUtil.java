@@ -38,7 +38,8 @@ public class UuidUtil {
 	 * @return
 	 */
 	public static String getIntUuid32(){
-		return nowToString(new Date())+randomIntegerString(18);
+		//return nowToString(new Date())+randomIntegerString(18);
+		return nowToString(new Date())+randomIntegerString(6);
 	}
 	
 	/**

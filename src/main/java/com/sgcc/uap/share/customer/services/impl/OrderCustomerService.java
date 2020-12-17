@@ -34,7 +34,6 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderCustomerService;
-import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
 import com.sgcc.uap.share.domain.BaseAreaPrice;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.BaseIdentityPrice;
@@ -101,7 +100,6 @@ public class OrderCustomerService implements IOrderCustomerService{
 	@Override
 	public QueryResultObject getAllOrderCustomerByCustomerId(RequestCondition queryCondition) {
 		List<OrderCustomer> result = new ArrayList<>();
-		List<OrderCustomerVO> resultVO = new ArrayList<>();
 		long count = 0;
 		
 		String pageType = queryCondition.getParentID();
@@ -127,16 +125,14 @@ public class OrderCustomerService implements IOrderCustomerService{
 			elecStatus.add("1");
 			elecStatus.add("4");
 			elecStatus.add("5");
-			resultVO = orderCustomerRepository.getOrderCustomerVOByCustomerIdAndEnot(pageIndex,pageSize,customerId,custStatus,elecStatus);
-			count = resultVO.size();
-			return RestUtils.wrappQueryResult(resultVO, count);
+			result = orderCustomerRepository.getOrderCustomerByCustomerIdAndEnot(pageIndex,pageSize,customerId,custStatus,elecStatus);
 		}else{
 			result = orderCustomerRepository.getAllOrderCustomerByCustomerId(pageIndex,pageSize,customerId);
-			count = result.size();
-			return RestUtils.wrappQueryResult(result, count);
+			
 		}
 		
-		
+		count = result.size();
+		return RestUtils.wrappQueryResult(result, count);
 	}
 	
 	@Override
@@ -195,6 +191,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			map.put("customerPrice", getPrice(identityId, provinceId));
 			map.put("orderStatus", "0");
 			map.put("payStatus", "0");
+			map.put("orderFrom", "0");
 			map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
 			map.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 			map.put("orderId", getNewOrderId);
@@ -226,20 +223,6 @@ public class OrderCustomerService implements IOrderCustomerService{
 		}
 		return result;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	@Override
