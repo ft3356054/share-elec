@@ -65,7 +65,6 @@ public class NotifyAnnounceController {
 	@Autowired
 	private INotifyAnnounceService notifyAnnounceService;
 	
-	
 	/**
 	 * @getByAnnounceId:根据announceId查询
 	 * @param announceId
@@ -262,5 +261,35 @@ public class NotifyAnnounceController {
 	public void initBinder(WebDataBinder binder){
 		binder.setDisallowedFields(DISALLOWED_PARAMS);
 	}
-
+	
+	@RequestMapping(value = "/testWebsocket1")
+	public WrappedResult testWebsocket1() {
+		try {
+			WebSocketServer.sendInfo("群发客户端",null);
+			logger.info("查询成功"); 
+			return WrappedResult.successWrapedResult("");
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	@RequestMapping(value = "/testWebsocket2")
+	public WrappedResult testWebsocket2() {
+		try {
+			WebSocketServer.sendInfo("单发客户端","123");
+			logger.info("查询成功"); 
+			return WrappedResult.successWrapedResult("");
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
 }

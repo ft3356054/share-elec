@@ -31,7 +31,7 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
-import com.sgcc.uap.share.controller.WebSocket;
+import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderCustomerService;
 import com.sgcc.uap.share.domain.BaseAreaPrice;
@@ -88,8 +88,6 @@ public class OrderCustomerService implements IOrderCustomerService{
 	private NotifyAnnounceService notifyAnnounceService;
 	@Autowired
 	private NotifyAnnounceUserService notifyAnnounceUserService;
-	@Autowired
-    private WebSocket webSocket;
 	@Autowired
     private IBaseEnumsService baseEnumsService;
 	
@@ -200,7 +198,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
 			
 			//发送websocket消息
-	        webSocket.sendMessage("有新的订单");
+	        WebSocketServer.sendInfo("下单成功",(String)map.get("customerId"));
 		}
 		return result;
 	}
@@ -396,8 +394,13 @@ public class OrderCustomerService implements IOrderCustomerService{
 	        sites.add("0");
 	        sites.add("1");
 	        sites.add("11");
-			//用户主动取消订单，只有在状态为0,1,11 时可以取消
+	        sites.add("21");
+			//用户主动取消订单
 			if(sites.contains(orderCustomer.getOrderStatus())){
+				if("21".equals(orderCustomer.getOrderStatus())){
+					//电工已接单，则需要通知电工
+					notifyAnnounceService.userDefinedNotify(orderCustomer.getOrderId(), "1", "4");
+				}
 				String dateString = TimeStamp.toString(new Date());
 				map.put("updateTime", dateString);
 				map.put("finishTime", dateString);
@@ -480,7 +483,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 		
 		//发送websocket消息
-        webSocket.sendMessage(baseEnums.getEnumsB());
+        WebSocketServer.sendInfo(baseEnums.getEnumsB(),(String)map.get("customerId"));
 	}
 	
 	

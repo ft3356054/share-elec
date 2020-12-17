@@ -25,6 +25,7 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.NotifyAnnounce;
 import com.sgcc.uap.share.domain.NotifyAnnounceUser;
 import com.sgcc.uap.share.domain.OrderElectrician;
@@ -62,7 +63,8 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 	private OrderElectricianRepository orderElectricianRepository;
 	@Autowired
 	private NotifyAnnounceUserService notifyAnnounceUserService;
-	
+	@Autowired
+	private BaseEnumsService baseEnumsService;
 	
 	
 	@Override
@@ -285,6 +287,47 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 				notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 				
 			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return RestUtils.wrappQueryResult(null);
+	}
+	
+	@Override
+	public QueryResultObject userDefinedNotify(String orderId,String enumType,String enumStatus) {
+		try {
+			if("0".equals(enumType)){
+				//给客户发通知
+				
+			}else if("1".equals(enumType)){
+				//给电工发送通知
+				ArrayList<String> orderElectricianType = new ArrayList<String>();
+				orderElectricianType.add("4");
+				orderElectricianType.add("5");
+				OrderElectrician orderElectrician = orderElectricianRepository.findByOrderIdAndOrderElectricianTypeNotIn(orderId, orderElectricianType);
+				
+				if(null!=orderElectrician){
+					String electricianId = orderElectrician.getElectricianId();
+					//获取Enum通知类
+					BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus(enumType,enumStatus);	
+					//新增通知
+					String announceId = UuidUtil.getUuid32();
+					
+					Map<String,Object> mapNotify =
+							MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), "1",orderId,baseEnums.getEnumsD());
+					
+					saveNotifyAnnounce(mapNotify);
+					
+					
+					Map<String,Object> mapNotifyUser = 
+							MapUtil.notifyUserAdd(electricianId, announceId, 2, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+					notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+					
+				}
+				
+			}
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

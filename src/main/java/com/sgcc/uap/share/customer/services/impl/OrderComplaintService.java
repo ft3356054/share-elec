@@ -27,7 +27,7 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
-import com.sgcc.uap.share.controller.WebSocket;
+import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.repositories.OrderComplaintRepository;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderComplaintService;
@@ -77,10 +77,7 @@ public class OrderComplaintService implements IOrderComplaintService{
 	@Autowired
 	private NotifyAnnounceUserService notifyAnnounceUserService;
 	@Autowired
-    private WebSocket webSocket;
-	@Autowired
 	private OrderFlowService orderFlowService;
-	
 	@Autowired
 	private ValidateService validateService;
 	
@@ -195,7 +192,7 @@ public class OrderComplaintService implements IOrderComplaintService{
 						notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
 						
 						//发送websocket消息
-				        webSocket.sendMessage("投诉成功");
+				        WebSocketServer.sendInfo("投诉成功",(String)map.get("customerId"));
 						
 					}else{
 						throw new Exception("未查询到电工订单");
