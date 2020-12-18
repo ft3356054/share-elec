@@ -19,7 +19,7 @@ public class OrderAuditElectricianTransfer {
 	 * @toPO:vo转为po
 	 * @param vo vo对象
 	 * @return OrderAuditElectrician OrderAuditElectrician对象
-	 * @date 2020-12-14 09:55:38
+	 * @date 2020-12-18 15:20:08
 	 * @author 18511
 	 */
 	public static OrderAuditElectrician toPO(OrderAuditElectricianVO vo) {
@@ -32,20 +32,21 @@ public class OrderAuditElectricianTransfer {
 			orderAuditElectrician.setFinishTime(vo.getFinishTime());
 			orderAuditElectrician.setAuditorId(vo.getAuditorId());
 			orderAuditElectrician.setAuditorComment(vo.getAuditorComment());
+			orderAuditElectrician.setElectricianId(vo.getElectricianId());
+			orderAuditElectrician.setElectricianName(vo.getElectricianName());
+			orderAuditElectrician.setElectricianPhonenumber(vo.getElectricianPhonenumber());
+			orderAuditElectrician.setElectricianLevel(vo.getElectricianLevel());
 			orderAuditElectrician.setSubCompanyId(vo.getSubCompanyId());
 			orderAuditElectrician.setCompanyId(vo.getCompanyId());
 			orderAuditElectrician.setCompanyName(vo.getCompanyName());
-			orderAuditElectrician.setCompanyPhonenumber(vo.getCompanyPhonenumber());
-			orderAuditElectrician.setCompanyAddress(vo.getCompanyAddress());
-			orderAuditElectrician.setAddressLongitude(vo.getAddressLongitude());
-			orderAuditElectrician.setAddressLatitude(vo.getAddressLatitude());
-			orderAuditElectrician.setCompanyLevel(vo.getCompanyLevel());
 			orderAuditElectrician.setRatingCertificate(vo.getRatingCertificate());
 			orderAuditElectrician.setCompanyContract(vo.getCompanyContract());
+			orderAuditElectrician.setIdentityInfo(vo.getIdentityInfo());
+			orderAuditElectrician.setElectricianCertificate(vo.getElectricianCertificate());
+			orderAuditElectrician.setCertificateA(vo.getCertificateA());
+			orderAuditElectrician.setCertificateB(vo.getCertificateB());
+			orderAuditElectrician.setCertificateC(vo.getCertificateC());
 			orderAuditElectrician.setRemark(vo.getRemark());
-			orderAuditElectrician.setRemark1(vo.getRemark1());
-			orderAuditElectrician.setRemark2(vo.getRemark2());
-			orderAuditElectrician.setRemark3(vo.getRemark3());
         }
 		return orderAuditElectrician;
 	}
@@ -53,7 +54,7 @@ public class OrderAuditElectricianTransfer {
 	 * @toVO:po转为vo
 	 * @param po po对象
 	 * @return OrderAuditElectricianVO OrderAuditElectricianVO对象
-	 * @date 2020-12-14 09:55:38
+	 * @date 2020-12-18 15:20:08
 	 * @author 18511
 	 */
 	public static OrderAuditElectricianVO toVO(OrderAuditElectrician po) {
@@ -65,20 +66,21 @@ public class OrderAuditElectricianTransfer {
 		vo.setFinishTime(po.getFinishTime());
 		vo.setAuditorId(po.getAuditorId());
 		vo.setAuditorComment(po.getAuditorComment());
+		vo.setElectricianId(po.getElectricianId());
+		vo.setElectricianName(po.getElectricianName());
+		vo.setElectricianPhonenumber(po.getElectricianPhonenumber());
+		vo.setElectricianLevel(po.getElectricianLevel());
 		vo.setSubCompanyId(po.getSubCompanyId());
 		vo.setCompanyId(po.getCompanyId());
 		vo.setCompanyName(po.getCompanyName());
-		vo.setCompanyPhonenumber(po.getCompanyPhonenumber());
-		vo.setCompanyAddress(po.getCompanyAddress());
-		vo.setAddressLongitude(po.getAddressLongitude());
-		vo.setAddressLatitude(po.getAddressLatitude());
-		vo.setCompanyLevel(po.getCompanyLevel());
 		vo.setRatingCertificate(po.getRatingCertificate());
 		vo.setCompanyContract(po.getCompanyContract());
+		vo.setIdentityInfo(po.getIdentityInfo());
+		vo.setElectricianCertificate(po.getElectricianCertificate());
+		vo.setCertificateA(po.getCertificateA());
+		vo.setCertificateB(po.getCertificateB());
+		vo.setCertificateC(po.getCertificateC());
 		vo.setRemark(po.getRemark());
-		vo.setRemark1(po.getRemark1());
-		vo.setRemark2(po.getRemark2());
-		vo.setRemark3(po.getRemark3());
 		return vo;
 	}
 }

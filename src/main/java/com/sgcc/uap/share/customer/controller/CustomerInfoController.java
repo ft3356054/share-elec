@@ -2,10 +2,10 @@ package com.sgcc.uap.share.customer.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -236,25 +236,33 @@ public class CustomerInfoController {
 	@RequestMapping(value = "/locationPut")
 	public WrappedResult locationPut(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
+			Map<String, Object> resultMap = new HashMap<String, Object>();
 			Map<String, String> map = MapUtil.getParam(requestCondition);
 			String jsonMap = JsonUtils.mapToJson(map);
 			
 			boolean flag = false;
-			String userId = map.get("customerId") ;
+			String userId = map.get("userId") ;
 			String area = map.get("area") ;
 			
-			Set<Map<String,String>> resultSet =redisTemplate.opsForSet().members(area);
-			if(null==resultSet){
+			LinkedHashSet resultSet = (LinkedHashSet) redisTemplate.opsForHash().keys(area);
+			if(null==resultSet||resultSet.isEmpty()){
 				Map<String,String> newMap = new HashMap<>();
 				newMap.put(userId, jsonMap);
-				redisTemplate.opsForSet().add(area, newMap, 1L, TimeUnit.HOURS);
+				redisTemplate.opsForHash().putAll(area, newMap);
 			}else{
-				for(Map getMap : resultSet){
-					if(getMap.get("userId").equals(userId)){
+				String jsonMain = stringRedisTemplate.opsForValue().get(area);
+				resultMap = JsonUtils.parseJSONstr2Map(jsonMain);
+				
+				String json = (String) resultMap.get(userId);
+				
+				Iterator iter = resultSet.iterator();
+		        while(iter.hasNext()){
+		            System.out.println(iter.next());
+		            if(iter.next().equals(userId)){
 						flag = true ;
 						break;
 					}
-				}
+		        }
 				if(flag){
 					
 				}else{

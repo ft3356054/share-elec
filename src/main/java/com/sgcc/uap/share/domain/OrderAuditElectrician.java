@@ -72,6 +72,30 @@ public class OrderAuditElectrician implements Serializable {
     private String auditorComment ;
     
     /** 
+     * ELECTRICIAN_ID
+     */
+    @Column(name = "ELECTRICIAN_ID", nullable = true, length = 64)
+    private String electricianId ;
+    
+    /** 
+     * ELECTRICIAN_NAME
+     */
+    @Column(name = "ELECTRICIAN_NAME", nullable = true, length = 32)
+    private String electricianName ;
+    
+    /** 
+     * ELECTRICIAN_PHONENUMBER
+     */
+    @Column(name = "ELECTRICIAN_PHONENUMBER", nullable = true, length = 32)
+    private String electricianPhonenumber ;
+    
+    /** 
+     * ELECTRICIAN_LEVEL
+     */
+    @Column(name = "ELECTRICIAN_LEVEL", nullable = true, length = 32)
+    private String electricianLevel ;
+    
+    /** 
      * SUB_COMPANY_ID
      */
     @Column(name = "SUB_COMPANY_ID", nullable = true, length = 64)
@@ -90,36 +114,6 @@ public class OrderAuditElectrician implements Serializable {
     private String companyName ;
     
     /** 
-     * COMPANY_PHONENUMBER
-     */
-    @Column(name = "COMPANY_PHONENUMBER", nullable = true, length = 32)
-    private String companyPhonenumber ;
-    
-    /** 
-     * COMPANY_ADDRESS
-     */
-    @Column(name = "COMPANY_ADDRESS", nullable = true, length = 256)
-    private String companyAddress ;
-    
-    /** 
-     * ADDRESS_LONGITUDE
-     */
-    @Column(name = "ADDRESS_LONGITUDE", nullable = true, length = 32)
-    private String addressLongitude ;
-    
-    /** 
-     * ADDRESS_LATITUDE
-     */
-    @Column(name = "ADDRESS_LATITUDE", nullable = true, length = 32)
-    private String addressLatitude ;
-    
-    /** 
-     * COMPANY_LEVEL
-     */
-    @Column(name = "COMPANY_LEVEL", nullable = true, length = 10)
-    private String companyLevel ;
-    
-    /** 
      * RATING_CERTIFICATE
      */
     @Column(name = "RATING_CERTIFICATE", nullable = true, length = 512)
@@ -132,28 +126,40 @@ public class OrderAuditElectrician implements Serializable {
     private String companyContract ;
     
     /** 
+     * IDENTITY_INFO
+     */
+    @Column(name = "IDENTITY_INFO", nullable = true, length = 512)
+    private String identityInfo ;
+    
+    /** 
+     * ELECTRICIAN_CERTIFICATE
+     */
+    @Column(name = "ELECTRICIAN_CERTIFICATE", nullable = true, length = 512)
+    private String electricianCertificate ;
+    
+    /** 
+     * CERTIFICATE_A
+     */
+    @Column(name = "CERTIFICATE_A", nullable = true, length = 512)
+    private String certificateA ;
+    
+    /** 
+     * CERTIFICATE_B
+     */
+    @Column(name = "CERTIFICATE_B", nullable = true, length = 512)
+    private String certificateB ;
+    
+    /** 
+     * CERTIFICATE_C
+     */
+    @Column(name = "CERTIFICATE_C", nullable = true, length = 512)
+    private String certificateC ;
+    
+    /** 
      * REMARK
      */
     @Column(name = "REMARK", nullable = true, length = 512)
     private String remark ;
-    
-    /** 
-     * REMARK1
-     */
-    @Column(name = "REMARK1", nullable = true, length = 512)
-    private String remark1 ;
-    
-    /** 
-     * REMARK2
-     */
-    @Column(name = "REMARK2", nullable = true, length = 512)
-    private String remark2 ;
-    
-    /** 
-     * REMARK3
-     */
-    @Column(name = "REMARK3", nullable = true, length = 512)
-    private String remark3 ;
     
 	/**
 	  *虚拟主键
@@ -168,7 +174,7 @@ public class OrderAuditElectrician implements Serializable {
      * @getOrderId:ORDER_ID的get方法
      * @params
      * @return orderId
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public String getOrderId(){
@@ -178,7 +184,7 @@ public class OrderAuditElectrician implements Serializable {
      * @setOrderId:ORDER_ID的set方法
      * @param orderId
      * @return
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public void setOrderId(String orderId){
@@ -192,7 +198,7 @@ public class OrderAuditElectrician implements Serializable {
      * @getOrderType:ORDER_TYPE的get方法
      * @params
      * @return orderType
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public String getOrderType(){
@@ -202,7 +208,7 @@ public class OrderAuditElectrician implements Serializable {
      * @setOrderType:ORDER_TYPE的set方法
      * @param orderType
      * @return
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public void setOrderType(String orderType){
@@ -212,7 +218,7 @@ public class OrderAuditElectrician implements Serializable {
      * @getCreateTime:CREATE_TIME的get方法
      * @params
      * @return createTime
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public Timestamp getCreateTime(){
@@ -222,7 +228,7 @@ public class OrderAuditElectrician implements Serializable {
      * @setCreateTime:CREATE_TIME的set方法
      * @param createTime
      * @return
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public void setCreateTime(Timestamp createTime){
@@ -232,7 +238,7 @@ public class OrderAuditElectrician implements Serializable {
      * @getUpdateTime:UPDATE_TIME的get方法
      * @params
      * @return updateTime
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public Timestamp getUpdateTime(){
@@ -242,7 +248,7 @@ public class OrderAuditElectrician implements Serializable {
      * @setUpdateTime:UPDATE_TIME的set方法
      * @param updateTime
      * @return
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public void setUpdateTime(Timestamp updateTime){
@@ -252,7 +258,7 @@ public class OrderAuditElectrician implements Serializable {
      * @getFinishTime:FINISH_TIME的get方法
      * @params
      * @return finishTime
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public Timestamp getFinishTime(){
@@ -262,7 +268,7 @@ public class OrderAuditElectrician implements Serializable {
      * @setFinishTime:FINISH_TIME的set方法
      * @param finishTime
      * @return
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public void setFinishTime(Timestamp finishTime){
@@ -272,7 +278,7 @@ public class OrderAuditElectrician implements Serializable {
      * @getAuditorId:AUDITOR_ID的get方法
      * @params
      * @return auditorId
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public String getAuditorId(){
@@ -282,7 +288,7 @@ public class OrderAuditElectrician implements Serializable {
      * @setAuditorId:AUDITOR_ID的set方法
      * @param auditorId
      * @return
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public void setAuditorId(String auditorId){
@@ -292,7 +298,7 @@ public class OrderAuditElectrician implements Serializable {
      * @getAuditorComment:AUDITOR_COMMENT的get方法
      * @params
      * @return auditorComment
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public String getAuditorComment(){
@@ -302,17 +308,97 @@ public class OrderAuditElectrician implements Serializable {
      * @setAuditorComment:AUDITOR_COMMENT的set方法
      * @param auditorComment
      * @return
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public void setAuditorComment(String auditorComment){
 		this.auditorComment = auditorComment;
 	} 
     /**
+     * @getElectricianId:ELECTRICIAN_ID的get方法
+     * @params
+     * @return electricianId
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public String getElectricianId(){
+        return this.electricianId;
+    }
+    /**
+     * @setElectricianId:ELECTRICIAN_ID的set方法
+     * @param electricianId
+     * @return
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public void setElectricianId(String electricianId){
+		this.electricianId = electricianId;
+	} 
+    /**
+     * @getElectricianName:ELECTRICIAN_NAME的get方法
+     * @params
+     * @return electricianName
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public String getElectricianName(){
+        return this.electricianName;
+    }
+    /**
+     * @setElectricianName:ELECTRICIAN_NAME的set方法
+     * @param electricianName
+     * @return
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public void setElectricianName(String electricianName){
+		this.electricianName = electricianName;
+	} 
+    /**
+     * @getElectricianPhonenumber:ELECTRICIAN_PHONENUMBER的get方法
+     * @params
+     * @return electricianPhonenumber
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public String getElectricianPhonenumber(){
+        return this.electricianPhonenumber;
+    }
+    /**
+     * @setElectricianPhonenumber:ELECTRICIAN_PHONENUMBER的set方法
+     * @param electricianPhonenumber
+     * @return
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public void setElectricianPhonenumber(String electricianPhonenumber){
+		this.electricianPhonenumber = electricianPhonenumber;
+	} 
+    /**
+     * @getElectricianLevel:ELECTRICIAN_LEVEL的get方法
+     * @params
+     * @return electricianLevel
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public String getElectricianLevel(){
+        return this.electricianLevel;
+    }
+    /**
+     * @setElectricianLevel:ELECTRICIAN_LEVEL的set方法
+     * @param electricianLevel
+     * @return
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public void setElectricianLevel(String electricianLevel){
+		this.electricianLevel = electricianLevel;
+	} 
+    /**
      * @getSubCompanyId:SUB_COMPANY_ID的get方法
      * @params
      * @return subCompanyId
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public String getSubCompanyId(){
@@ -322,7 +408,7 @@ public class OrderAuditElectrician implements Serializable {
      * @setSubCompanyId:SUB_COMPANY_ID的set方法
      * @param subCompanyId
      * @return
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public void setSubCompanyId(String subCompanyId){
@@ -332,7 +418,7 @@ public class OrderAuditElectrician implements Serializable {
      * @getCompanyId:COMPANY_ID的get方法
      * @params
      * @return companyId
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public String getCompanyId(){
@@ -342,7 +428,7 @@ public class OrderAuditElectrician implements Serializable {
      * @setCompanyId:COMPANY_ID的set方法
      * @param companyId
      * @return
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public void setCompanyId(String companyId){
@@ -352,7 +438,7 @@ public class OrderAuditElectrician implements Serializable {
      * @getCompanyName:COMPANY_NAME的get方法
      * @params
      * @return companyName
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public String getCompanyName(){
@@ -362,117 +448,17 @@ public class OrderAuditElectrician implements Serializable {
      * @setCompanyName:COMPANY_NAME的set方法
      * @param companyName
      * @return
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public void setCompanyName(String companyName){
 		this.companyName = companyName;
 	} 
     /**
-     * @getCompanyPhonenumber:COMPANY_PHONENUMBER的get方法
-     * @params
-     * @return companyPhonenumber
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public String getCompanyPhonenumber(){
-        return this.companyPhonenumber;
-    }
-    /**
-     * @setCompanyPhonenumber:COMPANY_PHONENUMBER的set方法
-     * @param companyPhonenumber
-     * @return
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public void setCompanyPhonenumber(String companyPhonenumber){
-		this.companyPhonenumber = companyPhonenumber;
-	} 
-    /**
-     * @getCompanyAddress:COMPANY_ADDRESS的get方法
-     * @params
-     * @return companyAddress
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public String getCompanyAddress(){
-        return this.companyAddress;
-    }
-    /**
-     * @setCompanyAddress:COMPANY_ADDRESS的set方法
-     * @param companyAddress
-     * @return
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public void setCompanyAddress(String companyAddress){
-		this.companyAddress = companyAddress;
-	} 
-    /**
-     * @getAddressLongitude:ADDRESS_LONGITUDE的get方法
-     * @params
-     * @return addressLongitude
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public String getAddressLongitude(){
-        return this.addressLongitude;
-    }
-    /**
-     * @setAddressLongitude:ADDRESS_LONGITUDE的set方法
-     * @param addressLongitude
-     * @return
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public void setAddressLongitude(String addressLongitude){
-		this.addressLongitude = addressLongitude;
-	} 
-    /**
-     * @getAddressLatitude:ADDRESS_LATITUDE的get方法
-     * @params
-     * @return addressLatitude
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public String getAddressLatitude(){
-        return this.addressLatitude;
-    }
-    /**
-     * @setAddressLatitude:ADDRESS_LATITUDE的set方法
-     * @param addressLatitude
-     * @return
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public void setAddressLatitude(String addressLatitude){
-		this.addressLatitude = addressLatitude;
-	} 
-    /**
-     * @getCompanyLevel:COMPANY_LEVEL的get方法
-     * @params
-     * @return companyLevel
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public String getCompanyLevel(){
-        return this.companyLevel;
-    }
-    /**
-     * @setCompanyLevel:COMPANY_LEVEL的set方法
-     * @param companyLevel
-     * @return
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public void setCompanyLevel(String companyLevel){
-		this.companyLevel = companyLevel;
-	} 
-    /**
      * @getRatingCertificate:RATING_CERTIFICATE的get方法
      * @params
      * @return ratingCertificate
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public String getRatingCertificate(){
@@ -482,7 +468,7 @@ public class OrderAuditElectrician implements Serializable {
      * @setRatingCertificate:RATING_CERTIFICATE的set方法
      * @param ratingCertificate
      * @return
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public void setRatingCertificate(String ratingCertificate){
@@ -492,7 +478,7 @@ public class OrderAuditElectrician implements Serializable {
      * @getCompanyContract:COMPANY_CONTRACT的get方法
      * @params
      * @return companyContract
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public String getCompanyContract(){
@@ -502,17 +488,117 @@ public class OrderAuditElectrician implements Serializable {
      * @setCompanyContract:COMPANY_CONTRACT的set方法
      * @param companyContract
      * @return
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public void setCompanyContract(String companyContract){
 		this.companyContract = companyContract;
 	} 
     /**
+     * @getIdentityInfo:IDENTITY_INFO的get方法
+     * @params
+     * @return identityInfo
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public String getIdentityInfo(){
+        return this.identityInfo;
+    }
+    /**
+     * @setIdentityInfo:IDENTITY_INFO的set方法
+     * @param identityInfo
+     * @return
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public void setIdentityInfo(String identityInfo){
+		this.identityInfo = identityInfo;
+	} 
+    /**
+     * @getElectricianCertificate:ELECTRICIAN_CERTIFICATE的get方法
+     * @params
+     * @return electricianCertificate
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public String getElectricianCertificate(){
+        return this.electricianCertificate;
+    }
+    /**
+     * @setElectricianCertificate:ELECTRICIAN_CERTIFICATE的set方法
+     * @param electricianCertificate
+     * @return
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public void setElectricianCertificate(String electricianCertificate){
+		this.electricianCertificate = electricianCertificate;
+	} 
+    /**
+     * @getCertificateA:CERTIFICATE_A的get方法
+     * @params
+     * @return certificateA
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public String getCertificateA(){
+        return this.certificateA;
+    }
+    /**
+     * @setCertificateA:CERTIFICATE_A的set方法
+     * @param certificateA
+     * @return
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public void setCertificateA(String certificateA){
+		this.certificateA = certificateA;
+	} 
+    /**
+     * @getCertificateB:CERTIFICATE_B的get方法
+     * @params
+     * @return certificateB
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public String getCertificateB(){
+        return this.certificateB;
+    }
+    /**
+     * @setCertificateB:CERTIFICATE_B的set方法
+     * @param certificateB
+     * @return
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public void setCertificateB(String certificateB){
+		this.certificateB = certificateB;
+	} 
+    /**
+     * @getCertificateC:CERTIFICATE_C的get方法
+     * @params
+     * @return certificateC
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public String getCertificateC(){
+        return this.certificateC;
+    }
+    /**
+     * @setCertificateC:CERTIFICATE_C的set方法
+     * @param certificateC
+     * @return
+     * @date 2020-12-18 15:20:05
+     * @author 18511
+     */
+    public void setCertificateC(String certificateC){
+		this.certificateC = certificateC;
+	} 
+    /**
      * @getRemark:REMARK的get方法
      * @params
      * @return remark
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public String getRemark(){
@@ -522,71 +608,11 @@ public class OrderAuditElectrician implements Serializable {
      * @setRemark:REMARK的set方法
      * @param remark
      * @return
-     * @date 2020-12-14 09:55:38
+     * @date 2020-12-18 15:20:05
      * @author 18511
      */
     public void setRemark(String remark){
 		this.remark = remark;
-	} 
-    /**
-     * @getRemark1:REMARK1的get方法
-     * @params
-     * @return remark1
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public String getRemark1(){
-        return this.remark1;
-    }
-    /**
-     * @setRemark1:REMARK1的set方法
-     * @param remark1
-     * @return
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public void setRemark1(String remark1){
-		this.remark1 = remark1;
-	} 
-    /**
-     * @getRemark2:REMARK2的get方法
-     * @params
-     * @return remark2
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public String getRemark2(){
-        return this.remark2;
-    }
-    /**
-     * @setRemark2:REMARK2的set方法
-     * @param remark2
-     * @return
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public void setRemark2(String remark2){
-		this.remark2 = remark2;
-	} 
-    /**
-     * @getRemark3:REMARK3的get方法
-     * @params
-     * @return remark3
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public String getRemark3(){
-        return this.remark3;
-    }
-    /**
-     * @setRemark3:REMARK3的set方法
-     * @param remark3
-     * @return
-     * @date 2020-12-14 09:55:38
-     * @author 18511
-     */
-    public void setRemark3(String remark3){
-		this.remark3 = remark3;
 	} 
 	public String getMxVirtualId() {
         return this.mxVirtualId;
@@ -660,6 +686,34 @@ public class OrderAuditElectrician implements Serializable {
 		} else if (!auditorComment.equals(other.auditorComment)) {
 			return false;
 		}
+		if (electricianId == null) {
+			if (other.electricianId != null) {
+				return false;
+			}
+		} else if (!electricianId.equals(other.electricianId)) {
+			return false;
+		}
+		if (electricianName == null) {
+			if (other.electricianName != null) {
+				return false;
+			}
+		} else if (!electricianName.equals(other.electricianName)) {
+			return false;
+		}
+		if (electricianPhonenumber == null) {
+			if (other.electricianPhonenumber != null) {
+				return false;
+			}
+		} else if (!electricianPhonenumber.equals(other.electricianPhonenumber)) {
+			return false;
+		}
+		if (electricianLevel == null) {
+			if (other.electricianLevel != null) {
+				return false;
+			}
+		} else if (!electricianLevel.equals(other.electricianLevel)) {
+			return false;
+		}
 		if (subCompanyId == null) {
 			if (other.subCompanyId != null) {
 				return false;
@@ -681,41 +735,6 @@ public class OrderAuditElectrician implements Serializable {
 		} else if (!companyName.equals(other.companyName)) {
 			return false;
 		}
-		if (companyPhonenumber == null) {
-			if (other.companyPhonenumber != null) {
-				return false;
-			}
-		} else if (!companyPhonenumber.equals(other.companyPhonenumber)) {
-			return false;
-		}
-		if (companyAddress == null) {
-			if (other.companyAddress != null) {
-				return false;
-			}
-		} else if (!companyAddress.equals(other.companyAddress)) {
-			return false;
-		}
-		if (addressLongitude == null) {
-			if (other.addressLongitude != null) {
-				return false;
-			}
-		} else if (!addressLongitude.equals(other.addressLongitude)) {
-			return false;
-		}
-		if (addressLatitude == null) {
-			if (other.addressLatitude != null) {
-				return false;
-			}
-		} else if (!addressLatitude.equals(other.addressLatitude)) {
-			return false;
-		}
-		if (companyLevel == null) {
-			if (other.companyLevel != null) {
-				return false;
-			}
-		} else if (!companyLevel.equals(other.companyLevel)) {
-			return false;
-		}
 		if (ratingCertificate == null) {
 			if (other.ratingCertificate != null) {
 				return false;
@@ -730,32 +749,46 @@ public class OrderAuditElectrician implements Serializable {
 		} else if (!companyContract.equals(other.companyContract)) {
 			return false;
 		}
+		if (identityInfo == null) {
+			if (other.identityInfo != null) {
+				return false;
+			}
+		} else if (!identityInfo.equals(other.identityInfo)) {
+			return false;
+		}
+		if (electricianCertificate == null) {
+			if (other.electricianCertificate != null) {
+				return false;
+			}
+		} else if (!electricianCertificate.equals(other.electricianCertificate)) {
+			return false;
+		}
+		if (certificateA == null) {
+			if (other.certificateA != null) {
+				return false;
+			}
+		} else if (!certificateA.equals(other.certificateA)) {
+			return false;
+		}
+		if (certificateB == null) {
+			if (other.certificateB != null) {
+				return false;
+			}
+		} else if (!certificateB.equals(other.certificateB)) {
+			return false;
+		}
+		if (certificateC == null) {
+			if (other.certificateC != null) {
+				return false;
+			}
+		} else if (!certificateC.equals(other.certificateC)) {
+			return false;
+		}
 		if (remark == null) {
 			if (other.remark != null) {
 				return false;
 			}
 		} else if (!remark.equals(other.remark)) {
-			return false;
-		}
-		if (remark1 == null) {
-			if (other.remark1 != null) {
-				return false;
-			}
-		} else if (!remark1.equals(other.remark1)) {
-			return false;
-		}
-		if (remark2 == null) {
-			if (other.remark2 != null) {
-				return false;
-			}
-		} else if (!remark2.equals(other.remark2)) {
-			return false;
-		}
-		if (remark3 == null) {
-			if (other.remark3 != null) {
-				return false;
-			}
-		} else if (!remark3.equals(other.remark3)) {
 			return false;
 		}
 		return true;
@@ -774,20 +807,21 @@ public class OrderAuditElectrician implements Serializable {
 			+ ", finishTime=" + finishTime
 			+ ", auditorId=" + auditorId
 			+ ", auditorComment=" + auditorComment
+			+ ", electricianId=" + electricianId
+			+ ", electricianName=" + electricianName
+			+ ", electricianPhonenumber=" + electricianPhonenumber
+			+ ", electricianLevel=" + electricianLevel
 			+ ", subCompanyId=" + subCompanyId
 			+ ", companyId=" + companyId
 			+ ", companyName=" + companyName
-			+ ", companyPhonenumber=" + companyPhonenumber
-			+ ", companyAddress=" + companyAddress
-			+ ", addressLongitude=" + addressLongitude
-			+ ", addressLatitude=" + addressLatitude
-			+ ", companyLevel=" + companyLevel
 			+ ", ratingCertificate=" + ratingCertificate
 			+ ", companyContract=" + companyContract
-			+ ", remark=" + remark
-			+ ", remark1=" + remark1
-			+ ", remark2=" + remark2
-			+ ", remark3=" + remark3;
+			+ ", identityInfo=" + identityInfo
+			+ ", electricianCertificate=" + electricianCertificate
+			+ ", certificateA=" + certificateA
+			+ ", certificateB=" + certificateB
+			+ ", certificateC=" + certificateC
+			+ ", remark=" + remark;
 	}
    
     

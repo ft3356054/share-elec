@@ -55,6 +55,26 @@ public class OrderAuditElectricianVO extends ParentVO implements Serializable{
     @ViewAttribute(name ="auditorComment",caption="AUDITOR_COMMENT", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String auditorComment;    
     /** 
+     * 属性ELECTRICIAN_ID
+     */  
+    @ViewAttribute(name ="electricianId",caption="ELECTRICIAN_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String electricianId;    
+    /** 
+     * 属性ELECTRICIAN_NAME
+     */  
+    @ViewAttribute(name ="electricianName",caption="ELECTRICIAN_NAME", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String electricianName;    
+    /** 
+     * 属性ELECTRICIAN_PHONENUMBER
+     */  
+    @ViewAttribute(name ="electricianPhonenumber",caption="ELECTRICIAN_PHONENUMBER", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String electricianPhonenumber;    
+    /** 
+     * 属性ELECTRICIAN_LEVEL
+     */  
+    @ViewAttribute(name ="electricianLevel",caption="ELECTRICIAN_LEVEL", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String electricianLevel;    
+    /** 
      * 属性SUB_COMPANY_ID
      */  
     @ViewAttribute(name ="subCompanyId",caption="SUB_COMPANY_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
@@ -70,31 +90,6 @@ public class OrderAuditElectricianVO extends ParentVO implements Serializable{
     @ViewAttribute(name ="companyName",caption="COMPANY_NAME", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String companyName;    
     /** 
-     * 属性COMPANY_PHONENUMBER
-     */  
-    @ViewAttribute(name ="companyPhonenumber",caption="COMPANY_PHONENUMBER", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String companyPhonenumber;    
-    /** 
-     * 属性COMPANY_ADDRESS
-     */  
-    @ViewAttribute(name ="companyAddress",caption="COMPANY_ADDRESS", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String companyAddress;    
-    /** 
-     * 属性ADDRESS_LONGITUDE
-     */  
-    @ViewAttribute(name ="addressLongitude",caption="ADDRESS_LONGITUDE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String addressLongitude;    
-    /** 
-     * 属性ADDRESS_LATITUDE
-     */  
-    @ViewAttribute(name ="addressLatitude",caption="ADDRESS_LATITUDE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String addressLatitude;    
-    /** 
-     * 属性COMPANY_LEVEL
-     */  
-    @ViewAttribute(name ="companyLevel",caption="COMPANY_LEVEL", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String companyLevel;    
-    /** 
      * 属性RATING_CERTIFICATE
      */  
     @ViewAttribute(name ="ratingCertificate",caption="RATING_CERTIFICATE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
@@ -105,25 +100,35 @@ public class OrderAuditElectricianVO extends ParentVO implements Serializable{
     @ViewAttribute(name ="companyContract",caption="COMPANY_CONTRACT", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String companyContract;    
     /** 
+     * 属性IDENTITY_INFO
+     */  
+    @ViewAttribute(name ="identityInfo",caption="IDENTITY_INFO", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String identityInfo;    
+    /** 
+     * 属性ELECTRICIAN_CERTIFICATE
+     */  
+    @ViewAttribute(name ="electricianCertificate",caption="ELECTRICIAN_CERTIFICATE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String electricianCertificate;    
+    /** 
+     * 属性CERTIFICATE_A
+     */  
+    @ViewAttribute(name ="certificateA",caption="CERTIFICATE_A", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String certificateA;    
+    /** 
+     * 属性CERTIFICATE_B
+     */  
+    @ViewAttribute(name ="certificateB",caption="CERTIFICATE_B", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String certificateB;    
+    /** 
+     * 属性CERTIFICATE_C
+     */  
+    @ViewAttribute(name ="certificateC",caption="CERTIFICATE_C", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String certificateC;    
+    /** 
      * 属性REMARK
      */  
     @ViewAttribute(name ="remark",caption="REMARK", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String remark;    
-    /** 
-     * 属性REMARK1
-     */  
-    @ViewAttribute(name ="remark1",caption="REMARK1", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String remark1;    
-    /** 
-     * 属性REMARK2
-     */  
-    @ViewAttribute(name ="remark2",caption="REMARK2", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String remark2;    
-    /** 
-     * 属性REMARK3
-     */  
-    @ViewAttribute(name ="remark3",caption="REMARK3", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String remark3;    
     /**
      * OrderAuditElectricianVO构造函数
      */
@@ -240,6 +245,62 @@ public class OrderAuditElectricianVO extends ParentVO implements Serializable{
 		this.auditorComment = auditorComment;
 	} 
     /**
+     * ELECTRICIAN_ID的get方法
+     * @return electricianId
+     */
+    public String getElectricianId(){
+        return electricianId;
+    }
+    /**
+     * ELECTRICIAN_ID的set方法
+     * @param electricianId
+     */
+    public void setElectricianId(String electricianId){
+		this.electricianId = electricianId;
+	} 
+    /**
+     * ELECTRICIAN_NAME的get方法
+     * @return electricianName
+     */
+    public String getElectricianName(){
+        return electricianName;
+    }
+    /**
+     * ELECTRICIAN_NAME的set方法
+     * @param electricianName
+     */
+    public void setElectricianName(String electricianName){
+		this.electricianName = electricianName;
+	} 
+    /**
+     * ELECTRICIAN_PHONENUMBER的get方法
+     * @return electricianPhonenumber
+     */
+    public String getElectricianPhonenumber(){
+        return electricianPhonenumber;
+    }
+    /**
+     * ELECTRICIAN_PHONENUMBER的set方法
+     * @param electricianPhonenumber
+     */
+    public void setElectricianPhonenumber(String electricianPhonenumber){
+		this.electricianPhonenumber = electricianPhonenumber;
+	} 
+    /**
+     * ELECTRICIAN_LEVEL的get方法
+     * @return electricianLevel
+     */
+    public String getElectricianLevel(){
+        return electricianLevel;
+    }
+    /**
+     * ELECTRICIAN_LEVEL的set方法
+     * @param electricianLevel
+     */
+    public void setElectricianLevel(String electricianLevel){
+		this.electricianLevel = electricianLevel;
+	} 
+    /**
      * SUB_COMPANY_ID的get方法
      * @return subCompanyId
      */
@@ -282,76 +343,6 @@ public class OrderAuditElectricianVO extends ParentVO implements Serializable{
 		this.companyName = companyName;
 	} 
     /**
-     * COMPANY_PHONENUMBER的get方法
-     * @return companyPhonenumber
-     */
-    public String getCompanyPhonenumber(){
-        return companyPhonenumber;
-    }
-    /**
-     * COMPANY_PHONENUMBER的set方法
-     * @param companyPhonenumber
-     */
-    public void setCompanyPhonenumber(String companyPhonenumber){
-		this.companyPhonenumber = companyPhonenumber;
-	} 
-    /**
-     * COMPANY_ADDRESS的get方法
-     * @return companyAddress
-     */
-    public String getCompanyAddress(){
-        return companyAddress;
-    }
-    /**
-     * COMPANY_ADDRESS的set方法
-     * @param companyAddress
-     */
-    public void setCompanyAddress(String companyAddress){
-		this.companyAddress = companyAddress;
-	} 
-    /**
-     * ADDRESS_LONGITUDE的get方法
-     * @return addressLongitude
-     */
-    public String getAddressLongitude(){
-        return addressLongitude;
-    }
-    /**
-     * ADDRESS_LONGITUDE的set方法
-     * @param addressLongitude
-     */
-    public void setAddressLongitude(String addressLongitude){
-		this.addressLongitude = addressLongitude;
-	} 
-    /**
-     * ADDRESS_LATITUDE的get方法
-     * @return addressLatitude
-     */
-    public String getAddressLatitude(){
-        return addressLatitude;
-    }
-    /**
-     * ADDRESS_LATITUDE的set方法
-     * @param addressLatitude
-     */
-    public void setAddressLatitude(String addressLatitude){
-		this.addressLatitude = addressLatitude;
-	} 
-    /**
-     * COMPANY_LEVEL的get方法
-     * @return companyLevel
-     */
-    public String getCompanyLevel(){
-        return companyLevel;
-    }
-    /**
-     * COMPANY_LEVEL的set方法
-     * @param companyLevel
-     */
-    public void setCompanyLevel(String companyLevel){
-		this.companyLevel = companyLevel;
-	} 
-    /**
      * RATING_CERTIFICATE的get方法
      * @return ratingCertificate
      */
@@ -380,6 +371,76 @@ public class OrderAuditElectricianVO extends ParentVO implements Serializable{
 		this.companyContract = companyContract;
 	} 
     /**
+     * IDENTITY_INFO的get方法
+     * @return identityInfo
+     */
+    public String getIdentityInfo(){
+        return identityInfo;
+    }
+    /**
+     * IDENTITY_INFO的set方法
+     * @param identityInfo
+     */
+    public void setIdentityInfo(String identityInfo){
+		this.identityInfo = identityInfo;
+	} 
+    /**
+     * ELECTRICIAN_CERTIFICATE的get方法
+     * @return electricianCertificate
+     */
+    public String getElectricianCertificate(){
+        return electricianCertificate;
+    }
+    /**
+     * ELECTRICIAN_CERTIFICATE的set方法
+     * @param electricianCertificate
+     */
+    public void setElectricianCertificate(String electricianCertificate){
+		this.electricianCertificate = electricianCertificate;
+	} 
+    /**
+     * CERTIFICATE_A的get方法
+     * @return certificateA
+     */
+    public String getCertificateA(){
+        return certificateA;
+    }
+    /**
+     * CERTIFICATE_A的set方法
+     * @param certificateA
+     */
+    public void setCertificateA(String certificateA){
+		this.certificateA = certificateA;
+	} 
+    /**
+     * CERTIFICATE_B的get方法
+     * @return certificateB
+     */
+    public String getCertificateB(){
+        return certificateB;
+    }
+    /**
+     * CERTIFICATE_B的set方法
+     * @param certificateB
+     */
+    public void setCertificateB(String certificateB){
+		this.certificateB = certificateB;
+	} 
+    /**
+     * CERTIFICATE_C的get方法
+     * @return certificateC
+     */
+    public String getCertificateC(){
+        return certificateC;
+    }
+    /**
+     * CERTIFICATE_C的set方法
+     * @param certificateC
+     */
+    public void setCertificateC(String certificateC){
+		this.certificateC = certificateC;
+	} 
+    /**
      * REMARK的get方法
      * @return remark
      */
@@ -392,48 +453,6 @@ public class OrderAuditElectricianVO extends ParentVO implements Serializable{
      */
     public void setRemark(String remark){
 		this.remark = remark;
-	} 
-    /**
-     * REMARK1的get方法
-     * @return remark1
-     */
-    public String getRemark1(){
-        return remark1;
-    }
-    /**
-     * REMARK1的set方法
-     * @param remark1
-     */
-    public void setRemark1(String remark1){
-		this.remark1 = remark1;
-	} 
-    /**
-     * REMARK2的get方法
-     * @return remark2
-     */
-    public String getRemark2(){
-        return remark2;
-    }
-    /**
-     * REMARK2的set方法
-     * @param remark2
-     */
-    public void setRemark2(String remark2){
-		this.remark2 = remark2;
-	} 
-    /**
-     * REMARK3的get方法
-     * @return remark3
-     */
-    public String getRemark3(){
-        return remark3;
-    }
-    /**
-     * REMARK3的set方法
-     * @param remark3
-     */
-    public void setRemark3(String remark3){
-		this.remark3 = remark3;
 	} 
 
     /**
@@ -450,20 +469,21 @@ public class OrderAuditElectricianVO extends ParentVO implements Serializable{
 				.append("FINISH_TIME"+":"+getFinishTime())
 				.append("AUDITOR_ID"+":"+getAuditorId())
 				.append("AUDITOR_COMMENT"+":"+getAuditorComment())
+				.append("ELECTRICIAN_ID"+":"+getElectricianId())
+				.append("ELECTRICIAN_NAME"+":"+getElectricianName())
+				.append("ELECTRICIAN_PHONENUMBER"+":"+getElectricianPhonenumber())
+				.append("ELECTRICIAN_LEVEL"+":"+getElectricianLevel())
 				.append("SUB_COMPANY_ID"+":"+getSubCompanyId())
 				.append("COMPANY_ID"+":"+getCompanyId())
 				.append("COMPANY_NAME"+":"+getCompanyName())
-				.append("COMPANY_PHONENUMBER"+":"+getCompanyPhonenumber())
-				.append("COMPANY_ADDRESS"+":"+getCompanyAddress())
-				.append("ADDRESS_LONGITUDE"+":"+getAddressLongitude())
-				.append("ADDRESS_LATITUDE"+":"+getAddressLatitude())
-				.append("COMPANY_LEVEL"+":"+getCompanyLevel())
 				.append("RATING_CERTIFICATE"+":"+getRatingCertificate())
 				.append("COMPANY_CONTRACT"+":"+getCompanyContract())
+				.append("IDENTITY_INFO"+":"+getIdentityInfo())
+				.append("ELECTRICIAN_CERTIFICATE"+":"+getElectricianCertificate())
+				.append("CERTIFICATE_A"+":"+getCertificateA())
+				.append("CERTIFICATE_B"+":"+getCertificateB())
+				.append("CERTIFICATE_C"+":"+getCertificateC())
 				.append("REMARK"+":"+getRemark())
-				.append("REMARK1"+":"+getRemark1())
-				.append("REMARK2"+":"+getRemark2())
-				.append("REMARK3"+":"+getRemark3())
 		        .toString(); 
 			
     } 

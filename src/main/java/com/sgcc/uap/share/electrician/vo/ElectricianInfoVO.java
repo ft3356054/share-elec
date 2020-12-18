@@ -89,6 +89,11 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
     @ViewAttribute(name ="electricianCertificate",caption="ELECTRICIAN_CERTIFICATE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String electricianCertificate;    
     /** 
+     * 属性REAL_NAME_AUTH
+     */  
+    @ViewAttribute(name ="realNameAuth",caption="REAL_NAME_AUTH", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String realNameAuth;    
+    /** 
      * 属性CERTIFICATE_A
      */  
     @ViewAttribute(name ="certificateA",caption="CERTIFICATE_A", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
@@ -322,6 +327,20 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
 		this.electricianCertificate = electricianCertificate;
 	} 
     /**
+     * REAL_NAME_AUTH的get方法
+     * @return realNameAuth
+     */
+    public String getRealNameAuth(){
+        return realNameAuth;
+    }
+    /**
+     * REAL_NAME_AUTH的set方法
+     * @param realNameAuth
+     */
+    public void setRealNameAuth(String realNameAuth){
+		this.realNameAuth = realNameAuth;
+	} 
+    /**
      * CERTIFICATE_A的get方法
      * @return certificateA
      */
@@ -399,6 +418,7 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
 				.append("ELECTRICIAN_SCORE"+":"+getElectricianScore())
 				.append("IDENTITY_INFO"+":"+getIdentityInfo())
 				.append("ELECTRICIAN_CERTIFICATE"+":"+getElectricianCertificate())
+				.append("REAL_NAME_AUTH"+":"+getRealNameAuth())
 				.append("CERTIFICATE_A"+":"+getCertificateA())
 				.append("CERTIFICATE_B"+":"+getCertificateB())
 				.append("CERTIFICATE_C"+":"+getCertificateC())
