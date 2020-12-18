@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.electrician.services;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -52,6 +53,8 @@ public interface IElectricianSubCompanyInfoService {
 	 * @author 18511
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);
+	
+	public List<ElectricianSubCompanyInfo> findByCompanyName(String companyName);
 
 
 

@@ -1,5 +1,7 @@
 package com.sgcc.uap.share.electrician.controller;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +37,7 @@ import com.sgcc.uap.share.domain.ElectricianStatus;
 import com.sgcc.uap.share.electrician.services.IElectricianInfoService;
 import com.sgcc.uap.share.electrician.services.impl.ElectricianStatusService;
 import com.sgcc.uap.share.electrician.vo.ElectricianInfoVO;
+import com.sgcc.uap.util.DateTimeUtil;
 
 
 /**
@@ -224,13 +227,20 @@ public class ElectricianInfoController {
 	 */
 	@RequestMapping(value="/changeStatus/{electricianId}",name="改变电工的工作状态")
 	@ResponseBody
-	public String changeStatus(@PathVariable String electricianId,@RequestParam(value="statu") String statu){
+	public WrappedResult changeStatus(@PathVariable String electricianId,@RequestParam(value="statu") String statu){
+		
+		WrappedResult result=new WrappedResult();
+		
+		
 		try {
 			ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
 			ElectricianStatus eleElectricianStatus=electricianStatusService.findOne(electricianId);
 			if (statu.equals("接单中")) {
 				electricianInfo.setElectricianStatus("1");//1代表接单中
 				eleElectricianStatus.setElectricianStatus("1");
+				//设置电工的上线时间
+				String date=DateTimeUtil.formatDateTime(new Date());
+				eleElectricianStatus.setOnlineTime(Timestamp.valueOf(date));
 				
 				//保存状态
 				electricianInfoService.save(electricianInfo);
@@ -242,13 +252,18 @@ public class ElectricianInfoController {
 				electricianInfo.setElectricianStatus("0");//0代表休息中
 				eleElectricianStatus.setElectricianStatus("0");
 				
+				//设置电工的上线时间
+				String date=DateTimeUtil.formatDateTime(new Date());
+				eleElectricianStatus.setOfflineTime(Timestamp.valueOf(date));
+				
 				//保存状态
 				electricianInfoService.save(electricianInfo);
 				electricianStatusService.save(eleElectricianStatus);
 				
 			}
+			return result.successWrapedResult("successful");
 			
-			return "true";
+			
 			
 		}  catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -256,7 +271,7 @@ public class ElectricianInfoController {
 			if(isDev){
 				errorMessage = e.getMessage();
 			}
-			return "false";
+			return result.failedWrappedResult("false");
 		}
 		
 	}

@@ -222,6 +222,14 @@ public class ElectricianSubCompanyInfoService implements IElectricianSubCompanyI
 		}
 		return new PageRequest(pageIndex - 1, pageSize, null);
 	}
+	
+	@Override
+	public List<ElectricianSubCompanyInfo> findByCompanyName(String companyName) {
+		// TODO Auto-generated method stub
+		
+		List<ElectricianSubCompanyInfo> list=electricianSubCompanyInfoRepository.findByCompanyNameLike("%"+companyName+"%");
+		return list;
+	}
 
 
 }

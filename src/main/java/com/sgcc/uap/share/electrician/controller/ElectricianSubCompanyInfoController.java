@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sgcc.uap.exception.NullArgumentException;
@@ -28,6 +29,7 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
+import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
 import com.sgcc.uap.share.electrician.services.IElectricianSubCompanyInfoService;
 import com.sgcc.uap.share.electrician.vo.ElectricianSubCompanyInfoVO;
 
@@ -206,6 +208,34 @@ public class ElectricianSubCompanyInfoController {
 	@InitBinder
 	public void initBinder(WebDataBinder binder){
 		binder.setDisallowedFields(DISALLOWED_PARAMS);
+	}
+	
+	
+	/**
+	 * 电工注册认证----->查询所属公司
+	 * 
+	 */
+	
+	@RequestMapping(value="/findCompany",name="查询所属公司")
+	public WrappedResult findCompany(@RequestParam(value="companyName") String companyName){
+		WrappedResult result=new WrappedResult();
+		
+		try {
+			
+			List<ElectricianSubCompanyInfo> list =electricianSubCompanyInfoService.findByCompanyName(companyName);
+			result.setResultValue(list);
+			return WrappedResult.successWrapedResult(result);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "异常处理";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+		
+		
 	}
 
 }
