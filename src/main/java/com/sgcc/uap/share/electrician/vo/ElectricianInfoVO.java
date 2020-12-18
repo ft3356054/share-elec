@@ -34,6 +34,26 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
     @ViewAttribute(name ="electricianPhonenumber",caption="ELECTRICIAN_PHONENUMBER", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String electricianPhonenumber;    
     /** 
+     * 属性ELECTRICIAN_STATUS
+     */  
+    @ViewAttribute(name ="electricianStatus",caption="ELECTRICIAN_STATUS", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String electricianStatus;    
+    /** 
+     * 属性ADDRESS_LONGITUDE
+     */  
+    @ViewAttribute(name ="addressLongitude",caption="ADDRESS_LONGITUDE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String addressLongitude;    
+    /** 
+     * 属性ADDRESS_LATITUDE
+     */  
+    @ViewAttribute(name ="addressLatitude",caption="ADDRESS_LATITUDE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String addressLatitude;    
+    /** 
+     * 属性ELECTRICIAN_LEVEL
+     */  
+    @ViewAttribute(name ="electricianLevel",caption="ELECTRICIAN_LEVEL", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String electricianLevel;    
+    /** 
      * 属性SUB_COMPANY_ID
      */  
     @ViewAttribute(name ="subCompanyId",caption="SUB_COMPANY_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
@@ -59,20 +79,35 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
     @ViewAttribute(name ="electricianScore",caption="ELECTRICIAN_SCORE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String electricianScore;    
     /** 
+     * 属性IDENTITY_INFO
+     */  
+    @ViewAttribute(name ="identityInfo",caption="IDENTITY_INFO", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String identityInfo;    
+    /** 
+     * 属性ELECTRICIAN_CERTIFICATE
+     */  
+    @ViewAttribute(name ="electricianCertificate",caption="ELECTRICIAN_CERTIFICATE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String electricianCertificate;    
+    /** 
+     * 属性CERTIFICATE_A
+     */  
+    @ViewAttribute(name ="certificateA",caption="CERTIFICATE_A", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String certificateA;    
+    /** 
+     * 属性CERTIFICATE_B
+     */  
+    @ViewAttribute(name ="certificateB",caption="CERTIFICATE_B", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String certificateB;    
+    /** 
+     * 属性CERTIFICATE_C
+     */  
+    @ViewAttribute(name ="certificateC",caption="CERTIFICATE_C", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String certificateC;    
+    /** 
      * 属性REMARK
      */  
     @ViewAttribute(name ="remark",caption="REMARK", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String remark;    
-    /** 
-     * 属性ELECTRICIAN_LEVEL
-     */  
-    @ViewAttribute(name ="electricianLevel",caption="ELECTRICIAN_LEVEL", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String electricianLevel;    
-    /** 
-     * 属性ELECTRICIAN_STATUS
-     */  
-    @ViewAttribute(name ="electricianStatus",caption="ELECTRICIAN_STATUS", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String electricianStatus;    
     /**
      * ElectricianInfoVO构造函数
      */
@@ -131,6 +166,62 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
      */
     public void setElectricianPhonenumber(String electricianPhonenumber){
 		this.electricianPhonenumber = electricianPhonenumber;
+	} 
+    /**
+     * ELECTRICIAN_STATUS的get方法
+     * @return electricianStatus
+     */
+    public String getElectricianStatus(){
+        return electricianStatus;
+    }
+    /**
+     * ELECTRICIAN_STATUS的set方法
+     * @param electricianStatus
+     */
+    public void setElectricianStatus(String electricianStatus){
+		this.electricianStatus = electricianStatus;
+	} 
+    /**
+     * ADDRESS_LONGITUDE的get方法
+     * @return addressLongitude
+     */
+    public String getAddressLongitude(){
+        return addressLongitude;
+    }
+    /**
+     * ADDRESS_LONGITUDE的set方法
+     * @param addressLongitude
+     */
+    public void setAddressLongitude(String addressLongitude){
+		this.addressLongitude = addressLongitude;
+	} 
+    /**
+     * ADDRESS_LATITUDE的get方法
+     * @return addressLatitude
+     */
+    public String getAddressLatitude(){
+        return addressLatitude;
+    }
+    /**
+     * ADDRESS_LATITUDE的set方法
+     * @param addressLatitude
+     */
+    public void setAddressLatitude(String addressLatitude){
+		this.addressLatitude = addressLatitude;
+	} 
+    /**
+     * ELECTRICIAN_LEVEL的get方法
+     * @return electricianLevel
+     */
+    public String getElectricianLevel(){
+        return electricianLevel;
+    }
+    /**
+     * ELECTRICIAN_LEVEL的set方法
+     * @param electricianLevel
+     */
+    public void setElectricianLevel(String electricianLevel){
+		this.electricianLevel = electricianLevel;
 	} 
     /**
      * SUB_COMPANY_ID的get方法
@@ -203,6 +294,76 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
 		this.electricianScore = electricianScore;
 	} 
     /**
+     * IDENTITY_INFO的get方法
+     * @return identityInfo
+     */
+    public String getIdentityInfo(){
+        return identityInfo;
+    }
+    /**
+     * IDENTITY_INFO的set方法
+     * @param identityInfo
+     */
+    public void setIdentityInfo(String identityInfo){
+		this.identityInfo = identityInfo;
+	} 
+    /**
+     * ELECTRICIAN_CERTIFICATE的get方法
+     * @return electricianCertificate
+     */
+    public String getElectricianCertificate(){
+        return electricianCertificate;
+    }
+    /**
+     * ELECTRICIAN_CERTIFICATE的set方法
+     * @param electricianCertificate
+     */
+    public void setElectricianCertificate(String electricianCertificate){
+		this.electricianCertificate = electricianCertificate;
+	} 
+    /**
+     * CERTIFICATE_A的get方法
+     * @return certificateA
+     */
+    public String getCertificateA(){
+        return certificateA;
+    }
+    /**
+     * CERTIFICATE_A的set方法
+     * @param certificateA
+     */
+    public void setCertificateA(String certificateA){
+		this.certificateA = certificateA;
+	} 
+    /**
+     * CERTIFICATE_B的get方法
+     * @return certificateB
+     */
+    public String getCertificateB(){
+        return certificateB;
+    }
+    /**
+     * CERTIFICATE_B的set方法
+     * @param certificateB
+     */
+    public void setCertificateB(String certificateB){
+		this.certificateB = certificateB;
+	} 
+    /**
+     * CERTIFICATE_C的get方法
+     * @return certificateC
+     */
+    public String getCertificateC(){
+        return certificateC;
+    }
+    /**
+     * CERTIFICATE_C的set方法
+     * @param certificateC
+     */
+    public void setCertificateC(String certificateC){
+		this.certificateC = certificateC;
+	} 
+    /**
      * REMARK的get方法
      * @return remark
      */
@@ -216,34 +377,6 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
     public void setRemark(String remark){
 		this.remark = remark;
 	} 
-    /**
-     * ELECTRICIAN_LEVEL的get方法
-     * @return electricianLevel
-     */
-    public String getElectricianLevel(){
-        return electricianLevel;
-    }
-    /**
-     * ELECTRICIAN_LEVEL的set方法
-     * @param electricianLevel
-     */
-    public void setElectricianLevel(String electricianLevel){
-		this.electricianLevel = electricianLevel;
-	} 
-    /**
-     * ELECTRICIAN_STATUS的get方法
-     * @return electricianStatus
-     */
-    public String getElectricianStatus(){
-        return electricianStatus;
-    }
-    /**
-     * ELECTRICIAN_STATUS的set方法
-     * @param electricianStatus
-     */
-    public void setElectricianStatus(String electricianStatus){
-		this.electricianStatus = electricianStatus;
-	} 
 
     /**
      * toString方法
@@ -255,14 +388,21 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
 	  			.append("ELECTRICIAN_ID"+":"+getElectricianId())
 				.append("ELECTRICIAN_NAME"+":"+getElectricianName())
 				.append("ELECTRICIAN_PHONENUMBER"+":"+getElectricianPhonenumber())
+				.append("ELECTRICIAN_STATUS"+":"+getElectricianStatus())
+				.append("ADDRESS_LONGITUDE"+":"+getAddressLongitude())
+				.append("ADDRESS_LATITUDE"+":"+getAddressLatitude())
+				.append("ELECTRICIAN_LEVEL"+":"+getElectricianLevel())
 				.append("SUB_COMPANY_ID"+":"+getSubCompanyId())
 				.append("COMPANY_NAME"+":"+getCompanyName())
 				.append("RATING_CERTIFICATE"+":"+getRatingCertificate())
 				.append("COMPANY_CONTRACT"+":"+getCompanyContract())
 				.append("ELECTRICIAN_SCORE"+":"+getElectricianScore())
+				.append("IDENTITY_INFO"+":"+getIdentityInfo())
+				.append("ELECTRICIAN_CERTIFICATE"+":"+getElectricianCertificate())
+				.append("CERTIFICATE_A"+":"+getCertificateA())
+				.append("CERTIFICATE_B"+":"+getCertificateB())
+				.append("CERTIFICATE_C"+":"+getCertificateC())
 				.append("REMARK"+":"+getRemark())
-				.append("ELECTRICIAN_LEVEL"+":"+getElectricianLevel())
-				.append("ELECTRICIAN_STATUS"+":"+getElectricianStatus())
 		        .toString(); 
 			
     } 

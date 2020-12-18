@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
@@ -72,7 +74,8 @@ public class CustomerInfoController {
 	
 	@Autowired
     private StringRedisTemplate stringRedisTemplate;
-	
+	@Autowired
+    private RedisTemplate redisTemplate;
 	
 	/**
 	 * @getByCustomerId:根据customerId查询
@@ -228,14 +231,40 @@ public class CustomerInfoController {
 	 * @return WrappedResult 保存或更新的结果
 	 * @date 2020-11-26 14:32:47
 	 * @author 18511
-	 * http://localhost:8083/customerInfo/locationPut/?params={"filter":["customerId=customerId001","lon=13.144","lat=251.21465"]}	
+	 * http://localhost:8083/customerInfo/locationPut/?params={"filter":["userId=customerId001","area=123212","lon=13.144","lat=251.21465"]}	
 	 */
 	@RequestMapping(value = "/locationPut")
 	public WrappedResult locationPut(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
 			Map<String, String> map = MapUtil.getParam(requestCondition);
 			String jsonMap = JsonUtils.mapToJson(map);
-			stringRedisTemplate.opsForValue().set(map.get("customerId"), jsonMap, 1L, TimeUnit.HOURS);
+			
+			boolean flag = false;
+			String userId = map.get("customerId") ;
+			String area = map.get("area") ;
+			
+			Set<Map<String,String>> resultSet =redisTemplate.opsForSet().members(area);
+			if(null==resultSet){
+				Map<String,String> newMap = new HashMap<>();
+				newMap.put(userId, jsonMap);
+				redisTemplate.opsForSet().add(area, newMap, 1L, TimeUnit.HOURS);
+			}else{
+				for(Map getMap : resultSet){
+					if(getMap.get("userId").equals(userId)){
+						flag = true ;
+						break;
+					}
+				}
+				if(flag){
+					
+				}else{
+					
+				}
+			}
+			
+			//stringRedisTemplate.opsForValue().set(area, jsonMap, 1L, TimeUnit.HOURS);
+			
+			
 			List result = new ArrayList();
 			long count = 1;
 			logger.info("存储位置信息保存成功"); 
@@ -261,6 +290,7 @@ public class CustomerInfoController {
 			Map<String, Object> map = new HashMap<String, Object>();
 			String json = stringRedisTemplate.opsForValue().get(customerId);
 			map = JsonUtils.parseJSONstr2Map(json);
+			logger.info("区:"+map.get("area"));
 			logger.info("经度:"+map.get("lon")); 
 			logger.info("纬度:"+map.get("lat")); 
 			
