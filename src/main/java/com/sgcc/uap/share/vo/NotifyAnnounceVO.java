@@ -1,8 +1,6 @@
 package com.sgcc.uap.share.vo;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-
 
 import com.sgcc.uap.rest.annotation.attribute.AttributeType;
 import com.sgcc.uap.rest.annotation.attribute.EditorType;
@@ -43,7 +41,7 @@ public class NotifyAnnounceVO extends ParentVO implements Serializable{
      * 属性CREATE_TIME
      */  
     @ViewAttribute(name ="createTime",caption="CREATE_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp createTime;    
+    private String createTime;    
     /** 
      * 属性NOTIFY_TYPE
      */  
@@ -136,14 +134,14 @@ public class NotifyAnnounceVO extends ParentVO implements Serializable{
      * CREATE_TIME的get方法
      * @return createTime
      */
-    public Timestamp getCreateTime(){
+    public String getCreateTime(){
         return createTime;
     }
     /**
      * CREATE_TIME的set方法
      * @param createTime
      */
-    public void setCreateTime(Timestamp createTime){
+    public void setCreateTime(String createTime){
 		this.createTime = createTime;
 	} 
     /**

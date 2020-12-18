@@ -1,6 +1,5 @@
 package com.sgcc.uap.share.customer.repositories;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -30,7 +29,12 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	@Query(value = "from User u where u.email like %:emailLike%")
 	Page<User> findByEmailLike(Pageable pageable, @Param("emailLike")String emailLike);*/
 	// + " UNION SELECT * FROM order_customer_his WHERE CUSTOMER_ID :customerId "
-	
+	/*
+	@Query(value = "SELECT *,null as ELECTRICIAN_DESCRIVE,null as ELECTRICIAN_DESCRIVE_ICON,null as ELECTRICIAN_PRICE FROM order_customer WHERE CUSTOMER_ID =:customerId "
+			+ " UNION SELECT *,null as ELECTRICIAN_DESCRIVE,null as ELECTRICIAN_DESCRIVE_ICON,null as ELECTRICIAN_PRICE FROM order_customer_his WHERE CUSTOMER_ID =:customerId "
+			+ " limit :pageIndex,:pageSize",
+			nativeQuery = true)
+	 * */
 	@Query(value = "SELECT * FROM order_customer WHERE CUSTOMER_ID =:customerId "
 			+ " UNION SELECT * FROM order_customer_his WHERE CUSTOMER_ID =:customerId "
 			+ " limit :pageIndex,:pageSize",
@@ -38,19 +42,6 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	List<OrderCustomer> getAllOrderCustomerByCustomerId(@Param("pageIndex")int pageIndex,@Param("pageSize")int pageSize
 			,@Param("customerId")String customerId);
 	
-	
-	@Query(value = "SELECT c.ADDRESS_LATITUDE,c.ADDRESS_LONGITUDE,c.APPOINTMENT_TIME,c.CREATE_TIME,c.CUSTOMER_ADDRESS,c.CUSTOMER_DESCRIVE,c.CUSTOMER_DESCRIVE_ICON, "
-			+ " c.CUSTOMER_EVALUATE,c.CUSTOMER_EVALUATE_PHOTO,c.CUSTOMER_EVALUATE_TITLE,c.CUSTOMER_GRADE,c.CUSTOMER_ID,c.CUSTOMER_NAME,c.CUSTOMER_PHONENUMBER,"
-			+ " c.CUSTOMER_PRICE,c.FINISH_TIME,c.IDENTITY_ID,c.ORDER_COMPLAINT_ID,c.ORDER_ID,c.ORDER_STATUS,c.ORDER_TYPE_ID,c.PAY_STATUS,c.REMARK_NUM1,"
-			+ " c.REMARK_NUM2,c.REMARK_STR1,c.REMARK_STR2,c.REMARK_STR3,c.UPDATE_TIME,c.VOLTAGE, "
-			+ " e.ELECTRICIAN_DESCRIVE,e.ELECTRICIAN_DESCRIVE_ICON,e.ELECTRICIAN_PRICE FROM order_customer c  "
-			+ " LEFT JOIN order_electrician e ON c.ORDER_ID = e.ORDER_ID "
-			+ " WHERE c.CUSTOMER_ID =:customerId  AND c.order_Status IN :statusList  "
-			+ " AND e.ORDER_ELECTRICIAN_TYPE NOT IN :elecStatus "
-			+ " limit :pageIndex,:pageSize",
-			nativeQuery = true)
-	List<OrderCustomer> getOrderCustomerByCustomerIdAndEnot(@Param("pageIndex")int pageIndex,@Param("pageSize")int pageSize
-			,@Param("customerId")String customerId,@Param("statusList")Collection<String> statusList,@Param("elecStatus")Collection<String> elecStatus);
 	
 	@Transactional
 	@Modifying

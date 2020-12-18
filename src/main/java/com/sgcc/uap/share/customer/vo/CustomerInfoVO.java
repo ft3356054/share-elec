@@ -63,6 +63,21 @@ public class CustomerInfoVO extends ParentVO implements Serializable{
      */  
     @ViewAttribute(name ="customerAddress",caption="CUSTOMER_ADDRESS", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String customerAddress;    
+    /** 
+     * 属性HEAD_ICON
+     */  
+    @ViewAttribute(name ="headIcon",caption="HEAD_ICON", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String headIcon;    
+    /** 
+     * 属性REAL_NAME_AUTH
+     */  
+    @ViewAttribute(name ="realNameAuth",caption="REAL_NAME_AUTH", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String realNameAuth;    
+    /** 
+     * 属性REGISTERED_NUMBER
+     */  
+    @ViewAttribute(name ="registeredNumber",caption="REGISTERED_NUMBER", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String registeredNumber;    
     /**
      * CustomerInfoVO构造函数
      */
@@ -206,6 +221,48 @@ public class CustomerInfoVO extends ParentVO implements Serializable{
     public void setCustomerAddress(String customerAddress){
 		this.customerAddress = customerAddress;
 	} 
+    /**
+     * HEAD_ICON的get方法
+     * @return headIcon
+     */
+    public String getHeadIcon(){
+        return headIcon;
+    }
+    /**
+     * HEAD_ICON的set方法
+     * @param headIcon
+     */
+    public void setHeadIcon(String headIcon){
+		this.headIcon = headIcon;
+	} 
+    /**
+     * REAL_NAME_AUTH的get方法
+     * @return realNameAuth
+     */
+    public String getRealNameAuth(){
+        return realNameAuth;
+    }
+    /**
+     * REAL_NAME_AUTH的set方法
+     * @param realNameAuth
+     */
+    public void setRealNameAuth(String realNameAuth){
+		this.realNameAuth = realNameAuth;
+	} 
+    /**
+     * REGISTERED_NUMBER的get方法
+     * @return registeredNumber
+     */
+    public String getRegisteredNumber(){
+        return registeredNumber;
+    }
+    /**
+     * REGISTERED_NUMBER的set方法
+     * @param registeredNumber
+     */
+    public void setRegisteredNumber(String registeredNumber){
+		this.registeredNumber = registeredNumber;
+	} 
 
     /**
      * toString方法
@@ -223,6 +280,9 @@ public class CustomerInfoVO extends ParentVO implements Serializable{
 				.append("CUSTOMER_SCORE"+":"+getCustomerScore())
 				.append("REMARK"+":"+getRemark())
 				.append("CUSTOMER_ADDRESS"+":"+getCustomerAddress())
+				.append("HEAD_ICON"+":"+getHeadIcon())
+				.append("REAL_NAME_AUTH"+":"+getRealNameAuth())
+				.append("REGISTERED_NUMBER"+":"+getRegisteredNumber())
 		        .toString(); 
 			
     } 

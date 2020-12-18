@@ -19,7 +19,7 @@ public class CustomerInfoTransfer {
 	 * @toPO:vo转为po
 	 * @param vo vo对象
 	 * @return CustomerInfo CustomerInfo对象
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-17 17:42:23
 	 * @author 18511
 	 */
 	public static CustomerInfo toPO(CustomerInfoVO vo) {
@@ -34,6 +34,9 @@ public class CustomerInfoTransfer {
 			customerInfo.setCustomerScore(vo.getCustomerScore());
 			customerInfo.setRemark(vo.getRemark());
 			customerInfo.setCustomerAddress(vo.getCustomerAddress());
+			customerInfo.setHeadIcon(vo.getHeadIcon());
+			customerInfo.setRealNameAuth(vo.getRealNameAuth());
+			customerInfo.setRegisteredNumber(vo.getRegisteredNumber());
         }
 		return customerInfo;
 	}
@@ -41,7 +44,7 @@ public class CustomerInfoTransfer {
 	 * @toVO:po转为vo
 	 * @param po po对象
 	 * @return CustomerInfoVO CustomerInfoVO对象
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-17 17:42:23
 	 * @author 18511
 	 */
 	public static CustomerInfoVO toVO(CustomerInfo po) {
@@ -55,6 +58,9 @@ public class CustomerInfoTransfer {
 		vo.setCustomerScore(po.getCustomerScore());
 		vo.setRemark(po.getRemark());
 		vo.setCustomerAddress(po.getCustomerAddress());
+		vo.setHeadIcon(po.getHeadIcon());
+		vo.setRealNameAuth(po.getRealNameAuth());
+		vo.setRegisteredNumber(po.getRegisteredNumber());
 		return vo;
 	}
 }

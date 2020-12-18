@@ -32,8 +32,10 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.controller.WebSocketServer;
+import com.sgcc.uap.share.customer.repositories.OrderCustomerBeginPageRepository;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderCustomerService;
+import com.sgcc.uap.share.customer.vo.OrderCustomerBeginPage;
 import com.sgcc.uap.share.domain.BaseAreaPrice;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.BaseIdentityPrice;
@@ -90,6 +92,8 @@ public class OrderCustomerService implements IOrderCustomerService{
 	private NotifyAnnounceUserService notifyAnnounceUserService;
 	@Autowired
     private IBaseEnumsService baseEnumsService;
+	@Autowired
+    private OrderCustomerBeginPageRepository orderCustomerBeginPageRepository;
 	
 	
 	@Override
@@ -100,6 +104,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	@Override
 	public QueryResultObject getAllOrderCustomerByCustomerId(RequestCondition queryCondition) {
 		List<OrderCustomer> result = new ArrayList<>();
+		List<OrderCustomerBeginPage> resultBeginPage = new ArrayList<>();
 		long count = 0;
 		
 		String pageType = queryCondition.getParentID();
@@ -125,14 +130,14 @@ public class OrderCustomerService implements IOrderCustomerService{
 			elecStatus.add("1");
 			elecStatus.add("4");
 			elecStatus.add("5");
-			result = orderCustomerRepository.getOrderCustomerByCustomerIdAndEnot(pageIndex,pageSize,customerId,custStatus,elecStatus);
+			resultBeginPage = orderCustomerBeginPageRepository.getOrderCustomerByCustomerIdAndEnot(pageIndex,pageSize,customerId,custStatus,elecStatus);
+			count = resultBeginPage.size();
+			return RestUtils.wrappQueryResult(resultBeginPage, count);
 		}else{
 			result = orderCustomerRepository.getAllOrderCustomerByCustomerId(pageIndex,pageSize,customerId);
-			
+			count = result.size();
+			return RestUtils.wrappQueryResult(result, count);
 		}
-		
-		count = result.size();
-		return RestUtils.wrappQueryResult(result, count);
 	}
 	
 	@Override

@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.domain;
+package com.sgcc.uap.share.customer.vo;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "order_customer")
-public class OrderCustomer implements Serializable {
+public class OrderCustomerBeginPage implements Serializable {
 
     /** 
      * serialVersionUID
@@ -205,6 +205,34 @@ public class OrderCustomer implements Serializable {
     @Column(name = "REMARK_NUM2", nullable = true, length = 8)
     private String remarkNum2 ;
     
+    /*************************************************** 
+     * 新增数据库没有的字段
+     */
+    @Column(name = "ELECTRICIAN_DESCRIVE", nullable = true, length = 512)
+    private String electricianDescrive ;
+    @Column(name = "ELECTRICIAN_DESCRIVE_ICON", nullable = true, length = 512)
+    private String electricianDescriveIcon ;
+    @Column(name = "ELECTRICIAN_PRICE", nullable = true, length = 6)
+    private String electricianPrice ;
+	public String getElectricianDescrive() {
+		return electricianDescrive;
+	}
+	public void setElectricianDescrive(String electricianDescrive) {
+		this.electricianDescrive = electricianDescrive;
+	}
+	public String getElectricianDescriveIcon() {
+		return electricianDescriveIcon;
+	}
+	public void setElectricianDescriveIcon(String electricianDescriveIcon) {
+		this.electricianDescriveIcon = electricianDescriveIcon;
+	}
+	public String getElectricianPrice() {
+		return electricianPrice;
+	}
+	public void setElectricianPrice(String electricianPrice) {
+		this.electricianPrice = electricianPrice;
+	}
+
 
 	/**
 	  *虚拟主键
@@ -212,7 +240,7 @@ public class OrderCustomer implements Serializable {
 	@Transient
 	private String mxVirtualId;
 	
-	public OrderCustomer(){
+	public OrderCustomerBeginPage(){
 	
 	}
     /**
@@ -821,13 +849,13 @@ public class OrderCustomer implements Serializable {
         if (this == obj)
 			return true;
 		
-        if (obj == null || !(obj instanceof OrderCustomer))
+        if (obj == null || !(obj instanceof OrderCustomerBeginPage))
 	        return false; 
 	        
 		if (getClass() != obj.getClass())
 			return false;
 		
-		OrderCustomer other = (OrderCustomer) obj;
+		OrderCustomerBeginPage other = (OrderCustomerBeginPage) obj;
 		
 		if (orderId == null) {
 			if (other.orderId != null) {

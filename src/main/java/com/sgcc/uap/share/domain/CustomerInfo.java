@@ -29,8 +29,8 @@ public class CustomerInfo implements Serializable {
      * CUSTOMER_ID
      */
 	@Id
-	/*@GeneratedValue(generator = "idGenerator")
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")*/
+	@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "uuid")
     @Column(name = "CUSTOMER_ID", nullable = false, length = 64)
     private String customerId ;
     
@@ -82,6 +82,24 @@ public class CustomerInfo implements Serializable {
     @Column(name = "CUSTOMER_ADDRESS", nullable = true, length = 256)
     private String customerAddress ;
     
+    /** 
+     * HEAD_ICON
+     */
+    @Column(name = "HEAD_ICON", nullable = true, length = 256)
+    private String headIcon ;
+    
+    /** 
+     * REAL_NAME_AUTH
+     */
+    @Column(name = "REAL_NAME_AUTH", nullable = true, length = 2)
+    private String realNameAuth ;
+    
+    /** 
+     * REGISTERED_NUMBER
+     */
+    @Column(name = "REGISTERED_NUMBER", nullable = true, length = 32)
+    private String registeredNumber ;
+    
 	/**
 	  *虚拟主键
 	  */
@@ -95,7 +113,7 @@ public class CustomerInfo implements Serializable {
      * @getCustomerId:CUSTOMER_ID的get方法
      * @params
      * @return customerId
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public String getCustomerId(){
@@ -105,7 +123,7 @@ public class CustomerInfo implements Serializable {
      * @setCustomerId:CUSTOMER_ID的set方法
      * @param customerId
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public void setCustomerId(String customerId){
@@ -119,7 +137,7 @@ public class CustomerInfo implements Serializable {
      * @getCustomerName:CUSTOMER_NAME的get方法
      * @params
      * @return customerName
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public String getCustomerName(){
@@ -129,7 +147,7 @@ public class CustomerInfo implements Serializable {
      * @setCustomerName:CUSTOMER_NAME的set方法
      * @param customerName
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public void setCustomerName(String customerName){
@@ -139,7 +157,7 @@ public class CustomerInfo implements Serializable {
      * @getCustomerPhonenumber:CUSTOMER_PHONENUMBER的get方法
      * @params
      * @return customerPhonenumber
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public String getCustomerPhonenumber(){
@@ -149,7 +167,7 @@ public class CustomerInfo implements Serializable {
      * @setCustomerPhonenumber:CUSTOMER_PHONENUMBER的set方法
      * @param customerPhonenumber
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public void setCustomerPhonenumber(String customerPhonenumber){
@@ -159,7 +177,7 @@ public class CustomerInfo implements Serializable {
      * @getAddressLongitude:ADDRESS_LONGITUDE的get方法
      * @params
      * @return addressLongitude
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public String getAddressLongitude(){
@@ -169,7 +187,7 @@ public class CustomerInfo implements Serializable {
      * @setAddressLongitude:ADDRESS_LONGITUDE的set方法
      * @param addressLongitude
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public void setAddressLongitude(String addressLongitude){
@@ -179,7 +197,7 @@ public class CustomerInfo implements Serializable {
      * @getAddressLatitude:ADDRESS_LATITUDE的get方法
      * @params
      * @return addressLatitude
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public String getAddressLatitude(){
@@ -189,7 +207,7 @@ public class CustomerInfo implements Serializable {
      * @setAddressLatitude:ADDRESS_LATITUDE的set方法
      * @param addressLatitude
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public void setAddressLatitude(String addressLatitude){
@@ -199,7 +217,7 @@ public class CustomerInfo implements Serializable {
      * @getIdentityId:IDENTITY_ID的get方法
      * @params
      * @return identityId
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public String getIdentityId(){
@@ -209,7 +227,7 @@ public class CustomerInfo implements Serializable {
      * @setIdentityId:IDENTITY_ID的set方法
      * @param identityId
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public void setIdentityId(String identityId){
@@ -219,7 +237,7 @@ public class CustomerInfo implements Serializable {
      * @getCustomerScore:CUSTOMER_SCORE的get方法
      * @params
      * @return customerScore
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public String getCustomerScore(){
@@ -229,7 +247,7 @@ public class CustomerInfo implements Serializable {
      * @setCustomerScore:CUSTOMER_SCORE的set方法
      * @param customerScore
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public void setCustomerScore(String customerScore){
@@ -239,7 +257,7 @@ public class CustomerInfo implements Serializable {
      * @getRemark:REMARK的get方法
      * @params
      * @return remark
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public String getRemark(){
@@ -249,7 +267,7 @@ public class CustomerInfo implements Serializable {
      * @setRemark:REMARK的set方法
      * @param remark
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public void setRemark(String remark){
@@ -259,7 +277,7 @@ public class CustomerInfo implements Serializable {
      * @getCustomerAddress:CUSTOMER_ADDRESS的get方法
      * @params
      * @return customerAddress
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public String getCustomerAddress(){
@@ -269,11 +287,71 @@ public class CustomerInfo implements Serializable {
      * @setCustomerAddress:CUSTOMER_ADDRESS的set方法
      * @param customerAddress
      * @return
-     * @date 2020-11-26 14:32:47
+     * @date 2020-12-17 17:42:20
      * @author 18511
      */
     public void setCustomerAddress(String customerAddress){
 		this.customerAddress = customerAddress;
+	} 
+    /**
+     * @getHeadIcon:HEAD_ICON的get方法
+     * @params
+     * @return headIcon
+     * @date 2020-12-17 17:42:20
+     * @author 18511
+     */
+    public String getHeadIcon(){
+        return this.headIcon;
+    }
+    /**
+     * @setHeadIcon:HEAD_ICON的set方法
+     * @param headIcon
+     * @return
+     * @date 2020-12-17 17:42:20
+     * @author 18511
+     */
+    public void setHeadIcon(String headIcon){
+		this.headIcon = headIcon;
+	} 
+    /**
+     * @getRealNameAuth:REAL_NAME_AUTH的get方法
+     * @params
+     * @return realNameAuth
+     * @date 2020-12-17 17:42:20
+     * @author 18511
+     */
+    public String getRealNameAuth(){
+        return this.realNameAuth;
+    }
+    /**
+     * @setRealNameAuth:REAL_NAME_AUTH的set方法
+     * @param realNameAuth
+     * @return
+     * @date 2020-12-17 17:42:20
+     * @author 18511
+     */
+    public void setRealNameAuth(String realNameAuth){
+		this.realNameAuth = realNameAuth;
+	} 
+    /**
+     * @getRegisteredNumber:REGISTERED_NUMBER的get方法
+     * @params
+     * @return registeredNumber
+     * @date 2020-12-17 17:42:20
+     * @author 18511
+     */
+    public String getRegisteredNumber(){
+        return this.registeredNumber;
+    }
+    /**
+     * @setRegisteredNumber:REGISTERED_NUMBER的set方法
+     * @param registeredNumber
+     * @return
+     * @date 2020-12-17 17:42:20
+     * @author 18511
+     */
+    public void setRegisteredNumber(String registeredNumber){
+		this.registeredNumber = registeredNumber;
 	} 
 	public String getMxVirtualId() {
         return this.mxVirtualId;
@@ -361,6 +439,27 @@ public class CustomerInfo implements Serializable {
 		} else if (!customerAddress.equals(other.customerAddress)) {
 			return false;
 		}
+		if (headIcon == null) {
+			if (other.headIcon != null) {
+				return false;
+			}
+		} else if (!headIcon.equals(other.headIcon)) {
+			return false;
+		}
+		if (realNameAuth == null) {
+			if (other.realNameAuth != null) {
+				return false;
+			}
+		} else if (!realNameAuth.equals(other.realNameAuth)) {
+			return false;
+		}
+		if (registeredNumber == null) {
+			if (other.registeredNumber != null) {
+				return false;
+			}
+		} else if (!registeredNumber.equals(other.registeredNumber)) {
+			return false;
+		}
 		return true;
 	}
     
@@ -378,7 +477,10 @@ public class CustomerInfo implements Serializable {
 			+ ", identityId=" + identityId
 			+ ", customerScore=" + customerScore
 			+ ", remark=" + remark
-			+ ", customerAddress=" + customerAddress;
+			+ ", customerAddress=" + customerAddress
+			+ ", headIcon=" + headIcon
+			+ ", realNameAuth=" + realNameAuth
+			+ ", registeredNumber=" + registeredNumber;
 	}
    
     
