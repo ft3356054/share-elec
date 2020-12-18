@@ -543,23 +543,6 @@ public class OrderElectricianService implements IOrderElectricianService{
 			String orderId = (String) map.get("orderId");
 			orderCustomer=orderCustomerRepository.findByOrderId(orderId);
 			
-			/*客户这边不用
-			
-			//23 电工上传合同（报价）
-			if("23".equals(map.get("orderStatus"))){
-			//if("23".equals(map.get("orderStatus"))){
-				//上传图片
-				if (!file.isEmpty()) {
-					String fileName = (String) map.get("fileName");
-					String iconUrl = FileUtil.uploadFile(file, orderId,"ORDER_CUSTOMER",fileName);
-					map.put(fileName, iconUrl);
-				}
-				
-				
-				
-			}
-			*/
-			
 			
 			
 			CrudUtils.mapToObject(map, orderCustomer,  "orderId");
@@ -596,6 +579,14 @@ public class OrderElectricianService implements IOrderElectricianService{
 				}
 				
 				
+				
+			}else if ("8".equals(map.get("orderElectricianType"))) {//8状态说明是验收状态页面要进行验收，需要保存图片
+				
+				//上传图片
+				if (!file.isEmpty()) {
+					String inspectionReport = FileUtil.uploadFile(file, orderElectrician.getOrDERId(),"ORDER_ELECTRICIAN", "inspectionReport");
+					map.put("inspectionReport", inspectionReport);
+				}
 				
 			}
 			CrudUtils.mapToObject(map, orderElectrician,  "orderId");

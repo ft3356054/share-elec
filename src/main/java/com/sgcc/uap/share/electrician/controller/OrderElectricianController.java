@@ -1189,7 +1189,11 @@ public WrappedResult electrician_evaluate(
 						
 						String deleteElectricianId=electricianInfo.getElectricianId()+",";
 						
-						orderElectrician.setOtherElectricianId(electricianInfo.getElectricianId()+",");
+						String str=orderElectrician.getOtherElectricianId();
+						String a=str.replace(deleteElectricianId, "");
+						
+						orderElectrician.setOtherElectricianId(a);
+						System.out.print(a+"*******************************");
 						orderElectricianMap.put("otherElectricianId", orderElectrician.getOtherElectricianId());
 						orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 						
@@ -1197,7 +1201,103 @@ public WrappedResult electrician_evaluate(
 						WrappedResult.failedWrappedResult("人员信息不符~");
 					}
 				}
-
+					
+					/**
+					 * 开始施工
+					 */
+					if(method.equals("开始施工")){//只能改状态就好
+						
+						
+						//将map中的数据分别送到两个类中，在进行更新
+						//客户订单需要跟新的信息
+						orderCustomerMap.put("orderStatus", map.get("orderStatus"));
+						orderCustomerMap.put("orderId", map.get("orderId"));
+						
+						//电工订单需要更新的信息
+						orderElectricianMap.put("orderId", map.get("orderId"));
+						orderElectricianMap.put("orderElectricianType",map.get("orderElectricianType"));
+						orderElectricianMap.put("electricianId", map.get("electricianId"));
+						
+						
+						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+						System.out.println("我执行完了保存操作");
+						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						result.setFormItems(orderCustomer);
+						
+						
+						
+					}
+					
+					if(method.equals("施工完成")){//状态都改成24
+						
+						//将map中的数据分别送到两个类中，在进行更新
+						//客户订单需要跟新的信息
+						orderCustomerMap.put("orderStatus", map.get("orderStatus"));
+						orderCustomerMap.put("orderId", map.get("orderId"));
+						
+						//电工订单需要更新的信息
+						orderElectricianMap.put("orderId", map.get("orderId"));
+						orderElectricianMap.put("orderElectricianType",map.get("orderElectricianType"));
+						orderElectricianMap.put("electricianId", map.get("electricianId"));
+						orderElectricianMap.put("constructionContent", map.get("constructionContent"));
+						
+						/*  由于前段页面可以存储信息，添加的电工就不再传
+						String electricianId=(String)map.get("electricianId");
+						 String orderId=(String)map.get("orderId");
+						//查询当前电工订单，
+						OrderElectrician orderElectrician=orderElectricianService.findByElectricianIdAndOrderId(electricianId,orderId);
+						//获取其它电工ID
+						String OrderElectricianId=orderElectrician.getOrderElectricianId();
+						*/
+						
+						
+						
+						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+						System.out.println("我执行完了保存操作");
+						orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						result.setFormItems(orderCustomer);
+						
+						
+						
+						
+						
+					}
+					
+					if(method.equals("验收申请")){//验收完成的话状态就变成8，
+						
+						//将map中的数据分别送到两个类中，在进行更新
+						//客户订单需要跟新的信息
+						orderCustomerMap.put("orderStatus", map.get("orderStatus"));
+						orderCustomerMap.put("orderId", map.get("orderId"));
+						
+						//电工订单需要更新的信息
+						orderElectricianMap.put("orderId", map.get("orderId"));
+						orderElectricianMap.put("orderElectricianType",map.get("orderElectricianType"));
+						orderElectricianMap.put("electricianId", map.get("electricianId"));
+						
+						
+						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+						System.out.println("我执行完了保存操作");
+						orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						result.setFormItems(orderCustomer);
+						
+					}
+					
+					if (method.equals("评价")) {//两个订单的状态是9
+						//将map中的数据分别送到两个类中，在进行更新
+						//客户订单需要跟新的信息
+						orderCustomerMap.put("orderStatus", map.get("orderStatus"));
+						orderCustomerMap.put("orderId", map.get("orderId"));
+						
+						//电工订单需要更新的信息
+						orderElectricianMap.put("orderId", map.get("orderId"));
+						orderElectricianMap.put("orderElectricianType",map.get("orderElectricianType"));
+						orderElectricianMap.put("electricianId", map.get("electricianId"));
+						orderElectricianMap.put("electricianEvaluate", map.get("electricianEvaluate"));
+						
+						
+					}
+					
 
 				
 			}

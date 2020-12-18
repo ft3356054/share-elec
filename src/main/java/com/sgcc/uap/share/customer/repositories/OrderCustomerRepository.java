@@ -64,6 +64,8 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	@Query(value="select * from order_customer where ORDER_STATUS=?1 or ORDER_STATUS=?2 order by CREATE_TIME asc",nativeQuery=true)
 	List<OrderCustomer> findByOrderStatusOrderByCreateTime(int id1, int id2);
 
+	
+	@Query(value="select * from order_customer where ORDER_ID=?",nativeQuery=true)
 	OrderCustomer findByOrderId(String orderId);
 
 
