@@ -591,10 +591,10 @@ public class OrderElectricianService implements IOrderElectricianService{
 			}
 			CrudUtils.mapToObject(map, orderElectrician,  "orderId");
 			result = orderElectricianRepository.save(orderElectrician);
-			//sendNotify(map, orderElectrician,2,1);
+			sendNotify(map, orderElectrician,2,1);
 			
-			
-		/*
+			//
+		
 			
 			//获取Enum通知类
 			BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0", "0");	
@@ -615,7 +615,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 			Map<String,Object> mapNotifyUser = 
 					MapUtil.notifyUserAdd((String)map.get("electricianId"), announceId, 1, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
-			*/	
+			
 			
 			//发送websocket消息
 	      

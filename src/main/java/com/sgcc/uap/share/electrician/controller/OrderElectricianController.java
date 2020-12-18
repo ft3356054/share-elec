@@ -897,7 +897,7 @@ public class OrderElectricianController {
 	 */
 	@RequestMapping(value="/electrician_evaluate",name="电工评价客户",method = RequestMethod.POST)
 	
-public WrappedResult electrician_evaluate(
+		public WrappedResult electrician_evaluate(
 		@RequestParam(value = "items", required = false) String items,@RequestParam("myFile") MultipartFile file
 		){
 		
@@ -1320,6 +1320,9 @@ public WrappedResult electrician_evaluate(
 	}
 	
 	}
+	
+	
+	
 	
 	
 	

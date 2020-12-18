@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.electrician.services.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.mdd.runtime.validate.ValidateService;
@@ -27,18 +29,10 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.OrderAuditElectrician;
 import com.sgcc.uap.share.electrician.repositories.OrderAuditElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderAuditElectricianService;
-import com.sgcc.uap.utils.string.StringUtil;
+import com.sgcc.uap.util.FileUtil;
 
 
-/**
- * <b>概述</b>：<br>
- * TODO
- * <p>
- * <b>功能</b>：<br>
- * TODO
- *
- * @author 18511
- */
+
 @Service
 public class OrderAuditElectricianService implements IOrderAuditElectricianService{
 	/** 
@@ -77,6 +71,50 @@ public class OrderAuditElectricianService implements IOrderAuditElectricianServi
 		}
 		return orderAuditElectricianRepository.save(orderAuditElectrician);
 	}
+	
+	
+	/**
+	 * 保存新的订单
+	 * file1     certificate_a        证件A           存放上传材料
+	 * file2     rating_certificate   等级证书                           存放上传证书 
+	 * @throws IOException 
+	 */
+	
+	public OrderAuditElectrician save(Map<String, Object> map, MultipartFile file1, MultipartFile file2) throws Exception{
+		
+		
+		String orderId=(String) map.get("orderId");
+		OrderAuditElectrician orderAuditElectrician = orderAuditElectricianRepository.findOne(orderId);
+		CrudUtils.mapToObject(map, orderAuditElectrician,  "orderId");
+		
+		
+		if(file1.equals(map.get("orderElectricianType"))){
+			
+			//上传图片
+			if (!file1.isEmpty()) {
+				String certificate_a = FileUtil.uploadFile(file1, "Electrician","ORDER_ELECTRICIAN", "certificate_a");
+				map.put("certificate_a", certificate_a);
+			}
+		}
+		
+		if(file1.equals(map.get("orderElectricianType"))){
+			//上传图片
+			if (!file2.isEmpty()) {
+				String rating_certificate = FileUtil.uploadFile(file2, "Electrician","ORDER_ELECTRICIAN", "orderContract");
+				map.put("rating_certificate", rating_certificate);
+			}
+		}
+			
+			
+		
+		
+		return orderAuditElectricianRepository.save(orderAuditElectrician);
+	}
+	
+	
+	
+	
+	
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
 		if(queryCondition == null){
