@@ -54,6 +54,11 @@ public class ElectricianSubCompanyInfoVO extends ParentVO implements Serializabl
     @ViewAttribute(name ="addressLatitude",caption="ADDRESS_LATITUDE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String addressLatitude;    
     /** 
+     * 属性COMPANY_AREA_ID
+     */  
+    @ViewAttribute(name ="companyAreaId",caption="COMPANY_AREA_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String companyAreaId;    
+    /** 
      * 属性COMPANY_LEVEL
      */  
     @ViewAttribute(name ="companyLevel",caption="COMPANY_LEVEL", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
@@ -204,6 +209,20 @@ public class ElectricianSubCompanyInfoVO extends ParentVO implements Serializabl
 		this.addressLatitude = addressLatitude;
 	} 
     /**
+     * COMPANY_AREA_ID的get方法
+     * @return companyAreaId
+     */
+    public String getCompanyAreaId(){
+        return companyAreaId;
+    }
+    /**
+     * COMPANY_AREA_ID的set方法
+     * @param companyAreaId
+     */
+    public void setCompanyAreaId(String companyAreaId){
+		this.companyAreaId = companyAreaId;
+	} 
+    /**
      * COMPANY_LEVEL的get方法
      * @return companyLevel
      */
@@ -316,6 +335,7 @@ public class ElectricianSubCompanyInfoVO extends ParentVO implements Serializabl
 				.append("COMPANY_ADDRESS"+":"+getCompanyAddress())
 				.append("ADDRESS_LONGITUDE"+":"+getAddressLongitude())
 				.append("ADDRESS_LATITUDE"+":"+getAddressLatitude())
+				.append("COMPANY_AREA_ID"+":"+getCompanyAreaId())
 				.append("COMPANY_LEVEL"+":"+getCompanyLevel())
 				.append("RATING_CERTIFICATE"+":"+getRatingCertificate())
 				.append("COMPANY_CONTRACT"+":"+getCompanyContract())

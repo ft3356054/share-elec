@@ -150,6 +150,12 @@ public class ElectricianCompanyInfo implements Serializable {
     private Timestamp regiseterTime ;
     
     /** 
+     * P_COMPANY_ID
+     */
+    @Column(name = "P_COMPANY_ID", nullable = true, length = 64)
+    private String pCompanyId ;
+    
+    /** 
      * REMARK1
      */
     @Column(name = "REMARK1", nullable = true, length = 512)
@@ -192,7 +198,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getCompanyId:COMPANY_ID的get方法
      * @params
      * @return companyId
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getCompanyId(){
@@ -202,7 +208,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setCompanyId:COMPANY_ID的set方法
      * @param companyId
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setCompanyId(String companyId){
@@ -216,7 +222,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getCompanyName:COMPANY_NAME的get方法
      * @params
      * @return companyName
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getCompanyName(){
@@ -226,7 +232,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setCompanyName:COMPANY_NAME的set方法
      * @param companyName
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setCompanyName(String companyName){
@@ -236,7 +242,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getCompanyPhonenumber:COMPANY_PHONENUMBER的get方法
      * @params
      * @return companyPhonenumber
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getCompanyPhonenumber(){
@@ -246,7 +252,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setCompanyPhonenumber:COMPANY_PHONENUMBER的set方法
      * @param companyPhonenumber
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setCompanyPhonenumber(String companyPhonenumber){
@@ -256,7 +262,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getCompanyAddress:COMPANY_ADDRESS的get方法
      * @params
      * @return companyAddress
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getCompanyAddress(){
@@ -266,7 +272,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setCompanyAddress:COMPANY_ADDRESS的set方法
      * @param companyAddress
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setCompanyAddress(String companyAddress){
@@ -276,7 +282,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getAddressLongitude:ADDRESS_LONGITUDE的get方法
      * @params
      * @return addressLongitude
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getAddressLongitude(){
@@ -286,7 +292,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setAddressLongitude:ADDRESS_LONGITUDE的set方法
      * @param addressLongitude
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setAddressLongitude(String addressLongitude){
@@ -296,7 +302,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getAddressLatitude:ADDRESS_LATITUDE的get方法
      * @params
      * @return addressLatitude
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getAddressLatitude(){
@@ -306,7 +312,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setAddressLatitude:ADDRESS_LATITUDE的set方法
      * @param addressLatitude
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setAddressLatitude(String addressLatitude){
@@ -316,7 +322,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getCompanyLevel:COMPANY_LEVEL的get方法
      * @params
      * @return companyLevel
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getCompanyLevel(){
@@ -326,7 +332,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setCompanyLevel:COMPANY_LEVEL的set方法
      * @param companyLevel
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setCompanyLevel(String companyLevel){
@@ -336,7 +342,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getRatingCertificate:RATING_CERTIFICATE的get方法
      * @params
      * @return ratingCertificate
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getRatingCertificate(){
@@ -346,7 +352,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setRatingCertificate:RATING_CERTIFICATE的set方法
      * @param ratingCertificate
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setRatingCertificate(String ratingCertificate){
@@ -356,7 +362,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getCompanyContract:COMPANY_CONTRACT的get方法
      * @params
      * @return companyContract
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getCompanyContract(){
@@ -366,7 +372,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setCompanyContract:COMPANY_CONTRACT的set方法
      * @param companyContract
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setCompanyContract(String companyContract){
@@ -376,7 +382,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getLegalPerson:LEGAL_PERSON的get方法
      * @params
      * @return legalPerson
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getLegalPerson(){
@@ -386,7 +392,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setLegalPerson:LEGAL_PERSON的set方法
      * @param legalPerson
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setLegalPerson(String legalPerson){
@@ -396,7 +402,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getCreditCode:CREDIT_CODE的get方法
      * @params
      * @return creditCode
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getCreditCode(){
@@ -406,7 +412,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setCreditCode:CREDIT_CODE的set方法
      * @param creditCode
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setCreditCode(String creditCode){
@@ -416,7 +422,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getStructureCode:STRUCTURE_CODE的get方法
      * @params
      * @return structureCode
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getStructureCode(){
@@ -426,7 +432,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setStructureCode:STRUCTURE_CODE的set方法
      * @param structureCode
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setStructureCode(String structureCode){
@@ -436,7 +442,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getOnBusinessBegin:ON_BUSINESS_BEGIN的get方法
      * @params
      * @return onBusinessBegin
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public Timestamp getOnBusinessBegin(){
@@ -446,7 +452,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setOnBusinessBegin:ON_BUSINESS_BEGIN的set方法
      * @param onBusinessBegin
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setOnBusinessBegin(Timestamp onBusinessBegin){
@@ -456,7 +462,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getOnBusinessEnd:ON_BUSINESS_END的get方法
      * @params
      * @return onBusinessEnd
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public Timestamp getOnBusinessEnd(){
@@ -466,7 +472,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setOnBusinessEnd:ON_BUSINESS_END的set方法
      * @param onBusinessEnd
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setOnBusinessEnd(Timestamp onBusinessEnd){
@@ -476,7 +482,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getBusinessCope:BUSINESS_COPE的get方法
      * @params
      * @return businessCope
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getBusinessCope(){
@@ -486,7 +492,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setBusinessCope:BUSINESS_COPE的set方法
      * @param businessCope
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setBusinessCope(String businessCope){
@@ -496,7 +502,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getQualiCode:QUALI_CODE的get方法
      * @params
      * @return qualiCode
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getQualiCode(){
@@ -506,7 +512,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setQualiCode:QUALI_CODE的set方法
      * @param qualiCode
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setQualiCode(String qualiCode){
@@ -516,7 +522,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getQualiIndustry:QUALI_INDUSTRY的get方法
      * @params
      * @return qualiIndustry
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getQualiIndustry(){
@@ -526,7 +532,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setQualiIndustry:QUALI_INDUSTRY的set方法
      * @param qualiIndustry
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setQualiIndustry(String qualiIndustry){
@@ -536,7 +542,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getQualiLevel:QUALI_LEVEL的get方法
      * @params
      * @return qualiLevel
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getQualiLevel(){
@@ -546,7 +552,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setQualiLevel:QUALI_LEVEL的set方法
      * @param qualiLevel
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setQualiLevel(String qualiLevel){
@@ -556,7 +562,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getCertificateCode:CERTIFICATE_CODE的get方法
      * @params
      * @return certificateCode
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getCertificateCode(){
@@ -566,7 +572,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setCertificateCode:CERTIFICATE_CODE的set方法
      * @param certificateCode
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setCertificateCode(String certificateCode){
@@ -576,7 +582,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getRegiseterTime:REGISETER_TIME的get方法
      * @params
      * @return regiseterTime
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public Timestamp getRegiseterTime(){
@@ -586,17 +592,37 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setRegiseterTime:REGISETER_TIME的set方法
      * @param regiseterTime
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setRegiseterTime(Timestamp regiseterTime){
 		this.regiseterTime = regiseterTime;
 	} 
     /**
+     * @getPCompanyId:P_COMPANY_ID的get方法
+     * @params
+     * @return pCompanyId
+     * @date 2020-12-18 11:51:00
+     * @author 18511
+     */
+    public String getPCompanyId(){
+        return this.pCompanyId;
+    }
+    /**
+     * @setPCompanyId:P_COMPANY_ID的set方法
+     * @param pCompanyId
+     * @return
+     * @date 2020-12-18 11:51:00
+     * @author 18511
+     */
+    public void setPCompanyId(String pCompanyId){
+		this.pCompanyId = pCompanyId;
+	} 
+    /**
      * @getRemark1:REMARK1的get方法
      * @params
      * @return remark1
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getRemark1(){
@@ -606,7 +632,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setRemark1:REMARK1的set方法
      * @param remark1
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setRemark1(String remark1){
@@ -616,7 +642,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getRemark2:REMARK2的get方法
      * @params
      * @return remark2
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getRemark2(){
@@ -626,7 +652,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setRemark2:REMARK2的set方法
      * @param remark2
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setRemark2(String remark2){
@@ -636,7 +662,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getRemark3:REMARK3的get方法
      * @params
      * @return remark3
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getRemark3(){
@@ -646,7 +672,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setRemark3:REMARK3的set方法
      * @param remark3
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setRemark3(String remark3){
@@ -656,7 +682,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getRemark4:REMARK4的get方法
      * @params
      * @return remark4
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getRemark4(){
@@ -666,7 +692,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setRemark4:REMARK4的set方法
      * @param remark4
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setRemark4(String remark4){
@@ -676,7 +702,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @getRemark5:REMARK5的get方法
      * @params
      * @return remark5
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public String getRemark5(){
@@ -686,7 +712,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @setRemark5:REMARK5的set方法
      * @param remark5
      * @return
-     * @date 2020-12-07 10:54:22
+     * @date 2020-12-18 11:51:00
      * @author 18511
      */
     public void setRemark5(String remark5){
@@ -855,6 +881,13 @@ public class ElectricianCompanyInfo implements Serializable {
 		} else if (!regiseterTime.equals(other.regiseterTime)) {
 			return false;
 		}
+		if (pCompanyId == null) {
+			if (other.pCompanyId != null) {
+				return false;
+			}
+		} else if (!pCompanyId.equals(other.pCompanyId)) {
+			return false;
+		}
 		if (remark1 == null) {
 			if (other.remark1 != null) {
 				return false;
@@ -919,6 +952,7 @@ public class ElectricianCompanyInfo implements Serializable {
 			+ ", qualiLevel=" + qualiLevel
 			+ ", certificateCode=" + certificateCode
 			+ ", regiseterTime=" + regiseterTime
+			+ ", pCompanyId=" + pCompanyId
 			+ ", remark1=" + remark1
 			+ ", remark2=" + remark2
 			+ ", remark3=" + remark3

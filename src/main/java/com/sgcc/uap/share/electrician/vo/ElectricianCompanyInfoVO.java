@@ -120,6 +120,11 @@ public class ElectricianCompanyInfoVO extends ParentVO implements Serializable{
     @ViewAttribute(name ="regiseterTime",caption="REGISETER_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
     private Timestamp regiseterTime;    
     /** 
+     * 属性P_COMPANY_ID
+     */  
+    @ViewAttribute(name ="pCompanyId",caption="P_COMPANY_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String pCompanyId;    
+    /** 
      * 属性REMARK1
      */  
     @ViewAttribute(name ="remark1",caption="REMARK1", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
@@ -442,6 +447,20 @@ public class ElectricianCompanyInfoVO extends ParentVO implements Serializable{
 		this.regiseterTime = regiseterTime;
 	} 
     /**
+     * P_COMPANY_ID的get方法
+     * @return pCompanyId
+     */
+    public String getPCompanyId(){
+        return pCompanyId;
+    }
+    /**
+     * P_COMPANY_ID的set方法
+     * @param pCompanyId
+     */
+    public void setPCompanyId(String pCompanyId){
+		this.pCompanyId = pCompanyId;
+	} 
+    /**
      * REMARK1的get方法
      * @return remark1
      */
@@ -539,6 +558,7 @@ public class ElectricianCompanyInfoVO extends ParentVO implements Serializable{
 				.append("QUALI_LEVEL"+":"+getQualiLevel())
 				.append("CERTIFICATE_CODE"+":"+getCertificateCode())
 				.append("REGISETER_TIME"+":"+getRegiseterTime())
+				.append("P_COMPANY_ID"+":"+getPCompanyId())
 				.append("REMARK1"+":"+getRemark1())
 				.append("REMARK2"+":"+getRemark2())
 				.append("REMARK3"+":"+getRemark3())

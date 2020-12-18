@@ -19,7 +19,7 @@ public class ElectricianCompanyInfoTransfer {
 	 * @toPO:vo转为po
 	 * @param vo vo对象
 	 * @return ElectricianCompanyInfo ElectricianCompanyInfo对象
-	 * @date 2020-12-07 10:54:22
+	 * @date 2020-12-18 11:51:02
 	 * @author 18511
 	 */
 	public static ElectricianCompanyInfo toPO(ElectricianCompanyInfoVO vo) {
@@ -45,6 +45,7 @@ public class ElectricianCompanyInfoTransfer {
 			electricianCompanyInfo.setQualiLevel(vo.getQualiLevel());
 			electricianCompanyInfo.setCertificateCode(vo.getCertificateCode());
 			electricianCompanyInfo.setRegiseterTime(vo.getRegiseterTime());
+			electricianCompanyInfo.setPCompanyId(vo.getPCompanyId());
 			electricianCompanyInfo.setRemark1(vo.getRemark1());
 			electricianCompanyInfo.setRemark2(vo.getRemark2());
 			electricianCompanyInfo.setRemark3(vo.getRemark3());
@@ -57,7 +58,7 @@ public class ElectricianCompanyInfoTransfer {
 	 * @toVO:po转为vo
 	 * @param po po对象
 	 * @return ElectricianCompanyInfoVO ElectricianCompanyInfoVO对象
-	 * @date 2020-12-07 10:54:22
+	 * @date 2020-12-18 11:51:02
 	 * @author 18511
 	 */
 	public static ElectricianCompanyInfoVO toVO(ElectricianCompanyInfo po) {
@@ -82,6 +83,7 @@ public class ElectricianCompanyInfoTransfer {
 		vo.setQualiLevel(po.getQualiLevel());
 		vo.setCertificateCode(po.getCertificateCode());
 		vo.setRegiseterTime(po.getRegiseterTime());
+		vo.setPCompanyId(po.getPCompanyId());
 		vo.setRemark1(po.getRemark1());
 		vo.setRemark2(po.getRemark2());
 		vo.setRemark3(po.getRemark3());
