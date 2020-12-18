@@ -1,7 +1,9 @@
 package com.sgcc.uap.share.electrician.services;
 
+import java.io.IOException;
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
@@ -52,6 +54,9 @@ public interface IOrderAuditElectricianService {
 	 * @author 18511
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);
+	
+	
+	public OrderAuditElectrician save(Map<String, Object> map, MultipartFile file1, MultipartFile file2) throws IOException, Exception;
 
 
 
