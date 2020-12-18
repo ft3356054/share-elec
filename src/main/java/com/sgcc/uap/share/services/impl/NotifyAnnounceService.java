@@ -25,11 +25,13 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.customer.bo.NotifyAnnounceAndUser;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.NotifyAnnounce;
 import com.sgcc.uap.share.domain.NotifyAnnounceUser;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
+import com.sgcc.uap.share.repositories.NotifyAnnounceAndUserRepository;
 import com.sgcc.uap.share.repositories.NotifyAnnounceRepository;
 import com.sgcc.uap.share.repositories.NotifyAnnounceUserRepository;
 import com.sgcc.uap.share.services.INotifyAnnounceService;
@@ -65,6 +67,9 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 	private NotifyAnnounceUserService notifyAnnounceUserService;
 	@Autowired
 	private BaseEnumsService baseEnumsService;
+	@Autowired
+	private NotifyAnnounceAndUserRepository notifyAnnounceAndUserRepository;
+	
 	
 	
 	@Override
@@ -81,10 +86,17 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 		return RestUtils.wrappQueryResult(notifyAnnounce);
 	}
 	@Override
-	public QueryResultObject getNotifyAnnounceByAnnounceIds(List<String> list) {
-		List<NotifyAnnounce> notifyAnnounce = notifyAnnounceRepository.findByAnnounceIdIn(list);
+	public QueryResultObject getNotifyAnnounceByAnnounceIds(String announceUserId) {
+		List<NotifyAnnounceAndUser> notifyAnnounce = notifyAnnounceAndUserRepository.findByAnnounceUserId(announceUserId);
 		return RestUtils.wrappQueryResult(notifyAnnounce);
 	}
+	
+	@Override
+	public Long getNotReadNum(String announceUserId) {
+		Long notReadNum = notifyAnnounceUserRepository.countByAnnounceUserIdAndState(announceUserId,"0");
+		return notReadNum;
+	}
+	
 	@Override
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){
