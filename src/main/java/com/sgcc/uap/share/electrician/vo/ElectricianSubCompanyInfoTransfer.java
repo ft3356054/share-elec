@@ -19,7 +19,7 @@ public class ElectricianSubCompanyInfoTransfer {
 	 * @toPO:vo转为po
 	 * @param vo vo对象
 	 * @return ElectricianSubCompanyInfo ElectricianSubCompanyInfo对象
-	 * @date 2020-12-07 10:54:19
+	 * @date 2020-12-18 11:51:06
 	 * @author 18511
 	 */
 	public static ElectricianSubCompanyInfo toPO(ElectricianSubCompanyInfoVO vo) {
@@ -32,6 +32,7 @@ public class ElectricianSubCompanyInfoTransfer {
 			electricianSubCompanyInfo.setCompanyAddress(vo.getCompanyAddress());
 			electricianSubCompanyInfo.setAddressLongitude(vo.getAddressLongitude());
 			electricianSubCompanyInfo.setAddressLatitude(vo.getAddressLatitude());
+			electricianSubCompanyInfo.setCompanyAreaId(vo.getCompanyAreaId());
 			electricianSubCompanyInfo.setCompanyLevel(vo.getCompanyLevel());
 			electricianSubCompanyInfo.setRatingCertificate(vo.getRatingCertificate());
 			electricianSubCompanyInfo.setCompanyContract(vo.getCompanyContract());
@@ -46,7 +47,7 @@ public class ElectricianSubCompanyInfoTransfer {
 	 * @toVO:po转为vo
 	 * @param po po对象
 	 * @return ElectricianSubCompanyInfoVO ElectricianSubCompanyInfoVO对象
-	 * @date 2020-12-07 10:54:19
+	 * @date 2020-12-18 11:51:06
 	 * @author 18511
 	 */
 	public static ElectricianSubCompanyInfoVO toVO(ElectricianSubCompanyInfo po) {
@@ -58,6 +59,7 @@ public class ElectricianSubCompanyInfoTransfer {
 		vo.setCompanyAddress(po.getCompanyAddress());
 		vo.setAddressLongitude(po.getAddressLongitude());
 		vo.setAddressLatitude(po.getAddressLatitude());
+		vo.setCompanyAreaId(po.getCompanyAreaId());
 		vo.setCompanyLevel(po.getCompanyLevel());
 		vo.setRatingCertificate(po.getRatingCertificate());
 		vo.setCompanyContract(po.getCompanyContract());
