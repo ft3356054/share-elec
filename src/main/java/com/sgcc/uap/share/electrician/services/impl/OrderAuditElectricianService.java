@@ -84,7 +84,8 @@ public class OrderAuditElectricianService implements IOrderAuditElectricianServi
 		
 		
 		String orderId=(String) map.get("orderId");
-		OrderAuditElectrician orderAuditElectrician = orderAuditElectricianRepository.findOne(orderId);
+		//OrderAuditElectrician orderAuditElectrician = orderAuditElectricianRepository.findOne(orderId);
+		OrderAuditElectrician orderAuditElectrician =new OrderAuditElectrician();
 		CrudUtils.mapToObject(map, orderAuditElectrician,  "orderId");
 		
 		

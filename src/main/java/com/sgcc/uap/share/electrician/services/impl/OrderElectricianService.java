@@ -580,7 +580,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 				
 				
 				
-			}else if ("8".equals(map.get("orderElectricianType"))) {//8状态说明是验收状态页面要进行验收，需要保存图片
+			}else if ("25".equals(map.get("orderElectricianType"))) {//8状态说明是验收状态页面要进行验收，需要保存图片
 				
 				//上传图片
 				if (!file.isEmpty()) {
@@ -591,11 +591,13 @@ public class OrderElectricianService implements IOrderElectricianService{
 			}
 			CrudUtils.mapToObject(map, orderElectrician,  "orderId");
 			result = orderElectricianRepository.save(orderElectrician);
-			sendNotify(map, orderElectrician,2,1);
 			
-			//
-		
+			if ((String)map.get("orderElectricianType")!=null) {
+				sendNotify(map, orderElectrician,2,1);
+			}
 			
+			
+			/*
 			//获取Enum通知类
 			BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0", "0");	
 			
@@ -620,16 +622,17 @@ public class OrderElectricianService implements IOrderElectricianService{
 			//发送websocket消息
 	      
 	        WebSocketServer.sendInfo("下单成功",(String)map.get("electricianId"));
+	        */
 		return result;
 	}
 
 	
 	
 	@Override
-	public OrderElectrician findByOrderId(String orderId,String orderelectriciantype) {
+	public OrderElectrician findByOrderId(String orderId,String electricianId) {
 		
 		// TODO Auto-generated method stub
-		OrderElectrician orderIdString=orderElectricianRepository.findByOrderId(orderId,orderelectriciantype);
+		OrderElectrician orderIdString=orderElectricianRepository.findByOrderId(orderId,electricianId);
 		return orderIdString;
 	}
 	
@@ -727,23 +730,23 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * @throws Exception
 	 */
 	private void sendNotify(Map map,OrderElectrician orderElectrician,int oper,int getPeople) throws Exception{
-		String status =(String)map.get("orderStatus");
+		String orderElectricianType =(String)map.get("orderElectricianType");
 		//1维修 2支付 3验收 4评价
 		String notifyType ="1";
-		if("23".equals(status)){
+		if("23".equals(orderElectricianType)){
 			notifyType ="2";
-		}else if("24".equals(status)){
+		}else if("24".equals(orderElectricianType)){
 			notifyType ="3";
-		}else if("8".equals(status)){
+		}else if("8".equals(orderElectricianType)){
 			notifyType ="4";
 		}
 		
 		//获取Enum通知类
-		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0",  status);	
+		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  orderElectricianType);	
 		
 		//新增流水
 		Map<String,Object> mapOrderFlow = 
-				MapUtil.flowAdd(orderElectrician.getOrDERId(), 0,  Integer.parseInt(status), orderElectrician.getElectricianId(), TimeStamp.toString(new Date()), oper,  baseEnums.getEnumsA());
+				MapUtil.flowAdd(orderElectrician.getOrDERId(), 1,  Integer.parseInt(orderElectricianType), orderElectrician.getElectricianId(), TimeStamp.toString(new Date()), oper,  baseEnums.getEnumsA());
 		orderFlowService.saveOrderFlow(mapOrderFlow);
 		
 		//新增通知
@@ -755,17 +758,17 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 		
 		Map<String,Object> mapNotifyUser = 
-				MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, getPeople, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+				MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, getPeople, 2, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 		
 		//发送websocket消息
-		//WebSocketServer.sendInfo("下单成功",(String)map.get("electricianId"));
-	}
-	@Override
-	public OrderElectrician findByOrderId(String orderId) {
-		// TODO Auto-generated method stub
-		//orderElectricianRepository.findByOrderId(orderId)
-		return null;
+		String messageString=new String();
+		if (map.get("orderElectricianType").equals("9")) {
+			messageString="订单已经完成";
+		}else if (map.get("orderElectricianType").equals("8")) {
+			messageString="要进行验收申请";
+		}
+		WebSocketServer.sendInfo(messageString,(String)map.get("electricianId"));
 	}
 	
 	/**
@@ -916,7 +919,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		return orderElectrician;
 		
 	}
-	
+
 	
 	
 	

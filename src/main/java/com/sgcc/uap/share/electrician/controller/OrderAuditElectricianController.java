@@ -235,9 +235,13 @@ public class OrderAuditElectricianController {
 	public WrappedResult certification(@RequestParam(value = "items", required = false) String items,
 			@RequestParam("myFile") MultipartFile file1,@RequestParam("myFile") MultipartFile file2){
 		
-			try {
+		OrderAuditElectrician orderAuditElectrician2=new OrderAuditElectrician();
+		try {
+			
+		
 			
 			QueryResultObject result = new QueryResultObject();
+			
 			
 			if(items != null && !items.isEmpty()){
 				Map<String,Object> map = JsonUtils.parseJSONstr2Map(items);
@@ -282,32 +286,27 @@ public class OrderAuditElectricianController {
 				map.put("electricianName", electricianInfo.getElectricianName());
 				map.put("electricianPhonenumber", electricianInfo.getElectricianPhonenumber());
 				map.put("electriciaStatus", electricianStatus.getElectricianStatus());
-				/*暂时先进行评比，因为没有字段
-				map.put("addressLongitude", electricianInfo.getAddressLongitude);
-				map.put("addressLatitude", electricianInfo.getAddressLatitude);
-				map.put("subCompanyId",electricianInfo.SubCompanyId);
-				map.put("companyName",ElectricianInfo.CompanyName );
-				*/
+				//暂时先进行评比，因为没有字段
 				
-				orderAuditElectricianService.save(map,file1,file2);
+				map.put("subCompanyId",electricianInfo.getSubCompanyId());
+				map.put("companyName",electricianInfo.getCompanyName() );
 				
+				
+				 orderAuditElectrician2=orderAuditElectricianService.save(map,file1,file2);
 				
 				
 			}
-			}catch (Exception e) {
-				logger.error(e.getMessage(), e);
-				String errorMessage = "保存异常";
-				if(isDev){
-					errorMessage = e.getMessage();
-				}
-				return WrappedResult.failedWrappedResult(errorMessage);
-				
-			
-			
+		} catch (Exception e) {
+			// TODO: handle exception
+			return null;
 		}
 		
+				
 		
-		return null;
+		return WrappedResult.successWrapedResult(orderAuditElectrician2);
+		
+			
+		//return null;
 	}
 	
 

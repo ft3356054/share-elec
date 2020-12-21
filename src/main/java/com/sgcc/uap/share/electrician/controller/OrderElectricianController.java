@@ -62,6 +62,7 @@ import com.sgcc.uap.share.electrician.services.impl.OrderElectricianService;
 import com.sgcc.uap.share.electrician.vo.OrderElectricianVO;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
+import com.sgcc.uap.util.DateTimeUtil;
 import com.sgcc.uap.util.JsonUtils;
 import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.PointUtil;
@@ -732,7 +733,7 @@ public class OrderElectricianController {
 	 * 订单详情，查询的是状态21和2的客户订单，因为只有客户订单里有预约时间这个字段，应该是新的订单，电工已经接单，电工这边还未预约时间
 	 * 此订单应该是电工已经接了的，所以可以传电工的ID
 	 */
-	
+	/*
 	@RequestMapping(value="/findOrderAllInfo/{electricianId}",name="查询电工所接订单的信息")
 	public WrappedResult findOrderAllInfo(@PathVariable String electricianId){
 		try {
@@ -782,7 +783,7 @@ public class OrderElectricianController {
 		}
 	}
 	
-	
+	*/
 	
 	/**
 	 * 我的订单模块
@@ -893,51 +894,15 @@ public class OrderElectricianController {
 	}
 	
 	/**
-	 * 电工评价，采用POST方式接收
-	 */
-	@RequestMapping(value="/electrician_evaluate",name="电工评价客户",method = RequestMethod.POST)
-	
-		public WrappedResult electrician_evaluate(
-		@RequestParam(value = "items", required = false) String items,@RequestParam("myFile") MultipartFile file
-		){
-		
-		try {
-			QueryResultObject result = new QueryResultObject();
-			
-			if(items != null && !items.isEmpty()){
-				Map<String,Object> map = JsonUtils.parseJSONstr2Map(items); 
-				//result.setFormItems(orderCustomerService.saveOrderCustomer(map,file));
-				//保存电工的评价和图片
-				result.setFormItems(orderElectricianService.saveElectricianEvaluate(map,file));
-			}
-			
-			logger.info("保存数据成功"); 
-			return WrappedResult.successWrapedResult(result);
-		} catch (ServiceValidatorBaseException e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "校验异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedValidateWrappedResult(errorMessage);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "保存异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
-
-	}
-	
-	/**
 	 * 订单详情   查询的是电工状态为0，还未预约的状态
 	 * 
 	 */
 	
+	
+	
 	@RequestMapping(value="/orderDetails/{orderId}",name="电工订单详情页")
-	public WrappedResult queryOrderDetails(@PathVariable(value="orderId") String orderId){
+	public WrappedResult queryOrderDetails(@PathVariable(value="orderId") String orderId,
+			@RequestParam(value="electricianId") String electricianId){
 		try {
 			//查询客户订单
 			QueryResultObject queryResult=orderCustomerService.getOrderCustomerByOrderId(orderId);
@@ -949,7 +914,7 @@ public class OrderElectricianController {
 			
 			//如果客户订单是11，则说明是一个旧的订单，还需要查询电工订单，查询出电工描述
 			if (orderCustomer.getOrderStatus().equals("11")) {//说明是一个老订单，则需要查询电工订单
-				OrderElectrician electrician=orderElectricianService.findByOrderId(orderId);
+				OrderElectrician electrician=orderElectricianService.findByOrderId(orderId,electricianId);
 				//将查询出来的电工描述插入到VO中
 				orderCustomerVO.setCustomerDescrive(electrician.getElectricianDescrive());
 				
@@ -977,6 +942,8 @@ public class OrderElectricianController {
 		}
 		
 	}
+	
+	
 	
 	
 	/**
@@ -1071,8 +1038,9 @@ public class OrderElectricianController {
 					
 					//电工订单需要更新的信息
 					orderElectricianMap.put("orderId", map.get("orderId"));
-					orderElectricianMap.put("orderElectricianType", "23");
+					orderElectricianMap.put("orderElectricianType", map.get("orderElectricianType"));
 					orderElectricianMap.put("electricianDescrive", map.get("electricianDescrive"));
+					orderElectricianMap.put("electricianId", map.get("electricianId"));
 					
 					
 					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
@@ -1149,10 +1117,10 @@ public class OrderElectricianController {
 					//先对比新查出来的电工姓名和电话是否对的上
 					if (orderElectricianMap.get("electricianName").equals(electricianInfo.getElectricianName())) {//查询信息对等
 						map.put("otherElectricianId", electricianInfo.getElectricianId());
-						orderElectrician.setOtherElectricianId(electricianInfo.getElectricianId()+",");
+						orderElectrician.setOtherElectricianId(orderElectrician.getOtherElectricianId()+electricianInfo.getElectricianId()+",");
 						orderElectricianMap.put("otherElectricianId", orderElectrician.getOtherElectricianId());
-						orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-						
+						OrderElectrician orderElectrician2=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						result.setFormItems(orderElectrician2);
 					}else {//信息不对等，则返回错误
 						WrappedResult.failedWrappedResult("人员信息不符~");
 					}
@@ -1263,7 +1231,7 @@ public class OrderElectricianController {
 						
 					}
 					
-					if(method.equals("验收申请")){//验收完成的话状态就变成8，
+					if(method.equals("验收申请")){//验收完成的话状态就变成24，
 						
 						//将map中的数据分别送到两个类中，在进行更新
 						//客户订单需要跟新的信息
@@ -1294,7 +1262,14 @@ public class OrderElectricianController {
 						orderElectricianMap.put("orderElectricianType",map.get("orderElectricianType"));
 						orderElectricianMap.put("electricianId", map.get("electricianId"));
 						orderElectricianMap.put("electricianEvaluate", map.get("electricianEvaluate"));
+						//添加订单完结时间
+						orderElectricianMap.put("finishTime", DateTimeUtil.formatDateTime(new Date()));
 						
+						
+						//OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+						System.out.println("我执行完了保存操作");
+						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						result.setFormItems(orderElectrician);
 						
 					}
 					

@@ -77,8 +77,7 @@ public OrderElectrician findByOrDERIdAndOrderElectricianType(String orderId);
 public QueryResultObject queryAllDoing(String electricianId);
 public Object saveElectricianEvaluate(Map<String, Object> map, MultipartFile file) ;
 OrderElectrician findByOrderId(String orderId, String orderelectriciantype);
-//重写方法
-OrderElectrician findByOrderId(String orderId);
+
 OrderCustomer saveOrderCustomerByOrderElectricianService(Map<String, Object> map, MultipartFile file) throws Exception;
 public List<OrderElectrician> findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(String orderId,
 		String orderElectricianType);
