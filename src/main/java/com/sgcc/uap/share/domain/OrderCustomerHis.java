@@ -203,6 +203,12 @@ public class OrderCustomerHis implements Serializable {
     @Column(name = "REMARK_NUM2", nullable = true, length = 8)
     private String remarkNum2 ;
     
+    /** 
+     * CREATE_AREA_ID
+     */
+    @Column(name = "CREATE_AREA_ID", nullable = true, length = 64)
+    private String createAreaId ;
+    
 	/**
 	  *虚拟主键
 	  */
@@ -796,6 +802,14 @@ public class OrderCustomerHis implements Serializable {
     public void setRemarkNum2(String remarkNum2){
 		this.remarkNum2 = remarkNum2;
 	} 
+    
+    public String getCreateAreaId() {
+		return createAreaId;
+	}
+	public void setCreateAreaId(String createAreaId) {
+		this.createAreaId = createAreaId;
+	}
+    
 	public String getMxVirtualId() {
         return this.mxVirtualId;
     }

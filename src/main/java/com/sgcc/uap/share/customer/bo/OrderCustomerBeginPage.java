@@ -205,6 +205,12 @@ public class OrderCustomerBeginPage implements Serializable {
     @Column(name = "REMARK_NUM2", nullable = true, length = 8)
     private String remarkNum2 ;
     
+    /** 
+     * CREATE_AREA_ID
+     */
+    @Column(name = "CREATE_AREA_ID", nullable = true, length = 64)
+    private String createAreaId ;
+    
     /*************************************************** 
      * 新增数据库没有的字段
      */
@@ -840,6 +846,13 @@ public class OrderCustomerBeginPage implements Serializable {
 	}
 	public void setOrderFrom(String orderFrom) {
 		this.orderFrom = orderFrom;
+	}
+	
+	public String getCreateAreaId() {
+		return createAreaId;
+	}
+	public void setCreateAreaId(String createAreaId) {
+		this.createAreaId = createAreaId;
 	}
 	/**
      * Hibernate通过该方法判断对象是否相等
