@@ -28,6 +28,9 @@ public interface IBaseVoltageService {
 	 * @author 18511
 	 */
 	public QueryResultObject getBaseVoltageByVoltageId(String voltageId);
+	
+	public QueryResultObject queryAll();
+	
 	/**
 	 * @remove:根据idObject删除
 	 * @param idObject 主键id

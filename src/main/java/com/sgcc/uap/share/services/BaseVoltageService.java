@@ -26,7 +26,6 @@ import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.BaseVoltage;
 import com.sgcc.uap.share.repositories.BaseVoltageRepository;
-import com.sgcc.uap.utils.string.StringUtil;
 
 
 /**
@@ -53,6 +52,13 @@ public class BaseVoltageService implements IBaseVoltageService{
 		BaseVoltage baseVoltage = baseVoltageRepository.findOne(voltageId);
 		return RestUtils.wrappQueryResult(baseVoltage);
 	}
+	
+	@Override
+	public QueryResultObject queryAll() {
+		List<BaseVoltage> list = baseVoltageRepository.findAll();
+		return RestUtils.wrappQueryResult(list);
+	}
+	
 	@Override
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){
