@@ -38,6 +38,7 @@ import com.sgcc.uap.share.customer.services.IOrderCustomerService;
 import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
 import com.sgcc.uap.util.FileUtil;
 import com.sgcc.uap.util.JsonUtils;
+import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.UuidUtil;
 
 
@@ -353,6 +354,32 @@ public class OrderCustomerController {
 	@InitBinder
 	public void initBinder(WebDataBinder binder){
 		binder.setDisallowedFields(DISALLOWED_PARAMS);
+	}
+	
+	/**
+	 * @query:查询
+	 * @param requestCondition
+	 * @return WrappedResult 查询结果
+	 * @date 2020-11-26 14:32:47
+	 * @author 18511
+	 */
+	@RequestMapping("/searchBox")
+	public WrappedResult searchBox(@QueryRequestParam("params") RequestCondition requestCondition) {
+		try {
+			Map<String, String> map = MapUtil.getParam(requestCondition);
+			String customerId = map.get("customerId");
+			String searchContent = map.get("searchContent");
+			QueryResultObject queryResult = orderCustomerService.searchBox(customerId,searchContent);
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
 	}
 
 }

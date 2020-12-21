@@ -205,6 +205,25 @@ public class OrderCustomerBeginPage implements Serializable {
     @Column(name = "REMARK_NUM2", nullable = true, length = 8)
     private String remarkNum2 ;
     
+    /** 
+     * CREATE_AREA_ID
+     */
+    @Column(name = "CREATE_AREA_ID", nullable = true, length = 64)
+    private String createAreaId ;
+    /** 
+     * REGISTERED_NUMBER 户号
+     */
+    @Column(name = "REGISTERED_NUMBER", nullable = true, length = 64)
+    private String registeredNumber ;
+    
+    /** 
+     * CUSTOMER_DESCRIVE_TITLE 客户描述标题
+     */
+    @Column(name = "CUSTOMER_DESCRIVE_TITLE", nullable = true, length = 64)
+    private String customerDescriveTitle ;
+    
+    
+    
     /*************************************************** 
      * 新增数据库没有的字段
      */
@@ -242,6 +261,23 @@ public class OrderCustomerBeginPage implements Serializable {
 	
 	public OrderCustomerBeginPage(){
 	
+	}
+	
+	
+	public String getRegisteredNumber() {
+		return registeredNumber;
+	}
+
+	public void setRegisteredNumber(String registeredNumber) {
+		this.registeredNumber = registeredNumber;
+	}
+
+	public String getCustomerDescriveTitle() {
+		return customerDescriveTitle;
+	}
+
+	public void setCustomerDescriveTitle(String customerDescriveTitle) {
+		this.customerDescriveTitle = customerDescriveTitle;
 	}
     /**
      * @getOrderId:订单ID的get方法
@@ -840,6 +876,13 @@ public class OrderCustomerBeginPage implements Serializable {
 	}
 	public void setOrderFrom(String orderFrom) {
 		this.orderFrom = orderFrom;
+	}
+	
+	public String getCreateAreaId() {
+		return createAreaId;
+	}
+	public void setCreateAreaId(String createAreaId) {
+		this.createAreaId = createAreaId;
 	}
 	/**
      * Hibernate通过该方法判断对象是否相等

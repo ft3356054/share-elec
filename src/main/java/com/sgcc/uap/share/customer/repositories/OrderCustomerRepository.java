@@ -56,6 +56,16 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	Integer getNotEvaluate(@Param("customerGrade")int customerGrade,@Param("customerEvaluateTitle")String customerEvaluateTitle,
 			@Param("customerEvaluate")String customerEvaluate,@Param("orderStatus")int orderStatus,@Param("day")int day);
 
+	@Query(value = "SELECT * FROM order_customer t WHERE t.CUSTOMER_ID =:customerId "
+			+ " AND (t.CUSTOMER_DESCRIVE_TITLE LIKE %:searchContent% OR t.CUSTOMER_DESCRIVE LIKE %:searchContent%) "
+			+ " UNION SELECT * FROM order_customer_his th WHERE th.CUSTOMER_ID =:customerId "
+			+ " AND (th.CUSTOMER_DESCRIVE_TITLE LIKE %:searchContent% OR th.CUSTOMER_DESCRIVE LIKE %:searchContent%) ",
+			nativeQuery = true)
+	List<OrderCustomer> searchBox(@Param("customerId")String customerId,@Param("searchContent")String searchContent);
+
+	
+	
+	
 	
 	/**
 	 * 郭庆2020.12.04

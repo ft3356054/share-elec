@@ -118,6 +118,18 @@ public class ElectricianSubCompanyInfo implements Serializable {
     @Column(name = "REMARK3", nullable = true, length = 512)
     private String remark3 ;
     
+    /** 
+     * BUSINESS_STATUS
+     */
+    @Column(name = "BUSINESS_STATUS", nullable = true, length = 2)
+    private String businessStatus ;
+    
+    /** 
+     * BUSINESS_TYPE
+     */
+    @Column(name = "BUSINESS_TYPE", nullable = true, length = 2)
+    private String businessType ;
+    
 	/**
 	  *虚拟主键
 	  */
@@ -127,7 +139,24 @@ public class ElectricianSubCompanyInfo implements Serializable {
 	public ElectricianSubCompanyInfo(){
 	
 	}
-    /**
+	
+    public String getBusinessStatus() {
+		return businessStatus;
+	}
+
+	public void setBusinessStatus(String businessStatus) {
+		this.businessStatus = businessStatus;
+	}
+
+	public String getBusinessType() {
+		return businessType;
+	}
+
+	public void setBusinessType(String businessType) {
+		this.businessType = businessType;
+	}
+
+	/**
      * @getSubCompanyId:SUB_COMPANY_ID的get方法
      * @params
      * @return subCompanyId

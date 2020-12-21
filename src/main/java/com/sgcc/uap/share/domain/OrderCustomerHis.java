@@ -203,6 +203,24 @@ public class OrderCustomerHis implements Serializable {
     @Column(name = "REMARK_NUM2", nullable = true, length = 8)
     private String remarkNum2 ;
     
+    /** 
+     * CREATE_AREA_ID
+     */
+    @Column(name = "CREATE_AREA_ID", nullable = true, length = 64)
+    private String createAreaId ;
+    /** 
+     * REGISTERED_NUMBER 户号
+     */
+    @Column(name = "REGISTERED_NUMBER", nullable = true, length = 64)
+    private String registeredNumber ;
+    
+    /** 
+     * CUSTOMER_DESCRIVE_TITLE 客户描述标题
+     */
+    @Column(name = "CUSTOMER_DESCRIVE_TITLE", nullable = true, length = 64)
+    private String customerDescriveTitle ;
+    
+    
 	/**
 	  *虚拟主键
 	  */
@@ -236,6 +254,22 @@ public class OrderCustomerHis implements Serializable {
         	this.orderId = orderId;
         }
 	} 
+    
+    public String getRegisteredNumber() {
+		return registeredNumber;
+	}
+
+	public void setRegisteredNumber(String registeredNumber) {
+		this.registeredNumber = registeredNumber;
+	}
+
+	public String getCustomerDescriveTitle() {
+		return customerDescriveTitle;
+	}
+
+	public void setCustomerDescriveTitle(String customerDescriveTitle) {
+		this.customerDescriveTitle = customerDescriveTitle;
+	}
     /**
      * @getCustomerId:客户ID的get方法
      * @params
@@ -796,6 +830,14 @@ public class OrderCustomerHis implements Serializable {
     public void setRemarkNum2(String remarkNum2){
 		this.remarkNum2 = remarkNum2;
 	} 
+    
+    public String getCreateAreaId() {
+		return createAreaId;
+	}
+	public void setCreateAreaId(String createAreaId) {
+		this.createAreaId = createAreaId;
+	}
+    
 	public String getMxVirtualId() {
         return this.mxVirtualId;
     }

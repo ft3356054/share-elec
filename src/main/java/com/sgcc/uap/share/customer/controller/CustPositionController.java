@@ -1,16 +1,12 @@
 package com.sgcc.uap.share.customer.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -30,13 +26,11 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
-import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.customer.services.ICustomerInfoService;
-import com.sgcc.uap.share.customer.vo.CustomerInfoVO;
-import com.sgcc.uap.util.JsonUtils;
-import com.sgcc.uap.util.MapUtil;
+import com.sgcc.uap.share.customer.services.ICustPositionService;
+import com.sgcc.uap.share.customer.vo.CustPositionVO;
+
 
 /**
  * <b>概述</b>：<br>
@@ -49,12 +43,12 @@ import com.sgcc.uap.util.MapUtil;
  */
 @RestController
 @Transactional
-@RequestMapping("/customerInfo")
-public class CustomerInfoController {
+@RequestMapping("/custPosition")
+public class CustPositionController {
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(CustomerInfoController.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(CustPositionController.class);
 	/**
 	 * 方法绑定属性中不允许的参数
 	 */
@@ -65,25 +59,43 @@ public class CustomerInfoController {
 	@Value("${uapmicServer.dev}")
 	private boolean isDev;
 	/** 
-     * CustomerInfo服务
+     * CustPosition服务
      */
 	@Autowired
-	private ICustomerInfoService customerInfoService;
-	
-	@Autowired
-    private StringRedisTemplate stringRedisTemplate;
-	
+	private ICustPositionService custPositionService;
 	/**
-	 * @getByCustomerId:根据customerId查询
-	 * @param customerId
+	 * @getByOrderId:根据orderId查询
+	 * @param orderId
 	 * @return WrappedResult 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-21 09:31:09
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/{customerId}")
-	public WrappedResult getByCustomerId(@PathVariable String customerId) {
+	@RequestMapping(value = "/{orderId}")
+	public WrappedResult getByOrderId(@PathVariable String orderId) {
 		try {
-			QueryResultObject result = customerInfoService.getCustomerInfoByCustomerId(customerId);
+			QueryResultObject result = custPositionService.getCustPositionByOrderId(orderId);
+			logger.info("查询成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	/**
+	 * @getByOrderId:根据areaId查询
+	 * @param orderId
+	 * @return WrappedResult 查询结果
+	 * @date 2020-12-21 09:31:09
+	 * @author 18511
+	 */
+	@RequestMapping(value = "/areaId/{areaId}")
+	public WrappedResult getByAreaId(@PathVariable String areaId) {
+		try {
+			QueryResultObject result = custPositionService.getByAreaId(areaId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -100,13 +112,13 @@ public class CustomerInfoController {
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-21 09:31:09
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public WrappedResult deleteByIds(@RequestBody IDRequestObject idObject) {
 		try {
-			customerInfoService.remove(idObject);
+			custPositionService.remove(idObject);
 			logger.info("删除成功");  
 			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
@@ -122,7 +134,7 @@ public class CustomerInfoController {
 	 * @saveOrUpdate:保存或更新
 	 * @param params
 	 * @return WrappedResult 保存或更新的结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-21 09:31:09
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -133,10 +145,9 @@ public class CustomerInfoController {
 			}
 			QueryResultObject result = new QueryResultObject();
 			List<Map<String,Object>> items = params.getItems();
-			logger.info("saveOrUpdate items="+items); 
 			if(items != null && !items.isEmpty()){
 				for(Map<String,Object> map : items){
-					result.setFormItems(customerInfoService.saveCustomerInfo(map));
+					result.setFormItems(custPositionService.saveCustPosition(map));
 				}
 			}
 			logger.info("保存数据成功"); 
@@ -161,13 +172,13 @@ public class CustomerInfoController {
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-21 09:31:09
 	 * @author 18511
 	 */
 	@RequestMapping("/")
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			QueryResultObject queryResult = customerInfoService.query(requestCondition);
+			QueryResultObject queryResult = custPositionService.query(requestCondition);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
@@ -183,7 +194,7 @@ public class CustomerInfoController {
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-21 09:31:09
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -194,7 +205,7 @@ public class CustomerInfoController {
 				throw new NullArgumentException("columns");
 			}
 			List<ViewAttributeData> datas = null;
-			datas = ViewAttributeUtils.getViewAttributes(columns, CustomerInfoVO.class);
+			datas = ViewAttributeUtils.getViewAttributes(columns, CustPositionVO.class);
 			WrappedResult wrappedResult = WrappedResult
 					.successWrapedResult(new ViewMetaData(datas));
 			return wrappedResult;
@@ -212,7 +223,7 @@ public class CustomerInfoController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-21 09:31:09
 	 * @author 18511
 	 */
 	@InitBinder
@@ -220,58 +231,4 @@ public class CustomerInfoController {
 		binder.setDisallowedFields(DISALLOWED_PARAMS);
 	}
 
-	
-	/**
-	 * @saveOrUpdate:保存位置
-	 * @param params
-	 * @return WrappedResult 保存或更新的结果
-	 * @date 2020-11-26 14:32:47
-	 * @author 18511
-	 * http://localhost:8083/customerInfo/locationPut/?params={"filter":["userId=customerId001","area=123212","lon=13.144","lat=251.21465"]}	
-	 */
-	@RequestMapping(value = "/locationPut")
-	public WrappedResult locationPut(@QueryRequestParam("params") RequestCondition requestCondition) {
-		try {
-			Map<String, String> map = MapUtil.getParam(requestCondition);
-			String jsonMap = JsonUtils.mapToJson(map);
-			stringRedisTemplate.opsForValue().set(map.get("customerId"), jsonMap, 1L, TimeUnit.HOURS);
-			List result = new ArrayList();
-			long count = 1;
-			logger.info("存储位置信息保存成功"); 
-			return WrappedResult.successWrapedResult(RestUtils.wrappQueryResult(result, count));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "存储位置信息异常";
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
-	}
-	
-	/**
-	 * @saveOrUpdate:获取位置测试
-	 * @param params
-	 * @return WrappedResult 保存或更新的结果
-	 * @date 2020-11-26 14:32:47
-	 * @author 18511
-	 * http://localhost:8083/customerInfo/locationGet/customerId001
-	 */
-	@RequestMapping(value = "/locationGet/{customerId}")
-	public WrappedResult locationGetTest(@PathVariable String customerId) {
-		try {
-			Map<String, Object> map = new HashMap<String, Object>();
-			String json = stringRedisTemplate.opsForValue().get(customerId);
-			map = JsonUtils.parseJSONstr2Map(json);
-			logger.info("区:"+map.get("area"));
-			logger.info("经度:"+map.get("lon")); 
-			logger.info("纬度:"+map.get("lat")); 
-			
-			
-			List result = new ArrayList();
-			long count = 1;
-			return WrappedResult.successWrapedResult(RestUtils.wrappQueryResult(result, count));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "存储位置信息异常";
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
-	}
 }

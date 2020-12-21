@@ -137,9 +137,8 @@ public class OrderComplaintService implements IOrderComplaintService{
 			OrderCustomer orderCustomer = orderCustomerRepository.findOne(orderId);
 			if(null!=orderCustomer){
 				ArrayList<String> sites = new ArrayList<>();
-		        sites.add("0");
-		        sites.add("1");
-		        sites.add("11");
+		        sites.add("2");
+		        sites.add("25");
 				if(!sites.contains(orderCustomer.getOrderStatus())){
 					map.put("customerId", orderCustomer.getCustomerId());
 					map.put("customerName", orderCustomer.getCustomerName());

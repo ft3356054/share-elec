@@ -94,6 +94,8 @@ public class OrderCustomerService implements IOrderCustomerService{
     private IBaseEnumsService baseEnumsService;
 	@Autowired
     private OrderCustomerBeginPageRepository orderCustomerBeginPageRepository;
+	@Autowired
+	private CustPositionService custPositionService;
 	
 	
 	@Override
@@ -163,7 +165,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			String orderId = (String) map.get("orderId");
 			orderCustomer = orderCustomerRepository.findOne(orderId);
 			
-			Map<String, Object> getStatus = orderStatus(map, orderCustomer);
+			Map<String, Object> getStatus = getOrderStatus(map, orderCustomer);
 			
 			if("0".equals(getStatus.get("key"))){
 				//上传图片
@@ -193,7 +195,15 @@ public class OrderCustomerService implements IOrderCustomerService{
 			//新增order
 			String identityId = (String) map.get("identityId");
 			String provinceId = (String) map.get("provinceId");
-			map.put("customerPrice", getPrice(identityId, provinceId));
+			String cityId = (String) map.get("cityId");
+			String areaId = "";
+			if(!"".equals(cityId)&&null!=cityId){
+				areaId = cityId;
+			}else{
+				areaId = provinceId;
+			}
+					
+			map.put("customerPrice", getPrice(identityId, areaId));
 			map.put("orderStatus", "0");
 			map.put("payStatus", "0");
 			map.put("orderFrom", "0");
@@ -202,6 +212,15 @@ public class OrderCustomerService implements IOrderCustomerService{
 			map.put("orderId", getNewOrderId);
 			CrudUtils.transMap2Bean(map, orderCustomer);
 			result = orderCustomerRepository.save(orderCustomer);
+			
+			//插入 客户订单位置表
+			HashMap<String, Object> positionMap = new HashMap<>();
+			positionMap.put("orderId", getNewOrderId);
+			positionMap.put("customerId", (String) map.get("customerId"));
+			positionMap.put("areaId", areaId);
+			positionMap.put("lon", (String) map.get("addressLongitude"));
+			positionMap.put("lat", (String) map.get("addressLatitude"));
+			custPositionService.saveCustPosition(positionMap);
 			
 			//获取Enum通知类
 			BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0", "0");	
@@ -396,7 +415,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	}
 	
 	
-	private Map<String,Object> orderStatus(Map map,OrderCustomer orderCustomer) throws Exception{
+	private Map<String,Object> getOrderStatus(Map map,OrderCustomer orderCustomer) throws Exception{
 		Map<String,Object> result = new HashMap<String, Object>();
 		
 		String orderStatus = (String) map.get("orderStatus");
@@ -497,6 +516,17 @@ public class OrderCustomerService implements IOrderCustomerService{
 		//发送websocket消息
         WebSocketServer.sendInfo(baseEnums.getEnumsB(),(String)map.get("customerId"));
 	}
+	
+	@Override
+	public QueryResultObject searchBox(String customerId,String searchContent) {
+		List<OrderCustomer> orderCustomers = orderCustomerRepository.searchBox(customerId,searchContent);
+		return RestUtils.wrappQueryResult(orderCustomers);
+	}
+	
+	
+	
+	
+	
 	
 	
 	/**
