@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.customer.vo;
+package com.sgcc.uap.share.customer.bo;
 
 import java.io.Serializable;
 

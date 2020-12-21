@@ -6,12 +6,15 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
@@ -240,11 +243,19 @@ public class CustomerInfoController {
 			Map<String, String> map = MapUtil.getParam(requestCondition);
 			String jsonMap = JsonUtils.mapToJson(map);
 			
+			SetOperations<String, String> set = redisTemplate.opsForSet();
+			set.add("set1","22");
+			set.add("set1","33");
+			set.add("set1","44");
+			Set<String> resultSet =redisTemplate.opsForSet().members("set1");
+			
+			
+			
 			boolean flag = false;
 			String userId = map.get("userId") ;
 			String area = map.get("area") ;
 			
-			LinkedHashSet resultSet = (LinkedHashSet) redisTemplate.opsForHash().keys(area);
+			//LinkedHashSet resultSet = (LinkedHashSet) redisTemplate.opsForHash().keys(area);
 			if(null==resultSet||resultSet.isEmpty()){
 				Map<String,String> newMap = new HashMap<>();
 				newMap.put(userId, jsonMap);
@@ -270,7 +281,7 @@ public class CustomerInfoController {
 				}
 			}
 			
-			//stringRedisTemplate.opsForValue().set(area, jsonMap, 1L, TimeUnit.HOURS);
+			stringRedisTemplate.opsForValue().set(userId, jsonMap, 1L, TimeUnit.HOURS);
 			
 			
 			List result = new ArrayList();

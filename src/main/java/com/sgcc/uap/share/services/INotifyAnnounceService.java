@@ -1,6 +1,5 @@
 package com.sgcc.uap.share.services;
 
-import java.util.List;
 import java.util.Map;
 
 import com.sgcc.uap.rest.support.IDRequestObject;
@@ -28,7 +27,8 @@ public interface INotifyAnnounceService {
 	 * @author 18511
 	 */
 	public QueryResultObject getNotifyAnnounceByAnnounceId(String announceId,String announceUserId);
-	public QueryResultObject getNotifyAnnounceByAnnounceIds(List<String> list);
+	public QueryResultObject getNotifyAnnounceByAnnounceIds(String announceUserId);
+	public Long getNotReadNum(String announceUserId);
 	/**
 	 * @remove:根据idObject删除
 	 * @param idObject 主键id
