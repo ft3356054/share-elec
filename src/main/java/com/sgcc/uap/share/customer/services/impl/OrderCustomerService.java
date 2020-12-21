@@ -165,7 +165,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			String orderId = (String) map.get("orderId");
 			orderCustomer = orderCustomerRepository.findOne(orderId);
 			
-			Map<String, Object> getStatus = orderStatus(map, orderCustomer);
+			Map<String, Object> getStatus = getOrderStatus(map, orderCustomer);
 			
 			if("0".equals(getStatus.get("key"))){
 				//上传图片
@@ -415,7 +415,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	}
 	
 	
-	private Map<String,Object> orderStatus(Map map,OrderCustomer orderCustomer) throws Exception{
+	private Map<String,Object> getOrderStatus(Map map,OrderCustomer orderCustomer) throws Exception{
 		Map<String,Object> result = new HashMap<String, Object>();
 		
 		String orderStatus = (String) map.get("orderStatus");
