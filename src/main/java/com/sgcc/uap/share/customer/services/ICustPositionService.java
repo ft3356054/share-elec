@@ -28,6 +28,7 @@ public interface ICustPositionService {
 	 * @author 18511
 	 */
 	public QueryResultObject getCustPositionByOrderId(String orderId);
+	public QueryResultObject getByAreaId(String areaId);
 	/**
 	 * @remove:根据idObject删除
 	 * @param idObject 主键id

@@ -94,6 +94,8 @@ public class OrderCustomerService implements IOrderCustomerService{
     private IBaseEnumsService baseEnumsService;
 	@Autowired
     private OrderCustomerBeginPageRepository orderCustomerBeginPageRepository;
+	@Autowired
+	private CustPositionService custPositionService;
 	
 	
 	@Override
@@ -193,7 +195,15 @@ public class OrderCustomerService implements IOrderCustomerService{
 			//新增order
 			String identityId = (String) map.get("identityId");
 			String provinceId = (String) map.get("provinceId");
-			map.put("customerPrice", getPrice(identityId, provinceId));
+			String cityId = (String) map.get("cityId");
+			String areaId = "";
+			if(!"".equals(cityId)&&null!=cityId){
+				areaId = cityId;
+			}else{
+				areaId = provinceId;
+			}
+					
+			map.put("customerPrice", getPrice(identityId, areaId));
 			map.put("orderStatus", "0");
 			map.put("payStatus", "0");
 			map.put("orderFrom", "0");
@@ -202,6 +212,15 @@ public class OrderCustomerService implements IOrderCustomerService{
 			map.put("orderId", getNewOrderId);
 			CrudUtils.transMap2Bean(map, orderCustomer);
 			result = orderCustomerRepository.save(orderCustomer);
+			
+			//插入 客户订单位置表
+			HashMap<String, Object> positionMap = new HashMap<>();
+			positionMap.put("orderId", getNewOrderId);
+			positionMap.put("customerId", (String) map.get("customerId"));
+			positionMap.put("areaId", areaId);
+			positionMap.put("lon", (String) map.get("addressLongitude"));
+			positionMap.put("lat", (String) map.get("addressLatitude"));
+			custPositionService.saveCustPosition(positionMap);
 			
 			//获取Enum通知类
 			BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0", "0");	

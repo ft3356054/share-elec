@@ -1,8 +1,10 @@
 package com.sgcc.uap.share.customer.services.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -14,8 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.mdd.runtime.validate.ValidateService;
 import com.sgcc.uap.rest.support.IDRequestObject;
@@ -27,7 +33,7 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.customer.repositories.CustPositionRepository;
 import com.sgcc.uap.share.customer.services.ICustPositionService;
 import com.sgcc.uap.share.domain.CustPosition;
-import com.sgcc.uap.utils.string.StringUtil;
+import com.sgcc.uap.utils.json.JsonUtils;
 
 
 /**
@@ -48,12 +54,42 @@ public class CustPositionService implements ICustPositionService{
 	private CustPositionRepository custPositionRepository;
 	@Autowired
 	private ValidateService validateService;
+	@Autowired
+    private StringRedisTemplate stringRedisTemplate;
+	@SuppressWarnings("rawtypes")
+	@Autowired
+    private RedisTemplate redisTemplate;
 	
 	@Override
 	public QueryResultObject getCustPositionByOrderId(String orderId) {
-		CustPosition custPosition = custPositionRepository.findOne(orderId);
+		String json = stringRedisTemplate.opsForValue().get(orderId);
+		CustPosition custPosition = null;
+		if("".equals(json)||null==json){
+			custPosition = custPositionRepository.findOne(orderId);
+			String posiJson = JsonUtils.toJsonString(custPosition);
+			stringRedisTemplate.opsForValue().set(orderId, posiJson, 7L, TimeUnit.DAYS);
+		}else{
+			try {
+				custPosition = (CustPosition) JsonUtils.json2Object(json, CustPosition.class);
+			} catch (JsonParseException e) {
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		return RestUtils.wrappQueryResult(custPosition);
 	}
+	
+	@Override
+	public QueryResultObject getByAreaId(String areaId) {
+		List<CustPosition> custPositions = custPositionRepository.findByAreaId(areaId);
+		//stringRedisTemplate.opsForValue().set(areaId, custPositions, 1L, TimeUnit.HOURS);
+		//redisTemplate.opsForList().leftPush(areaId, custPositions);
+		return RestUtils.wrappQueryResult(custPositions);
+	}
+	
 	@Override
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){
@@ -64,6 +100,7 @@ public class CustPositionService implements ICustPositionService{
 			custPositionRepository.delete(id);
 		}
 	}
+	
 	@Override
 	public CustPosition saveCustPosition(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(CustPosition.class,map);

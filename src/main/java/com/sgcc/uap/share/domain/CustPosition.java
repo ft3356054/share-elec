@@ -237,12 +237,13 @@ public class CustPosition implements Serializable {
      * @return String
      */
 	public String toString(){
-		return "CustPosition ["
-			+ ", orderId=" + orderId
+		return "["
+			+ "orderId=" + orderId
 			+ ", customerId=" + customerId
 			+ ", areaId=" + areaId
 			+ ", lon=" + lon
-			+ ", lat=" + lat;
+			+ ", lat=" + lat
+			+ "]";
 	}
    
     

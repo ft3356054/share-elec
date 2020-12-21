@@ -1,5 +1,7 @@
 package com.sgcc.uap.share.customer.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -17,5 +19,5 @@ import com.sgcc.uap.share.domain.CustPosition;
  */
 public interface CustPositionRepository extends JpaRepository<CustPosition,String>,JpaSpecificationExecutor<CustPosition> {
 
-	
+	public List<CustPosition> findByAreaId(String areaId);
 }
