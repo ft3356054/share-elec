@@ -517,6 +517,17 @@ public class OrderCustomerService implements IOrderCustomerService{
         WebSocketServer.sendInfo(baseEnums.getEnumsB(),(String)map.get("customerId"));
 	}
 	
+	@Override
+	public QueryResultObject searchBox(String customerId,String searchContent) {
+		List<OrderCustomer> orderCustomers = orderCustomerRepository.searchBox(customerId,searchContent);
+		return RestUtils.wrappQueryResult(orderCustomers);
+	}
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * 郭庆

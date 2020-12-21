@@ -29,6 +29,15 @@ public interface IOrderCustomerService {
 	 * @author 18511
 	 */
 	public QueryResultObject getOrderCustomerByOrderId(String orderId);
+	
+	
+	/**
+	 * 搜索页面模糊查询
+	 * @param 
+	 * @return
+	 */
+	public QueryResultObject searchBox(String customerId,String searchContent);
+	
 	/**
 	 * @getOrderCustomerByOrderId:根据主键 查询 现表和历史表
 	 * @param queryCondition 查询条件

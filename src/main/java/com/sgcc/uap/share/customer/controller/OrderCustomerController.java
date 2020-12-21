@@ -2,6 +2,7 @@ package com.sgcc.uap.share.customer.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,16 +29,20 @@ import com.sgcc.uap.rest.annotation.ColumnRequestParam;
 import com.sgcc.uap.rest.annotation.QueryRequestParam;
 import com.sgcc.uap.rest.annotation.attribute.ViewAttributeData;
 import com.sgcc.uap.rest.support.IDRequestObject;
+import com.sgcc.uap.rest.support.QueryFilter;
 import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
+import com.sgcc.uap.share.customer.bo.OrderCustomerBeginPage;
 import com.sgcc.uap.share.customer.services.IOrderCustomerService;
 import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
+import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.util.FileUtil;
 import com.sgcc.uap.util.JsonUtils;
+import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.UuidUtil;
 
 
@@ -353,6 +358,36 @@ public class OrderCustomerController {
 	@InitBinder
 	public void initBinder(WebDataBinder binder){
 		binder.setDisallowedFields(DISALLOWED_PARAMS);
+	}
+	
+	/**
+	 * @query:查询
+	 * @param requestCondition
+	 * @return WrappedResult 查询结果
+	 * @date 2020-11-26 14:32:47
+	 * @author 18511
+	 */
+	@RequestMapping("/searchBox/")
+	public WrappedResult searchBox(@QueryRequestParam("params") RequestCondition requestCondition) {
+		try {
+			Map<String, String> map = MapUtil.getParam(requestCondition);
+			String customerId = map.get("customerId");
+			String searchContent = map.get("searchContent");
+			
+			List<OrderCustomer> result = new ArrayList<>();
+			long count = 0;
+			
+			QueryResultObject queryResult = orderCustomerService.searchBox(customerId,searchContent);
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
 	}
 
 }
