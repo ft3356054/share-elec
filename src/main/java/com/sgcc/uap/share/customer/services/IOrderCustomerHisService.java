@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.customer.services;
 
+import java.util.Collection;
 import java.util.Map;
 
 

@@ -72,6 +72,7 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 			+ " WHERE T.ORDER_STATUS in ('4','9') AND DATE_SUB(CURDATE(), INTERVAL :day DAY) >= T.FINISH_TIME  ",
 			nativeQuery = true)
 	public List<OrderCustomer> findFinishOrder(@Param("day")String day);
+	@Transactional
 	@Query(value = "INSERT INTO order_customer_his SELECT * FROM order_customer WHERE ORDER_ID IN :orderIds  ",
 			nativeQuery = true)
 	@Modifying
@@ -79,6 +80,7 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	@Query(value = "DELETE FROM order_customer WHERE ORDER_ID IN :orderIds  ",
 			nativeQuery = true)
 	@Modifying
+	@Transactional
 	public void deleteNowTable(@Param("orderIds")Collection<String> orderIds);
 	
 	

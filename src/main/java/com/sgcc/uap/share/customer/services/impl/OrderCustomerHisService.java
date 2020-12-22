@@ -25,8 +25,11 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerHisRepository;
+import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
+import com.sgcc.uap.share.customer.repositories.OrderFlowRepository;
 import com.sgcc.uap.share.customer.services.IOrderCustomerHisService;
 import com.sgcc.uap.share.domain.OrderCustomerHis;
+import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 
 
 /**
@@ -47,6 +50,12 @@ public class OrderCustomerHisService implements IOrderCustomerHisService{
 	private OrderCustomerHisRepository orderCustomerHisRepository;
 	@Autowired
 	private ValidateService validateService;
+	@Autowired
+	private OrderCustomerRepository orderCustomerRepository;
+	@Autowired
+	private OrderFlowRepository orderFlowRepository;
+	@Autowired
+	private OrderElectricianRepository orderElectricianRepository;
 	
 	@Override
 	public QueryResultObject getOrderCustomerHisByOrderId(String orderId) {
@@ -221,6 +230,5 @@ public class OrderCustomerHisService implements IOrderCustomerHisService{
 		}
 		return new PageRequest(pageIndex - 1, pageSize, null);
 	}
-
-
+	
 }

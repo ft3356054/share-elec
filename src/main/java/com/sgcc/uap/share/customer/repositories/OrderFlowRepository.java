@@ -2,6 +2,8 @@ package com.sgcc.uap.share.customer.repositories;
 
 import java.util.Collection;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -21,11 +23,13 @@ import com.sgcc.uap.share.domain.OrderFlow;
  * @author 18511
  */
 public interface OrderFlowRepository extends JpaRepository<OrderFlow,String>,JpaSpecificationExecutor<OrderFlow> {
+	@Transactional
 	@Query(value = "INSERT INTO ORDER_FLOW_HIS SELECT * FROM order_flow WHERE ORDER_ID IN :orderIds  ",
 			nativeQuery = true)
 	@Modifying
 	public void insertToHis(@Param("orderIds")Collection<String> orderIds);
 	
+	@Transactional
 	@Query(value = "DELETE FROM order_flow WHERE ORDER_ID IN :orderIds  ",
 			nativeQuery = true)
 	@Modifying

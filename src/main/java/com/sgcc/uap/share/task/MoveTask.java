@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 
-import javax.transaction.Transactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -31,9 +29,10 @@ public class MoveTask  extends TimerTask{
 	private OrderCustomerRepository orderCustomerRepository = (OrderCustomerRepository) ApplicationContextUtil.getBean("orderCustomerRepository");
 	private OrderFlowRepository orderFlowRepository = (OrderFlowRepository) ApplicationContextUtil.getBean("orderFlowRepository");
 	private OrderElectricianRepository orderElectricianRepository = (OrderElectricianRepository) ApplicationContextUtil.getBean("orderElectricianRepository");
+	
+	
 
 	@Override
-	@Transactional
     @Async
     @Scheduled(fixedDelay = 60000*60*24) //每1天执行一次
 	public void run() {
@@ -54,20 +53,12 @@ public class MoveTask  extends TimerTask{
 			//搬迁电工订单表
 			orderElectricianRepository.insertToHis(orderIds);
 			orderElectricianRepository.deleteNowTable(orderIds);
-			try {
-				throw new Exception();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
 			//搬迁客户订单表
 			orderCustomerRepository.insertToHis(orderIds);
 			orderCustomerRepository.deleteNowTable(orderIds);
-			
 		}
 		
-		
 	}
-
+	
 }

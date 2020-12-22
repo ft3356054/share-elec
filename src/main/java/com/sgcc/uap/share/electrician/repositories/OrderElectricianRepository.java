@@ -3,6 +3,8 @@ package com.sgcc.uap.share.electrician.repositories;
 import java.util.Collection;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -107,6 +109,7 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	 * 通过orderid 搬表
 	 * @param orderIds
 	 */
+	@Transactional
 	@Query(value = "INSERT INTO ORDER_ELECTRICIAN_HIS SELECT * FROM ORDER_ELECTRICIAN WHERE ORDER_ID IN :orderIds  ",
 			nativeQuery = true)
 	@Modifying
@@ -114,6 +117,7 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	@Query(value = "DELETE FROM ORDER_ELECTRICIAN WHERE ORDER_ID IN :orderIds  ",
 			nativeQuery = true)
 	@Modifying
+	@Transactional
 	public void deleteNowTable(@Param("orderIds")Collection<String> orderIds);
 	
 }
