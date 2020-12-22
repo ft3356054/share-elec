@@ -250,10 +250,10 @@ public class OrderAuditElectricianController {
 				//创建一个新的电工审核订单	
 				
 				map.put("orderId", UuidUtil.getIntUuid32());
-				map.put("orderType", 0);
+				map.put("orderType", "0");
 				
-				//map.put("createTime",Timestamp.valueOf(DateTimeUtil.formatDateTime(new Date())));
-				//map.put("createTime",DateTimeUtil.formatDateTime(new Date()));
+				
+				map.put("createTime",DateTimeUtil.formatDateTime(new Date()));
 				map.put("electricianId", electricianInfo.getElectricianId());
 				
 				map.put("electricianName", electricianInfo.getElectricianName());

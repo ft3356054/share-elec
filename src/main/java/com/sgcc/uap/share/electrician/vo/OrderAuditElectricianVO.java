@@ -33,17 +33,17 @@ public class OrderAuditElectricianVO extends ParentVO implements Serializable{
      * 属性CREATE_TIME
      */  
     @ViewAttribute(name ="createTime",caption="CREATE_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private String createTime;    
+    private Timestamp createTime;    
     /** 
      * 属性UPDATE_TIME
      */  
     @ViewAttribute(name ="updateTime",caption="UPDATE_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private String updateTime;    
+    private Timestamp updateTime;    
     /** 
      * 属性FINISH_TIME
      */  
     @ViewAttribute(name ="finishTime",caption="FINISH_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private String finishTime;    
+    private Timestamp finishTime;    
     /** 
      * 属性AUDITOR_ID
      */  
@@ -178,42 +178,42 @@ public class OrderAuditElectricianVO extends ParentVO implements Serializable{
      * CREATE_TIME的get方法
      * @return createTime
      */
-    public String getCreateTime(){
+    public Timestamp getCreateTime(){
         return createTime;
     }
     /**
      * CREATE_TIME的set方法
      * @param createTime
      */
-    public void setCreateTime(String createTime){
+    public void setCreateTime(Timestamp createTime){
 		this.createTime = createTime;
 	} 
     /**
      * UPDATE_TIME的get方法
      * @return updateTime
      */
-    public String getUpdateTime(){
+    public Timestamp getUpdateTime(){
         return updateTime;
     }
     /**
      * UPDATE_TIME的set方法
      * @param updateTime
      */
-    public void setUpdateTime(String updateTime){
+    public void setUpdateTime(Timestamp updateTime){
 		this.updateTime = updateTime;
 	} 
     /**
      * FINISH_TIME的get方法
      * @return finishTime
      */
-    public String getFinishTime(){
+    public Timestamp getFinishTime(){
         return finishTime;
     }
     /**
      * FINISH_TIME的set方法
      * @param finishTime
      */
-    public void setFinishTime(String finishTime){
+    public void setFinishTime(Timestamp finishTime){
 		this.finishTime = finishTime;
 	} 
     /**
