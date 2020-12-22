@@ -30,8 +30,8 @@ public class OrderAuditElectrician implements Serializable {
      * ORDER_ID
      */
 	@Id
-	/*@GeneratedValue(generator = "idGenerator")
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")*/
+	@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "uuid")
     @Column(name = "ORDER_ID", nullable = false, length = 64)
     private String orderId ;
     
@@ -45,19 +45,19 @@ public class OrderAuditElectrician implements Serializable {
      * CREATE_TIME
      */
     @Column(name = "CREATE_TIME", nullable = true, length = 19)
-    private String createTime ;
+    private Timestamp createTime ;
     
     /** 
      * UPDATE_TIME
      */
     @Column(name = "UPDATE_TIME", nullable = true, length = 19)
-    private String updateTime ;
+    private Timestamp updateTime ;
     
     /** 
      * FINISH_TIME
      */
     @Column(name = "FINISH_TIME", nullable = true, length = 19)
-    private String finishTime ;
+    private Timestamp finishTime ;
     
     /** 
      * AUDITOR_ID
@@ -221,7 +221,7 @@ public class OrderAuditElectrician implements Serializable {
      * @date 2020-12-18 15:20:05
      * @author 18511
      */
-    public String getCreateTime(){
+    public Timestamp getCreateTime(){
         return this.createTime;
     }
     /**
@@ -231,7 +231,7 @@ public class OrderAuditElectrician implements Serializable {
      * @date 2020-12-18 15:20:05
      * @author 18511
      */
-    public void setCreateTime(String createTime){
+    public void setCreateTime(Timestamp createTime){
 		this.createTime = createTime;
 	} 
     /**
@@ -241,7 +241,7 @@ public class OrderAuditElectrician implements Serializable {
      * @date 2020-12-18 15:20:05
      * @author 18511
      */
-    public String getUpdateTime(){
+    public Timestamp getUpdateTime(){
         return this.updateTime;
     }
     /**
@@ -251,7 +251,7 @@ public class OrderAuditElectrician implements Serializable {
      * @date 2020-12-18 15:20:05
      * @author 18511
      */
-    public void setUpdateTime(String updateTime){
+    public void setUpdateTime(Timestamp updateTime){
 		this.updateTime = updateTime;
 	} 
     /**
@@ -261,7 +261,7 @@ public class OrderAuditElectrician implements Serializable {
      * @date 2020-12-18 15:20:05
      * @author 18511
      */
-    public String getFinishTime(){
+    public Timestamp getFinishTime(){
         return this.finishTime;
     }
     /**
@@ -271,7 +271,7 @@ public class OrderAuditElectrician implements Serializable {
      * @date 2020-12-18 15:20:05
      * @author 18511
      */
-    public void setFinishTime(String finishTime){
+    public void setFinishTime(Timestamp finishTime){
 		this.finishTime = finishTime;
 	} 
     /**
