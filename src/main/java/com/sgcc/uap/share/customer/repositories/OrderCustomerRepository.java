@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.customer.repositories;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -63,6 +64,26 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 			nativeQuery = true)
 	List<OrderCustomer> searchBox(@Param("customerId")String customerId,@Param("searchContent")String searchContent);
 
+	/**
+	 * 通过orderid 搬表
+	 * @param orderIds
+	 */
+	@Query(value = "SELECT * FROM order_customer T  "
+			+ " WHERE T.ORDER_STATUS in ('4','9') AND DATE_SUB(CURDATE(), INTERVAL :day DAY) >= T.FINISH_TIME  ",
+			nativeQuery = true)
+	public List<OrderCustomer> findFinishOrder(@Param("day")String day);
+	@Query(value = "INSERT INTO order_customer_his SELECT * FROM order_customer WHERE ORDER_ID IN :orderIds  ",
+			nativeQuery = true)
+	@Modifying
+	public void insertToHis(@Param("orderIds")Collection<String> orderIds);
+	@Query(value = "DELETE FROM order_customer WHERE ORDER_ID IN :orderIds  ",
+			nativeQuery = true)
+	@Modifying
+	public void deleteNowTable(@Param("orderIds")Collection<String> orderIds);
+	
+	
+	
+	
 	
 	
 	

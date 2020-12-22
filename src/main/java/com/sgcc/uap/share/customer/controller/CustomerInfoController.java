@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.customer.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -289,6 +290,15 @@ public class CustomerInfoController {
 	@RequestMapping(value = "/testfile", method = RequestMethod.POST)
 	public WrappedResult testfile(
 		@RequestParam("myFile") MultipartFile file
+		) throws IOException {
+		String fileName = file.getName();
+		logger.info("黄老板:"+fileName);
+		return WrappedResult.successWrapedResult(RestUtils.wrappQueryResult("黄老板:"+fileName));
+	}
+	
+	@RequestMapping(value = "/testfile1", method = RequestMethod.POST)
+	public WrappedResult testfile1(
+		@RequestParam("myFile") File file
 		) throws IOException {
 		String fileName = file.getName();
 		logger.info("黄老板:"+fileName);
