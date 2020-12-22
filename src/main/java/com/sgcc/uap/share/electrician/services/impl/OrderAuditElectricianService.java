@@ -83,10 +83,11 @@ public class OrderAuditElectricianService implements IOrderAuditElectricianServi
 	public OrderAuditElectrician save(Map<String, Object> map, MultipartFile file1, MultipartFile file2) throws Exception{
 		
 		
-		String orderId=(String) map.get("orderId");
+		//String orderId=(String) map.get("orderId");
 		//OrderAuditElectrician orderAuditElectrician = orderAuditElectricianRepository.findOne(orderId);
 		OrderAuditElectrician orderAuditElectrician =new OrderAuditElectrician();
-		CrudUtils.mapToObject(map, orderAuditElectrician,  "orderId");
+		System.out.println("***************************"+map.toString());
+		CrudUtils.mapToObject(map, orderAuditElectrician,"orderId");
 		
 		
 		if(file1.equals(map.get("orderElectricianType"))){

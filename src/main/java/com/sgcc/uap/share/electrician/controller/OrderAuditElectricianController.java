@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.electrician.controller;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -238,71 +239,43 @@ public class OrderAuditElectricianController {
 		OrderAuditElectrician orderAuditElectrician2=new OrderAuditElectrician();
 		try {
 			
-		
-			
-			QueryResultObject result = new QueryResultObject();
-			
-			
-			if(items != null && !items.isEmpty()){
+				QueryResultObject result = new QueryResultObject();
 				Map<String,Object> map = JsonUtils.parseJSONstr2Map(items);
 				System.out.println(map.toString());
 				
 				String electricianId=(String) map.get("electricianId");
 				//根据电工ID查询出电工信息，然后创建电工审核订单
 				ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
+								
+				//创建一个新的电工审核订单	
 				
-				//根据电工ID查询电工状态表
-				ElectricianStatus electricianStatus=electricianStatusService.findOne(electricianId);
-				
-				//创建一个新的电工审核订单
-				OrderAuditElectrician orderAuditElectrician=new OrderAuditElectrician();
-				
-				
-				
-				/*
-				return "OrderAuditElectrician ["
-				+ ", orderId=" + orderId
-				+ ", orderType=" + orderType
-				+ ", createTime=" + createTime
-				+ ", updateTime=" + updateTime
-				+ ", finishTime=" + finishTime
-				+ ", auditorId=" + auditorId
-				+ ", auditorComment=" + auditorComment
-				+ ", subCompanyId=" + subCompanyId
-				+ ", companyId=" + companyId
-				+ ", companyName=" + companyName
-				+ ", companyPhonenumber=" + companyPhonenumber
-				+ ", companyAddress=" + companyAddress
-				+ ", addressLongitude=" + addressLongitude
-				+ ", addressLatitude=" + addressLatitude
-				+ ", companyLevel=" + companyLevel
-				+ ", ratingCertificate=" + ratingCertificate
-				+ ", companyContract=" + companyContract
-				*/
 				map.put("orderId", UuidUtil.getIntUuid32());
 				map.put("orderType", 0);
-				map.put("createTime",DateTimeUtil.formatDateTime(new Date()) );
+				
+				//map.put("createTime",Timestamp.valueOf(DateTimeUtil.formatDateTime(new Date())));
+				//map.put("createTime",DateTimeUtil.formatDateTime(new Date()));
 				map.put("electricianId", electricianInfo.getElectricianId());
+				
 				map.put("electricianName", electricianInfo.getElectricianName());
 				map.put("electricianPhonenumber", electricianInfo.getElectricianPhonenumber());
-				map.put("electriciaStatus", electricianStatus.getElectricianStatus());
-				//暂时先进行评比，因为没有字段
-				
+							
 				map.put("subCompanyId",electricianInfo.getSubCompanyId());
 				map.put("companyName",electricianInfo.getCompanyName() );
 				
 				
 				 orderAuditElectrician2=orderAuditElectricianService.save(map,file1,file2);
+				System.out.println("我执行了一点点");
 				
-				
+			
+		} catch(Exception e){
+			logger.error(e.getMessage(), e);
+			String errorMessage = "异常处理";
+			if(isDev){
+				errorMessage = e.getMessage();
 			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			return null;
-		}
 		
 				
-		
+		}
 		return WrappedResult.successWrapedResult(orderAuditElectrician2);
 		
 			
