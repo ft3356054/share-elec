@@ -31,7 +31,7 @@ public interface OrderElectricianHisRepository extends JpaRepository<OrderElectr
 
 	
 	
-	@Query(value="select * from order_electrician_his where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_TYPE = 4 ",nativeQuery=true)
+	@Query(value="select * from order_electrician_his where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_TYPE = 4 or ORDER_ELECTRICIAN_TYPE = 5",nativeQuery=true)
 	List<OrderElectricianHis> queryAllHaveEsc(String electricianId);
 
 	

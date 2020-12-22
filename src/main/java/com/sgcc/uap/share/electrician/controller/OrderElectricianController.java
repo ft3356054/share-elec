@@ -855,6 +855,8 @@ public class OrderElectricianController {
 		
 		QueryResultObject queryResult=orderElectricianHisService.queryAllHaveEsc(electricianId);
 		
+		
+		
 		return WrappedResult.successWrapedResult(queryResult);
 		
 	}
