@@ -26,11 +26,19 @@ public class EvaluateTask  extends TimerTask{
 
 	@Override
     @Async
-    @Scheduled(fixedDelay = 60000*60*24) //每1分钟执行一次
+    @Scheduled(fixedDelay = 60000*60*24) //每1天执行一次
 	public void run() {
 		Integer updateCount = 0;
+		//5星 状态8 15天
 		updateCount = orderCustomerRepository.getNotEvaluate(5, "默认好评",  "默认好评", 8, 15);
 		logger.info("EvaluateTask updateCount = "+updateCount);
+		
+		//订单相关搬迁到历史表
+		
+		
+		
+		
+		
 	}
 
 }

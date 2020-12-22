@@ -218,8 +218,8 @@ public class OrderCustomerService implements IOrderCustomerService{
 			positionMap.put("orderId", getNewOrderId);
 			positionMap.put("customerId", (String) map.get("customerId"));
 			positionMap.put("areaId", areaId);
-			positionMap.put("lon", (String) map.get("addressLongitude"));
-			positionMap.put("lat", (String) map.get("addressLatitude"));
+			positionMap.put("lon",  map.get("addressLongitude"));
+			positionMap.put("lat",  map.get("addressLatitude"));
 			custPositionService.saveCustPosition(positionMap);
 			
 			//获取Enum通知类

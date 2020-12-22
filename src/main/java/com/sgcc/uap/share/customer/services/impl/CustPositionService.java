@@ -105,13 +105,14 @@ public class CustPositionService implements ICustPositionService{
 	public CustPosition saveCustPosition(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(CustPosition.class,map);
 		CustPosition custPosition = new CustPosition();
-		if (map.containsKey("orderId")) {
+		/*if (map.containsKey("orderId")) {
 			String orderId = (String) map.get("orderId");
 			custPosition = custPositionRepository.findOne(orderId);
 			CrudUtils.mapToObject(map, custPosition,  "orderId");
 		}else{
 			CrudUtils.transMap2Bean(map, custPosition);
-		}
+		}*/
+		CrudUtils.transMap2Bean(map, custPosition);
 		return custPositionRepository.save(custPosition);
 	}
 	@Override
