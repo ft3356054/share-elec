@@ -46,7 +46,7 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	@Transactional
 	@Modifying
 	@Query(value = "UPDATE order_customer t1 SET t1.CUSTOMER_GRADE =:customerGrade ,"
-			+ " t1.CUSTOMER_EVALUATE_TITLE=:customerEvaluateTitle,t1.CUSTOMER_EVALUATE=:customerEvaluate,t1.ORDER_STATUS=:orderStatus "
+			+ " t1.CUSTOMER_EVALUATE_TITLE=:customerEvaluateTitle,t1.CUSTOMER_EVALUATE=:customerEvaluate,t1.ORDER_STATUS=9 "
 			+ " WHERE t1.ORDER_ID IN  "
 			+ " (SELECT T3.ORDER_ID FROM ( "
 			+ " SELECT t2.ORDER_ID FROM order_customer t2 WHERE t2.ORDER_STATUS=:orderStatus  "

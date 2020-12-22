@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.customer.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.rest.annotation.ColumnRequestParam;
@@ -273,5 +276,22 @@ public class CustomerInfoController {
 			String errorMessage = "存储位置信息异常";
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
+	}
+	
+	@RequestMapping(value = "/testjson", method = RequestMethod.POST)
+	public WrappedResult testjson(
+		@RequestParam(value = "items", required = false) String items
+		) throws IOException {
+		logger.info("黄老板:"+items);
+		return WrappedResult.successWrapedResult(RestUtils.wrappQueryResult("黄老板:"+items));
+	}
+	
+	@RequestMapping(value = "/testfile", method = RequestMethod.POST)
+	public WrappedResult testfile(
+		@RequestParam("myFile") MultipartFile file
+		) throws IOException {
+		String fileName = file.getName();
+		logger.info("黄老板:"+fileName);
+		return WrappedResult.successWrapedResult(RestUtils.wrappQueryResult("黄老板:"+fileName));
 	}
 }

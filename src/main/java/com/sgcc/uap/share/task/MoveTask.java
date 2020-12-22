@@ -12,15 +12,14 @@ import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 
 
 /*
- * 15天内可以投诉
- * 15天后，默认好评
+ * 现表搬迁历史表
  * */
 @Component
-public class EvaluateTask  extends TimerTask{
+public class MoveTask  extends TimerTask{
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(EvaluateTask.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(MoveTask.class);
 	
 	private OrderCustomerRepository orderCustomerRepository = (OrderCustomerRepository) ApplicationContextUtil.getBean("orderCustomerRepository");
 
