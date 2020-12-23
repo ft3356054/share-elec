@@ -28,6 +28,7 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
+import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.electrician.services.IElecPositionService;
 import com.sgcc.uap.share.electrician.vo.ElecPositionVO;
 
@@ -85,6 +86,30 @@ public class ElecPositionController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
+	/**
+	 * @getByOrderId:根据areaId查询
+	 * @param orderId
+	 * @return WrappedResult 查询结果
+	 * @date 2020-12-21 09:31:09
+	 * @author 18511
+	 */
+	@RequestMapping(value = "/areaId/{areaId}")
+	public WrappedResult getByAreaId(@PathVariable String areaId) {
+		try {
+			List<ElecPosition> result = elecPositionService.getByAreaId(areaId);
+			logger.info("查询成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
 	/**
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
