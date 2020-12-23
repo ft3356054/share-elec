@@ -1,5 +1,7 @@
 package com.sgcc.uap.share.electrician.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -16,6 +18,6 @@ import com.sgcc.uap.share.domain.ElecPosition;
  * @author 18511
  */
 public interface ElecPositionRepository extends JpaRepository<ElecPosition,String>,JpaSpecificationExecutor<ElecPosition> {
-
+	public List<ElecPosition> findByAreaId(String areaId);
 	
 }

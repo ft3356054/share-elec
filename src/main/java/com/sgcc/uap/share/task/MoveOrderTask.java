@@ -60,6 +60,9 @@ public class MoveOrderTask  extends TimerTask{
 				//搬迁客户订单表
 				orderCustomerRepository.insertToHis(orderIds);
 				orderCustomerRepository.deleteNowTable(orderIds);
+				
+				//订单经纬度表删除
+				
 			}
 		
 		} catch (InterruptedException e) {

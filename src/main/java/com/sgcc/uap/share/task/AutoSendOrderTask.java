@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
+import com.sgcc.uap.share.customer.services.ICustPositionService;
+import com.sgcc.uap.share.customer.services.impl.CustPositionService;
 import com.sgcc.uap.share.domain.OrderCustomer;
 
 
@@ -23,6 +25,8 @@ public class AutoSendOrderTask  extends TimerTask{
 	
 	private OrderCustomerRepository orderCustomerRepository = 
 			(OrderCustomerRepository) ApplicationContextUtil.getBean("orderCustomerRepository");
+	/*private ICustPositionService custPositionService = 
+			(CustPositionService) ApplicationContextUtil.getBean("custPositionService");*/
 	
 
 	@Override
@@ -37,13 +41,15 @@ public class AutoSendOrderTask  extends TimerTask{
 			
 			if(orderCustomers.size()>0){
 				for(OrderCustomer orderCustomer:orderCustomers){
-					orderIds.add(orderCustomer.getOrderId());
+					//orderIds.add(orderCustomer.getOrderId());
+					
+					//通过orderid 查询获取经纬度信息
+					//custPositionService.getCustPositionByOrderId(orderCustomer.getOrderId());
+					
+					
+					
 				}
 				
-				
-				//搬迁客户订单表
-				orderCustomerRepository.insertToHis(orderIds);
-				orderCustomerRepository.deleteNowTable(orderIds);
 			}
 		
 		} catch (InterruptedException e) {

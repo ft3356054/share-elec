@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -57,17 +56,15 @@ public class CustPositionService implements ICustPositionService{
 	@Autowired
     private StringRedisTemplate stringRedisTemplate;
 	@SuppressWarnings("rawtypes")
-	@Autowired
-    private RedisTemplate redisTemplate;
 	
 	@Override
 	public QueryResultObject getCustPositionByOrderId(String orderId) {
-		String json = stringRedisTemplate.opsForValue().get(orderId);
+		String json = stringRedisTemplate.opsForValue().get("cp"+orderId);
 		CustPosition custPosition = null;
 		if("".equals(json)||null==json){
 			custPosition = custPositionRepository.findOne(orderId);
 			String posiJson = JsonUtils.toJsonString(custPosition);
-			stringRedisTemplate.opsForValue().set(orderId, posiJson, 7L, TimeUnit.DAYS);
+			stringRedisTemplate.opsForValue().set("cp"+orderId, posiJson, 7L, TimeUnit.DAYS);
 		}else{
 			try {
 				custPosition = (CustPosition) JsonUtils.json2Object(json, CustPosition.class);
