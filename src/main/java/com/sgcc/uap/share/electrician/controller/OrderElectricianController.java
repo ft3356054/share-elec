@@ -132,6 +132,7 @@ public class OrderElectricianController {
 	
 	@Autowired
 	private ElectricianInfoService electricianInfoService;
+	private OrderElectrician saveOrderElectrician;
 	
 	/**
 	 * @getByOrderElectricianId:根据orderElectricianId查询
@@ -323,113 +324,79 @@ public class OrderElectricianController {
 	 * @throws Exception 
 	 * 
 	 */
-	/*
+	
 	@RequestMapping(value="/qiangdanrecept",name="电工接受了用户的订单")
 	
-	public String qiangdanrecept(@RequestParam(value="orderId" )String orderId,
+	public WrappedResult qiangdanrecept(@RequestParam(value="orderId" )String orderId,
 			@RequestParam(value="electricianId") String electricianId
 			) throws Exception{
+		
+		try {
+			
+		//新的客户订单
 		OrderCustomer orderCustomer=new OrderCustomer();
+		//新的电工订单
+		OrderElectrician orderElectrician=new OrderElectrician();
+		//查询出的当前电工信息
+		ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
+		
+		Map<String,Object> map=new HashMap<String, Object>();
+		
+		QueryResultObject resultObject=new QueryResultObject();
+		
 		
 		//1.查询出来客户表
-		orderCustomer=orderCustomerService.findByOrderId(orderId);
+		resultObject=orderCustomerService.findByOrderId(orderId);
+		List<OrderCustomer> list=resultObject.getItems();
 		
-		//插入一个条件，如果查询出来的客户表订单为2，表明是已经有人接了单子
-		if(orderCustomer.getOrderStatus().equals("2")){
-			return "0"; //0表示返回的是false,该订单已经有人接下，直接返回，不再向下执行
+		//插入一个条件，如果查询出来的客户表订单为20，表明是已经有人接了单子
+		if(list.get(0).getOrderStatus().equals("20")){
+			String msg="已经有人接了客户订单";
+			return WrappedResult.failedWrappedResult(msg);
+			 
 		}
 		
 		//2.判断客户表是否是新表
-		if(orderCustomer.getOrderStatus().equals("11")){
-			//2.1电工接单的单子是11，说明是老单子设置客户订单表单状态为2，
-			orderCustomer.setOrderStatus("2");
-		    orderCustomerService.saveOrderCustomertwice(orderCustomer);
-			
-		}else {//3. 状态是11,则是新单子
-			//3.1获取电工的左右信息
-			
-	
-			Map<String,Object> mapOrderElectrician=new HashMap<String, Object>();
-			mapOrderElectrician.put("orderElectricianId",UuidUtil.getUuid46());
-			mapOrderElectrician.put("electricianId",electricianId);
-			mapOrderElectrician.put("electricianName",null);
-			mapOrderElectrician.put("electricianPhonenumber",null);
-			mapOrderElectrician.put("electricianAddress",null);
-			mapOrderElectrician.put("otherElectricianId",null);
-			mapOrderElectrician.put("orderTypeId",null);
-			mapOrderElectrician.put("electricianPrice",null);
-			mapOrderElectrician.put("orderElectricianType",null);
-			mapOrderElectrician.put("payStatus",orderCustomer.getPayStatus());
-			mapOrderElectrician.put("createTime",(Timestamp) new Date());
-			mapOrderElectrician.put("beginTime",null);
-			mapOrderElectrician.put("updateTime",null);
-			mapOrderElectrician.put("finishTime",null);
-			mapOrderElectrician.put("electricianDescrive",null);
-			mapOrderElectrician.put("electricianDescriveIcon",null);
-			mapOrderElectrician.put("electricianGrade",null);
-			mapOrderElectrician.put("electricianEvaluate",null);
-			mapOrderElectrician.put("chargebackReason",null);
-			mapOrderElectrician.put("orderContract",null);
-			mapOrderElectrician.put("inspectionReport",null);
-			mapOrderElectrician.put("remarkStr1",null);
-			mapOrderElectrician.put("remarkStr2",null);
-			mapOrderElectrician.put("remarkStr3",null);
-			mapOrderElectrician.put("remarkNum1",null);
-			mapOrderElectrician.put("remarkNum2",null);
-			mapOrderElectrician.put("orDERId",orderCustomer.getOrderId());
-			
-			orderElectricianService.saveOrderElectrician(mapOrderElectrician);
-			
-			
+		if(list.get(0).getOrderStatus().equals("11")){
+			//2.1电工接单的单子是11，说明是老单子设置客户订单表单状态为2，只需要将电工的填写的信息挪到新的电工订单就好
+			List<OrderElectrician> orderElectricianOlds=orderElectricianService.findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(orderId,"5");
+			OrderElectrician orderElectricianOld=orderElectricianOlds.get(0);
+			//电工描述
+			map.put("electricianDescrive", orderElectricianOld.getElectricianDescrive());
+			//电工拍照
+			map.put("electricianDescriveIcon", orderElectricianOld.getElectricianDescriveIcon());
 			
 			
 		}
+		map.put("orderElectricianId",UuidUtil.getUuid32());
+		map.put("electricianId",electricianId);
+		map.put("electricianName",electricianInfo.getElectricianName());
+		map.put("electricianPhonenumber",electricianInfo.getElectricianPhonenumber());
+		map.put("electricianAddress",null);
+		map.put("otherElectricianId",null);
+		map.put("orderTypeId",null);
+		map.put("electricianPrice",null);
+		map.put("orderElectricianType","20");
+		map.put("payStatus",orderCustomer.getPayStatus());
+		map.put("createTime",DateTimeUtil.formatDateTime(new Date()));
 		
-		//3.增加一张流水表
+		map.put("orDERId",orderId);
+		map.put("orderId", orderId);
 		
-		Map<String,Object> mapOrderFlow = new HashMap<String,Object>();
-		//mapOrderFlow.put("orDERId", getNewOrderId);
-		mapOrderFlow.put("flowType", 0);
-		mapOrderFlow.put("currStatus", 0);
-		//mapOrderFlow.put("operatorId", orderCustomer.get("customerId"));
-		mapOrderFlow.put("operatorId", orderCustomer.getCustomerId());
-		mapOrderFlow.put("operatorTime", TimeStamp.toString(new Date()));
-		mapOrderFlow.put("operatorType", 0);
-		mapOrderFlow.put("remark", "新增orderCustomer订单");
-		orderFlowService.saveOrderFlow(mapOrderFlow);
+		saveOrderElectrician = orderElectricianService.saveOrderElectrician(map);
 		
-		//新增通知
-		String announceId = UuidUtil.getUuid32();
 		
-		Map<String,Object> mapNotify = new HashMap<String,Object>();
-		mapNotify.put("announceId",announceId);
-		mapNotify.put("serderId", "SYSTEM_ADMIN");
-		mapNotify.put("title", "待付勘察费");
-		mapNotify.put("content", "待付勘察费，内容");
-		mapNotify.put("createTime", TimeStamp.toString(new Date()));
-		mapNotify.put("remark", "新增客户待付款通知");
-		notifyAnnounceService.saveNotifyAnnounce(mapNotify);
+		return WrappedResult.successWrapedResult(saveOrderElectrician);
 		
-		/*
-		Map<String,Object> mapNotifyUser = new HashMap<String,Object>();
-		mapNotifyUser.put("announceUserId", orderCustomer.getCustomerId());
-		mapNotifyUser.put("announceId", announceId);
-		mapNotifyUser.put("recipientType", 0);
-		mapNotifyUser.put("state", 0);
-		mapNotifyUser.put("createTime", TimeStamp.toString(new Date()));
-		//mapNotifyUser.put("readTime", "");
-		mapNotifyUser.put("remark", "新增客户待付款通知");
-		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
-		*/
-		/*
-		Map<String,Object> mapNotifyUser = 
-				MapUtil.notifyUserAdd((String)orderCustomer.getCustomerId(), announceId, 0, 0, TimeStamp.toString(new Date()), "新增客户待付款通知");
-		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
-		System.out.println("我执行完成了");
-		return "1";   //1表示接单成功，页面可以判断订单是否成功
+		
+				
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
 		
 	}
-*/
 	
 	
 	/**
@@ -672,62 +639,6 @@ public class OrderElectricianController {
 	}
 	
 	
-	/**
-	 * 进行抢单按钮，点击后将客户订单生成到电工订单中
-	 * 
-	 */
-	
-	@RequestMapping(value = "/saveOrderCustomer", method = RequestMethod.POST)
-	public WrappedResult saveOrUpdateOrderCustomer(@RequestBody FormRequestObject<Map<String,Object>> params,@RequestParam(value="electricianId")String electricianId) {
-
-		//logger.info("传送过来的electricianId数据是："+electricianId);
-		System.out.println("传送过来的electricianId数据是："+electricianId);
-		try {
-			if(params == null){
-				throw new NullArgumentException("params");
-			}
-			QueryResultObject result = new QueryResultObject();
-			List<Map<String,Object>> items = params.getItems();
-			if(items != null && !items.isEmpty()){
-				
-				for(Map<String,Object> map : items){
-					//查询电工订单，如果订单状态是2，则代表已经接单了
-					String orderId=(String) map.get("orderId");
-					OrderElectrician orElectrician=orderElectricianService.findByOrDERIdAndOrderElectricianType(orderId);
-					//查询出来订单存在，则直接返回错误信息
-					
-					if(orElectrician!=null){
-						String errorMessage = "订单已被抢";
-						if(isDev){
-							
-						}
-						return WrappedResult.failedWrappedResult(errorMessage);
-					}
-					
-					result.setFormItems(orderElectricianService.saveOrderElectrician2(map,electricianId));
-				}
-			}
-			
-			
-			
-			logger.info("保存数据成功"); 
-			return WrappedResult.successWrapedResult(result);
-		} catch (ServiceValidatorBaseException e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "校验异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedValidateWrappedResult(errorMessage);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "保存异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
-	}
 	
 	
 	/**

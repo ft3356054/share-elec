@@ -71,11 +71,18 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	 * @param orderId
 	 * @return
 	 */
-	//@Query(value="select * from order_electrician where ORDER_ID=? and ORDER_ELECTRICIAN_TYPE=?",nativeQuery=true)
-	@Query(value="select * from order_electrician where ORDER_ID=? and ELECTRICIAN_ID=?",nativeQuery=true)
-	OrderElectrician findByOrderId(String orderId,String electricianId);
-
 	
+	@Query(value="select * from order_electrician where ORDER_ID=?",nativeQuery=true)
+	OrderElectrician findByOrderId(String orderId);
+
+	/**
+	 * 
+	 * @param electricianId
+	 * @param orderId
+	 * @return
+	 */
+	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ID=?",nativeQuery = true)
+	OrderElectrician findByElectricianIdAndOrderId(String electricianId, String orderId);
 	
 	
 	
@@ -93,19 +100,11 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	@Query(value="select * from order_electrician where ELECTRICIAN_ID=?",nativeQuery = true)
 	List<OrderElectrician> findByElectricianId(String electricianId);
 
-	/**
-	 * 
-	 * @param electricianId
-	 * @param orderId
-	 * @return
-	 */
-	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ID=?",nativeQuery = true)
-	OrderElectrician findByElectricianIdAndOrderId(String electricianId, Object orderId);
+	
 
 	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_TYPE = 4 or ORDER_ELECTRICIAN_TYPE = 5",nativeQuery=true)
 	List<OrderElectrician> queryAllHaveEsc(String electricianId);
 
-	
 	
 	
 	/**
@@ -122,5 +121,7 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	@Modifying
 	@Transactional
 	public void deleteNowTable(@Param("orderIds")Collection<String> orderIds);
+
+	
 	
 }
