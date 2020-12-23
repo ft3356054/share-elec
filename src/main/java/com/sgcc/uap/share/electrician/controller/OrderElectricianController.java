@@ -54,6 +54,7 @@ import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
 import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
+import com.sgcc.uap.share.domain.OrderElectricianHis;
 import com.sgcc.uap.share.domain.OrderFlow;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.share.electrician.services.impl.ElectricianInfoService;
@@ -658,7 +659,7 @@ public class OrderElectricianController {
 			return WrappedResult.successWrapedResult(queryResult);
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			
 
 			logger.error(e.getMessage(), e);
 			String errorMessage = "查询异常";
@@ -852,12 +853,23 @@ public class OrderElectricianController {
 			
 		
 		
-		
+		//查询电工历史订单
 		QueryResultObject queryResult=orderElectricianHisService.queryAllHaveEsc(electricianId);
 		
+		//查询电工订单
+		QueryResultObject queryResult2=orderElectricianService.queryAllHaveEsc(electricianId);
 		
+		OrderElectrician orderElectrician=new OrderElectrician();
+		List<OrderElectrician> list2=queryResult2.getItems();
+		List<OrderElectricianHis> list=queryResult.getItems();
+		for (OrderElectricianHis orderElectricianHis : list) {
+			BeanUtils.copyProperties(orderElectricianHis, orderElectrician);
+			list2.add(orderElectrician);
+		}
+		queryResult2.setItems(list2);
+		queryResult2.setItemCount(list2.size());
 		
-		return WrappedResult.successWrapedResult(queryResult);
+		return WrappedResult.successWrapedResult(queryResult2);
 		
 	}
 		catch (Exception e) {

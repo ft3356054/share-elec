@@ -919,6 +919,15 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		return orderElectrician;
 		
 	}
+	@Override
+	public QueryResultObject queryAllHaveEsc(String electricianId) {
+		// TODO Auto-generated method stub
+		List<OrderElectrician> result=orderElectricianRepository.queryAllHaveEsc(electricianId);
+		long count=0;
+		count=result.size();
+		return RestUtils.wrappQueryResult(result,count);
+		
+	}
 
 	
 	

@@ -82,6 +82,7 @@ OrderCustomer saveOrderCustomerByOrderElectricianService(Map<String, Object> map
 public List<OrderElectrician> findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(String orderId,
 		String orderElectricianType);
 public OrderElectrician findByElectricianIdAndOrderId(String electricianId, String orderId);
+public QueryResultObject queryAllHaveEsc(String electricianId);
 
 
 }

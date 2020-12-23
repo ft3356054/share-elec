@@ -60,7 +60,7 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	OrderElectrician findByOrDERIdAndOrderElectricianType(@Param("orderId")String orderId);
 
 	
-	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_TYPE != 9",nativeQuery=true)
+	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_TYPE != 9 and ORDER_ELECTRICIAN_TYPE != 5 and ORDER_ELECTRICIAN_TYPE != 4 and ORDER_ELECTRICIAN_TYPE != 1",nativeQuery=true)
 	List<OrderElectrician> queryAllDoing(String electricianId);
 
 	/**
@@ -98,6 +98,9 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	 */
 	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ID=?",nativeQuery = true)
 	OrderElectrician findByElectricianIdAndOrderId(String electricianId, Object orderId);
+
+	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_TYPE = 4 or ORDER_ELECTRICIAN_TYPE = 5",nativeQuery=true)
+	List<OrderElectrician> queryAllHaveEsc(String electricianId);
 
 	
 	
