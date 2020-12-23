@@ -1,7 +1,7 @@
 package com.sgcc.uap.share.customer.services;
 
+import java.util.List;
 import java.util.Map;
-
 
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
@@ -28,7 +28,7 @@ public interface ICustPositionService {
 	 * @author 18511
 	 */
 	public QueryResultObject getCustPositionByOrderId(String orderId);
-	public QueryResultObject getByAreaId(String areaId);
+	public List<CustPosition> getByAreaId(String areaId);
 	/**
 	 * @remove:根据idObject删除
 	 * @param idObject 主键id

@@ -83,8 +83,14 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	@Transactional
 	public void deleteNowTable(@Param("orderIds")Collection<String> orderIds);
 	
-	
-	
+	/**
+	 * 查询没有接单的订单
+	 * @param orderIds
+	 */
+	@Query(value = "SELECT CREATE_TIME FROM order_customer T   "
+			+ " WHERE T.ORDER_STATUS IN ('1','11') AND DATE_SUB(CURDATE(), INTERVAL :day MINUTE) >= T.CREATE_TIME  ",
+			nativeQuery = true)
+	public List<OrderCustomer> findNotAcceptOrder(@Param("day")String day);
 	
 	
 	

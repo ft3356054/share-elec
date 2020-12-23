@@ -1,9 +1,14 @@
 package com.sgcc.uap.share.task;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
+import com.sgcc.uap.share.domain.OrderCustomer;
 
 
 /*
@@ -16,43 +21,35 @@ public class AutoSendOrderTask  extends TimerTask{
      */
 	private final static Logger logger = (Logger) LoggerFactory.getLogger(AutoSendOrderTask.class);
 	
+	private OrderCustomerRepository orderCustomerRepository = 
+			(OrderCustomerRepository) ApplicationContextUtil.getBean("orderCustomerRepository");
+	
 
 	@Override
 	public void run() {
-		/*MerchantInfo mi=new MerchantInfo();
+		try {
+			Thread.sleep(1000*60*40);
 		
-		ReTryService reTryService = (ReTryService) ServiceLocator.getBean("reTryService");
-		List<ReTry> list = reTryService.queryAllReTry();
-		
-		if(list.size()!=0){
-			for(int i=0;i<list.size();i++){
-				mi.setOrderID(list.get(i).getOrderID());
-				mi.setMerchantID(list.get(i).getMerchantid());
-				mi.setStatus(list.get(i).getStatus());
-				mi.setSignature(list.get(i).getSignature());
-				String url =list.get(i).getUrl();
+			ArrayList<String> orderIds = new ArrayList<String>();
+			
+			List<OrderCustomer> orderCustomers = orderCustomerRepository.findNotAcceptOrder("20");
+			logger.info("MoveTask orderCustomers = "+orderCustomers);
+			
+			if(orderCustomers.size()>0){
+				for(OrderCustomer orderCustomer:orderCustomers){
+					orderIds.add(orderCustomer.getOrderId());
+				}
 				
-				long start = System.currentTimeMillis();
-				boolean result=false;
-				if(url!=null){
-					if(list.get(i).getStatus()==77){
-						result=NotifyUtil.innerCharging(url, 3000);
-					}else{
-						result=NotifyUtil.postJsonInfo(url, mi, 4000);
-					}
-				}
-				String cost = "cost:" + (System.currentTimeMillis() - start);
-				if (result) {
-					reTryService.deleteReTry(list.get(i).getOrderID());
-					logger1.info("[RETransport] [SUCCESS] [OID="+list.get(i).getOrderID()+"] [URL=" + url + "] ["+ cost +"ms]");
-				} else {
-					reTryService.updatePush(list.get(i).getOrderID());
-					logger1.info("[RETransport] [Failed] [OID="+list.get(i).getOrderID()+"] [URL=" + url + "] ["+ cost +"ms]");
-				}
+				
+				//搬迁客户订单表
+				orderCustomerRepository.insertToHis(orderIds);
+				orderCustomerRepository.deleteNowTable(orderIds);
 			}
-		}else{
-			System.out.println("retry list null");
-		}*/
+		
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			logger.error(e.toString());
+		}
 	}
 
 }

@@ -30,6 +30,7 @@ import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.customer.services.ICustPositionService;
 import com.sgcc.uap.share.customer.vo.CustPositionVO;
+import com.sgcc.uap.share.domain.CustPosition;
 
 
 /**
@@ -95,7 +96,7 @@ public class CustPositionController {
 	@RequestMapping(value = "/areaId/{areaId}")
 	public WrappedResult getByAreaId(@PathVariable String areaId) {
 		try {
-			QueryResultObject result = custPositionService.getByAreaId(areaId);
+			List<CustPosition> result = custPositionService.getByAreaId(areaId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {

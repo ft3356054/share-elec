@@ -83,11 +83,11 @@ public class CustPositionService implements ICustPositionService{
 	}
 	
 	@Override
-	public QueryResultObject getByAreaId(String areaId) {
+	public List<CustPosition> getByAreaId(String areaId) {
 		List<CustPosition> custPositions = custPositionRepository.findByAreaId(areaId);
 		//stringRedisTemplate.opsForValue().set(areaId, custPositions, 1L, TimeUnit.HOURS);
 		//redisTemplate.opsForList().leftPush(areaId, custPositions);
-		return RestUtils.wrappQueryResult(custPositions);
+		return custPositions;
 	}
 	
 	@Override
