@@ -76,13 +76,22 @@ public OrderElectrician findByOrDERIdAndOrderElectricianType(String orderId);
 
 public QueryResultObject queryAllDoing(String electricianId);
 public Object saveElectricianEvaluate(Map<String, Object> map, MultipartFile file) ;
-OrderElectrician findByOrderId(String orderId, String orderelectriciantype);
+/**
+ * 通过客户订单ID和电工ID查询订单
+ * @param orderId
+ * @param electricianId
+ * @return
+ */
+OrderElectrician findByOrderId(String orderId, String electricianId);
+
+
 
 OrderCustomer saveOrderCustomerByOrderElectricianService(Map<String, Object> map, MultipartFile file) throws Exception;
 public List<OrderElectrician> findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(String orderId,
 		String orderElectricianType);
 public OrderElectrician findByElectricianIdAndOrderId(String electricianId, String orderId);
 public QueryResultObject queryAllHaveEsc(String electricianId);
+OrderElectrician saveOrderElectrician(Map<String, Object> map) throws Exception;
 
 
 }

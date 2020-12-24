@@ -561,13 +561,13 @@ public class OrderElectricianService implements IOrderElectricianService{
 	
 	@Override
 	public OrderElectrician saveOrderElectrician(Map<String, Object> map,MultipartFile file) throws Exception {
-		System.out.println("要执行保存OrderElectrician方法");
+		
 		validateService.validateWithException(OrderElectrician.class,map);
 		OrderElectrician orderElectrician = new OrderElectrician();
 		OrderElectrician result = new OrderElectrician();
 		
 			String orderId = (String) map.get("orderId");
-			orderElectrician=orderElectricianRepository.findByOrderId(orderId, (String)map.get("electricianId"));
+			orderElectrician=orderElectricianRepository.findByElectricianIdAndOrderId(orderId, (String)map.get("electricianId"));
 			
 			
 			
@@ -625,6 +625,32 @@ public class OrderElectricianService implements IOrderElectricianService{
 	        */
 		return result;
 	}
+	
+	@Override
+	public OrderElectrician saveOrderElectrician(Map<String, Object> map) throws Exception {
+		
+		
+
+		validateService.validateWithException(OrderElectrician.class,map);
+		OrderElectrician orderElectrician = new OrderElectrician();
+		OrderElectrician result = new OrderElectrician();
+		
+			String orderId = (String) map.get("orderId");
+			//orderElectrician=orderElectricianRepository.findByElectricianIdAndOrderId(orderId, (String)map.get("electricianId"));
+			String orDERId = (String) map.get("orDERId");
+			
+			
+			CrudUtils.mapToObject(map, orderElectrician,  "orderId");
+			result = orderElectricianRepository.save(orderElectrician);
+			/*
+			if ((String)map.get("orderElectricianType")!=null) {
+				sendNotify(map, orderElectrician,2,1);
+			}
+			*/
+			
+			return result;
+		
+	}
 
 	
 	
@@ -632,7 +658,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 	public OrderElectrician findByOrderId(String orderId,String electricianId) {
 		
 		// TODO Auto-generated method stub
-		OrderElectrician orderIdString=orderElectricianRepository.findByOrderId(orderId,electricianId);
+		OrderElectrician orderIdString=orderElectricianRepository.findByElectricianIdAndOrderId(orderId,electricianId);
 		return orderIdString;
 	}
 	
@@ -928,6 +954,8 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		return RestUtils.wrappQueryResult(result,count);
 		
 	}
+	
+	
 
 	
 	
