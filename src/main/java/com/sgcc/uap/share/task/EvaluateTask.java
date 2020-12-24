@@ -28,10 +28,19 @@ public class EvaluateTask  extends TimerTask{
     @Async
     @Scheduled(fixedDelay = 60000*60*24) //每1天执行一次
 	public void run() {
-		Integer updateCount = 0;
-		//5星 状态8 15天
-		updateCount = orderCustomerRepository.getNotEvaluate(5, "默认好评",  "默认好评", 8, 15);
-		logger.info("EvaluateTask updateCount = "+updateCount);
+		
+		try {
+			Thread.sleep(1000*60*2);
+			Integer updateCount = 0;
+			//5星 状态8 15天
+			updateCount = orderCustomerRepository.getNotEvaluate(5, "默认好评",  "默认好评", 8, 15);
+			logger.info("EvaluateTask updateCount = "+updateCount);
+			
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 	}
 
