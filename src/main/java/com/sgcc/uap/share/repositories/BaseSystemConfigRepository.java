@@ -17,5 +17,6 @@ import com.sgcc.uap.share.domain.BaseSystemConfig;
  */
 public interface BaseSystemConfigRepository extends JpaRepository<BaseSystemConfig,String>,JpaSpecificationExecutor<BaseSystemConfig> {
 
+	public BaseSystemConfig findByConfigType(String configType);
 	
 }

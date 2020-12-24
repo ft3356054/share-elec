@@ -28,6 +28,8 @@ public interface IBaseSystemConfigService {
 	 * @author 18511
 	 */
 	public QueryResultObject getBaseSystemConfigByConfigId(String configId);
+	
+	public QueryResultObject getBaseSystemConfigByConfigType(String configType);
 	/**
 	 * @remove:根据idObject删除
 	 * @param idObject 主键id

@@ -11,6 +11,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -27,7 +28,6 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.BaseSystemConfig;
 import com.sgcc.uap.share.repositories.BaseSystemConfigRepository;
 import com.sgcc.uap.share.services.IBaseSystemConfigService;
-import com.sgcc.uap.utils.string.StringUtil;
 
 
 /**
@@ -54,6 +54,15 @@ public class BaseSystemConfigService implements IBaseSystemConfigService{
 		BaseSystemConfig baseSystemConfig = baseSystemConfigRepository.findOne(configId);
 		return RestUtils.wrappQueryResult(baseSystemConfig);
 	}
+	
+	@Override
+	@Cacheable(cacheNames = "baseSystemConfig" ,  keyGenerator = "wiselyKeyGenerator") 
+	public QueryResultObject getBaseSystemConfigByConfigType(String configType) {
+		BaseSystemConfig baseSystemConfig = baseSystemConfigRepository.findByConfigType(configType);
+		return RestUtils.wrappQueryResult(baseSystemConfig);
+	}
+	
+	
 	@Override
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){

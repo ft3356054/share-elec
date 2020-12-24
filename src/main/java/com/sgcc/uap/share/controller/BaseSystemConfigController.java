@@ -85,6 +85,23 @@ public class BaseSystemConfigController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
+	@RequestMapping(value = "/ConfigType/{configType}")
+	public WrappedResult getByConfigType(@PathVariable String configType) {
+		try {
+			QueryResultObject result = baseSystemConfigService.getBaseSystemConfigByConfigType(configType);
+			logger.info("查询成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
 	/**
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
