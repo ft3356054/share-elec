@@ -2,7 +2,6 @@ package com.sgcc.uap.share.services;
 
 import java.util.Map;
 
-
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
@@ -29,7 +28,7 @@ public interface IBaseSystemConfigService {
 	 */
 	public QueryResultObject getBaseSystemConfigByConfigId(String configId);
 	
-	public QueryResultObject getBaseSystemConfigByConfigType(String configType);
+	public BaseSystemConfig getBaseSystemConfigByConfigType(String configType);
 	/**
 	 * @remove:根据idObject删除
 	 * @param idObject 主键id

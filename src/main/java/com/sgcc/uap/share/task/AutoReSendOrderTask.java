@@ -1,6 +1,5 @@
 package com.sgcc.uap.share.task;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 
@@ -10,25 +9,26 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.sgcc.uap.share.customer.services.IOrderCustomerService;
+import com.sgcc.uap.share.customer.services.IGetOrderElectricianService;
 import com.sgcc.uap.share.domain.BaseSystemConfig;
-import com.sgcc.uap.share.domain.OrderCustomer;
+import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.services.IBaseSystemConfigService;
 
 
 /*
- * 自动派单
- * 20分钟没有被抢到的订单，会自动派给电工
+ * 自动重派单
+ * 系统派发给电工的订单，若电工在指定时间内未接单。系统将重新派单给其他电工
  * */
 @Component
-public class AutoSendOrderTask  extends TimerTask{
+public class AutoReSendOrderTask  extends TimerTask{
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(AutoSendOrderTask.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(AutoReSendOrderTask.class);
 	
-	IOrderCustomerService orderCustomerService = null;
+	IGetOrderElectricianService orderElectricianService = null;
 	IBaseSystemConfigService baseSystemConfigService = null;
+	
 
 	@Override
     @Async
@@ -36,21 +36,21 @@ public class AutoSendOrderTask  extends TimerTask{
 	public void run() {
 		try {
 			//Thread.sleep(1000*60*40);
-			orderCustomerService = (IOrderCustomerService) ApplicationContextUtil.getBean("orderCustomerService");
+			orderElectricianService = (IGetOrderElectricianService) ApplicationContextUtil.getBean("getOrderElectricianService");
 			baseSystemConfigService = (IBaseSystemConfigService) ApplicationContextUtil.getBean("baseSystemConfigService");
+
+			BaseSystemConfig baseSystemConfig = baseSystemConfigService.getBaseSystemConfigByConfigType("7");
 			
-			BaseSystemConfig baseSystemConfig = baseSystemConfigService.getBaseSystemConfigByConfigType("2");
-			List<String> orderStatus = new ArrayList<>();
-			orderStatus.add("1");
-			orderStatus.add("11");
+			List<OrderElectrician> orderElectricians = orderElectricianService.findByOrderElectricianType("2", baseSystemConfig.getConfigValue());
+		
+			//修改状态 待郭庆提供接口
 			
-			List<OrderCustomer> orderCustomers = orderCustomerService.findByOrderStatus(orderStatus, baseSystemConfig.getConfigValue());
 			
 			//放入派单队列中
 			
 			
 			
-		
+			
 		
 		} catch (Exception e) {
 			e.printStackTrace();

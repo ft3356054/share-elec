@@ -57,9 +57,9 @@ public class BaseSystemConfigService implements IBaseSystemConfigService{
 	
 	@Override
 	@Cacheable(cacheNames = "baseSystemConfig" ,  keyGenerator = "wiselyKeyGenerator") 
-	public QueryResultObject getBaseSystemConfigByConfigType(String configType) {
+	public BaseSystemConfig getBaseSystemConfigByConfigType(String configType) {
 		BaseSystemConfig baseSystemConfig = baseSystemConfigRepository.findByConfigType(configType);
-		return RestUtils.wrappQueryResult(baseSystemConfig);
+		return baseSystemConfig;
 	}
 	
 	
