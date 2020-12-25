@@ -523,6 +523,12 @@ public class OrderCustomerService implements IOrderCustomerService{
 		return RestUtils.wrappQueryResult(orderCustomers);
 	}
 	
+	@Override
+	public List<OrderCustomer> findByOrderStatus(List<String> orderStatus, String pastTime){
+		List<OrderCustomer> list = orderCustomerRepository.findByOrderStatus(orderStatus,pastTime);
+		return list;
+	}
+	
 	
 	
 	

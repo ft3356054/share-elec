@@ -28,6 +28,7 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
+import com.sgcc.uap.share.domain.BaseSystemConfig;
 import com.sgcc.uap.share.services.IBaseSystemConfigService;
 import com.sgcc.uap.share.vo.BaseSystemConfigVO;
 
@@ -89,7 +90,7 @@ public class BaseSystemConfigController {
 	@RequestMapping(value = "/ConfigType/{configType}")
 	public WrappedResult getByConfigType(@PathVariable String configType) {
 		try {
-			QueryResultObject result = baseSystemConfigService.getBaseSystemConfigByConfigType(configType);
+			BaseSystemConfig result = baseSystemConfigService.getBaseSystemConfigByConfigType(configType);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {

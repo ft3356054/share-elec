@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.customer.services;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +31,13 @@ public interface IOrderCustomerService {
 	 */
 	public QueryResultObject getOrderCustomerByOrderId(String orderId);
 	
+	/**
+	 * 通过 订单状态 批量获取订单
+	 * @param orderElectricianType
+	 * @param pastTime
+	 * @return
+	 */
+	public List<OrderCustomer> findByOrderStatus(List<String> orderStatus, String pastTime);
 	
 	/**
 	 * 搜索页面模糊查询
