@@ -1214,11 +1214,43 @@ public class OrderElectricianController {
 		
 		
 	}
+		
+		
 	
 	}
 	
 	
 	
+	/**
+	 * 主要用于测试service接口
+	*/
+	
+	@RequestMapping(value="/test1/{orderId}",name="抢单弹窗")
+	@ResponseBody
+	public void test1(@PathVariable(value="orderId") String orderId){
+		
+		orderElectricianService.qiangdantanchuang(orderId);
+		
+	
+	}
+	@RequestMapping(value="/esc",name="取消订单")
+	public WrappedResult esc(@RequestParam(value="orderId") String orderId,
+			@RequestParam(value="electricianId") String electricianId
+			){
+		try {
+			
+			orderElectricianService.esc(orderId,electricianId);
+			
+			
+			return WrappedResult.successWrapedResult("true");
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			return WrappedResult.successWrapedResult("false");
+		}
+		
+		
+	}
 	
 	
 	

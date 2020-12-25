@@ -252,5 +252,10 @@ public class ElecPositionService implements IElecPositionService{
 		return new PageRequest(pageIndex - 1, pageSize, null);
 	}
 
+	public List<ElecPosition> findByAreaId(String areaId) {
+		List<ElecPosition> list=elecPositionRepository.findByAreaId(areaId);
+		return list;
+	}
+
 
 }

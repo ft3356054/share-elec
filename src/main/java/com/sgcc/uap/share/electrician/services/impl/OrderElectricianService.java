@@ -49,6 +49,7 @@ import com.sgcc.uap.share.domain.BaseAreaPrice;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.BaseIdentityPrice;
 import com.sgcc.uap.share.domain.CustPosition;
+import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
 import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
@@ -58,6 +59,7 @@ import com.sgcc.uap.share.domain.OrderElectricianHis;
 import com.sgcc.uap.share.electrician.controller.OrderElectricianController;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
+import com.sgcc.uap.share.electrician.vo.OrderElectricianVO;
 import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
 import com.sgcc.uap.share.services.impl.BaseEnumsService;
 import com.sgcc.uap.share.services.impl.BaseIdentityPriceService;
@@ -76,9 +78,6 @@ import com.sgcc.uap.util.UuidUtil;
 import com.sgcc.uap.utils.string.StringUtil;
 
 
-
-
-
 @Service
 public class OrderElectricianService implements IOrderElectricianService{
 	/** 
@@ -90,7 +89,9 @@ public class OrderElectricianService implements IOrderElectricianService{
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(OrderElectricianController.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(OrderElectricianService.class);
+
+	
 	
 	@Autowired
 	private OrderElectricianRepository orderElectricianRepository;
@@ -1175,46 +1176,84 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		//3.创建子订单，向集合的电工发布消息
 		
 		
+		try {
+			
+		
 		//1.通过orderID查询客户的区域ID
 		CustPosition custPosition=custPositionService.findByOrderId(orderId);
 		String areaId=custPosition.getAreaId();
 		
 		//2.根据查询出来的区域ID查询此区域内的全部电工
-		//elecPositionService.findByAr
+		List<ElecPosition> elecPositionList=elecPositionService.findByAreaId(areaId);
+		
+		//此集合用于存放在线状态的电工
+		List<ElecPosition> elecPositions=new ArrayList<ElecPosition>();
 		
 		
+		//根据客户的区域ID得到电工的区域范围
+		double[] around=PointUtil.getAround(Double.valueOf(custPosition.getLon()), Double.valueOf(custPosition.getLat()), 100000);
 		
+		//3.循环查询电工状态，留下 【 范围内】  【 在线状态】    的电工
+		for (ElecPosition elecPosition : elecPositionList) {
+			//3.1 根据电工的ID查询电工信息
+			String electricianId=elecPosition.getElectricianId();
+			
+			ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
+			logger.info("***************electricianInfo.getElectricianStatus()**********"+electricianInfo.getElectricianStatus());
+			if (electricianInfo.getElectricianStatus().equals("1")) {  //如果电工的状态是1,则代表电工在线
+				if (Double.valueOf(elecPosition.getLon())>around[0] && Double.valueOf(elecPosition.getLon())<around[2] && Double.valueOf(elecPosition.getLat())>around[1] && Double.valueOf(elecPosition.getLat())<around[3]){
+					
+					//3.2获取到了范围内的可以接单的电工
+						elecPositions.add(elecPosition);   
+					
+			}
+		}
+		}
 		
+		//4.创建一个电工子订单，然后将子订单po转化成VO	
+			OrderElectrician orderElectrician=saveNewNullOrderElectrician(orderId);
+			OrderElectricianVO orderElectricianVO=new OrderElectricianVO();
+			BeanUtils.copyProperties(orderElectrician, orderElectricianVO);
 		
+			Double distanceDouble=null;
+			
+		if (elecPositions.size()==0) {
+			
+		}else if (elecPositions.size()==1) {
+			//获取电工与客户之间的距离
+			distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPositions.get(0).getLon()), String.valueOf(elecPositions.get(0).getLat()), custPosition.getLon(), custPosition.getLat());
+			orderElectricianVO.setDistance(String.valueOf(distanceDouble));
+			
+			WebSocketServer.sendInfo(JsonUtils.objToJson(orderElectricianVO),(String)elecPositions.get(0).getElectricianId());
+			
+		}else {//表明有多个电工
+			for (ElecPosition elecPosition1 : elecPositions) {
+				distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPosition1.getLon()), String.valueOf(elecPosition1.getLat()), custPosition.getLon(), custPosition.getLat());
+				orderElectricianVO.setDistance(String.valueOf(distanceDouble));
+				
+				WebSocketServer.sendInfo(JsonUtils.objToJson(orderElectricianVO),(String)elecPosition1.getElectricianId());
+				
+			}
+			
+				
+			}
+		System.out.println("我执行完了");
+		
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			
+			
+		}
+		
+
 	}
 	
 	
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
-	
 	
 	public static ElectricianInfo getFirstElectricianInfo(Map<Double, ElectricianInfo> map) {
 		ElectricianInfo obj = null;
@@ -1227,6 +1266,90 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	    return  obj;
 	}
 	
+	
+	
+	/**
+	 * 创建一个没有电工信息的电工子订单
+	 */
+	
+	@Override
+	public OrderElectrician saveNewNullOrderElectrician(String orderId) throws Exception{
+		
+		OrderElectrician saveOrderElectrician=null;
+		
+		
+		//新的客户订单
+		OrderCustomer orderCustomer=new OrderCustomer();
+		//新的电工订单
+		OrderElectrician orderElectrician=new OrderElectrician();
+		
+		
+		Map<String,Object> map=new HashMap<String, Object>();
+		
+		QueryResultObject resultObject=new QueryResultObject();
+		
+		
+		//1.查询出来客户表
+		resultObject=orderCustomerService.findByOrderId(orderId);
+		List<OrderCustomer> list=resultObject.getItems();
+		
+		
+		
+		//2.判断客户表是否是新表
+		if(list.get(0).getOrderStatus().equals("11")){
+			//2.1电工接单的单子是11，说明是老单子设置客户订单表单状态为2，只需要将电工的填写的信息挪到新的电工订单就好
+			List<OrderElectrician> orderElectricianOlds=findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(orderId,"5");
+			OrderElectrician orderElectricianOld=orderElectricianOlds.get(0);
+			//电工描述
+			map.put("electricianDescrive", orderElectricianOld.getElectricianDescrive());
+			//电工拍照
+			map.put("electricianDescriveIcon", orderElectricianOld.getElectricianDescriveIcon());
+			
+			
+		}
+		map.put("orderElectricianId",UuidUtil.getUuid32());
+		
+		map.put("electricianAddress",null);
+		map.put("otherElectricianId",null);
+		map.put("orderTypeId",null);
+		map.put("electricianPrice",null);
+		map.put("orderElectricianType","20");
+		map.put("payStatus",orderCustomer.getPayStatus());
+		map.put("createTime",DateTimeUtil.formatDateTime(new Date()));
+		
+		map.put("orDERId",orderId);
+		map.put("orderId", orderId);
+		saveOrderElectrician = saveOrderElectrician(map);
+		
+		
+		return saveOrderElectrician;
+		
+	}
+	@Override
+	public void esc(String orderId, String electricianId) {
+		
+		
+		try {
+			
+		
+		//先根据orderId查询客户订单，将其状态变为11
+
+		OrderCustomer orderCustomer=orderCustomerService.findOrderId(orderId);
+		orderCustomer.setOrderStatus("11");
+		
+		//MultipartFile file=null;
+		//orderCustomerService.saveOrderCustomer(map, file);
+		//保存新状态的客户订单
+		orderCustomerRepository.save(orderCustomer);
+		
+		OrderElectrician orderElectrician=findByElectricianIdAndOrderId(electricianId, orderId);
+		orderElectrician.setOrderElectricianType("1");
+		orderElectricianRepository.save(orderElectrician);
+		} catch (Exception e) {
+			
+		}
+		
+	}
 	
 
 	
