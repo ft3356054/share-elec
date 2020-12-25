@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.customer.services.impl;
+package com.sgcc.uap.share.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +11,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.sgcc.uap.exception.NullArgumentException;
@@ -27,9 +25,9 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
-import com.sgcc.uap.share.customer.repositories.CustomerInfoRepository;
-import com.sgcc.uap.share.customer.services.ICustomerInfoService;
-import com.sgcc.uap.share.domain.CustomerInfo;
+import com.sgcc.uap.share.domain.BaseSystemConfig;
+import com.sgcc.uap.share.repositories.BaseSystemConfigRepository;
+import com.sgcc.uap.share.services.IBaseSystemConfigService;
 
 
 /**
@@ -41,60 +39,52 @@ import com.sgcc.uap.share.domain.CustomerInfo;
  *
  * @author 18511
  */
-@Service("customerInfoService")
-public class CustomerInfoService implements ICustomerInfoService{
+@Service
+public class BaseSystemConfigService implements IBaseSystemConfigService{
 	/** 
-     * 注入customerInfoRepository
+     * 注入baseSystemConfigRepository
      */
 	@Autowired
-	private CustomerInfoRepository customerInfoRepository;
+	private BaseSystemConfigRepository baseSystemConfigRepository;
 	@Autowired
 	private ValidateService validateService;
 	
-	@Autowired
-    private StringRedisTemplate stringRedisTemplate;
+	@Override
+	public QueryResultObject getBaseSystemConfigByConfigId(String configId) {
+		BaseSystemConfig baseSystemConfig = baseSystemConfigRepository.findOne(configId);
+		return RestUtils.wrappQueryResult(baseSystemConfig);
+	}
 	
 	@Override
-	@Cacheable(cacheNames = "customerInfo" ,  keyGenerator = "wiselyKeyGenerator") //redis缓存
-	public QueryResultObject getCustomerInfoByCustomerId(String customerId) {
-		CustomerInfo customerInfo = customerInfoRepository.findOne(customerId);
-		//stringRedisTemplate.opsForValue().set("aaa", "111");
-		//stringRedisTemplate.opsForValue().set("mykeys", "value", 1L, TimeUnit.DAYS);
-		return RestUtils.wrappQueryResult(customerInfo);
+	@Cacheable(cacheNames = "baseSystemConfig" ,  keyGenerator = "wiselyKeyGenerator") 
+	public QueryResultObject getBaseSystemConfigByConfigType(String configType) {
+		BaseSystemConfig baseSystemConfig = baseSystemConfigRepository.findByConfigType(configType);
+		return RestUtils.wrappQueryResult(baseSystemConfig);
 	}
 	
 	
 	@Override
-	@CacheEvict(cacheNames = "customerInfo",keyGenerator = "wiselyKeyGenerator" , allEntries = true) //redis缓存
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){
 			throw new NullArgumentException("idObject");
 		}
 		String[] ids = idObject.getIds();
 		for (String id : ids){
-			customerInfoRepository.delete(id);
+			baseSystemConfigRepository.delete(id);
 		}
 	}
-	
 	@Override
-	@CacheEvict(cacheNames = "customerInfo",keyGenerator = "wiselyKeyGenerator" , allEntries = true) //redis缓存
-	public CustomerInfo saveCustomerInfo(Map<String,Object> map) throws Exception{
-		validateService.validateWithException(CustomerInfo.class,map);
-		CustomerInfo customerInfo = null;
-		if (map.containsKey("customerId")) {
-			String customerId = (String) map.get("customerId");
-			customerInfo = customerInfoRepository.findOne(customerId);
-			if(null!=customerInfo){
-				CrudUtils.mapToObject(map, customerInfo,  "customerId");
-			}else{
-				customerInfo = new CustomerInfo();
-				CrudUtils.transMap2Bean(map, customerInfo);
-			}
+	public BaseSystemConfig saveBaseSystemConfig(Map<String,Object> map) throws Exception{
+		validateService.validateWithException(BaseSystemConfig.class,map);
+		BaseSystemConfig baseSystemConfig = new BaseSystemConfig();
+		if (map.containsKey("configId")) {
+			String configId = (String) map.get("configId");
+			baseSystemConfig = baseSystemConfigRepository.findOne(configId);
+			CrudUtils.mapToObject(map, baseSystemConfig,  "configId");
 		}else{
-			customerInfo = new CustomerInfo();
-			CrudUtils.transMap2Bean(map, customerInfo);
+			CrudUtils.transMap2Bean(map, baseSystemConfig);
 		}
-		return customerInfoRepository.save(customerInfo);
+		return baseSystemConfigRepository.save(baseSystemConfig);
 	}
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
@@ -129,14 +119,14 @@ public class CustomerInfoService implements ICustomerInfoService{
 	 * @querySingle:主从表单页查询方法
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-24 17:04:33
 	 * @author 18511
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
 		List<QueryFilter> qList = getFilterList(queryCondition);
-		Specification<CustomerInfo> specification = new Specification<CustomerInfo>() {
+		Specification<BaseSystemConfig> specification = new Specification<BaseSystemConfig>() {
 			@Override
-			public Predicate toPredicate(Root<CustomerInfo> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<BaseSystemConfig> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -151,12 +141,12 @@ public class CustomerInfoService implements ICustomerInfoService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<CustomerInfo> customerInfo = customerInfoRepository.findAll(specification,request);
-		List<CustomerInfo> result = new ArrayList<CustomerInfo>();
+		Page<BaseSystemConfig> baseSystemConfig = baseSystemConfigRepository.findAll(specification,request);
+		List<BaseSystemConfig> result = new ArrayList<BaseSystemConfig>();
 		long count = 0;
 		if(null != qList && !qList.isEmpty()){
-			result = customerInfo.getContent();
-			count = customerInfo.getTotalElements();
+			result = baseSystemConfig.getContent();
+			count = baseSystemConfig.getTotalElements();
 		}
 		return RestUtils.wrappQueryResult(result, count);
 	}
@@ -174,14 +164,14 @@ public class CustomerInfoService implements ICustomerInfoService{
 	 * @queryCommon:查询方法(通用的)
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-24 17:04:33
 	 * @author 18511
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
 		List<QueryFilter> qList = queryCondition.getQueryFilter(); 
-		Specification<CustomerInfo> specification = new Specification<CustomerInfo>() {
+		Specification<BaseSystemConfig> specification = new Specification<BaseSystemConfig>() {
 			@Override
-			public Predicate toPredicate(Root<CustomerInfo> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<BaseSystemConfig> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -196,11 +186,11 @@ public class CustomerInfoService implements ICustomerInfoService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<CustomerInfo> customerInfo = customerInfoRepository.findAll(specification,request);
-		List<CustomerInfo> result = new ArrayList<CustomerInfo>();
+		Page<BaseSystemConfig> baseSystemConfig = baseSystemConfigRepository.findAll(specification,request);
+		List<BaseSystemConfig> result = new ArrayList<BaseSystemConfig>();
 		long count = 0;
-		result = customerInfo.getContent();
-		count = customerInfo.getTotalElements();
+		result = baseSystemConfig.getContent();
+		count = baseSystemConfig.getTotalElements();
 		return RestUtils.wrappQueryResult(result, count);
 	}
 	
@@ -208,7 +198,7 @@ public class CustomerInfoService implements ICustomerInfoService{
 	 * @getFilterList:获取条件列表
 	 * @param queryCondition 查询条件
 	 * @return List<QueryFilter> 查询条件列表
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-24 17:04:33
 	 * @author 18511
 	 */
 	private List<QueryFilter> getFilterList(RequestCondition queryCondition) {
@@ -230,7 +220,7 @@ public class CustomerInfoService implements ICustomerInfoService{
 	 * @buildPageRequest:构建PageRequest
 	 * @param queryCondition 查询条件
 	 * @return PageRequest 页面请求对象
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-12-24 17:04:33
 	 * @author 18511
 	 */
 	private PageRequest buildPageRequest(RequestCondition queryCondition) {
