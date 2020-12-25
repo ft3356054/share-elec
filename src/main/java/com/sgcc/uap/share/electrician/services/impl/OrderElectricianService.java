@@ -2,10 +2,13 @@ package com.sgcc.uap.share.electrician.services.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,6 +18,7 @@ import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 //import org.springframework.data.domain.PageRequest;
@@ -31,18 +35,23 @@ import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryFilter;
 import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
+import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.controller.WebSocket;
 import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
+import com.sgcc.uap.share.customer.services.impl.CustPositionService;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.customer.services.impl.OrderFlowService;
+import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
 import com.sgcc.uap.share.domain.BaseAreaPrice;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.BaseIdentityPrice;
+import com.sgcc.uap.share.domain.CustPosition;
 import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
 import com.sgcc.uap.share.domain.ElectricianInfo;
+import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderElectricianHis;
@@ -57,7 +66,10 @@ import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
 import com.sgcc.uap.util.DecimalUtil;
 import com.sgcc.uap.util.FileUtil;
+import com.sgcc.uap.util.JsonUtils;
+import com.sgcc.uap.util.MapGetValueUtil;
 import com.sgcc.uap.util.MapUtil;
+import com.sgcc.uap.util.PointUtil;
 import com.sgcc.uap.util.SorterUtil;
 import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
@@ -103,11 +115,25 @@ public class OrderElectricianService implements IOrderElectricianService{
 	@Autowired
 	private BaseAreaPriceService baseAreaPriceService;
 	
+	
+	
 	@Autowired
 	private BaseIdentityPriceService baseIdentityPriceService;
 	
 	@Autowired
 	private BaseEnumsService baseEnumsService;
+	
+	@Autowired
+	private CustPositionService custPositionService;
+	
+	@Autowired
+	private OrderCustomerService orderCustomerService;
+	
+	@Autowired
+	private ElectricianSubCompanyInfoService electricianSubCompanyInfoService;
+	
+	@Autowired
+	private ElecPositionService elecPositionService;
 	 
 	@Override
 	public QueryResultObject getOrderElectricianByOrderElectricianId(String orderElectricianId) {
@@ -620,9 +646,9 @@ public class OrderElectricianService implements IOrderElectricianService{
 			
 			
 			//发送websocket消息
-	      
+	       */
 	        WebSocketServer.sendInfo("下单成功",(String)map.get("electricianId"));
-	        */
+	       
 		return result;
 	}
 	
@@ -956,14 +982,253 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	}
 	
 	
+	/**
+	 * 派单查询，是给一个人进行展示
+	 * @throws Exception 
+	 */
+	@Override
+	public void paidanchaxun(String orderId) throws Exception {
+		
+		//根据客户orderId获取其地区ID
+		//根据地区ID查询所属地区的电力子公司
+		//然后再查询电力子公司下距离最近的电工
+		//将 查询查询出来的信息放入到websocket
+		
+		
+		//1.获取客户的位置信息
+		CustPosition custPosition=custPositionService.findByOrderId(orderId);
+		String areaId=custPosition.getAreaId();
+		
+		//2.根据客户区域ID查询此区域的子公司的集合
+		List<ElectricianSubCompanyInfo>  electricianSubCompanyInfoList=electricianSubCompanyInfoService.findByCompanyAreaId(areaId);
+		
+		ElectricianSubCompanyInfo electricianSubCompanyInfo=null;
+		if (electricianSubCompanyInfoList.size()>1) {//说明有多个电力子公司
+			
+			//判断哪个电力子公司距离最近
+			
+			Map<Double, ElectricianSubCompanyInfo> map = new TreeMap<Double, ElectricianSubCompanyInfo>(
+	                new Comparator<Double>() {
+	                    public int compare(Double obj1, Double obj2) {
+	                        // 降序排序
+	                        return obj1.compareTo(obj2);
+	                    }
+	                });
+			
+			
+			
+			Double distanceDouble=null;	
+			
+			for (ElectricianSubCompanyInfo electricianSubCompanyInfo1 : electricianSubCompanyInfoList) {
+				
+				//获取订单 的位置,即经纬度，进行对比
+				String electricianSubCompanyInfoLon=electricianSubCompanyInfo1.getAddressLongitude();
+				String electricianSubCompanyInfoLat=electricianSubCompanyInfo1.getAddressLatitude();
+				
+				
+				distanceDouble=PointUtil.getDistanceString(String.valueOf(custPosition.getLon()), String.valueOf(custPosition.getLat()), electricianSubCompanyInfoLon, electricianSubCompanyInfoLat);
+				System.out.println("计算的距离是："+distanceDouble);
+				
+      
+				map.put(distanceDouble, electricianSubCompanyInfo1);
+	
+			}
+			electricianSubCompanyInfo=MapGetValueUtil.getFirstOrNull(map);
+			
+			
+			
+		}else {//说明有一个电力子公司
+			electricianSubCompanyInfo=electricianSubCompanyInfoList.get(0);
+		}
+		
+		
+		
+		
+		ElectricianInfo electricianInfo=null;
+		//根据查询出来的电力子公司名字查询旗下所属的电工
+		String companyName=electricianSubCompanyInfo.getCompanyName();
+		
+		List<ElectricianInfo> electricianInfoList=electricianInfoService.findBycompanyName(companyName);
+		
+		Map<Double, ElectricianInfo> map = new TreeMap<Double, ElectricianInfo>(
+	            new Comparator<Double>() {
+	                public int compare(Double obj1, Double obj2) {
+	                    // 降序排序
+	                    return obj1.compareTo(obj2);
+	                }
+	            });
+		
+		Double distanceDouble=null;
+		
+		if (electricianInfoList.size()>1) {
+			for (ElectricianInfo electricianInfo2 : electricianInfoList) {
+				
+				//获取订单 的位置,即经纬度，进行对比
+				String electricianInfoLon=electricianInfo2.getAddressLongitude();
+				String electricianInfoLat=electricianInfo2.getAddressLatitude();
+
+				distanceDouble=PointUtil.getDistanceString(String.valueOf(custPosition.getLon()), String.valueOf(custPosition.getLat()), electricianInfoLon, electricianInfoLat);
+				System.out.println("计算的距离是："+distanceDouble);
+				
+
+				map.put(distanceDouble, electricianInfo2);
+				
+				
+				
+				
+			}
+			electricianInfo=getFirstElectricianInfo(map);
+			
+		}else {
+			electricianInfo=electricianInfoList.get(0);
+			
+			
+		}
+		
+		
+		String electricianId=electricianInfo.getElectricianId();
+		OrderElectrician orderElectrician=saveNewOrderElectrician(orderId,electricianId);		
+		
+		
+			
+		WebSocketServer.sendInfo(JsonUtils.objToJson(orderElectrician),(String)electricianInfo.getElectricianId());
+		
+		
+		
+	
+	}
+	
+	
+	
+	
+	@Override
+	public OrderElectrician saveNewOrderElectrician(String orderId,String electricianId) throws Exception{
+		
+		OrderElectrician saveOrderElectrician=null;
+		
+		
+		//新的客户订单
+		OrderCustomer orderCustomer=new OrderCustomer();
+		//新的电工订单
+		OrderElectrician orderElectrician=new OrderElectrician();
+		//查询出的当前电工信息
+		ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
+		
+		Map<String,Object> map=new HashMap<String, Object>();
+		
+		QueryResultObject resultObject=new QueryResultObject();
+		
+		
+		//1.查询出来客户表
+		resultObject=orderCustomerService.findByOrderId(orderId);
+		List<OrderCustomer> list=resultObject.getItems();
+		
+		
+		
+		//2.判断客户表是否是新表
+		if(list.get(0).getOrderStatus().equals("11")){
+			//2.1电工接单的单子是11，说明是老单子设置客户订单表单状态为2，只需要将电工的填写的信息挪到新的电工订单就好
+			List<OrderElectrician> orderElectricianOlds=findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(orderId,"5");
+			OrderElectrician orderElectricianOld=orderElectricianOlds.get(0);
+			//电工描述
+			map.put("electricianDescrive", orderElectricianOld.getElectricianDescrive());
+			//电工拍照
+			map.put("electricianDescriveIcon", orderElectricianOld.getElectricianDescriveIcon());
+			
+			
+		}
+		map.put("orderElectricianId",UuidUtil.getUuid32());
+		map.put("electricianId",electricianId);
+		map.put("electricianName",electricianInfo.getElectricianName());
+		map.put("electricianPhonenumber",electricianInfo.getElectricianPhonenumber());
+		map.put("electricianAddress",null);
+		map.put("otherElectricianId",null);
+		map.put("orderTypeId",null);
+		map.put("electricianPrice",null);
+		map.put("orderElectricianType","20");
+		map.put("payStatus",orderCustomer.getPayStatus());
+		map.put("createTime",DateTimeUtil.formatDateTime(new Date()));
+		
+		map.put("orDERId",orderId);
+		map.put("orderId", orderId);
+		saveOrderElectrician = saveOrderElectrician(map);
+		
+		
+		return saveOrderElectrician;
+		
+	}
+	
+	
+	
+	
+	/**
+	 * 进行抢单弹窗功能接口
+	 * @param map
+	 * @return
+	 */
+	
+	@Override
+	public void qiangdantanchuang(String orderId){
+		
+		//1.通过orderID查询客户的区域ID
+		//2.根据查询出来的区域ID查询此区域内的全部电工
+		//3.创建子订单，向集合的电工发布消息
+		
+		
+		//1.通过orderID查询客户的区域ID
+		CustPosition custPosition=custPositionService.findByOrderId(orderId);
+		String areaId=custPosition.getAreaId();
+		
+		//2.根据查询出来的区域ID查询此区域内的全部电工
+		//elecPositionService.findByAr
+		
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	
 	
+	public static ElectricianInfo getFirstElectricianInfo(Map<Double, ElectricianInfo> map) {
+		ElectricianInfo obj = null;
+	    for (Entry<Double, ElectricianInfo> entry : map.entrySet()) {
+	        obj = entry.getValue();
+	        if (obj != null) {
+	            break;
+	        }
+	    }
+	    return  obj;
+	}
 	
 	
-	
-	
-	
+
 	
 	
 	
@@ -973,9 +1238,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	
 	
 	
-	
-	
-	
+
 	
 	
 	

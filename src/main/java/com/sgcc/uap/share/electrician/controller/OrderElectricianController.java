@@ -48,15 +48,19 @@ import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
+import com.sgcc.uap.share.customer.services.impl.CustPositionService;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.customer.services.impl.OrderFlowService;
 import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
+import com.sgcc.uap.share.domain.CustPosition;
+import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderElectricianHis;
 import com.sgcc.uap.share.domain.OrderFlow;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
+import com.sgcc.uap.share.electrician.services.impl.ElecPositionService;
 import com.sgcc.uap.share.electrician.services.impl.ElectricianInfoService;
 import com.sgcc.uap.share.electrician.services.impl.OrderElectricianHisService;
 import com.sgcc.uap.share.electrician.services.impl.OrderElectricianService;
@@ -132,7 +136,13 @@ public class OrderElectricianController {
 	
 	@Autowired
 	private ElectricianInfoService electricianInfoService;
-	private OrderElectrician saveOrderElectrician;
+	
+	
+	@Autowired
+	private ElecPositionService  elecPositionService;
+	
+	@Autowired
+	private CustPositionService   custPositionService;
 	
 	/**
 	 * @getByOrderElectricianId:根据orderElectricianId查询
@@ -330,9 +340,11 @@ public class OrderElectricianController {
 	public WrappedResult qiangdanrecept(@RequestParam(value="orderId" )String orderId,
 			@RequestParam(value="electricianId") String electricianId
 			) throws Exception{
-		
+		//OrderElectrician saveOrderElectrician=null;
+		QueryResultObject resultObject=new QueryResultObject();
 		try {
 			
+			/*
 		//新的客户订单
 		OrderCustomer orderCustomer=new OrderCustomer();
 		//新的电工订单
@@ -342,7 +354,7 @@ public class OrderElectricianController {
 		
 		Map<String,Object> map=new HashMap<String, Object>();
 		
-		QueryResultObject resultObject=new QueryResultObject();
+		
 		
 		
 		//1.查询出来客户表
@@ -385,9 +397,23 @@ public class OrderElectricianController {
 		
 		saveOrderElectrician = orderElectricianService.saveOrderElectrician(map);
 		
-		
-		return WrappedResult.successWrapedResult(saveOrderElectrician);
-		
+		*/
+			
+			//1.查询出来客户表
+			resultObject=orderCustomerService.findByOrderId(orderId);
+			List<OrderCustomer> list=resultObject.getItems();
+			
+			//插入一个条件，如果查询出来的客户表订单为20，表明是已经有人接了单子
+			if(list.get(0).getOrderStatus().equals("20")){
+				String msg="已经有人接了客户订单";
+				return WrappedResult.failedWrappedResult(msg);
+				 
+			}
+			
+			OrderElectrician orderElectrician=orderElectricianService.saveNewOrderElectrician(orderId,electricianId);
+			
+			
+			return WrappedResult.successWrapedResult(orderElectrician);
 		
 				
 		} catch (Exception e) {
@@ -556,6 +582,9 @@ public class OrderElectricianController {
 		}
 	}
 	
+	
+	
+	
 
 	
 	
@@ -570,46 +599,82 @@ public class OrderElectricianController {
 	@RequestMapping("/queryAllOrder/{electricianId}")
 	public WrappedResult queryAllOrder(@PathVariable String electricianId){
 		
-		stringRedisTemplate.opsForValue().get(electricianId);
 		
-		Map<String, Object> electricianLocation = new HashMap<String, Object>();
-		String json = stringRedisTemplate.opsForValue().get(electricianId);
-		electricianLocation = JsonUtils.parseJSONstr2Map(json);
-		logger.info("经度:"+electricianLocation.get("lon")); 
-		logger.info("纬度:"+electricianLocation.get("lat")); 
+		//1.先根据电工的ID获取区域ID
+		//2.根据电工的区域ID获取此区域下的客户区域ID集合
+		//3.根据客户区域ID集合查询客户名下的订单ID
+		//4.根据查询出来的订单ID,进行距离计算，然后进行排序，筛选出一定距离内的客户
 		
-		try {
-			
-			//1.查询客户订单
-			QueryResultObject queryResult=orderCustomerService.findByOrderStatusLike();
-			
-			List<OrderCustomer> orderCustomersList=queryResult.getItems();
-			List<OrderCustomerVO> ovcList=new ArrayList<>();
-			//list
-			 Map<Double, OrderCustomerVO> map = new TreeMap<Double, OrderCustomerVO>(
-		                new Comparator<Double>() {
-		                    public int compare(Double obj1, Double obj2) {
-		                        // 降序排序
-		                        return obj1.compareTo(obj2);
-		                    }
-		                });
-			
-			 Double distanceDouble=null;
-			
-			for (OrderCustomer orderCustomer : orderCustomersList) {
+		
+		//1.先根据电工的ID获取区域ID
+		
+		QueryResultObject resultObject=elecPositionService.getElecPositionByElectricianId(electricianId);
+		List<ElecPosition> elecPositionList=resultObject.getItems();
+		ElecPosition elecPosition=elecPositionList.get(0);
+		String eleArea=elecPosition.getAreaId();
+		
+		//2获取此电工的经纬度范围
+		double[] around=PointUtil.getAround(Double.valueOf(elecPosition.getLon()), Double.valueOf(elecPosition.getLat()), 100000);
+		
+		//地理经纬度在范围内的客户集合
+		List<CustPosition> list=new ArrayList<>();
+		
+		//3.根据电工的区域ID获取此区域下的客户区域ID集合
+		List<CustPosition> custPositionList=custPositionService.getByAreaId(eleArea);
+		
+		int i=custPositionList.size();
+		
+		for (CustPosition custPosition : custPositionList) {
+			if (Double.valueOf(custPosition.getLon())>around[0] && Double.valueOf(custPosition.getLon())<around[2]){
+				if (Double.valueOf(custPosition.getLat())>around[1] && Double.valueOf(custPosition.getLat())<around[3]) {
+					list.add(custPosition);
+					i++;
+				}
+			}
+					
+				
+			}
+	
+		List<OrderCustomer> orderCustomerList= new ArrayList<>();
+		
+		//4.根据  地理经纬度在范围内的客户集合  中的ID去查询客户订单中存在的订单
+		for (CustPosition custPosition : list) {
+			//获取客户的ID，
+			String orderId=custPosition.getOrderId();
+			OrderCustomer orderCustomer=orderCustomerService.findByOrderIdAndOrderStatus(orderId);
+			if (orderCustomer !=null) {
+				orderCustomerList.add(orderCustomer);
+			}
+		}
+		
+		
+		//5.创建的是前端展示的VO对象集合
+		List<OrderCustomerVO> ovcList=new ArrayList<>();
+		
+		 Map<Double, OrderCustomerVO> map = new TreeMap<Double, OrderCustomerVO>(
+	                new Comparator<Double>() {
+	                    public int compare(Double obj1, Double obj2) {
+	                        // 降序排序
+	                        return obj1.compareTo(obj2);
+	                    }
+	                });
+		
+		 Double distanceDouble=null;
+		//6.将查询到的客户订单进行距离排序
+		
+			for (OrderCustomer orderCustomer : orderCustomerList) {
 				OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
 				BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
 				//获取订单 的位置,即经纬度，进行对比
 				String orderCustomerLon=orderCustomerVO.getAddressLongitude();
 				String orderCustomerLat=orderCustomerVO.getAddressLatitude();
-				logger.info("从数据库获取的经度:"+orderCustomerLon);
-				logger.info("从数据库获取的纬度:"+orderCustomerLat);
 				
-				distanceDouble=PointUtil.getDistanceString(String.valueOf(electricianLocation.get("lon")), String.valueOf(electricianLocation.get("lat")), orderCustomerLon, orderCustomerLat);
+				
+				distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPosition.getLon()), String.valueOf(elecPosition.getLat()), orderCustomerLon, orderCustomerLat);
 				System.out.println("计算的距离是："+distanceDouble);
 				orderCustomerVO.setDistance(String.valueOf(distanceDouble)+"KM");
       
-				        map.put(distanceDouble, orderCustomerVO);
+				map.put(distanceDouble, orderCustomerVO);
 	
 			}
 			
@@ -620,82 +685,13 @@ public class OrderElectricianController {
 	            System.out.println(key + ":" + map.get(key));
 	            ovcList.add(map.get(key));
 	        }
-	        queryResult.setItems(ovcList);
-
+	        
 			logger.info("查询数据成功"); 
-			return WrappedResult.successWrapedResult(queryResult);
+			return WrappedResult.successWrapedResult(ovcList);
 			
-		} catch (Exception e) {
-			
+		} 
 
-			logger.error(e.getMessage(), e);
-			String errorMessage = "查询异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
 
-	}
-	
-	
-	
-	
-	/**
-	 * 订单详情，查询的是状态21和2的客户订单，因为只有客户订单里有预约时间这个字段，应该是新的订单，电工已经接单，电工这边还未预约时间
-	 * 此订单应该是电工已经接了的，所以可以传电工的ID
-	 */
-	/*
-	@RequestMapping(value="/findOrderAllInfo/{electricianId}",name="查询电工所接订单的信息")
-	public WrappedResult findOrderAllInfo(@PathVariable String electricianId){
-		try {
-		
-		
-		//1.根据电工ID查询电工订单表中的order_id,然后载根据order_id查询客户订单，进行显示
-		//1.1 查询电工订单，只返回order_id
-		 OrderElectrician order_idsString=orderElectricianService.findByOrderId(electricianId);
-		//获取order_id
-		String orderId=order_idsString.getOrDERId();
-		//获取客户订单的信息
-		
-		//OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
-		
-		//QueryResultObject queryResult
-		QueryResultObject queryResult=orderCustomerService.findByOrderId(orderId);
-		List<OrderCustomer> listOrderCustomers=queryResult.getItems();
-		List<OrderCustomerVO> list=new ArrayList<>();
-		for (OrderCustomer orderCustomer2 : listOrderCustomers) {
-			
-			OrderCustomerVO orderCustomerVO=null;
-			BeanUtils.copyProperties(orderCustomer2, orderCustomerVO);
-			list.add(orderCustomerVO);
-		}
-		
-		
-		
-		
-		queryResult.setItems(list);
-		
-		return WrappedResult.successWrapedResult(queryResult);
-		}
-		catch (ServiceValidatorBaseException e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "校验异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedValidateWrappedResult(errorMessage);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "查询异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
-	}
-	
-	*/
 	
 	/**
 	 * 我的订单模块

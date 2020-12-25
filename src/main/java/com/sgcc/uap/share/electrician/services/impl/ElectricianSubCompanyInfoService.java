@@ -230,6 +230,10 @@ public class ElectricianSubCompanyInfoService implements IElectricianSubCompanyI
 		List<ElectricianSubCompanyInfo> list=electricianSubCompanyInfoRepository.findByCompanyNameLike("%"+companyName+"%");
 		return list;
 	}
+	public List<ElectricianSubCompanyInfo> findByCompanyAreaId(String areaId) {
+		List<ElectricianSubCompanyInfo> list=electricianSubCompanyInfoRepository.findByCompanyAreaId(areaId);
+		return list;
+	}
 
 
 }

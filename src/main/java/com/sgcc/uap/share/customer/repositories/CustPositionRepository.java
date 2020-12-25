@@ -20,4 +20,6 @@ import com.sgcc.uap.share.domain.CustPosition;
 public interface CustPositionRepository extends JpaRepository<CustPosition,String>,JpaSpecificationExecutor<CustPosition> {
 
 	public List<CustPosition> findByAreaId(String areaId);
+
+	public CustPosition findByOrderId(String orderId);
 }

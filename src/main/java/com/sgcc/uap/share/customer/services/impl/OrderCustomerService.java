@@ -537,7 +537,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	public QueryResultObject findByOrderId(String orderId) {
 		
 		// TODO Auto-generated method stub
-		OrderCustomer orderCustomer = orderCustomerRepository.findByOrderId(orderId);
+		OrderCustomer orderCustomer = orderCustomerRepository.findByOrderIdAndOrderStatus(orderId);
 		List<OrderCustomer> result=new ArrayList<>();
 		result.add(orderCustomer);
 		long count=0;
@@ -554,12 +554,22 @@ public class OrderCustomerService implements IOrderCustomerService{
 		count=result.size();
 		return RestUtils.wrappQueryResult(result,count);
 	}
-	public OrderCustomer findOrderId(String electricianId) {
+	
+	/**
+	 * 2020.12.23当时在orderElecricainController中查找了一下，发现没有被使用，就将其修改一下
+	 */
+	
+	public OrderCustomer findOrderId(String orderId) {
 		
-		// TODO Auto-generated method stub
-		OrderCustomer orderIdString=orderCustomerRepository.findOne(electricianId);
+		
+		OrderCustomer orderIdString=orderCustomerRepository.findOne(orderId);
 		return orderIdString;
 	}
+	public OrderCustomer findByOrderIdAndOrderStatus(String orderId) {
+		OrderCustomer orderIdString=orderCustomerRepository.findByOrderIdAndOrderStatus(orderId);
+		return orderIdString;
+	}
+	
 	
 	/*
 	public QueryResultObject queryOrderDetails(String orderId) {
@@ -570,8 +580,5 @@ public class OrderCustomerService implements IOrderCustomerService{
 	}
 */
 	
-	/**
-	 * 
-	 */
-
+	
 }

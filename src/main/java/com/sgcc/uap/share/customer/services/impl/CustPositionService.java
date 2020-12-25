@@ -258,5 +258,10 @@ public class CustPositionService implements ICustPositionService{
 		return new PageRequest(pageIndex - 1, pageSize, null);
 	}
 
+	public CustPosition findByOrderId(String orderId) {
+		CustPosition custPosition=custPositionRepository.findByOrderId(orderId);
+		return custPosition;
+	}
+
 
 }

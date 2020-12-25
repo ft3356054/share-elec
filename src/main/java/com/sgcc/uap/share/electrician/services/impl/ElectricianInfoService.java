@@ -243,6 +243,10 @@ public class ElectricianInfoService implements IElectricianInfoService{
 		ElectricianInfo electricianInfo=electricianInfoRepository.findByElectricianPhonenumber(telephone);
 		return electricianInfo;
 	}
+	public List<ElectricianInfo> findBycompanyName(String companyName) {
+		List<ElectricianInfo> list=electricianInfoRepository.findBycompanyName(companyName);
+		return list;
+	}
 
 
 }

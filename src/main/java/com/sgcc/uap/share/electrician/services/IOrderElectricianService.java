@@ -94,4 +94,19 @@ public QueryResultObject queryAllHaveEsc(String electricianId);
 OrderElectrician saveOrderElectrician(Map<String, Object> map) throws Exception;
 
 
+/**
+ * 给刘哥准备的接口
+ * 根据传送过来的客户订单ID去查询
+ * 
+ * 结果放到websocket
+ * @throws Exception 
+ */
+
+public void paidanchaxun(String orderId) throws Exception;
+
+public OrderElectrician saveNewOrderElectrician(String orderId, String electricianId) throws Exception;
+void qiangdantanchuang(String orderId);
+
+
+
 }
