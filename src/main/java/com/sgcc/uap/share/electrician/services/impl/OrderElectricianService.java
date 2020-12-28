@@ -372,15 +372,10 @@ public class OrderElectricianService implements IOrderElectricianService{
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
 		System.out.println("我使用的是queryCommon方法");
 		List<QueryFilter> qList = queryCondition.getQueryFilter();
-		System.out.println("**********qList************"+qList);
-		System.out.println("");
-		
 		
 		QueryFilter queryFilter = qList.get(0);
 		String fieldName = queryFilter.getFieldName();
-		System.out.println("**********fieldName************"+fieldName);
-		System.out.println("");
-		
+
 		Specification<OrderElectrician> specification = new Specification<OrderElectrician>() {
 			@Override
 			public Predicate toPredicate(Root<OrderElectrician> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
