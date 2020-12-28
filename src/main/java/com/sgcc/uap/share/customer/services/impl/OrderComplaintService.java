@@ -157,7 +157,7 @@ public class OrderComplaintService implements IOrderComplaintService{
 						ElectricianInfo electricianInfo = electricianInfoRepository.findOne(orderElectrician.getElectricianId());
 						
 						//上传图片
-						if (!file.isEmpty()) {
+						if (null!=file&&!"".equals(file)) {
 							String iconUrl = FileUtil.uploadFile(file, getNewOrderId,"ORDER_COMPLAINT", "COMPLAINT_PICTURE");
 							map.put("complaintPicture", iconUrl);
 						}
