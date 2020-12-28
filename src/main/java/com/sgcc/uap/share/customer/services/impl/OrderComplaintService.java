@@ -127,7 +127,7 @@ public class OrderComplaintService implements IOrderComplaintService{
 			result = orderComplaintRepository.save(orderComplaint);
 			
 			//上传图片
-			if (!file.isEmpty()) {
+			if (null!=file&&!"".equals(file)) {
 				String customerDescriveIcon = FileUtil.uploadFile(file, orderComplaintId,"ORDER_COMPLAINT", "COMPLAINT_PICTURE");
 				map.put("customerDescriveIcon", customerDescriveIcon);
 			}
