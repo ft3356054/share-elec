@@ -79,6 +79,6 @@ public interface IOrderCustomerService {
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);
 
-
+	public OrderCustomer updateOrderCustomer(Map<String,Object> map);
 
 }

@@ -2,6 +2,7 @@ package com.sgcc.uap.share.customer.services.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,7 @@ import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.repositories.OrderComplaintRepository;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderComplaintService;
+import com.sgcc.uap.share.customer.services.IOrderCustomerService;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.domain.OrderComplaint;
@@ -66,6 +68,8 @@ public class OrderComplaintService implements IOrderComplaintService{
 	private OrderComplaintRepository orderComplaintRepository;
 	@Autowired
 	private OrderCustomerRepository orderCustomerRepository;
+	@Autowired
+	private IOrderCustomerService orderCustomerService;
 	@Autowired
 	private OrderElectricianRepository orderElectricianRepository;
 	@Autowired
@@ -151,6 +155,13 @@ public class OrderComplaintService implements IOrderComplaintService{
 					OrderElectrician orderElectrician = orderElectricianRepository.findByOrderIdAndOrderElectricianTypeNotIn(orderId, listStatus);
 					if(null!=orderElectrician){
 						ElectricianInfo electricianInfo = electricianInfoRepository.findOne(orderElectrician.getElectricianId());
+						
+						//上传图片
+						if (!file.isEmpty()) {
+							String iconUrl = FileUtil.uploadFile(file, getNewOrderId,"ORDER_COMPLAINT", "COMPLAINT_PICTURE");
+							map.put("complaintPicture", iconUrl);
+						}
+						
 						map.put("companyId", electricianInfo.getSubCompanyId());
 						map.put("companyName", electricianInfo.getCompanyName());
 						map.put("complaintType", "0");
@@ -162,12 +173,11 @@ public class OrderComplaintService implements IOrderComplaintService{
 						CrudUtils.transMap2Bean(map, orderComplaint);
 						result = orderComplaintRepository.save(orderComplaint);
 						
-						
-						//上传图片
-						if (!file.isEmpty()) {
-							String iconUrl = FileUtil.uploadFile(file, getNewOrderId,"ORDER_COMPLAINT", "COMPLAINT_PICTURE");
-							map.put("complaintPicture", iconUrl);
-						}
+						//修改orderCustomer 添加投诉id
+						Map<String, Object> newMap = new HashMap<String, Object>();
+						newMap.put("orderId", orderId);
+						newMap.put("orderComplaintId", getNewOrderId);
+						orderCustomerService.updateOrderCustomer(newMap);
 						
 						
 						//获取Enum通知类

@@ -203,6 +203,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 				areaId = provinceId;
 			}
 					
+			map.put("createAreaId", areaId);
 			map.put("customerPrice", getPrice(identityId, areaId));
 			map.put("orderStatus", "0");
 			map.put("payStatus", "0");
@@ -244,6 +245,26 @@ public class OrderCustomerService implements IOrderCustomerService{
 			
 			//发送websocket消息
 	        WebSocketServer.sendInfo("下单成功",(String)map.get("customerId"));
+		}
+		return result;
+	}
+	
+	
+	
+	@Override
+	public OrderCustomer updateOrderCustomer(Map<String,Object> map){
+		logger.info("OrderCustomerService updateOrderCustomer map = " +map); 
+		OrderCustomer orderCustomer = new OrderCustomer();
+		OrderCustomer result = new OrderCustomer();
+		try {
+		//修改
+		String orderId = (String) map.get("orderId");
+		orderCustomer = orderCustomerRepository.findOne(orderId);
+			CrudUtils.mapToObject(map, orderCustomer,  "orderId");
+			result = orderCustomerRepository.save(orderCustomer);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return result;
 	}
