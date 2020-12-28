@@ -17,5 +17,7 @@ import com.sgcc.uap.share.domain.BaseOrderType;
  */
 public interface BaseOrderTypeRepository extends JpaRepository<BaseOrderType,String>,JpaSpecificationExecutor<BaseOrderType> {
 
+	BaseOrderType findByOrderTypeId(String orderTypeId);
+
 	
 }

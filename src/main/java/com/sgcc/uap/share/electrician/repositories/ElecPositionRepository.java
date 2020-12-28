@@ -19,5 +19,7 @@ import com.sgcc.uap.share.domain.ElecPosition;
  */
 public interface ElecPositionRepository extends JpaRepository<ElecPosition,String>,JpaSpecificationExecutor<ElecPosition> {
 	public List<ElecPosition> findByAreaId(String areaId);
+
+	public ElecPosition findByElectricianId(String electricianId);
 	
 }

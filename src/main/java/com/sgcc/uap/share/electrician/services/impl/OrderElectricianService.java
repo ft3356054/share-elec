@@ -594,7 +594,8 @@ public class OrderElectricianService implements IOrderElectricianService{
 		OrderElectrician result = new OrderElectrician();
 		
 			String orderId = (String) map.get("orderId");
-			orderElectrician=orderElectricianRepository.findByElectricianIdAndOrderId(orderId, (String)map.get("electricianId"));
+			String electricianId =(String) map.get("electricianId");
+			orderElectrician=orderElectricianRepository.findByElectricianIdAndOrderId(electricianId,orderId);
 			
 			
 			
@@ -1330,23 +1331,22 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		
 		try {
-			
-		
 		//先根据orderId查询客户订单，将其状态变为11
-
-		OrderCustomer orderCustomer=orderCustomerService.findOrderId(orderId);
-		orderCustomer.setOrderStatus("11");
-		
-		//MultipartFile file=null;
-		//orderCustomerService.saveOrderCustomer(map, file);
-		//保存新状态的客户订单
-		orderCustomerRepository.save(orderCustomer);
 		
 		OrderElectrician orderElectrician=findByElectricianIdAndOrderId(electricianId, orderId);
 		orderElectrician.setOrderElectricianType("1");
 		orderElectricianRepository.save(orderElectrician);
+		
+		//获取Enum通知类
+		String status="1";
+				BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  status);
+		
+		Map<String,Object> mapOrderFlow = 
+				MapUtil.flowAdd(orderId, 1,  Integer.parseInt(status), orderElectrician.getElectricianId(),TimeStamp.toString(new Date()), 2,  baseEnums.getEnumsA());
+		orderFlowService.saveOrderFlow(mapOrderFlow);
+		
 		} catch (Exception e) {
-			
+			logger.error(e.getMessage(), e);
 		}
 		
 	}

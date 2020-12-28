@@ -257,5 +257,10 @@ public class ElecPositionService implements IElecPositionService{
 		return list;
 	}
 
+	public ElecPosition findByElectricianId(String electricianId) {
+		ElecPosition elecPosition=elecPositionRepository.findByElectricianId(electricianId);
+		return elecPosition;
+	}
+
 
 }

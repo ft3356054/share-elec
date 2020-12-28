@@ -52,6 +52,8 @@ import com.sgcc.uap.share.customer.services.impl.CustPositionService;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.customer.services.impl.OrderFlowService;
 import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
+import com.sgcc.uap.share.domain.BaseOrderType;
+import com.sgcc.uap.share.domain.BaseSystemConfig;
 import com.sgcc.uap.share.domain.CustPosition;
 import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.domain.ElectricianInfo;
@@ -65,6 +67,8 @@ import com.sgcc.uap.share.electrician.services.impl.ElectricianInfoService;
 import com.sgcc.uap.share.electrician.services.impl.OrderElectricianHisService;
 import com.sgcc.uap.share.electrician.services.impl.OrderElectricianService;
 import com.sgcc.uap.share.electrician.vo.OrderElectricianVO;
+import com.sgcc.uap.share.services.impl.BaseOrderTypeService;
+import com.sgcc.uap.share.services.impl.BaseSystemConfigService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
@@ -143,6 +147,9 @@ public class OrderElectricianController {
 	
 	@Autowired
 	private CustPositionService   custPositionService;
+	
+	@Autowired
+	private BaseOrderTypeService baseOrderTypeService;
 	
 	/**
 	 * @getByOrderElectricianId:根据orderElectricianId查询
@@ -445,7 +452,7 @@ public class OrderElectricianController {
 	 * "filter":[""electricianId=2256"","orderElectricianType=8","regiseterTimeBegin=2020-11-10 18:20:00","regiseterTimeEnd=2020-12-10 18:20:00"],
 	 * "sorter":"DESC=createTime"}
 	 */
-	
+	/*
 	@RequestMapping("/queryMore")
 	public WrappedResult queryMore(@QueryRequestParam("params") RequestCondition requestCondition,@RequestParam("electricianId")String electricianId) {
 		Random r=new Random();
@@ -493,7 +500,68 @@ public class OrderElectricianController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	*/
 	
+	@RequestMapping("/queryMore")
+	public WrappedResult queryMore(@QueryRequestParam("params") RequestCondition requestCondition,@RequestParam("electricianId")String electricianId) {
+		Random r=new Random();
+		
+		try {
+			//1.先查询当前电工的电工订单，查询条件是根据当前电工的Id,查询订单状态不是9的订单
+			//1.1查询电工所有待办订单
+			QueryResultObject queryResult = orderElectricianService.queryMore(requestCondition,electricianId);
+			
+			//
+			//1.2查询出来的电工订单，如果订单状态是2(系统派单)，则随机生成公里数
+			
+			List<OrderCustomer> orderCustomers=new ArrayList<>();
+			List<OrderElectrician> list=queryResult.getItems();
+			for (OrderElectrician orderElectrician : list) {
+				String orderId=orderElectrician.getOrDERId();
+				OrderCustomer orderCustomer=orderCustomerService.findOrderId(orderId);
+				orderCustomers.add(orderCustomer);
+			}
+			List<OrderCustomerVO> oevList=new ArrayList<>();
+			 
+			ElecPosition elecPosition=elecPositionService.findByElectricianId(electricianId);
+			Double distanceDouble=null;
+			for (OrderCustomer orderCustomer : orderCustomers) {
+				OrderCustomerVO oev=new OrderCustomerVO();
+				BeanUtils.copyProperties(orderCustomer, oev);
+				
+				//添加订单类型
+				String orderTypeId=oev.getOrderTypeId();
+				BaseOrderType baseOrderType=baseOrderTypeService.findByOrderTypeId(orderTypeId);
+				
+				oev.setOrderTypeId(baseOrderType.getOrderTypeName());
+				
+				if(orderCustomer.getOrderStatus().equals("2")){
+					//随机生成50公里以下的数值
+					distanceDouble=PointUtil.getDistanceString(String.valueOf(orderCustomer.getAddressLongitude()), String.valueOf(orderCustomer.getAddressLatitude()), elecPosition.getLon(), elecPosition.getLat());
+					oev.setDistance(String.valueOf(distanceDouble));
+					
+				}
+				
+				System.out.println("************oov的值是：**********"+oev);
+				oevList.add(oev);
+				
+			}
+			
+			
+			queryResult.setItems(oevList);
+			
+			
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
 	
 	
 	
@@ -1245,7 +1313,7 @@ public class OrderElectricianController {
 			return WrappedResult.successWrapedResult("true");
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			
 			return WrappedResult.successWrapedResult("false");
 		}
 		

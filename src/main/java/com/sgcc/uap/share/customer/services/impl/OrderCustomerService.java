@@ -494,7 +494,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 		}
 		
 		//获取Enum通知类
-		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0",  status);	
+		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  status);	
 		
 		//新增流水
 		Map<String,Object> mapOrderFlow = 

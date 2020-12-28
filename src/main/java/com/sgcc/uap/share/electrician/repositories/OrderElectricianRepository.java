@@ -41,7 +41,7 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 			nativeQuery = true)
 			*/
 	@Query(value = "select * from order_electrician where ELECTRICIAN_ID=:electricianId and ORDER_ELECTRICIAN_TYPE"+
-			"!= :orderElectricianType order by CREATE_TIME asc limit :pageIndex,:pageSize",nativeQuery = true)
+			"!= :orderElectricianType and ORDER_ELECTRICIAN_TYPE !=5  and ORDER_ELECTRICIAN_TYPE !=4 order by CREATE_TIME asc limit :pageIndex,:pageSize",nativeQuery = true)
 	List<OrderElectrician> queryMore(@Param("pageIndex")Integer pageIndex, @Param("pageSize")Integer pageSize, @Param("electricianId")String electricianId, @Param("orderElectricianType")String orderElectricianType);
 
 	//List<OrderElectrician> queryWaitToDo(Integer pageIndex, Integer pageSize, String electricianId, String string);
@@ -81,8 +81,8 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	 * @param orderId
 	 * @return
 	 */
-	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ID=?",nativeQuery = true)
-	OrderElectrician findByElectricianIdAndOrderId(String electricianId, String orderId);
+	@Query(value="select * from order_electrician where ELECTRICIAN_ID=:electricianId and ORDER_ID=:orderId",nativeQuery = true)
+	OrderElectrician findByElectricianIdAndOrderId(@Param("electricianId")String electricianId,@Param("orderId") String orderId);
 	
 	
 	

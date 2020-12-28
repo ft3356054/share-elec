@@ -227,6 +227,10 @@ public class BaseOrderTypeService implements IBaseOrderTypeService{
 		}
 		return new PageRequest(pageIndex - 1, pageSize, null);
 	}
+	public BaseOrderType findByOrderTypeId(String orderTypeId) {
+		BaseOrderType b=baseOrderTypeRepository.findByOrderTypeId(orderTypeId);
+		return b;
+	}
 
 
 }
