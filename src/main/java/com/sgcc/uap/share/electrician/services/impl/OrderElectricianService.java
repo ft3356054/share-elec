@@ -554,7 +554,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 	
 	@Override
 	@Transactional
-	public OrderCustomer saveOrderCustomerByOrderElectricianService(Map<String,Object> map,MultipartFile file) throws Exception{
+	public OrderCustomer saveOrderCustomerByOrderElectricianService(Map<String,Object> map) throws Exception{
 		
 		validateService.validateWithException(OrderCustomer.class,map);
 		OrderCustomer orderCustomer = new OrderCustomer();
@@ -596,7 +596,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 			
 			if("23".equals(map.get("orderElectricianType"))){
 				//上传图片
-				if (!file.isEmpty()) {
+				if  (null!=file&&!"".equals(file))  {
 					String orderContract = FileUtil.uploadFile(file, orderElectrician.getOrDERId(),"ORDER_ELECTRICIAN", "orderContract");
 					map.put("orderContract", orderContract);
 				}
@@ -606,7 +606,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 			}else if ("25".equals(map.get("orderElectricianType"))) {//8状态说明是验收状态页面要进行验收，需要保存图片
 				
 				//上传图片
-				if (!file.isEmpty()) {
+				if (null!=file&&!"".equals(file))  {
 					String inspectionReport = FileUtil.uploadFile(file, orderElectrician.getOrDERId(),"ORDER_ELECTRICIAN", "inspectionReport");
 					map.put("inspectionReport", inspectionReport);
 				}

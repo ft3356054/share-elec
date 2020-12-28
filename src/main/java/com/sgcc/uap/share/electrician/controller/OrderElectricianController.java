@@ -14,7 +14,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.math.RandomUtils;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -33,6 +36,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.util.WebUtils;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.rest.annotation.ColumnRequestParam;
@@ -944,10 +949,19 @@ public class OrderElectricianController {
 		{"orderId":"2020120115365773cd37ab87f44dbaaed5c9976b70de26","orderStatus":"8"}
 	 */
 	@RequestMapping(value="/booking",name="电工预约去维修")
-	public WrappedResult booking(@RequestParam(value = "items", required = false) String items,@RequestParam("myFile") MultipartFile file){
+	public WrappedResult booking(@RequestParam(value = "items", required = false) String items,HttpServletRequest request){
 	
 		
+		
 		try {
+			
+			MultipartFile file=null;
+			Boolean isMultpart=ServletFileUpload.isMultipartContent(request);
+			if (isMultpart) {
+				MultipartHttpServletRequest multipartHttpServletRequest=WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
+				file=multipartHttpServletRequest.getFile("myFile");
+			}
+			
 			
 			QueryResultObject result = new QueryResultObject();
 			
@@ -1016,7 +1030,7 @@ public class OrderElectricianController {
 						orderElectricianMap.put("orderId", map.get("orderId"));
 						orderElectricianMap.put("orderElectricianType", "21");
 						orderElectricianMap.put("electricianId", map.get("electricianId"));
-						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 						result.setFormItems(orderCustomer);
 						result.setFormItems(orderElectrician);
@@ -1038,7 +1052,7 @@ public class OrderElectricianController {
 					orderElectricianMap.put("electricianId", map.get("electricianId"));
 					
 					
-					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 					result.setFormItems(orderCustomer);
 					
@@ -1058,7 +1072,7 @@ public class OrderElectricianController {
 					orderElectricianMap.put("electricianDescrive", map.get("electricianDescrive"));
 					orderElectricianMap.put("electricianId", map.get("electricianId"));
 					
-					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 					System.out.println("我执行完了保存操作");
 					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 					result.setFormItems(orderCustomer);
@@ -1081,7 +1095,7 @@ public class OrderElectricianController {
 					orderElectricianMap.put("electricianId", map.get("electricianId"));
 					orderElectricianMap.put("electricianPrice", map.get("electricianPrice"));
 					
-					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 					System.out.println("我执行完了保存操作");
 					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 					result.setFormItems(orderCustomer);
@@ -1182,7 +1196,7 @@ public class OrderElectricianController {
 						orderElectricianMap.put("electricianId", map.get("electricianId"));
 						
 						
-						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						System.out.println("我执行完了保存操作");
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 						result.setFormItems(orderCustomer);
@@ -1215,7 +1229,7 @@ public class OrderElectricianController {
 						
 						
 						
-						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						System.out.println("我执行完了保存操作");
 						orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 						result.setFormItems(orderCustomer);
@@ -1239,7 +1253,7 @@ public class OrderElectricianController {
 						orderElectricianMap.put("electricianId", map.get("electricianId"));
 						
 						
-						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
+						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						System.out.println("我执行完了保存操作");
 						orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 						result.setFormItems(orderCustomer);
