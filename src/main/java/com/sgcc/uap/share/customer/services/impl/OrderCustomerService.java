@@ -563,7 +563,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	 */
 	public QueryResultObject findByOrderId(String orderId) {
 		
-		// TODO Auto-generated method stub
+		
 		OrderCustomer orderCustomer = orderCustomerRepository.findByOrderIdAndOrderStatus(orderId);
 		List<OrderCustomer> result=new ArrayList<>();
 		result.add(orderCustomer);

@@ -965,6 +965,8 @@ public class OrderElectricianController {
 				String method=(String) map.get("method");
 				
 				if(method.equals("预约")){
+					
+					
 					System.out.println("我现在进行的是预约成功的方法");
 					String orderElectricianType=(String) map.get("orderElectricianType");//获取电工订单的订单状态是否是5
 					//if(orderElectricianType.equals("5")){//说明是电工的退单，则将旧订单查出来后保存成新 的订单
@@ -1005,6 +1007,7 @@ public class OrderElectricianController {
 						
 					}
 					
+					
 					//如果状态是：1，等待接单（用户已支付上门费）状态转为2 
 						orderCustomerMap.put("appointmentTime", map.get("appointmentTime"));//给客户订单设置更新时间
 						orderCustomerMap.put("orderStatus", "21");
@@ -1012,10 +1015,13 @@ public class OrderElectricianController {
 						
 						orderElectricianMap.put("orderId", map.get("orderId"));
 						orderElectricianMap.put("orderElectricianType", "21");
+						orderElectricianMap.put("electricianId", map.get("electricianId"));
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-					result.setFormItems(orderCustomer);
-					result.setFormItems(orderElectrician);
+						result.setFormItems(orderCustomer);
+						result.setFormItems(orderElectrician);
+					
+					
 					
 				}
 				if (method.equals("现场勘查")) {//此时电工和客户订单的状态都是22，电工到达现场，勘察
