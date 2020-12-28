@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.util.WebUtils;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.rest.annotation.ColumnRequestParam;
@@ -33,6 +38,7 @@ import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.customer.services.IOrderComplaintService;
 import com.sgcc.uap.share.customer.vo.OrderComplaintVO;
 import com.sgcc.uap.util.JsonUtils;
+
 
 
 /**
@@ -119,10 +125,20 @@ public class OrderComplaintController {
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public WrappedResult saveOrUpdate(
-		@RequestParam(value = "items", required = false) String items,@RequestParam("myFile") MultipartFile file
+		@RequestParam(value = "items", required = false) String items
+		,HttpServletRequest request
+		//,@RequestParam("myFile") MultipartFile file
 		) throws IOException {	
 	
 		try {
+			MultipartFile file = null;
+	        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+	        if (isMultipart){ 
+	            MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
+	            file = multipartRequest.getFile("myFile");
+	        }
+			
+			
 			QueryResultObject result = new QueryResultObject();
 			
 			if(items != null && !items.isEmpty()){
