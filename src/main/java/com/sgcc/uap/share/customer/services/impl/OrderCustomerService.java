@@ -126,7 +126,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 		if("beginPage".equals(pageType)){
 			custStatus.add("0");
 			custStatus.add("23");
-			custStatus.add("24");
+			custStatus.add("25");
 			custStatus.add("8");
 			
 			elecStatus.add("1");
