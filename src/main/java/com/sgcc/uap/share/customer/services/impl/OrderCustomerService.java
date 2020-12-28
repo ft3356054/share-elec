@@ -169,7 +169,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			
 			if("0".equals(getStatus.get("key"))){
 				//上传图片
-				if (!file.isEmpty()) {
+				if (null!=file&&!"".equals(file)) {
 					String fileName = (String) map.get("fileName");
 					String iconUrl = FileUtil.uploadFile(file, orderId,"ORDER_CUSTOMER",fileName);
 					map.put(fileName, iconUrl);
@@ -187,7 +187,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 		}else{
 			String getNewOrderId = UuidUtil.getIntUuid32();
 			//上传图片
-			if (!file.isEmpty()) {
+			if (null!=file&&!"".equals(file)) {
 				String customerDescriveIcon = FileUtil.uploadFile(file, getNewOrderId,"ORDER_CUSTOMER", "customerDescriveIcon");
 				map.put("customerDescriveIcon", customerDescriveIcon);
 			}
