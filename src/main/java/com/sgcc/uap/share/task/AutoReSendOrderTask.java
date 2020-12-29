@@ -32,7 +32,7 @@ public class AutoReSendOrderTask  extends TimerTask{
 
 	@Override
     @Async
-    @Scheduled(initialDelay = 1000*40 ,fixedDelay = 60000*5) //每5分钟执行一次
+    @Scheduled(initialDelay = 1000*60*5 ,fixedDelay = 60000*5) //每5分钟执行一次
 	public void run() {
 			logger.info("AutoReSendOrderTask start ! ");
 			

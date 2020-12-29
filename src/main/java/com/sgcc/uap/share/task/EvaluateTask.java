@@ -26,7 +26,7 @@ public class EvaluateTask  extends TimerTask{
 
 	@Override
     @Async
-    @Scheduled(initialDelay = 1000*10 , fixedDelay = 60000*60*24) //每1天执行一次
+    @Scheduled(initialDelay = 1000*60*5 , fixedDelay = 60000*60*24) //每1天执行一次
 	public void run() {
 		logger.info("EvaluateTask start ! ");
 		

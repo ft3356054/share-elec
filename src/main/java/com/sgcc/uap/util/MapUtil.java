@@ -73,7 +73,11 @@ public class MapUtil {
 				int size = filter.size();
 				for (String param : filter) {
 					String[] params =  param.split("=");
-					map.put(params[0], params[1]);
+					if(1==params.length){
+						map.put(params[0], null);
+					}else{
+						map.put(params[0], params[1]);
+					}
 				}
 			}
 		} 
