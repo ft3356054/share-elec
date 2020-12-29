@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +34,7 @@ import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.bo.OrderCustomerBeginPage;
+import com.sgcc.uap.share.customer.repositories.GetOrderElectricianRepository;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerBeginPageRepository;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderCustomerService;
@@ -40,6 +42,7 @@ import com.sgcc.uap.share.domain.BaseAreaPrice;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.BaseIdentityPrice;
 import com.sgcc.uap.share.domain.OrderCustomer;
+import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.electrician.services.impl.OrderElectricianService;
 import com.sgcc.uap.share.services.IBaseEnumsService;
 import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
@@ -95,8 +98,11 @@ public class OrderCustomerService implements IOrderCustomerService{
 	@Autowired
     private OrderCustomerBeginPageRepository orderCustomerBeginPageRepository;
 	@Autowired
+    private GetOrderElectricianRepository getOrderElectricianRepository;
+	@Autowired
 	private CustPositionService custPositionService;
-	
+	@Autowired
+    private RedisTemplate redisTemplate;
 	
 	@Override
 	public QueryResultObject getOrderCustomerByOrderId(String orderId) {
@@ -244,7 +250,11 @@ public class OrderCustomerService implements IOrderCustomerService{
 			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
 			
 			//发送websocket消息
-	        WebSocketServer.sendInfo("下单成功",(String)map.get("customerId"));
+	        //WebSocketServer.sendInfo("下单成功",(String)map.get("customerId"));  前台自动反馈用户
+			
+			//放入队列中，电工侧获取队列消息，群发给就近电工
+			redisTemplate.opsForList().rightPush("newCustomerOrder", orderCustomer);
+			
 		}
 		return result;
 	}
@@ -449,16 +459,40 @@ public class OrderCustomerService implements IOrderCustomerService{
 	        sites.add("21");
 			//用户主动取消订单
 			if(sites.contains(orderCustomer.getOrderStatus())){
-				if("21".equals(orderCustomer.getOrderStatus())){
-					//电工已接单，则需要通知电工
-					notifyAnnounceService.userDefinedNotify(orderCustomer.getOrderId(), "1", "4");
+				List<String> listStatus = new ArrayList<String>();
+				listStatus.add("1");
+				listStatus.add("4");
+				listStatus.add("5");
+				//获取当前子订单
+				OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianTypeNotIn(orderCustomer.getOrderId(), listStatus);
+				if(null!=orderElectrician){
+					//通知电工
+					//notifyAnnounceService.userDefinedNotify(orderCustomer.getOrderId(), "1", "4");
+					//修改电工订单状态 由 0 2 21 改为 4
+					List<String> elecStatus = new ArrayList<String>();
+					elecStatus.add("0");
+					elecStatus.add("2");
+					elecStatus.add("21");
+					if(sites.contains(orderCustomer.getOrderStatus())){
+						orderElectricianService.esc(orderElectrician.getElectricianId(), orderStatus);
+						String dateString = TimeStamp.toString(new Date());
+						map.put("updateTime", dateString);
+						map.put("finishTime", dateString);
+						result.put("key", "0");
+						result.put("desc", "该订单处于可取消状态");
+						result.put("map", map);
+					}else{
+						result.put("key", "1");
+						result.put("desc", "该订单不处于可取消状态");
+					}
+				}else{
+					String dateString = TimeStamp.toString(new Date());
+					map.put("updateTime", dateString);
+					map.put("finishTime", dateString);
+					result.put("key", "0");
+					result.put("desc", "该订单处于可取消状态");
+					result.put("map", map);
 				}
-				String dateString = TimeStamp.toString(new Date());
-				map.put("updateTime", dateString);
-				map.put("finishTime", dateString);
-				result.put("key", "0");
-				result.put("desc", "该订单处于可取消状态");
-				result.put("map", map);
 			}else{
 				result.put("key", "1");
 				result.put("desc", "该订单不处于可取消状态");
@@ -539,8 +573,20 @@ public class OrderCustomerService implements IOrderCustomerService{
 	}
 	
 	@Override
-	public QueryResultObject searchBox(String customerId,String searchContent) {
-		List<OrderCustomer> orderCustomers = orderCustomerRepository.searchBox(customerId,searchContent);
+	public QueryResultObject searchBox(String customerId,String tagType,String searchContent) {
+		List<OrderCustomer> orderCustomers = null;
+		List<String> tagTypes = new ArrayList<String>();
+		tagTypes.add("4");
+		tagTypes.add("9");
+		
+		if("1".equals(tagType)){
+			orderCustomers = orderCustomerRepository.searchBoxNotIn(customerId,tagTypes,searchContent);
+		}else if("2".equals(tagType)){
+			orderCustomers = orderCustomerRepository.searchBoxIn(customerId,tagTypes,searchContent);
+		}else{
+			orderCustomers = orderCustomerRepository.searchBox(customerId,searchContent);
+		}
+		
 		return RestUtils.wrappQueryResult(orderCustomers);
 	}
 	

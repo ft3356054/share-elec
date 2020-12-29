@@ -1,57 +1,58 @@
 package com.sgcc.uap.share.customer.controller;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.sgcc.uap.rest.support.QueryResultObject;
+import com.sgcc.uap.rest.support.WrappedResult;
+import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
+import com.sgcc.uap.share.domain.OrderCustomer;
 
 /**
- * Created by wisely on 2015/5/25.
+ * 测试接口使用 
  */
 
-@Controller
+@RestController
+@Transactional
+@RequestMapping("/llbTest")
 public class RedisTestController {
 
-   /* @Autowired
-    DemoService demoService;
+    @Autowired
+    OrderCustomerService orderCustomerService;
     
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    private RedisTemplate redisTemplate;
     
-    @RequestMapping("/test")
-    @ResponseBody
-    public String putCache(HttpServletRequest request){
-    	User user = demoService.findUser(1l,"wang","yunfei");
-    	Address address = demoService.findAddress(1l,"anhui","hefei");
-        System.out.println("若上面没出现“无缓存的时候调用”字样且能打印出数据表示测试成功");
-        return "user:"+"/"+user.getFirstName()+"/"+user.getLastName()+",address:"+"/"+address.getProvince()+"/"+address.getCity();
-    }
-    @RequestMapping("/test2")
-    @ResponseBody
-    public String testCache(){
-        User user = demoService.findUser(1l,"wang","yunfei");
-        Address address =demoService.findAddress(1l,"anhui","hefei");
-        System.out.println("上面若没执行查询，这里取缓存中的数据");
-        System.out.println("user:"+"/"+user.getFirstName()+"/"+user.getLastName());
-        System.out.println("address:"+"/"+address.getProvince()+"/"+address.getCity());
-        return "user:"+"/"+user.getFirstName()+"/"+user.getLastName()+",address:"+"/"+address.getProvince()+"/"+address.getCity();
-    }
-    @RequestMapping("/test3")
-    @ResponseBody
-    public String testSession(HttpServletRequest request){
-    	HttpSession session= request.getSession();
-    	session.setAttribute("login","true"+System.currentTimeMillis());
-    	String sessionStr = (String)session.getAttribute("login");
-	    stringRedisTemplate.opsForValue().set("aaa", "111");
-	    String string = stringRedisTemplate.opsForValue().get("aaa");
-	    return "set to redis key:aaa"+ ",value:"+string +" login: "+sessionStr ;
-    }
-    @RequestMapping("/test4")
-    @ResponseBody
-    public String testCache3(HttpServletRequest request){
-    	HttpSession session= request.getSession();
-    	String okStr = session.getAttribute("login").toString();
-    	System.out.println("okStr:"+okStr);
-	    String string = stringRedisTemplate.opsForValue().get("aaa");
-	    System.out.println("aaa:"+string);
-	    return "set to redis key:aaa"+ ",value:"+string +" login: " +okStr;
-    }*/
+    //http://localhost:8083/llbTest/push/20201222091414840565
+    @RequestMapping(value = "/push/{orderId}")
+	public WrappedResult rightPushCustomerOrder(@PathVariable String orderId) {
+		try {
+			QueryResultObject result = orderCustomerService.getOrderCustomerByOrderId(orderId);
+			OrderCustomer orderCustomer = (OrderCustomer) result.getItems().get(0);
+			redisTemplate.opsForList().rightPush("newCustomerOrder", orderCustomer);
+			
+			return WrappedResult.successWrapedResult(result);
+		} catch (Exception e) {
+			String errorMessage = "查询异常";
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+    
+    @RequestMapping(value = "/pop")
+	public WrappedResult leftPopCustomerOrder() {
+		try {
+			OrderCustomer orderCustomer = null;
+			orderCustomer = (OrderCustomer) redisTemplate.opsForList().leftPop("newCustomerOrder");
+			
+			return WrappedResult.successWrapedResult(orderCustomer);
+		} catch (Exception e) {
+			String errorMessage = "查询异常";
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
    
 }

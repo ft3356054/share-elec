@@ -32,10 +32,10 @@ public class AutoReSendOrderTask  extends TimerTask{
 
 	@Override
     @Async
-    @Scheduled(fixedDelay = 60000*5) //每5分钟执行一次
+    @Scheduled(initialDelay = 1000*60*5 ,fixedDelay = 60000*5) //每5分钟执行一次
 	public void run() {
-		try {
-			//Thread.sleep(1000*60*40);
+			logger.info("AutoReSendOrderTask start ! ");
+			
 			orderElectricianService = (IGetOrderElectricianService) ApplicationContextUtil.getBean("getOrderElectricianService");
 			baseSystemConfigService = (IBaseSystemConfigService) ApplicationContextUtil.getBean("baseSystemConfigService");
 
@@ -49,12 +49,6 @@ public class AutoReSendOrderTask  extends TimerTask{
 			//放入派单队列中
 			
 			
-			
-			
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 }

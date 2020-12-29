@@ -26,22 +26,29 @@ public class EvaluateTask  extends TimerTask{
 
 	@Override
     @Async
-    @Scheduled(fixedDelay = 60000*60*24) //每1天执行一次
+    @Scheduled(initialDelay = 1000*60*5 , fixedDelay = 60000*60*24) //每1天执行一次
 	public void run() {
+		logger.info("EvaluateTask start ! ");
 		
-		try {
-			Thread.sleep(1000*60*2);
-			Integer updateCount = 0;
-			//5星 状态8 15天
-			updateCount = orderCustomerRepository.getNotEvaluate(5, "默认好评",  "默认好评", 8, 15);
-			logger.info("EvaluateTask updateCount = "+updateCount);
+		Integer updateCount = 0;
+		//5星 状态8 15天
+		updateCount = orderCustomerRepository.getNotEvaluate(5, "默认好评",  "默认好评", 8, 15);
+		logger.info("EvaluateTask updateCount = "+updateCount);
 			
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
 	}
+	
+	/*
+	@Scheduled(cron="0/5 * *  * * ? ")   //每5秒执行一次
+	字段　　允许值　　允许的特殊字符 
+	秒     　 0-59 　　　　, - * / 
+	分     　 0-59　　　　 , - * / 
+	小时      0-23 　　　　, - * / 
+	日期      1-31 　　　　, - * ? / L W C 
+	月份      1-12 　　　　, - * / 
+	星期      1-7 　　　　  , - * ? / L C # 
+	年     1970-2099 　　, - * /
+	
+	
+	 * */
 
 }

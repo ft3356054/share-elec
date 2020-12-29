@@ -58,9 +58,27 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 			@Param("customerEvaluate")String customerEvaluate,@Param("orderStatus")int orderStatus,@Param("day")int day);
 
 	@Query(value = "SELECT * FROM order_customer t WHERE t.CUSTOMER_ID =:customerId "
-			+ " AND (t.CUSTOMER_DESCRIVE_TITLE LIKE %:searchContent% OR t.CUSTOMER_DESCRIVE LIKE %:searchContent%) "
+			+ " AND t.ORDER_STATUS NOT IN :tagTypes "
+			+ " AND IF(:searchContent !='',(t.CUSTOMER_DESCRIVE_TITLE LIKE CONCAT('%',:searchContent,'%') OR t.CUSTOMER_DESCRIVE LIKE CONCAT('%',:searchContent,'%')),1=1) "
 			+ " UNION SELECT * FROM order_customer_his th WHERE th.CUSTOMER_ID =:customerId "
-			+ " AND (th.CUSTOMER_DESCRIVE_TITLE LIKE %:searchContent% OR th.CUSTOMER_DESCRIVE LIKE %:searchContent%) ",
+			+ " AND IF(:searchContent !='',(th.CUSTOMER_DESCRIVE_TITLE LIKE CONCAT('%',:searchContent,'%') OR th.CUSTOMER_DESCRIVE LIKE CONCAT('%',:searchContent,'%')),1=1) ",
+			nativeQuery = true)
+	List<OrderCustomer> searchBoxNotIn(@Param("customerId")String customerId,@Param("tagTypes")Collection<String> tagTypes,
+			@Param("searchContent")String searchContent);
+	
+	@Query(value = "SELECT * FROM order_customer t WHERE t.CUSTOMER_ID =:customerId "
+			+ " AND t.ORDER_STATUS IN :tagTypes "
+			+ " AND IF(:searchContent !='',(t.CUSTOMER_DESCRIVE_TITLE LIKE CONCAT('%',:searchContent,'%') OR t.CUSTOMER_DESCRIVE LIKE CONCAT('%',:searchContent,'%')),1=1) "
+			+ " UNION SELECT * FROM order_customer_his th WHERE th.CUSTOMER_ID =:customerId "
+			+ " AND IF(:searchContent !='',(th.CUSTOMER_DESCRIVE_TITLE LIKE CONCAT('%',:searchContent,'%') OR th.CUSTOMER_DESCRIVE LIKE CONCAT('%',:searchContent,'%')),1=1) ",
+			nativeQuery = true)
+	List<OrderCustomer> searchBoxIn(@Param("customerId")String customerId,@Param("tagTypes")Collection<String> tagTypes,
+			@Param("searchContent")String searchContent);
+	
+	@Query(value = "SELECT * FROM order_customer t WHERE t.CUSTOMER_ID =:customerId "
+			+ " AND IF(:searchContent !='',(t.CUSTOMER_DESCRIVE_TITLE LIKE CONCAT('%',:searchContent,'%') OR t.CUSTOMER_DESCRIVE LIKE CONCAT('%',:searchContent,'%')),1=1) "
+			+ " UNION SELECT * FROM order_customer_his th WHERE th.CUSTOMER_ID =:customerId "
+			+ " AND IF(:searchContent !='',(th.CUSTOMER_DESCRIVE_TITLE LIKE CONCAT('%',:searchContent,'%') OR th.CUSTOMER_DESCRIVE LIKE CONCAT('%',:searchContent,'%')),1=1) ",
 			nativeQuery = true)
 	List<OrderCustomer> searchBox(@Param("customerId")String customerId,@Param("searchContent")String searchContent);
 
