@@ -34,10 +34,9 @@ public class MoveOrderTask  extends TimerTask{
 
 	@Override
     @Async
-    @Scheduled(fixedDelay = 60000*60) //每小时执行一次
+    @Scheduled(initialDelay = 1000*30 ,fixedDelay = 60000*60) //每小时执行一次
 	public void run() {
-		try {
-			Thread.sleep(1000*60*5);//延迟5分钟执行
+			logger.info("MoveOrderTask start ! ");
 		
 			ArrayList<String> orderIds = new ArrayList<String>();
 			
@@ -65,10 +64,6 @@ public class MoveOrderTask  extends TimerTask{
 				
 			}
 		
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			logger.error(e.toString());
-		}
 		
 	}
 	

@@ -384,7 +384,8 @@ public class OrderCustomerController {
 			Map<String, String> map = MapUtil.getParam(requestCondition);
 			String customerId = map.get("customerId");
 			String searchContent = map.get("searchContent");
-			QueryResultObject queryResult = orderCustomerService.searchBox(customerId,searchContent);
+			String tagType = map.get("tagType");
+			QueryResultObject queryResult = orderCustomerService.searchBox(customerId,tagType,searchContent);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {

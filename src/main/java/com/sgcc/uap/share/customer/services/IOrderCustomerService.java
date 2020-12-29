@@ -44,7 +44,7 @@ public interface IOrderCustomerService {
 	 * @param 
 	 * @return
 	 */
-	public QueryResultObject searchBox(String customerId,String searchContent);
+	public QueryResultObject searchBox(String customerId,String tagType,String searchContent);
 	
 	/**
 	 * @getOrderCustomerByOrderId:根据主键 查询 现表和历史表

@@ -34,10 +34,9 @@ public class MoveNotifyTask  extends TimerTask{
 
 	@Override
     @Async
-    @Scheduled(fixedDelay = 60000*60*24) //每天执行一次
+    @Scheduled(initialDelay = 1000*20 ,fixedDelay = 60000*60*24) //每天执行一次
 	public void run() {
-		try {
-			Thread.sleep(1000*60*20);//延迟20分钟执行
+			logger.info("MoveNotifyTask start ! ");
 		
 			ArrayList<String> orderIds = new ArrayList<String>();
 			
@@ -58,11 +57,6 @@ public class MoveNotifyTask  extends TimerTask{
 				notifyAnnounceUserRepository.deleteNowTable(orderIds);
 				
 			}
-		
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			logger.error(e.toString());
-		}
 		
 	}
 	

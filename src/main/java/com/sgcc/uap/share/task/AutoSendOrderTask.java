@@ -6,6 +6,8 @@ import java.util.TimerTask;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,9 @@ import com.sgcc.uap.share.services.IBaseSystemConfigService;
  * */
 @Component
 public class AutoSendOrderTask  extends TimerTask{
+	@Autowired
+    private RedisTemplate redisTemplate;
+	
 	/** 
      * 日志
      */
@@ -32,10 +37,10 @@ public class AutoSendOrderTask  extends TimerTask{
 
 	@Override
     @Async
-    @Scheduled(fixedDelay = 60000*5) //每5分钟执行一次
+    @Scheduled(initialDelay = 1000*50 ,fixedDelay = 60000*5) //每5分钟执行一次
 	public void run() {
-		try {
-			//Thread.sleep(1000*60*40);
+			logger.info("AutoSendOrderTask start ! ");
+			
 			orderCustomerService = (IOrderCustomerService) ApplicationContextUtil.getBean("orderCustomerService");
 			baseSystemConfigService = (IBaseSystemConfigService) ApplicationContextUtil.getBean("baseSystemConfigService");
 			
@@ -48,13 +53,6 @@ public class AutoSendOrderTask  extends TimerTask{
 			
 			//放入派单队列中
 			
-			
-			
-		
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 }
