@@ -41,6 +41,7 @@ import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.controller.WebSocket;
 import com.sgcc.uap.share.controller.WebSocketServer;
+import com.sgcc.uap.share.customer.bo.OrderCustomerMoreVO;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.impl.CustPositionService;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
@@ -61,6 +62,7 @@ import com.sgcc.uap.share.electrician.controller.OrderElectricianController;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.share.electrician.vo.OrderElectricianVO;
+import com.sgcc.uap.share.repositories.OrderCustomerMoreVORepository;
 import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
 import com.sgcc.uap.share.services.impl.BaseEnumsService;
 import com.sgcc.uap.share.services.impl.BaseIdentityPriceService;
@@ -138,6 +140,9 @@ public class OrderElectricianService implements IOrderElectricianService{
 	
 	@Autowired
 	private ElecPositionService elecPositionService;
+	
+	@Autowired
+	private OrderCustomerMoreVORepository orderCustomerMoreVORepository;
 	 
 	@Override
 	public QueryResultObject getOrderElectricianByOrderElectricianId(String orderElectricianId) {
@@ -1395,6 +1400,19 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	private OrderElectrician findByOrderElectricianId(String orderElectricianId) {
 		OrderElectrician orderElectrician=orderElectricianRepository.findByOrderElectricianId(orderElectricianId);
 		return orderElectrician;
+	}
+	@Override
+	public QueryResultObject searchBox(String electricianId, String searchContent) {
+		//如果搜索字段包含10kv或220v
+		List<OrderCustomerMoreVO> orderCustomers=new ArrayList<>();
+		if (searchContent.contains("10kv") || searchContent.contains("220v")) {
+			orderCustomers=orderCustomerMoreVORepository.searchVOLTAGE(electricianId, searchContent);
+			}else {
+			 //orderCustomers=order.searchDescrive(electricianId,searchContent);
+		}
+		
+		//List<OrderElectrician> orderCustomers = orderElectricianRepository.searchBox(electricianId,searchContent);
+		return RestUtils.wrappQueryResult(orderCustomers);
 	}
 	
 

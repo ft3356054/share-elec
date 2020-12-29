@@ -109,6 +109,8 @@ void qiangdantanchuang(String orderId);
 
 OrderElectrician saveNewNullOrderElectrician(String orderId) throws Exception;
 public void esc(String orderElectricianId, String orderElectricianType);
+public QueryResultObject searchBox(String electricianId, String searchContent);
+
 
 
 

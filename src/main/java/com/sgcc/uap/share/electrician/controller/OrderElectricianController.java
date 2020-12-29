@@ -1313,11 +1313,23 @@ public class OrderElectricianController {
 	 * 主要用于测试service接口
 	*/
 	
-	@RequestMapping(value="/test1/{orderId}",name="抢单弹窗")
+	@RequestMapping(value="/qiangdan22",name="抢单弹窗")
 	@ResponseBody
-	public void test1(@PathVariable(value="orderId") String orderId){
+	public void qiangdan1(){
+		try {
+			String orderId=stringRedisTemplate.opsForValue().get("orderId");
+			
+			orderElectricianService.qiangdantanchuang(orderId);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "保存异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			//return WrappedResult.failedWrappedResult(errorMessage);
+		}
 		
-		orderElectricianService.qiangdantanchuang(orderId);
 		
 	
 	}
@@ -1338,6 +1350,30 @@ public class OrderElectricianController {
 		}
 		
 		
+	}
+	
+	/**
+	 * 
+	 * @param requestCondition
+	 * @return
+	 */
+	@RequestMapping(value="/searchBox",name="搜索")
+	public WrappedResult searchBox(@QueryRequestParam("params") RequestCondition requestCondition) {
+		try {
+			Map<String, String> map = MapUtil.getParam(requestCondition);
+			String electricianId = map.get("electricianId");
+			String searchContent = map.get("searchContent");
+			QueryResultObject queryResult = orderElectricianService.searchBox(electricianId,searchContent);
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
 	}
 	
 	
