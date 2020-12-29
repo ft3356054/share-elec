@@ -1322,12 +1322,12 @@ public class OrderElectricianController {
 	
 	}
 	@RequestMapping(value="/esc",name="取消订单")
-	public WrappedResult esc(@RequestParam(value="orderId") String orderId,
-			@RequestParam(value="electricianId") String electricianId
+	public WrappedResult esc(@RequestParam(value="orderElectricianId") String orderElectricianId,
+			@RequestParam(value="orderElectricianType") String orderElectricianType
 			){
 		try {
 			
-			orderElectricianService.esc(orderId,electricianId);
+			orderElectricianService.esc(orderElectricianId,orderElectricianType);
 			
 			
 			return WrappedResult.successWrapedResult("true");

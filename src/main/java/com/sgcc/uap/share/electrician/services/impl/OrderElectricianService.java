@@ -1322,28 +1322,61 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 	}
 	@Override
-	public void esc(String orderId, String electricianId) {
+	public void esc(String orderElectricianId, String orderElectricianType) {
 		
 		
 		try {
 		//先根据orderId查询客户订单，将其状态变为11
 		
-		OrderElectrician orderElectrician=findByElectricianIdAndOrderId(electricianId, orderId);
-		orderElectrician.setOrderElectricianType("1");
+		OrderElectrician orderElectrician=findByOrderElectricianId(orderElectricianId);
+		orderElectrician.setOrderElectricianType(orderElectricianType);
 		orderElectricianRepository.save(orderElectrician);
 		
+		String status =(String)orderElectrician.getOrderElectricianType();
+		//1维修 2支付 3验收 4评价
+		String notifyType ="1";
+		if("23".equals(status)){
+			notifyType ="2";
+		}else if("24".equals(status)){
+			notifyType ="3";
+		}else if("8".equals(status)){
+			notifyType ="4";
+		}
+		
+		
+		
 		//获取Enum通知类
-		String status="1";
-				BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  status);
+		String status1="1";
+				BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  status1);
 		
 		Map<String,Object> mapOrderFlow = 
-				MapUtil.flowAdd(orderId, 1,  Integer.parseInt(status), orderElectrician.getElectricianId(),TimeStamp.toString(new Date()), 2,  baseEnums.getEnumsA());
+				MapUtil.flowAdd(orderElectrician.getOrDERId(), 1,  Integer.parseInt(status), orderElectrician.getElectricianId(),TimeStamp.toString(new Date()), 2,  baseEnums.getEnumsA());
 		orderFlowService.saveOrderFlow(mapOrderFlow);
+		
+		
+		//新增通知
+				String announceId = UuidUtil.getUuid32();
+				
+				Map<String,Object> mapNotify =
+						MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
+								notifyType,orderElectrician.getOrDERId(),"");
+				notifyAnnounceService.saveNotifyAnnounce(mapNotify);
+				
+				Map<String,Object> mapNotifyUser = 
+						MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, 2, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+				notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+		
+		
+		
 		
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 		
+	}
+	private OrderElectrician findByOrderElectricianId(String orderElectricianId) {
+		OrderElectrician orderElectrician=orderElectricianRepository.findByOrderElectricianId(orderElectricianId);
+		return orderElectrician;
 	}
 	
 

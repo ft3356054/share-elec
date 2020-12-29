@@ -108,7 +108,7 @@ public OrderElectrician saveNewOrderElectrician(String orderId, String electrici
 void qiangdantanchuang(String orderId);
 
 OrderElectrician saveNewNullOrderElectrician(String orderId) throws Exception;
-public void esc(String orderId, String electricianId);
+public void esc(String orderElectricianId, String orderElectricianType);
 
 
 

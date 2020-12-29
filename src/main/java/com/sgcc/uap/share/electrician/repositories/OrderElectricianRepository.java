@@ -122,6 +122,8 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	@Transactional
 	public void deleteNowTable(@Param("orderIds")Collection<String> orderIds);
 
+	OrderElectrician findByOrderElectricianId(String orderElectricianId);
+
 	
 	
 }
