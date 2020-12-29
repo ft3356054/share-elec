@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.electrician.services.impl;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -76,6 +77,8 @@ import com.sgcc.uap.util.SorterUtil;
 import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
 import com.sgcc.uap.utils.string.StringUtil;
+
+import groovy.util.logging.Log4j;
 
 
 @Service
@@ -778,6 +781,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * @param getPeople 1客户 2电工 
 	 * @throws Exception
 	 */
+	
 	private void sendNotify(Map map,OrderElectrician orderElectrician,int oper,int getPeople) throws Exception{
 		String orderElectricianType =(String)map.get("orderElectricianType");
 		//1维修 2支付 3验收 4评价
@@ -793,9 +797,13 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		//获取Enum通知类
 		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  orderElectricianType);	
 		
+		
+		String orderId=orderElectrician.getOrDERId();
+		String electricianId=orderElectrician.getElectricianId();
+		String EnumsA=baseEnums.getEnumsA();
 		//新增流水
 		Map<String,Object> mapOrderFlow = 
-				MapUtil.flowAdd(orderElectrician.getOrDERId(), 1,  Integer.parseInt(orderElectricianType), orderElectrician.getElectricianId(), TimeStamp.toString(new Date()), oper,  baseEnums.getEnumsA());
+				MapUtil.flowAdd(orderId, 1,  Integer.parseInt(orderElectricianType), electricianId, TimeStamp.toString(new Date()), oper,EnumsA);
 		orderFlowService.saveOrderFlow(mapOrderFlow);
 		
 		//新增通知
@@ -1330,27 +1338,33 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		OrderElectrician orderElectrician=findByOrderElectricianId(orderElectricianId);
 		orderElectrician.setOrderElectricianType(orderElectricianType);
+		if (orderElectricianType.equals("1") || orderElectricianType.equals("4")) {
+			orderElectrician.setUpdateTime(Timestamp.valueOf(String.valueOf(new Date())));
+			orderElectrician.setFinishTime(Timestamp.valueOf(String.valueOf(new Date())));
+		}else {
+			orderElectrician.setUpdateTime(Timestamp.valueOf(String.valueOf(new Date())));
+		}
 		orderElectricianRepository.save(orderElectrician);
 		
-		String status =(String)orderElectrician.getOrderElectricianType();
+		
 		//1维修 2支付 3验收 4评价
 		String notifyType ="1";
-		if("23".equals(status)){
+		if("23".equals(orderElectricianType)){
 			notifyType ="2";
-		}else if("24".equals(status)){
+		}else if("24".equals(orderElectricianType)){
 			notifyType ="3";
-		}else if("8".equals(status)){
+		}else if("8".equals(orderElectricianType)){
 			notifyType ="4";
 		}
 		
 		
 		
 		//获取Enum通知类
-		String status1="1";
-				BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  status1);
+		
+				BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  orderElectricianType);
 		
 		Map<String,Object> mapOrderFlow = 
-				MapUtil.flowAdd(orderElectrician.getOrDERId(), 1,  Integer.parseInt(status), orderElectrician.getElectricianId(),TimeStamp.toString(new Date()), 2,  baseEnums.getEnumsA());
+				MapUtil.flowAdd(orderElectrician.getOrDERId(), 1,  Integer.parseInt(orderElectricianType), orderElectrician.getElectricianId(),TimeStamp.toString(new Date()), 2,  baseEnums.getEnumsA());
 		orderFlowService.saveOrderFlow(mapOrderFlow);
 		
 		
@@ -1365,8 +1379,12 @@ public QueryResultObject queryAllDoing(String electricianId) {
 				Map<String,Object> mapNotifyUser = 
 						MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, 2, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 				notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
-		
-		
+				
+				
+				if (orderElectricianType.equals("4")) {
+					WebSocketServer.sendInfo("用户取消",(String)orderElectrician.getElectricianId());
+				}
+				
 		
 		
 		} catch (Exception e) {
