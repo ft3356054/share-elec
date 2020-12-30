@@ -42,8 +42,10 @@ public class ElecAssignOrderTask {
 		logger.info("获取并删除 orderCustomer = "+ orderCustomer);
 		
 		//调用派单弹框方法
-		//orderElectricianService.paidanchaxun(orderCustomer);
-			
+		if(null!=orderCustomer){
+			//orderElectricianService.paidanchaxun(orderCustomer);
+		}
+		
 		logger.info("In ElecAssignOrderTask end ! "+ Thread.currentThread().getId() + ":" + Thread.currentThread().getName() 
 				+ " ,date =" + new Date( System.currentTimeMillis()));
 	}

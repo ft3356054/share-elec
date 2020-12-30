@@ -43,6 +43,9 @@ public class ElecGrabOrderTask {
 		
 		//调用抢单弹框方法
 		orderElectricianService.qiangdantanchuang(orderCustomer);
+		if(null!=orderCustomer){
+			//orderElectricianService.qiangdantanchuang(orderCustomer);
+		}
 			
 		logger.info("In ElecGrabOrder end ! "+ Thread.currentThread().getId() + ":" + Thread.currentThread().getName() 
 				+ " ,date =" + new Date( System.currentTimeMillis()));
