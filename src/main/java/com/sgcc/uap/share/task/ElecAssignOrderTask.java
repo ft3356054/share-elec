@@ -43,7 +43,7 @@ public class ElecAssignOrderTask {
 		
 		//调用派单弹框方法
 		if(null!=orderCustomer){
-			//orderElectricianService.paidanchaxun(orderCustomer);
+			orderElectricianService.paidanchaxun(orderCustomer);
 		}
 		
 	}

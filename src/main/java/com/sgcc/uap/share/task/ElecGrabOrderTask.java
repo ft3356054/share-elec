@@ -44,7 +44,7 @@ public class ElecGrabOrderTask {
 		//调用抢单弹框方法
 		orderElectricianService.qiangdantanchuang(orderCustomer);
 		if(null!=orderCustomer){
-			//orderElectricianService.qiangdantanchuang(orderCustomer);
+			orderElectricianService.qiangdantanchuang(orderCustomer);
 		}
 			
 	}
