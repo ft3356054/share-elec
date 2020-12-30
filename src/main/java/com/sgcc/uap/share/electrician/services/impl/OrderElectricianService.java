@@ -1173,12 +1173,12 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 */
 	
 	@Override
-	public void qiangdantanchuang(String orderId){
+	public void qiangdantanchuang(OrderCustomer orderCustomer){
 		
 		//1.通过orderID查询客户的区域ID
 		//2.根据查询出来的区域ID查询此区域内的全部电工
 		//3.创建子订单，向集合的电工发布消息
-		
+		String orderId=orderCustomer.getOrderId();
 		
 		try {
 			
@@ -1410,6 +1410,26 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		return RestUtils.wrappQueryResult(orderCustomers);
 	}
 	
+	
+	/**
+	 * 计算客户和电工之间的距离
+	 * @param orderCustomer
+	 * @param orderElectrician
+	 * @return
+	 */
+	public String jisuanjuli(OrderCustomer orderCustomer,OrderElectrician orderElectrician){
+		ElecPosition elecPosition=elecPositionService.findByElectricianId(orderElectrician.getElectricianId());
+		String lon=elecPosition.getLon();
+		String electricianInfoLat=elecPosition.getLat();
+		
+		
+		
+		double distanceDouble = PointUtil.getDistanceString(String.valueOf(lon), String.valueOf(electricianInfoLat), orderCustomer.getAddressLongitude(), orderCustomer.getAddressLatitude());
+		System.out.println("计算的距离是："+distanceDouble);
+		String distanceString=String.valueOf(distanceDouble);
+		
+		return distanceString;
+	}
 	
 
 	
