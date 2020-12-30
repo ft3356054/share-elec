@@ -19,12 +19,12 @@ public class TaskConfig {
     private ElecAssignOrderTask elecAssignOrderTask;
 	
 	
-	@Scheduled(initialDelay = 1000*5 , fixedDelay = 1000*5)
+	//@Scheduled(initialDelay = 1000*5 , fixedDelay = 1000*5)
 	public void elecGrabOrderTask1() {
 		elecGrabOrderTask.start();
 	}
 	
-	@Scheduled(initialDelay = 1000*10 , fixedDelay = 1000*6)
+	//@Scheduled(initialDelay = 1000*10 , fixedDelay = 1000*6)
 	public void elecGrabOrderTask2() {
 		elecAssignOrderTask.start();
 	}
