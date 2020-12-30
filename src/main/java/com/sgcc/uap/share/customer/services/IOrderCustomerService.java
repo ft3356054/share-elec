@@ -32,6 +32,15 @@ public interface IOrderCustomerService {
 	public QueryResultObject getOrderCustomerByOrderId(String orderId);
 	
 	/**
+	 * @getOrderCustomerByOrderId:根据主键 查询
+	 * @param queryCondition 查询条件
+	 * @return QueryResultObject 查询结果
+	 * @date 2020-11-26 14:32:47
+	 * @author 18511
+	 */
+	public List<OrderCustomer> getOrderCustomerByOrderIds(List<String> orderIds);
+	
+	/**
 	 * 通过 订单状态 批量获取订单
 	 * @param orderElectricianType
 	 * @param pastTime

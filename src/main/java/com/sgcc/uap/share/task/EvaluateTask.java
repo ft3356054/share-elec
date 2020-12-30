@@ -1,11 +1,8 @@
 package com.sgcc.uap.share.task;
 
-import java.util.TimerTask;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
@@ -16,7 +13,7 @@ import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
  * 15天后，默认好评
  * */
 @Component
-public class EvaluateTask  extends TimerTask{
+public class EvaluateTask{
 	/** 
      * 日志
      */
@@ -24,9 +21,7 @@ public class EvaluateTask  extends TimerTask{
 	
 	private OrderCustomerRepository orderCustomerRepository = (OrderCustomerRepository) ApplicationContextUtil.getBean("orderCustomerRepository");
 
-	@Override
     @Async
-    @Scheduled(initialDelay = 1000*60*5 , fixedDelay = 60000*60*24) //每1天执行一次
 	public void run() {
 		logger.info("EvaluateTask start ! ");
 		
