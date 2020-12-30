@@ -142,7 +142,7 @@ public class OrderComplaintService implements IOrderComplaintService{
 				ArrayList<String> sites = new ArrayList<>();
 		        sites.add("2");
 		        sites.add("25");
-				if(!sites.contains(orderCustomer.getOrderStatus())){
+				if(sites.contains(orderCustomer.getOrderStatus())){
 					map.put("customerId", orderCustomer.getCustomerId());
 					map.put("customerName", orderCustomer.getCustomerName());
 					map.put("customerPhonenumber", orderCustomer.getCustomerPhonenumber());
