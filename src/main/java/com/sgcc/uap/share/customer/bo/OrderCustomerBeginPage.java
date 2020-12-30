@@ -241,6 +241,14 @@ public class OrderCustomerBeginPage implements Serializable {
     private String inspectionReport ;
     @Column(name = "ELECTRICIAN_NAME", nullable = true, length = 64)
     private String electricianName ;
+    @Column(name = "ELECTRICIAN_PHONENUMBER", nullable = true, length = 64)
+    private String electricianPhonenumber ;
+    @Column(name = "ACCEPT_TIME", nullable = true, length = 64)
+    private String acceptTime ;
+    @Transient
+    private String otherElectricianName ;
+    @Column(name = "CONSTRUCTION_CONTENT", nullable = true, length = 64)
+    private String constructionContent ;
 	public String getElectricianDescrive() {
 		return electricianDescrive;
 	}
@@ -282,6 +290,30 @@ public class OrderCustomerBeginPage implements Serializable {
 	}
 	public void setElectricianName(String electricianName) {
 		this.electricianName = electricianName;
+	}
+	public String getElectricianPhonenumber() {
+		return electricianPhonenumber;
+	}
+	public void setElectricianPhonenumber(String electricianPhonenumber) {
+		this.electricianPhonenumber = electricianPhonenumber;
+	}
+	public String getAcceptTime() {
+		return acceptTime;
+	}
+	public void setAcceptTime(String acceptTime) {
+		this.acceptTime = acceptTime;
+	}
+	public String getOtherElectricianName() {
+		return otherElectricianName;
+	}
+	public void setOtherElectricianName(String otherElectricianName) {
+		this.otherElectricianName = otherElectricianName;
+	}
+	public String getConstructionContent() {
+		return constructionContent;
+	}
+	public void setConstructionContent(String constructionContent) {
+		this.constructionContent = constructionContent;
 	}
 
 
