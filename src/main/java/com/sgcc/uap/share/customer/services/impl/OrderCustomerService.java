@@ -111,6 +111,9 @@ public class OrderCustomerService implements IOrderCustomerService{
 		elecStatus.add("4");
 		elecStatus.add("5");
 		OrderCustomerBeginPage orderCustomerBeginPage = orderCustomerBeginPageRepository.findOrderDetail(orderId,elecStatus);
+		String OtherElectricianId = orderCustomerBeginPage.getOtherElectricianId();
+		String electricianName = orderCustomerBeginPage.getElectricianName();
+		orderCustomerBeginPage.setOtherElectricianName(electricianName+","+OtherElectricianId);
 		return RestUtils.wrappQueryResult(orderCustomerBeginPage);
 	}
 	
