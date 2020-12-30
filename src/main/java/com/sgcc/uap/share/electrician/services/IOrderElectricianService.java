@@ -110,7 +110,7 @@ public OrderElectrician saveNewOrderElectrician(String orderId, String electrici
 OrderElectrician saveNewNullOrderElectrician(String orderId) throws Exception;
 public void esc(String orderElectricianId, String orderElectricianType);
 public QueryResultObject searchBox(String electricianId, String searchContent);
-void paidanchaxun(OrderCustomer orderCustomer) throws Exception;
+void paidanchaxun(OrderCustomer orderCustomer);
 void qiangdantanchuang(OrderCustomer orderCustomer);
 public String jisuanjuli(OrderCustomer orderCustomer, OrderElectrician orderElectrician);
 

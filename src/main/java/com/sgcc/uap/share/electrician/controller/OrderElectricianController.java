@@ -458,6 +458,7 @@ public class OrderElectricianController {
 			String distance=orderElectricianService.jisuanjuli(orderCustomer,orderElectrician);
 			BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
 			orderCustomerVO.setDistance(distance);
+			orderCustomerVO.setDistance(distance+"KM");
 			orderCustomerVOs.add(orderCustomerVO);
 		}
 		
@@ -508,7 +509,7 @@ public class OrderElectricianController {
 				
 					//随机生成50公里以下的数值
 					distanceDouble=PointUtil.getDistanceString(String.valueOf(orderCustomer.getAddressLongitude()), String.valueOf(orderCustomer.getAddressLatitude()), elecPosition.getLon(), elecPosition.getLat());
-					oev.setDistance(String.valueOf(distanceDouble));
+					oev.setDistance(String.valueOf(distanceDouble)+"KM");
 					
 				
 				

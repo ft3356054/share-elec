@@ -992,12 +992,16 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * @throws Exception 
 	 */
 	@Override
-	public void paidanchaxun(OrderCustomer orderCustomer) throws Exception {
+	public void paidanchaxun(OrderCustomer orderCustomer){
 		
 		//根据客户orderId获取其地区ID
 		//根据地区ID查询所属地区的电力子公司
 		//然后再查询电力子公司下距离最近的电工
 		//将 查询查询出来的信息放入到websocket
+		
+		try {
+			
+		
 		String orderId=orderCustomer.getOrderId();
 		
 		//1.获取客户的位置信息
@@ -1101,13 +1105,24 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		
 	
+	
+	} catch (Exception e) {
+		logger.error(e.getMessage(), e);
+		String errorMessage = "查询异常";
+		
+	}
+		
+		
 	}
 	
 	
 	
-	
 	@Override
-	public OrderElectrician saveNewOrderElectrician(String orderId,String electricianId) throws Exception{
+	public OrderElectrician saveNewOrderElectrician(String orderId,String electricianId){
+		
+		
+		try {
+			
 		
 		OrderElectrician saveOrderElectrician=null;
 		
@@ -1160,6 +1175,12 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		
 		return saveOrderElectrician;
+		
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			return null;
+		}
 		
 	}
 	
@@ -1426,7 +1447,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		double distanceDouble = PointUtil.getDistanceString(String.valueOf(lon), String.valueOf(electricianInfoLat), orderCustomer.getAddressLongitude(), orderCustomer.getAddressLatitude());
 		System.out.println("计算的距离是："+distanceDouble);
-		String distanceString=String.valueOf(distanceDouble);
+		String distanceString=String.valueOf(distanceDouble)+"KM";
 		
 		return distanceString;
 	}
