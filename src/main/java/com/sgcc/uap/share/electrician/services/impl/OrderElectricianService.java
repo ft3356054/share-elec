@@ -997,13 +997,13 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * @throws Exception 
 	 */
 	@Override
-	public void paidanchaxun(String orderId) throws Exception {
+	public void paidanchaxun(OrderCustomer orderCustomer) throws Exception {
 		
 		//根据客户orderId获取其地区ID
 		//根据地区ID查询所属地区的电力子公司
 		//然后再查询电力子公司下距离最近的电工
 		//将 查询查询出来的信息放入到websocket
-		
+		String orderId=orderCustomer.getOrderId();
 		
 		//1.获取客户的位置信息
 		CustPosition custPosition=custPositionService.findByOrderId(orderId);
@@ -1126,17 +1126,17 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		Map<String,Object> map=new HashMap<String, Object>();
 		
-		QueryResultObject resultObject=new QueryResultObject();
+		//QueryResultObject resultObject=new QueryResultObject();
 		
 		
 		//1.查询出来客户表
-		resultObject=orderCustomerService.findByOrderId(orderId);
-		List<OrderCustomer> list=resultObject.getItems();
-		
+		///resultObject=orderCustomerService.findByOrderId(orderId);
+		//List<OrderCustomer> list=resultObject.getItems();
+		OrderCustomer orderCustomer2=orderCustomerService.findByOrderId(orderId);
 		
 		
 		//2.判断客户表是否是新表
-		if(list.get(0).getOrderStatus().equals("11")){
+		if(orderCustomer2.getOrderStatus().equals("11")){
 			//2.1电工接单的单子是11，说明是老单子设置客户订单表单状态为2，只需要将电工的填写的信息挪到新的电工订单就好
 			List<OrderElectrician> orderElectricianOlds=findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(orderId,"5");
 			OrderElectrician orderElectricianOld=orderElectricianOlds.get(0);
@@ -1295,17 +1295,17 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		Map<String,Object> map=new HashMap<String, Object>();
 		
-		QueryResultObject resultObject=new QueryResultObject();
+		//QueryResultObject resultObject=new QueryResultObject();
 		
 		
 		//1.查询出来客户表
-		resultObject=orderCustomerService.findByOrderId(orderId);
-		List<OrderCustomer> list=resultObject.getItems();
-		
+		//resultObject=orderCustomerService.findByOrderId(orderId);
+		//List<OrderCustomer> list=resultObject.getItems();
+		OrderCustomer orderCustomer2=orderCustomerService.findByOrderId(orderId);
 		
 		
 		//2.判断客户表是否是新表
-		if(list.get(0).getOrderStatus().equals("11")){
+		if(orderCustomer2.getOrderStatus().equals("11")){
 			//2.1电工接单的单子是11，说明是老单子设置客户订单表单状态为2，只需要将电工的填写的信息挪到新的电工订单就好
 			List<OrderElectrician> orderElectricianOlds=findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(orderId,"5");
 			OrderElectrician orderElectricianOld=orderElectricianOlds.get(0);

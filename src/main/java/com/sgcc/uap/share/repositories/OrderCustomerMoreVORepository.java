@@ -19,12 +19,12 @@ public interface OrderCustomerMoreVORepository extends JpaRepository<OrderCustom
 
 	
 	
-	@Query(value="SELECT oc.* ,oe.INSPECTION_REPORT "
+	@Query(value="SELECT oc.* ,oe.INSPECTION_REPORT,oe.ORDER_CONTRACT, "
 			+"FROM order_customer oc "
 			+"LEFT JOIN order_electrician oe "
 			+"ON oc.ORDER_ID = oe.ORDER_ID "
 			+"WHERE oe.ELECTRICIAN_ID = :electricianId AND (oc.VOLTAGE like %:searchContent%) "
-			+"UNION SELECT oc.* ,oeh.INSPECTION_REPORT "
+			+"UNION SELECT oc.* ,oeh.INSPECTION_REPORT, oeh"
 			+"FROM order_customer oc "
 			+"LEFT JOIN order_electrician_his oeh "
 			+"ON oc.ORDER_ID = oeh.ORDER_ID "
