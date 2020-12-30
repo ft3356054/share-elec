@@ -46,8 +46,6 @@ public class ElecAssignOrderTask {
 			//orderElectricianService.paidanchaxun(orderCustomer);
 		}
 		
-		logger.info("In ElecAssignOrderTask end ! "+ Thread.currentThread().getId() + ":" + Thread.currentThread().getName() 
-				+ " ,date =" + new Date( System.currentTimeMillis()));
 	}
 }
 

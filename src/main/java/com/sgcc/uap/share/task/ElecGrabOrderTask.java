@@ -47,8 +47,6 @@ public class ElecGrabOrderTask {
 			//orderElectricianService.qiangdantanchuang(orderCustomer);
 		}
 			
-		logger.info("In ElecGrabOrder end ! "+ Thread.currentThread().getId() + ":" + Thread.currentThread().getName() 
-				+ " ,date =" + new Date( System.currentTimeMillis()));
 	}
 }
 

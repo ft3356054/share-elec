@@ -17,15 +17,22 @@ public class TaskConfig {
     private ElecGrabOrderTask elecGrabOrderTask;
 	@Autowired
     private ElecAssignOrderTask elecAssignOrderTask;
+	@Autowired
+    private AutoSendOrderTask autoSendOrderTask;
 	
-	
-	//@Scheduled(initialDelay = 1000*5 , fixedDelay = 1000*5)
-	public void elecGrabOrderTask1() {
+	@Scheduled(initialDelay = 1000*5 , fixedDelay = 1000*5)
+	public void elecGrabOrderTask() {
 		elecGrabOrderTask.start();
 	}
 	
-	//@Scheduled(initialDelay = 1000*10 , fixedDelay = 1000*6)
-	public void elecGrabOrderTask2() {
+	@Scheduled(initialDelay = 1000*10 , fixedDelay = 1000*10)
+	public void elecAssignOrderTask() {
 		elecAssignOrderTask.start();
 	}
+	
+	@Scheduled(initialDelay = 1000*10 , fixedDelay = 1000*6)
+	public void autoSendOrderTask() {
+		autoSendOrderTask.run();
+	}
+	
 }
