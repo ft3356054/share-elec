@@ -41,6 +41,7 @@ import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.controller.WebSocket;
 import com.sgcc.uap.share.controller.WebSocketServer;
+import com.sgcc.uap.share.customer.bo.OrderCustomerMoreVO;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.impl.CustPositionService;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
@@ -61,6 +62,7 @@ import com.sgcc.uap.share.electrician.controller.OrderElectricianController;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.share.electrician.vo.OrderElectricianVO;
+import com.sgcc.uap.share.repositories.OrderCustomerMoreVORepository;
 import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
 import com.sgcc.uap.share.services.impl.BaseEnumsService;
 import com.sgcc.uap.share.services.impl.BaseIdentityPriceService;
@@ -138,6 +140,9 @@ public class OrderElectricianService implements IOrderElectricianService{
 	
 	@Autowired
 	private ElecPositionService elecPositionService;
+	
+	@Autowired
+	private OrderCustomerMoreVORepository orderCustomerMoreVORepository;
 	 
 	@Override
 	public QueryResultObject getOrderElectricianByOrderElectricianId(String orderElectricianId) {
@@ -992,13 +997,13 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * @throws Exception 
 	 */
 	@Override
-	public void paidanchaxun(String orderId) throws Exception {
+	public void paidanchaxun(OrderCustomer orderCustomer) throws Exception {
 		
 		//根据客户orderId获取其地区ID
 		//根据地区ID查询所属地区的电力子公司
 		//然后再查询电力子公司下距离最近的电工
 		//将 查询查询出来的信息放入到websocket
-		
+		String orderId=orderCustomer.getOrderId();
 		
 		//1.获取客户的位置信息
 		CustPosition custPosition=custPositionService.findByOrderId(orderId);
@@ -1121,17 +1126,17 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		Map<String,Object> map=new HashMap<String, Object>();
 		
-		QueryResultObject resultObject=new QueryResultObject();
+		//QueryResultObject resultObject=new QueryResultObject();
 		
 		
 		//1.查询出来客户表
-		resultObject=orderCustomerService.findByOrderId(orderId);
-		List<OrderCustomer> list=resultObject.getItems();
-		
+		///resultObject=orderCustomerService.findByOrderId(orderId);
+		//List<OrderCustomer> list=resultObject.getItems();
+		OrderCustomer orderCustomer2=orderCustomerService.findByOrderId(orderId);
 		
 		
 		//2.判断客户表是否是新表
-		if(list.get(0).getOrderStatus().equals("11")){
+		if(orderCustomer2.getOrderStatus().equals("11")){
 			//2.1电工接单的单子是11，说明是老单子设置客户订单表单状态为2，只需要将电工的填写的信息挪到新的电工订单就好
 			List<OrderElectrician> orderElectricianOlds=findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(orderId,"5");
 			OrderElectrician orderElectricianOld=orderElectricianOlds.get(0);
@@ -1290,17 +1295,17 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		Map<String,Object> map=new HashMap<String, Object>();
 		
-		QueryResultObject resultObject=new QueryResultObject();
+		//QueryResultObject resultObject=new QueryResultObject();
 		
 		
 		//1.查询出来客户表
-		resultObject=orderCustomerService.findByOrderId(orderId);
-		List<OrderCustomer> list=resultObject.getItems();
-		
+		//resultObject=orderCustomerService.findByOrderId(orderId);
+		//List<OrderCustomer> list=resultObject.getItems();
+		OrderCustomer orderCustomer2=orderCustomerService.findByOrderId(orderId);
 		
 		
 		//2.判断客户表是否是新表
-		if(list.get(0).getOrderStatus().equals("11")){
+		if(orderCustomer2.getOrderStatus().equals("11")){
 			//2.1电工接单的单子是11，说明是老单子设置客户订单表单状态为2，只需要将电工的填写的信息挪到新的电工订单就好
 			List<OrderElectrician> orderElectricianOlds=findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(orderId,"5");
 			OrderElectrician orderElectricianOld=orderElectricianOlds.get(0);
@@ -1395,6 +1400,19 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	private OrderElectrician findByOrderElectricianId(String orderElectricianId) {
 		OrderElectrician orderElectrician=orderElectricianRepository.findByOrderElectricianId(orderElectricianId);
 		return orderElectrician;
+	}
+	@Override
+	public QueryResultObject searchBox(String electricianId, String searchContent) {
+		//如果搜索字段包含10kv或220v
+		List<OrderCustomerMoreVO> orderCustomers=new ArrayList<>();
+		if (searchContent.contains("10kv") || searchContent.contains("220v")) {
+			orderCustomers=orderCustomerMoreVORepository.searchVOLTAGE(electricianId, searchContent);
+			}else {
+			 //orderCustomers=order.searchDescrive(electricianId,searchContent);
+		}
+		
+		//List<OrderElectrician> orderCustomers = orderElectricianRepository.searchBox(electricianId,searchContent);
+		return RestUtils.wrappQueryResult(orderCustomers);
 	}
 	
 

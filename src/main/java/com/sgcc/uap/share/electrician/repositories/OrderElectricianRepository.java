@@ -124,6 +124,11 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 
 	OrderElectrician findByOrderElectricianId(String orderElectricianId);
 
+
+	
+
+	
+
 	
 	
 }

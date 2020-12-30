@@ -614,15 +614,15 @@ public class OrderCustomerService implements IOrderCustomerService{
 	 * @param orderId
 	 * @return
 	 */
-	public QueryResultObject findByOrderId(String orderId) {
+	public OrderCustomer findByOrderId(String orderId) {
 		
 		
 		OrderCustomer orderCustomer = orderCustomerRepository.findByOrderIdAndOrderStatus(orderId);
-		List<OrderCustomer> result=new ArrayList<>();
-		result.add(orderCustomer);
-		long count=0;
-		count=result.size();
-		return RestUtils.wrappQueryResult(result,count);
+//		List<OrderCustomer> result=new ArrayList<>();
+//		result.add(orderCustomer);
+//		long count=0;
+//		count=result.size();
+		return orderCustomer;
 		
 		
 	}
