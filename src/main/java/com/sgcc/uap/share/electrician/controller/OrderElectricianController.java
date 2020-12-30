@@ -442,20 +442,26 @@ public class OrderElectricianController {
 	 */
 	
 	@RequestMapping(value="/waitToDo",name="待办事项")
-	public List<OrderCustomer> waitToDo(@RequestParam(value="electricianId") String electricianId){
+	public List<OrderCustomerVO> waitToDo(@RequestParam(value="electricianId") String electricianId){
 		
 		//根据电工ID，查询出所有有关他未完结的电工订单
 		QueryResultObject resultObject=new QueryResultObject();
 		List<OrderCustomer> orderCustomers=new ArrayList<>();
+		List<OrderCustomerVO> orderCustomerVOs=new ArrayList<>();
 		List<OrderElectrician> list=orderElectricianService.findByElectricianIdAndOrderElectricianTypeEqualsOrderByCreateTime(electricianId,"9");
 		for (OrderElectrician orderElectrician : list) {
+			OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
 			 
 			String orderIdString=orderElectrician.getOrDERId();
 			OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderIdString);
-			orderCustomers.add(orderCustomer);
+			//查询电工的经纬度
+			String distance=orderElectricianService.jisuanjuli(orderCustomer,orderElectrician);
+			BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
+			orderCustomerVO.setDistance(distance);
+			orderCustomerVOs.add(orderCustomerVO);
 		}
 		
-		return orderCustomers;
+		return orderCustomerVOs;
 	}
 	
 	/**
@@ -499,12 +505,12 @@ public class OrderElectricianController {
 				
 				oev.setOrderTypeId(baseOrderType.getOrderTypeName());
 				
-				if(orderCustomer.getOrderStatus().equals("2")){
+				
 					//随机生成50公里以下的数值
 					distanceDouble=PointUtil.getDistanceString(String.valueOf(orderCustomer.getAddressLongitude()), String.valueOf(orderCustomer.getAddressLatitude()), elecPosition.getLon(), elecPosition.getLat());
 					oev.setDistance(String.valueOf(distanceDouble));
 					
-				}
+				
 				
 				System.out.println("************oov的值是：**********"+oev);
 				oevList.add(oev);
@@ -547,7 +553,10 @@ public class OrderElectricianController {
 				orderTypeId=orderCustomer.getOrderTypeId();
 				 BaseOrderType baseOrderType=baseOrderTypeService.findByOrderTypeId(orderTypeId);
 				 BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
+				 String distance=orderElectricianService.jisuanjuli(orderCustomer,orderElectrician);
+				 
 				 orderCustomerVO.setOrderTypeId(baseOrderType.getOrderTypeName());
+				 orderCustomerVO.setDistance(distance);
 				 orderCustomerVOs.add(orderCustomerVO);
 			}
 			queryResult.setItems(orderCustomerVOs);
@@ -1303,7 +1312,7 @@ public class OrderElectricianController {
 	/**
 	 * 主要用于测试service接口
 	*/
-	
+	/*
 	@RequestMapping(value="/qiangdan22",name="抢单弹窗")
 	@ResponseBody
 	public void qiangdan1(){
@@ -1324,6 +1333,7 @@ public class OrderElectricianController {
 		
 	
 	}
+	*/
 	@RequestMapping(value="/esc",name="取消订单")
 	public WrappedResult esc(@RequestParam(value="orderElectricianId") String orderElectricianId,
 			@RequestParam(value="orderElectricianType") String orderElectricianType

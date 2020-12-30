@@ -105,12 +105,14 @@ OrderElectrician saveOrderElectrician(Map<String, Object> map) throws Exception;
 
 
 public OrderElectrician saveNewOrderElectrician(String orderId, String electricianId) throws Exception;
-void qiangdantanchuang(String orderId);
+//void qiangdantanchuang(String orderId);
 
 OrderElectrician saveNewNullOrderElectrician(String orderId) throws Exception;
 public void esc(String orderElectricianId, String orderElectricianType);
 public QueryResultObject searchBox(String electricianId, String searchContent);
 void paidanchaxun(OrderCustomer orderCustomer) throws Exception;
+void qiangdantanchuang(OrderCustomer orderCustomer);
+public String jisuanjuli(OrderCustomer orderCustomer, OrderElectrician orderElectrician);
 
 
 
