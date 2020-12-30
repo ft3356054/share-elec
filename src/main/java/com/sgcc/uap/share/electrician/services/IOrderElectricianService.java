@@ -114,6 +114,8 @@ void paidanchaxun(OrderCustomer orderCustomer);
 void qiangdantanchuang(OrderCustomer orderCustomer);
 public String jisuanjuli(OrderCustomer orderCustomer, OrderElectrician orderElectrician);
 
+public void sendNotify(Map<String, Object> orderCustomerMap, OrderCustomer orderCustomer, int i, int j);
+
 
 
 

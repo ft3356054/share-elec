@@ -782,7 +782,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * @throws Exception
 	 */
 	
-	private void sendNotify(Map map,OrderElectrician orderElectrician,int oper,int getPeople) throws Exception{
+	public void sendNotify(Map map,OrderElectrician orderElectrician,int oper,int getPeople) throws Exception{
 		String orderElectricianType =(String)map.get("orderElectricianType");
 		//1维修 2支付 3验收 4评价
 		String notifyType ="1";
@@ -827,21 +827,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		}
 		WebSocketServer.sendInfo(messageString,(String)map.get("electricianId"));
 	}
-	
-	/**
-	 * 通过保存custromer
-	 * @param map
-	 * @param file
-	 * @return
-	 * @throws Exception
-	 * 
-	 */
-	
-	/**
-	 * 1.  要是预约的话就只会给更改客户订单信息中的预约时间
-	 */
 
-	
 	
 	private Map<String,Object> orderStatus(Map map,OrderElectrician orderElectrician) throws Exception{
 		Map<String,Object> result = new HashMap<String, Object>();
@@ -908,7 +894,10 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * @param getPeople 1客户 2电工 
 	 * @throws Exception
 	 */
-	private void sendNotify(Map map,OrderCustomer orderCustomer,int oper,int getPeople) throws Exception{
+	public void sendNotify(Map map,OrderCustomer orderCustomer,int oper,int getPeople){
+		try {
+			
+		
 		String status =(String)map.get("orderStatus");
 		//1维修 2支付 3验收 4评价
 		String notifyType ="1";
@@ -939,9 +928,10 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		Map<String,Object> mapNotifyUser = 
 				MapUtil.notifyUserAdd(orderCustomer.getCustomerId(), announceId, getPeople, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		
-		//发送websocket消息
-		//WebSocketServer.sendInfo("下单成功",(String)map.get("electricianId"));
 	}
 	
 	private String getPrice(String identityId,String provinceId){
@@ -1170,6 +1160,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		saveOrderElectrician = saveOrderElectrician(map);
 		
 		//电工接单成功，就发送给客户消息
+		sendNotify(map, orderCustomer2, 0, 1);
 		WebSocketServer.sendInfo("电工已接单",(String)orderCustomer2.getCustomerId());
 		return saveOrderElectrician;
 		
@@ -1387,6 +1378,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		
 		//新增通知
+		Map<String, Object> map=new HashMap<>();
 				String announceId = UuidUtil.getUuid32();
 				
 				Map<String,Object> mapNotify =
@@ -1400,6 +1392,9 @@ public QueryResultObject queryAllDoing(String electricianId) {
 				
 				
 				if (orderElectricianType.equals("4")) {
+				
+					map.put("orderStatus", 4);
+					sendNotify(map, orderElectrician, 1, 2);
 					WebSocketServer.sendInfo("用户取消",(String)orderElectrician.getElectricianId());
 				}
 				

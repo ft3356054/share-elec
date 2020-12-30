@@ -1030,7 +1030,7 @@ public class OrderElectricianController {
 					orderCustomerMap.put("orderStatus", map.get("orderStatus"));
 					orderCustomerMap.put("orderId", map.get("orderId"));
 					orderCustomerMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
-					
+					//OrderCustomer orderCustomer=orderCustomerService.findByOrderId(String.valueOf(map.get("orderId")));
 					//电工订单需要更新的信息
 					orderElectricianMap.put("orderId", map.get("orderId"));
 					orderElectricianMap.put("orderElectricianType",map.get("orderElectricianType"));
@@ -1043,7 +1043,9 @@ public class OrderElectricianController {
 					System.out.println("我执行完了保存操作");
 					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 					result.setFormItems(orderCustomer);
+					
 					//给客户发送消息，让其支付维修费
+					orderElectricianService.sendNotify(orderCustomerMap,orderCustomer,0,1);
 					WebSocketServer.sendInfo("等待支付维修费",(String)orderCustomer.getCustomerId());
 					} catch (Exception e) {
 						// TODO: handle exception
