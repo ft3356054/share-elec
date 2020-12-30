@@ -42,7 +42,9 @@ public class ElecGrabOrderTask {
 		logger.info("获取并删除 orderCustomer = "+ orderCustomer);
 		
 		//调用抢单弹框方法
-		//orderElectricianService.qiangdantanchuang(orderCustomer);
+		if(null!=orderCustomer){
+			//orderElectricianService.qiangdantanchuang(orderCustomer);
+		}
 			
 		logger.info("In ElecGrabOrder end ! "+ Thread.currentThread().getId() + ":" + Thread.currentThread().getName() 
 				+ " ,date =" + new Date( System.currentTimeMillis()));
