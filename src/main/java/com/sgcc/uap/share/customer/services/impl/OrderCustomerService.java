@@ -32,7 +32,6 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
-import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.bo.OrderCustomerBeginPage;
 import com.sgcc.uap.share.customer.repositories.GetOrderElectricianRepository;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerBeginPageRepository;
@@ -245,7 +244,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			orderFlowService.saveOrderFlow(mapOrderFlow);
 			
 			//新增通知
-			String announceId = UuidUtil.getUuid32();
+			/*String announceId = UuidUtil.getUuid32();
 			
 			Map<String,Object> mapNotify =
 					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
@@ -254,7 +253,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			
 			Map<String,Object> mapNotifyUser = 
 					MapUtil.notifyUserAdd((String)map.get("customerId"), announceId, 1, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
-			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
+			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);*/
 			
 			//发送websocket消息
 	        //WebSocketServer.sendInfo("下单成功",(String)map.get("customerId"));  前台自动反馈用户
@@ -546,14 +545,14 @@ public class OrderCustomerService implements IOrderCustomerService{
 	private void sendNotify(Map map,OrderCustomer orderCustomer,int oper,int getPeople) throws Exception{
 		String status =(String)map.get("orderStatus");
 		//1维修 2支付 3验收 4评价
-		String notifyType ="1";
+		/*String notifyType ="1";
 		if("23".equals(status)){
 			notifyType ="2";
 		}else if("24".equals(status)){
 			notifyType ="3";
 		}else if("8".equals(status)){
 			notifyType ="4";
-		}
+		}*/
 		
 		//获取Enum通知类
 		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  status);	
@@ -564,7 +563,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 		orderFlowService.saveOrderFlow(mapOrderFlow);
 		
 		//新增通知
-		String announceId = UuidUtil.getUuid32();
+		/*String announceId = UuidUtil.getUuid32();
 		
 		Map<String,Object> mapNotify =
 				MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
@@ -573,10 +572,10 @@ public class OrderCustomerService implements IOrderCustomerService{
 		
 		Map<String,Object> mapNotifyUser = 
 				MapUtil.notifyUserAdd(orderCustomer.getCustomerId(), announceId, getPeople, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
-		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);*/
 		
 		//发送websocket消息
-        WebSocketServer.sendInfo(baseEnums.getEnumsB(),(String)map.get("customerId"));
+        //WebSocketServer.sendInfo(baseEnums.getEnumsB(),(String)map.get("customerId"));
 	}
 	
 	@Override

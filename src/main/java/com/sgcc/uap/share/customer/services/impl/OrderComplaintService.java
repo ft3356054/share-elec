@@ -28,7 +28,6 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
-import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.repositories.OrderComplaintRepository;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderComplaintService;
@@ -189,7 +188,7 @@ public class OrderComplaintService implements IOrderComplaintService{
 						orderFlowService.saveOrderFlow(mapOrderFlow);
 						
 						//新增通知
-						String announceId = UuidUtil.getUuid32();
+						/*String announceId = UuidUtil.getUuid32();
 						
 						Map<String,Object> mapNotify =
 								MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
@@ -198,10 +197,10 @@ public class OrderComplaintService implements IOrderComplaintService{
 						
 						Map<String,Object> mapNotifyUser = 
 								MapUtil.notifyUserAdd((String)map.get("customerId"), announceId, 0, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
-						notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
+						notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);*/	
 						
 						//发送websocket消息
-				        WebSocketServer.sendInfo("投诉成功",(String)map.get("customerId"));
+				        //WebSocketServer.sendInfo("投诉成功",(String)map.get("customerId"));
 						
 					}else{
 						throw new Exception("未查询到电工订单");
