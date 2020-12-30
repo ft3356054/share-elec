@@ -14,7 +14,7 @@ import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 
 
 /*
- * 电工抢单弹框
+ * 电工派单弹框
  * */
 
 @Component
@@ -42,7 +42,7 @@ public class ElecAssignOrderTask {
 		logger.info("获取并删除 orderCustomer = "+ orderCustomer);
 		
 		//调用派单弹框方法
-		orderElectricianService.paidanchaxun(orderCustomer);
+		//orderElectricianService.paidanchaxun(orderCustomer);
 			
 		logger.info("In ElecAssignOrderTask end ! "+ Thread.currentThread().getId() + ":" + Thread.currentThread().getName() 
 				+ " ,date =" + new Date( System.currentTimeMillis()));
