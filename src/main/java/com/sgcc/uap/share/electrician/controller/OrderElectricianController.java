@@ -53,6 +53,7 @@ import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
+import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.services.impl.CustPositionService;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.customer.services.impl.OrderFlowService;
@@ -354,60 +355,7 @@ public class OrderElectricianController {
 		QueryResultObject resultObject=new QueryResultObject();
 		try {
 			
-			/*
-		//新的客户订单
-		OrderCustomer orderCustomer=new OrderCustomer();
-		//新的电工订单
-		OrderElectrician orderElectrician=new OrderElectrician();
-		//查询出的当前电工信息
-		ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
 		
-		Map<String,Object> map=new HashMap<String, Object>();
-		
-		
-		
-		
-		//1.查询出来客户表
-		resultObject=orderCustomerService.findByOrderId(orderId);
-		List<OrderCustomer> list=resultObject.getItems();
-		
-		//插入一个条件，如果查询出来的客户表订单为20，表明是已经有人接了单子
-		if(list.get(0).getOrderStatus().equals("20")){
-			String msg="已经有人接了客户订单";
-			return WrappedResult.failedWrappedResult(msg);
-			 
-		}
-		
-		//2.判断客户表是否是新表
-		if(list.get(0).getOrderStatus().equals("11")){
-			//2.1电工接单的单子是11，说明是老单子设置客户订单表单状态为2，只需要将电工的填写的信息挪到新的电工订单就好
-			List<OrderElectrician> orderElectricianOlds=orderElectricianService.findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(orderId,"5");
-			OrderElectrician orderElectricianOld=orderElectricianOlds.get(0);
-			//电工描述
-			map.put("electricianDescrive", orderElectricianOld.getElectricianDescrive());
-			//电工拍照
-			map.put("electricianDescriveIcon", orderElectricianOld.getElectricianDescriveIcon());
-			
-			
-		}
-		map.put("orderElectricianId",UuidUtil.getUuid32());
-		map.put("electricianId",electricianId);
-		map.put("electricianName",electricianInfo.getElectricianName());
-		map.put("electricianPhonenumber",electricianInfo.getElectricianPhonenumber());
-		map.put("electricianAddress",null);
-		map.put("otherElectricianId",null);
-		map.put("orderTypeId",null);
-		map.put("electricianPrice",null);
-		map.put("orderElectricianType","20");
-		map.put("payStatus",orderCustomer.getPayStatus());
-		map.put("createTime",DateTimeUtil.formatDateTime(new Date()));
-		
-		map.put("orDERId",orderId);
-		map.put("orderId", orderId);
-		
-		saveOrderElectrician = orderElectricianService.saveOrderElectrician(map);
-		
-		*/
 			
 			//1.查询出来客户表
 			OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
@@ -1074,6 +1022,9 @@ public class OrderElectricianController {
 				}
 				if(method.equals("上传合同")){//状态应该从22---->23电工上传合同（报价）
 					
+					try {
+						
+					
 					//将map中的数据分别送到两个类中，在进行更新
 					//客户订单需要跟新的信息
 					orderCustomerMap.put("orderStatus", map.get("orderStatus"));
@@ -1092,8 +1043,11 @@ public class OrderElectricianController {
 					System.out.println("我执行完了保存操作");
 					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 					result.setFormItems(orderCustomer);
-					
-					
+					//给客户发送消息，让其支付维修费
+					WebSocketServer.sendInfo("等待支付维修费",(String)orderCustomer.getCustomerId());
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
 				}
 				
 				if(method.equals("电工人员保存")){// 每点一下就触发一次
