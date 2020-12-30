@@ -109,6 +109,13 @@ public class OrderCustomerService implements IOrderCustomerService{
 		OrderCustomer orderCustomer = orderCustomerRepository.findOne(orderId);
 		return RestUtils.wrappQueryResult(orderCustomer);
 	}
+	
+	@Override
+	public List<OrderCustomer> getOrderCustomerByOrderIds(List<String> orderIds) {
+		List<OrderCustomer> orderCustomers = orderCustomerRepository.findOrderCustomerByOrderId(orderIds);
+		return orderCustomers;
+	}
+	
 	@Override
 	public QueryResultObject getAllOrderCustomerByCustomerId(RequestCondition queryCondition) {
 		List<OrderCustomer> result = new ArrayList<>();
@@ -499,7 +506,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			}
 		}else if("8".equals(orderStatus)){
 			ArrayList<String> sites = new ArrayList<>();
-	        sites.add("24"); //待用户验收
+	        sites.add("25"); //待用户验收
 			if(sites.contains(orderCustomer.getOrderStatus())){
 				String dateString = TimeStamp.toString(new Date());
 				map.put("updateTime", dateString);

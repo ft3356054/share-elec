@@ -117,6 +117,9 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	List<OrderCustomer> findByOrderStatus(Collection<String> orderStatus, String pastTime);
 	
 	
+	public List<OrderCustomer> findOrderCustomerByOrderId(Collection<String> orderId);
+	
+	
 	
 	/**
 	 * 郭庆2020.12.04
