@@ -233,6 +233,14 @@ public class OrderCustomerBeginPage implements Serializable {
     private String electricianDescriveIcon ;
     @Column(name = "ELECTRICIAN_PRICE", nullable = true, length = 6)
     private String electricianPrice ;
+    @Column(name = "OTHER_ELECTRICIAN_ID", nullable = true, length = 512)
+    private String otherElectricianId ;
+    @Column(name = "ORDER_CONTRACT", nullable = true, length = 512)
+    private String orderContract ;
+    @Column(name = "INSPECTION_REPORT", nullable = true, length = 512)
+    private String inspectionReport ;
+    @Column(name = "ELECTRICIAN_NAME", nullable = true, length = 64)
+    private String electricianName ;
 	public String getElectricianDescrive() {
 		return electricianDescrive;
 	}
@@ -250,6 +258,30 @@ public class OrderCustomerBeginPage implements Serializable {
 	}
 	public void setElectricianPrice(String electricianPrice) {
 		this.electricianPrice = electricianPrice;
+	}
+	public String getOtherElectricianId() {
+		return otherElectricianId;
+	}
+	public void setOtherElectricianId(String otherElectricianId) {
+		this.otherElectricianId = otherElectricianId;
+	}
+	public String getOrderContract() {
+		return orderContract;
+	}
+	public void setOrderContract(String orderContract) {
+		this.orderContract = orderContract;
+	}
+	public String getInspectionReport() {
+		return inspectionReport;
+	}
+	public void setInspectionReport(String inspectionReport) {
+		this.inspectionReport = inspectionReport;
+	}
+	public String getElectricianName() {
+		return electricianName;
+	}
+	public void setElectricianName(String electricianName) {
+		this.electricianName = electricianName;
 	}
 
 
