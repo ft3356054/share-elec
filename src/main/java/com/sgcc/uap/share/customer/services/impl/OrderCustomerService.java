@@ -46,8 +46,6 @@ import com.sgcc.uap.share.electrician.services.impl.OrderElectricianService;
 import com.sgcc.uap.share.services.IBaseEnumsService;
 import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
 import com.sgcc.uap.share.services.impl.BaseIdentityPriceService;
-import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
-import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
 import com.sgcc.uap.util.DecimalUtil;
 import com.sgcc.uap.util.FileUtil;
@@ -89,10 +87,6 @@ public class OrderCustomerService implements IOrderCustomerService{
 	@Autowired
 	private BaseAreaPriceService baseAreaPriceService;
 	@Autowired
-	private NotifyAnnounceService notifyAnnounceService;
-	@Autowired
-	private NotifyAnnounceUserService notifyAnnounceUserService;
-	@Autowired
     private IBaseEnumsService baseEnumsService;
 	@Autowired
     private OrderCustomerBeginPageRepository orderCustomerBeginPageRepository;
@@ -100,6 +94,7 @@ public class OrderCustomerService implements IOrderCustomerService{
     private GetOrderElectricianRepository getOrderElectricianRepository;
 	@Autowired
 	private CustPositionService custPositionService;
+	@SuppressWarnings("rawtypes")
 	@Autowired
     private RedisTemplate redisTemplate;
 	
@@ -107,6 +102,16 @@ public class OrderCustomerService implements IOrderCustomerService{
 	public QueryResultObject getOrderCustomerByOrderId(String orderId) {
 		OrderCustomer orderCustomer = orderCustomerRepository.findOne(orderId);
 		return RestUtils.wrappQueryResult(orderCustomer);
+	}
+	
+	@Override
+	public QueryResultObject getOrderDetailByOrderId(String orderId) {
+		List<String> elecStatus = new ArrayList<>();
+		elecStatus.add("1");
+		elecStatus.add("4");
+		elecStatus.add("5");
+		OrderCustomerBeginPage orderCustomerBeginPage = orderCustomerBeginPageRepository.findOrderDetail(orderId,elecStatus);
+		return RestUtils.wrappQueryResult(orderCustomerBeginPage);
 	}
 	
 	@Override

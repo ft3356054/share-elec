@@ -32,6 +32,12 @@ public interface IOrderCustomerService {
 	public QueryResultObject getOrderCustomerByOrderId(String orderId);
 	
 	/**
+	 * 根据主键 查询 关联电工订单
+	 * @param orderId
+	 * @return
+	 */
+	public QueryResultObject getOrderDetailByOrderId(String orderId);
+	/**
 	 * @getOrderCustomerByOrderId:根据主键 查询
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果

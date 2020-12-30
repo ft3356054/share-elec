@@ -81,7 +81,7 @@ public class OrderCustomerController {
 	@Autowired
 	private IOrderCustomerService orderCustomerService;
 	/**
-	 * @getByOrderId:根据orderId查询
+	 * @getByOrderId:根据orderId查询单条
 	 * @param orderId
 	 * @return WrappedResult 查询结果
 	 * @date 2020-11-26 14:32:47
@@ -102,8 +102,32 @@ public class OrderCustomerController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
 	/**
-	 * @getByOrderId:根据orderId查询
+	 * @getByOrderId:根据orderId查询单条 关联电工订单
+	 * @param orderId
+	 * @return WrappedResult 查询结果
+	 * @date 2020-12-26 14:32:47
+	 * @author 18511
+	 */
+	@RequestMapping(value = "/OrderDetail/{orderId}")
+	public WrappedResult getOrderDetailByOrderId(@PathVariable String orderId) {
+		try {
+			QueryResultObject result = orderCustomerService.getOrderDetailByOrderId(orderId);
+			logger.info("查询成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
+	/**
+	 * @getByOrderId:根据orderId查询全部
 	 * @param orderId
 	 * @return WrappedResult 查询结果
 	 * @date 2020-11-26 14:32:47
