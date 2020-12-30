@@ -309,19 +309,7 @@ public class OrderElectricianController {
 		binder.setDisallowedFields(DISALLOWED_PARAMS);
 	}
 	
-	/**
-	 * 以下是测试代码
-	 */
-	@RequestMapping(value="/electrician_evaluate",name="查询待评价的订单")
-	@ResponseBody
-	public List<OrderElectrician> findByElectricianEvaluateIsNullAndOrderElectricianTypeEquals(){
-		List<OrderElectrician> list=orderElectricianService.findByElectricianEvaluateIsNullAndOrderElectricianTypeEquals("8");
-		return list;
-	}
-	
 
-	
-	
 	
 	/**
 	 * 一打开首页抢单按钮，需要将所有的未抢的订单全部查询只需要考虑没有人接的就行
@@ -455,6 +443,7 @@ public class OrderElectricianController {
 	
 	@RequestMapping(value="/waitToDo",name="待办事项")
 	public List<OrderCustomer> waitToDo(@RequestParam(value="electricianId") String electricianId){
+		
 		//根据电工ID，查询出所有有关他未完结的电工订单
 		QueryResultObject resultObject=new QueryResultObject();
 		List<OrderCustomer> orderCustomers=new ArrayList<>();
@@ -547,7 +536,21 @@ public class OrderElectricianController {
 			
 			
 			QueryResultObject queryResult = orderElectricianService.queryWaitToDo(requestCondition,electricianId);
-			
+			List<OrderElectrician>orderElectricians=queryResult.getItems();
+			//OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
+			String orderTypeId=null;
+			List<OrderCustomerVO> orderCustomerVOs=new ArrayList<>();
+			for (OrderElectrician orderElectrician : orderElectricians) {
+				OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
+				String orderId=orderElectrician.getOrDERId();
+				OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
+				orderTypeId=orderCustomer.getOrderTypeId();
+				 BaseOrderType baseOrderType=baseOrderTypeService.findByOrderTypeId(orderTypeId);
+				 BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
+				 orderCustomerVO.setOrderTypeId(baseOrderType.getOrderTypeName());
+				 orderCustomerVOs.add(orderCustomerVO);
+			}
+			queryResult.setItems(orderCustomerVOs);
 			
 			
 			logger.info("查询数据成功"); 

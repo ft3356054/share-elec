@@ -610,7 +610,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	public OrderCustomer findByOrderId(String orderId) {
 		
 		
-		OrderCustomer orderCustomer = orderCustomerRepository.findByOrderIdAndOrderStatus(orderId);
+		OrderCustomer orderCustomer = orderCustomerRepository.findByOrderId(orderId);
 //		List<OrderCustomer> result=new ArrayList<>();
 //		result.add(orderCustomer);
 //		long count=0;

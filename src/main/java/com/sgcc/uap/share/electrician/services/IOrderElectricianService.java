@@ -68,7 +68,7 @@ public List<OrderCustomer> findByOrderStatusOrderByCreateTime(int id1,int id2);
 public List<OrderElectrician> findByElectricianIdAndOrderElectricianTypeEqualsOrderByCreateTime(String electricianId,String orderElectricianType);
 public List<OrderElectrician> findByElectricianIdAndOrderByCreateTimeAsc(String electricianId);
 public List<OrderElectrician> findByElectricianId(String electricianId);
-public QueryResultObject queryMore(RequestCondition requestCondition);
+//public QueryResultObject queryMore(RequestCondition requestCondition);
 QueryResultObject queryMore(RequestCondition queryCondition, String electricianId);
 public QueryResultObject queryWaitToDo(RequestCondition requestCondition, String electricianId);
 public OrderElectrician saveOrderElectrician2(Map<String, Object> map,String electricianId) throws Exception ;

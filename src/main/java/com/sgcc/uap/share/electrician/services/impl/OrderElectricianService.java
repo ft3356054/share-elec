@@ -545,12 +545,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 		return RestUtils.wrappQueryResult(result, count);
 		
 	}
-	@Override
-	public QueryResultObject queryMore(RequestCondition requestCondition) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+
 	
 	@Override
 	public OrderElectrician findByOrDERIdAndOrderElectricianType(String orderId){
@@ -1414,6 +1409,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		//List<OrderElectrician> orderCustomers = orderElectricianRepository.searchBox(electricianId,searchContent);
 		return RestUtils.wrappQueryResult(orderCustomers);
 	}
+	
 	
 
 	
