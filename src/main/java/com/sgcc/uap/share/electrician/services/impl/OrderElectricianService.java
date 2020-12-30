@@ -1135,13 +1135,8 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
 		
 		Map<String,Object> map=new HashMap<String, Object>();
-		
-		//QueryResultObject resultObject=new QueryResultObject();
-		
-		
-		//1.查询出来客户表
-		///resultObject=orderCustomerService.findByOrderId(orderId);
-		//List<OrderCustomer> list=resultObject.getItems();
+	
+		//1.查询出来客户表		
 		OrderCustomer orderCustomer2=orderCustomerService.findByOrderId(orderId);
 		
 		
@@ -1168,12 +1163,14 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		map.put("orderElectricianType","20");
 		map.put("payStatus",orderCustomer.getPayStatus());
 		map.put("createTime",DateTimeUtil.formatDateTime(new Date()));
+		map.put("orderTypeId", orderCustomer2.getOrderTypeId());
 		
 		map.put("orDERId",orderId);
 		map.put("orderId", orderId);
 		saveOrderElectrician = saveOrderElectrician(map);
 		
-		
+		//电工接单成功，就发送给客户消息
+		WebSocketServer.sendInfo("电工已接单",(String)orderCustomer2.getCustomerId());
 		return saveOrderElectrician;
 		
 		} catch (Exception e) {
