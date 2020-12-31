@@ -47,7 +47,7 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	@Transactional
 	@Modifying
 	@Query(value = "UPDATE order_customer t1 SET t1.CUSTOMER_GRADE =:customerGrade ,"
-			+ " t1.CUSTOMER_EVALUATE_TITLE=:customerEvaluateTitle,t1.CUSTOMER_EVALUATE=:customerEvaluate,t1.ORDER_STATUS=9 "
+			+ " t1.CUSTOMER_EVALUATE_TITLE=:customerEvaluateTitle,t1.CUSTOMER_EVALUATE=:customerEvaluate,t1.ORDER_STATUS=9,t1.UPDATE_TIME=:updateTime  "
 			+ " WHERE t1.ORDER_ID IN  "
 			+ " (SELECT T3.ORDER_ID FROM ( "
 			+ " SELECT t2.ORDER_ID FROM order_customer t2 WHERE t2.ORDER_STATUS=:orderStatus  "
@@ -55,7 +55,7 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 			+ " ) AS T3) "
 	,nativeQuery = true)
 	Integer getNotEvaluate(@Param("customerGrade")int customerGrade,@Param("customerEvaluateTitle")String customerEvaluateTitle,
-			@Param("customerEvaluate")String customerEvaluate,@Param("orderStatus")int orderStatus,@Param("day")int day);
+			@Param("customerEvaluate")String customerEvaluate,@Param("orderStatus")int orderStatus,@Param("day")int day,@Param("updateTime")String updateTime);
 
 	@Query(value = "SELECT * FROM order_customer t WHERE t.CUSTOMER_ID =:customerId "
 			+ " AND t.ORDER_STATUS NOT IN :tagTypes "

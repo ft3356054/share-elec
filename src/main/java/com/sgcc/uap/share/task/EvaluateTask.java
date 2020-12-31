@@ -1,11 +1,14 @@
 package com.sgcc.uap.share.task;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
+import com.sgcc.uap.util.TimeStamp;
 
 
 /*
@@ -26,8 +29,9 @@ public class EvaluateTask{
 		logger.info("EvaluateTask start ! ");
 		
 		Integer updateCount = 0;
+		String dateString = TimeStamp.toString(new Date());
 		//5星 状态8 15天
-		updateCount = orderCustomerRepository.getNotEvaluate(5, "默认好评",  "默认好评", 8, 15);
+		updateCount = orderCustomerRepository.getNotEvaluate(5, "默认好评",  "默认好评", 8, 15,dateString);
 		logger.info("EvaluateTask updateCount = "+updateCount);
 			
 	}

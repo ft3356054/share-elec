@@ -504,7 +504,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 					map.put("updateTime", dateString);
 					map.put("finishTime", dateString);
 					result.put("key", "0");
-					result.put("desc", "该订单处于可取消状态");
+					result.put("desc", "未找到子订单");
 					result.put("map", map);
 				}
 			}else{
@@ -517,6 +517,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			if(sites.contains(orderCustomer.getOrderStatus())){
 				String dateString = TimeStamp.toString(new Date());
 				map.put("updateTime", dateString);
+				map.put("finishTime", dateString);
 				result.put("key", "0");
 				result.put("desc", "该订单处于可验收状态");
 				result.put("map", map);
@@ -530,7 +531,6 @@ public class OrderCustomerService implements IOrderCustomerService{
 			if(sites.contains(orderCustomer.getOrderStatus())){
 				String dateString = TimeStamp.toString(new Date());
 				map.put("updateTime", dateString);
-				map.put("finishTime", dateString);
 				result.put("key", "0");
 				result.put("desc", "该订单处于待评价状态");
 				result.put("map", map);
@@ -538,8 +538,40 @@ public class OrderCustomerService implements IOrderCustomerService{
 				result.put("key", "1");
 				result.put("desc", "该订单不处于待评价状态");
 			}
+		}else if("22".equals(orderStatus)){
+			ArrayList<String> sites = new ArrayList<>();
+	        sites.add("23"); //待用户支付
+			if(sites.contains(orderCustomer.getOrderStatus())){
+				List<String> listStatus = new ArrayList<String>();
+				listStatus.add("1");
+				listStatus.add("4");
+				listStatus.add("5");
+				//获取当前子订单
+				OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianTypeNotIn(orderCustomer.getOrderId(), listStatus);
+				if(null!=orderElectrician){
+					//修改电工订单状态 由 23 改为22
+					List<String> elecStatus = new ArrayList<String>();
+					elecStatus.add("23");
+					if(sites.contains(orderCustomer.getOrderStatus())){
+						orderElectricianService.esc(orderElectrician.getElectricianId(), orderStatus);
+						String dateString = TimeStamp.toString(new Date());
+						map.put("updateTime", dateString);
+						result.put("key", "0");
+						result.put("desc", "该订单处于待支付状态");
+						result.put("map", map);
+					}else{
+						result.put("key", "1");
+						result.put("desc", "该订单的子订单不处于待支付状态");
+					}
+				}else{
+					result.put("key", "1");
+					result.put("desc", "未查询到子订单");
+				}
+		}else{
+			result.put("key", "1");
+			result.put("desc", "该订单不处于待支付状态");
 		}
-		
+	}
 		return result;
 	}
 	
@@ -590,6 +622,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 		List<OrderCustomer> orderCustomers = null;
 		List<String> tagTypes = new ArrayList<String>();
 		tagTypes.add("4");
+		tagTypes.add("8");
 		tagTypes.add("9");
 		
 		if("1".equals(tagType)){
