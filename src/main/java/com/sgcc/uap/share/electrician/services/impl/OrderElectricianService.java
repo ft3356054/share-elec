@@ -487,20 +487,10 @@ public class OrderElectricianService implements IOrderElectricianService{
 		
 	}
 	
-	/**
-	 * 我的订单页面    查询的是当前电工所有的订单+历史订单
-	 * 查询未完结的订单
-	 */
 	
-	public List<OrderElectrician> findByElectricianIdAndOrderByCreateTimeAsc(String electricianId){
-		
-		//List<OrderElectrician> list=orderElectricianRepository.getAllOrderElectricianByElectricianId(pageIndex,pageSize,customerId);
-		
-		return null;
-	}
+	
 	@Override
 	public List<OrderElectrician> findByElectricianId(String electricianId) {
-		// TODO Auto-generated method stub
 		List<OrderElectrician> list=orderElectricianRepository.findByElectricianId(electricianId);
 		return list;
 	}
@@ -511,7 +501,6 @@ public class OrderElectricianService implements IOrderElectricianService{
 		if(queryCondition == null){
 			throw new NullArgumentException("queryCondition");
 		}
-		
 		Integer pageIndex = queryCondition.getPageIndex()-1;
 		Integer pageSize = queryCondition.getPageSize();
 
@@ -521,8 +510,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 				electricianId,map.get("orderElectricianType"));
 		long count = 0;
 		count = result.size();
-		return RestUtils.wrappQueryResult(result, count);
-		
+		return RestUtils.wrappQueryResult(result, count);		
 	}
 	
 	
@@ -573,17 +561,10 @@ public class OrderElectricianService implements IOrderElectricianService{
 			CrudUtils.mapToObject(map, orderCustomer,  "orderId");
 			result = orderCustomerRepository.save(orderCustomer);
 			sendNotify(map, orderCustomer,2,1);
-			
-			
-		
+	
 		return result;
 	}
-	
-	
-	
-	
-	
-	
+
 	@Override
 	public OrderElectrician saveOrderElectrician(Map<String, Object> map,MultipartFile file) throws Exception {
 		
@@ -595,16 +576,12 @@ public class OrderElectricianService implements IOrderElectricianService{
 			String electricianId =(String) map.get("electricianId");
 			orderElectrician=orderElectricianRepository.findByElectricianIdAndOrderId(electricianId,orderId);
 			
-			
-			
 			if("23".equals(map.get("orderElectricianType"))){
 				//上传图片
 				if  (null!=file&&!"".equals(file))  {
 					String orderContract = FileUtil.uploadFile(file, orderElectrician.getOrDERId(),"ORDER_ELECTRICIAN", "orderContract");
 					map.put("orderContract", orderContract);
 				}
-				
-				
 				
 			}else if ("25".equals(map.get("orderElectricianType"))) {//8状态说明是验收状态页面要进行验收，需要保存图片
 				
@@ -621,32 +598,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 			if ((String)map.get("orderElectricianType")!=null) {
 				sendNotify(map, orderElectrician,2,1);
 			}
-			
-			
-			/*
-			//获取Enum通知类
-			BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0", "0");	
-			
-			//新增流水
-			Map<String,Object> mapOrderFlow = 
-					MapUtil.flowAdd((String)map.get("orderElectricianType"), 0, 0, (String)map.get("electricianId"), TimeStamp.toString(new Date()), 0,  baseEnums.getEnumsA());
-			orderFlowService.saveOrderFlow(mapOrderFlow);
-			
-			//新增通知
-			String announceId = UuidUtil.getUuid32();
-			
-			Map<String,Object> mapNotify =
-					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
-							"2",(String)map.get("orderElectricianType"),"");
-			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
-			
-			Map<String,Object> mapNotifyUser = 
-					MapUtil.notifyUserAdd((String)map.get("electricianId"), announceId, 1, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
-			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
-			
-			
-			//发送websocket消息
-	       */
+
 	        WebSocketServer.sendInfo("下单成功",(String)map.get("electricianId"));
 	       
 		return result;
@@ -662,28 +614,20 @@ public class OrderElectricianService implements IOrderElectricianService{
 		OrderElectrician result = new OrderElectrician();
 		
 			String orderId = (String) map.get("orderId");
-			//orderElectrician=orderElectricianRepository.findByElectricianIdAndOrderId(orderId, (String)map.get("electricianId"));
+			
 			String orDERId = (String) map.get("orDERId");
-			
-			
+					
 			CrudUtils.mapToObject(map, orderElectrician,  "orderId");
 			result = orderElectricianRepository.save(orderElectrician);
-			/*
-			if ((String)map.get("orderElectricianType")!=null) {
-				sendNotify(map, orderElectrician,2,1);
-			}
-			*/
 			
 			return result;
 		
 	}
 
 	
-	
 	@Override
 	public OrderElectrician findByOrderId(String orderId,String electricianId) {
 		
-		// TODO Auto-generated method stub
 		OrderElectrician orderIdString=orderElectricianRepository.findByElectricianIdAndOrderId(orderId,electricianId);
 		return orderIdString;
 	}
@@ -704,11 +648,8 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	public Object saveElectricianEvaluate(Map<String, Object> map, MultipartFile file){
 		OrderElectrician result=null;
 		try {
-			
-		
-		//logger.info("OrderCustomerService saveOrderCustomer map = " +map); 
+		 
 		validateService.validateWithException(OrderElectrician.class,map);
-		
 		
 		//修改订单的状态
 		OrderElectrician orderElectrician=new OrderElectrician();
@@ -762,11 +703,6 @@ public QueryResultObject queryAllDoing(String electricianId) {
 					MapUtil.notifyUserAdd((String)map.get("electricianId"), announceId, 0, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);	
 			
-			//发送websocket消息
-			//WebSocketServer.sendInfo("下单成功",(String)map.get("electricianId"));
-		
-
-		
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -1072,37 +1008,30 @@ public QueryResultObject queryAllDoing(String electricianId) {
 
 				map.put(distanceDouble, electricianInfo2);
 				
-				
-				
-				
 			}
 			electricianInfo=getFirstElectricianInfo(map);
 			
 		}else {
 			electricianInfo=electricianInfoList.get(0);
-			
-			
+						
 		}
-		
-		
+				
 		String electricianId=electricianInfo.getElectricianId();
-		OrderElectrician orderElectrician=saveNewOrderElectrician(orderId,electricianId);		
+		OrderElectrician orderElectrician=saveNewOrderElectrician(orderId,electricianId);
 		
+		//改变主订单客户订单的状态是20
+		orderCustomer.setOrderStatus("20");
+		Map<String, Object> nesMap=new HashMap<>();
+		nesMap=CrudUtils.objectToMap(orderCustomer);
+		saveOrderCustomerByOrderElectricianService(nesMap);
 		
-			
 		WebSocketServer.sendInfo(JsonUtils.objToJson(orderElectrician),(String)electricianInfo.getElectricianId());
-		
-		
-		
-	
-	
+
 	} catch (Exception e) {
 		logger.error(e.getMessage(), e);
 		String errorMessage = "查询异常";
 		
-	}
-		
-		
+	}	
 	}
 	
 	
@@ -1212,7 +1141,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			String electricianId=elecPosition.getElectricianId();
 			
 			ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
-			logger.info("***************electricianInfo.getElectricianStatus()**********"+electricianInfo.getElectricianStatus());
+		
 			if (electricianInfo.getElectricianStatus().equals("1")) {  //如果电工的状态是1,则代表电工在线
 				if (Double.valueOf(elecPosition.getLon())>around[0] && Double.valueOf(elecPosition.getLon())<around[2] && Double.valueOf(elecPosition.getLat())>around[1] && Double.valueOf(elecPosition.getLat())<around[3]){
 					
@@ -1254,20 +1183,11 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			String errorMessage = "查询异常";
-			
-			
+			String errorMessage = "查询异常";			
 		}
-		
-
 	}
 	
-	
-	
-	
-	
 
-	
 	public static ElectricianInfo getFirstElectricianInfo(Map<Double, ElectricianInfo> map) {
 		ElectricianInfo obj = null;
 	    for (Entry<Double, ElectricianInfo> entry : map.entrySet()) {
@@ -1289,25 +1209,17 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	public OrderElectrician saveNewNullOrderElectrician(String orderId) throws Exception{
 		
 		OrderElectrician saveOrderElectrician=null;
-		
-		
+				
 		//新的客户订单
 		OrderCustomer orderCustomer=new OrderCustomer();
 		//新的电工订单
 		OrderElectrician orderElectrician=new OrderElectrician();
-		
-		
+				
 		Map<String,Object> map=new HashMap<String, Object>();
-		
-		//QueryResultObject resultObject=new QueryResultObject();
-		
-		
+	
 		//1.查询出来客户表
-		//resultObject=orderCustomerService.findByOrderId(orderId);
-		//List<OrderCustomer> list=resultObject.getItems();
 		OrderCustomer orderCustomer2=orderCustomerService.findByOrderId(orderId);
-		
-		
+				
 		//2.判断客户表是否是新表
 		if(orderCustomer2.getOrderStatus().equals("11")){
 			//2.1电工接单的单子是11，说明是老单子设置客户订单表单状态为2，只需要将电工的填写的信息挪到新的电工订单就好
@@ -1317,8 +1229,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			map.put("electricianDescrive", orderElectricianOld.getElectricianDescrive());
 			//电工拍照
 			map.put("electricianDescriveIcon", orderElectricianOld.getElectricianDescriveIcon());
-			
-			
+						
 		}
 		map.put("orderElectricianId",UuidUtil.getUuid32());
 		
@@ -1333,17 +1244,17 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		map.put("orDERId",orderId);
 		map.put("orderId", orderId);
 		saveOrderElectrician = saveOrderElectrician(map);
-		
-		
+				
 		return saveOrderElectrician;
 		
 	}
 	@Override
 	public void esc(String orderElectricianId, String orderElectricianType) {
-		
-		
+				
 		try {
 		//先根据orderId查询客户订单，将其状态变为11
+			
+			
 		
 		OrderElectrician orderElectrician=findByOrderElectricianId(orderElectricianId);
 		orderElectrician.setOrderElectricianType(orderElectricianType);
@@ -1354,8 +1265,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			orderElectrician.setUpdateTime(Timestamp.valueOf(String.valueOf(new Date())));
 		}
 		orderElectricianRepository.save(orderElectrician);
-		
-		
+				
 		//1维修 2支付 3验收 4评价
 		String notifyType ="1";
 		if("23".equals(orderElectricianType)){
@@ -1365,9 +1275,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		}else if("8".equals(orderElectricianType)){
 			notifyType ="4";
 		}
-		
-		
-		
+	
 		//获取Enum通知类
 		
 				BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  orderElectricianType);
@@ -1375,8 +1283,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		Map<String,Object> mapOrderFlow = 
 				MapUtil.flowAdd(orderElectrician.getOrDERId(), 1,  Integer.parseInt(orderElectricianType), orderElectrician.getElectricianId(),TimeStamp.toString(new Date()), 2,  baseEnums.getEnumsA());
 		orderFlowService.saveOrderFlow(mapOrderFlow);
-		
-		
+				
 		//新增通知
 		Map<String, Object> map=new HashMap<>();
 				String announceId = UuidUtil.getUuid32();
@@ -1389,17 +1296,14 @@ public QueryResultObject queryAllDoing(String electricianId) {
 				Map<String,Object> mapNotifyUser = 
 						MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, 2, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 				notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
-				
-				
+								
 				if (orderElectricianType.equals("4")) {
 				
 					map.put("orderStatus", 4);
 					sendNotify(map, orderElectrician, 1, 2);
 					WebSocketServer.sendInfo("用户取消",(String)orderElectrician.getElectricianId());
 				}
-				
-		
-		
+						
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -1412,15 +1316,14 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	@Override
 	public QueryResultObject searchBox(String electricianId, String searchContent) {
 		//如果搜索字段包含10kv或220v
-		List<OrderCustomerMoreVO> orderCustomers=new ArrayList<>();
+		List<OrderCustomerMoreVO> OrderCustomerMoreVOs=new ArrayList<>();
 		if (searchContent.contains("10kv") || searchContent.contains("220v")) {
-			orderCustomers=orderCustomerMoreVORepository.searchVOLTAGE(electricianId, searchContent);
+			OrderCustomerMoreVOs=orderCustomerMoreVORepository.searchVOLTAGE(electricianId, searchContent);
 			}else {
-			 //orderCustomers=order.searchDescrive(electricianId,searchContent);
+				OrderCustomerMoreVOs=orderCustomerMoreVORepository.searchDescrive(electricianId,searchContent);
 		}
 		
-		//List<OrderElectrician> orderCustomers = orderElectricianRepository.searchBox(electricianId,searchContent);
-		return RestUtils.wrappQueryResult(orderCustomers);
+		return RestUtils.wrappQueryResult(OrderCustomerMoreVOs);
 	}
 	
 	
@@ -1445,9 +1348,36 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	}
 	
 
-	
-	
-	
+	/**
+	 * 发送流水
+	 * @param map
+	 * @param orderCustomer
+	 * @param oper 0增 1删 2改
+	 * @param getPeople 1客户 2电工 
+	 * @throws Exception
+	 */
+	public void sendOederFlow(OrderElectrician orderElectrician,int oper){
+		
+		try {
+			
+		
+		String status =(String)orderElectrician.getOrderElectricianType();
+		//1维修 2支付 3验收 4评价
+		
+		
+		
+		//获取Enum通知类
+				BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  status);	
+				
+				//新增流水
+				Map<String,Object> mapOrderFlow = 
+						MapUtil.flowAdd(orderElectrician.getOrDERId(), 0,  Integer.parseInt(status), orderElectrician.getElectricianId(), TimeStamp.toString(new Date()), oper,  baseEnums.getEnumsA());
+				orderFlowService.saveOrderFlow(mapOrderFlow);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+	}
 	
 	}
 

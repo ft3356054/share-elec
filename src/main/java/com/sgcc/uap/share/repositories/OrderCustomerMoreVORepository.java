@@ -19,17 +19,29 @@ public interface OrderCustomerMoreVORepository extends JpaRepository<OrderCustom
 
 	
 	
-	@Query(value="SELECT oc.* ,oe.INSPECTION_REPORT,oe.ORDER_CONTRACT, "
+	@Query(value="SELECT oc.* ,oe.INSPECTION_REPORT,oe.ORDER_CONTRACT, oe.CONSTRUCTION_CONTENT,oe.ELECTRICIAN_DESCRIVE,oe.ELECTRICIAN_PRICE "
 			+"FROM order_customer oc "
 			+"LEFT JOIN order_electrician oe "
 			+"ON oc.ORDER_ID = oe.ORDER_ID "
 			+"WHERE oe.ELECTRICIAN_ID = :electricianId AND (oc.VOLTAGE like %:searchContent%) "
-			+"UNION SELECT oc.* ,oeh.INSPECTION_REPORT, oeh"
+			+"UNION SELECT oc.* ,oeh.INSPECTION_REPORT,oeh.ORDER_CONTRACT, oeh.CONSTRUCTION_CONTENT,oeh.ELECTRICIAN_DESCRIVE,oeh.ELECTRICIAN_PRICE "
 			+"FROM order_customer oc "
 			+"LEFT JOIN order_electrician_his oeh "
 			+"ON oc.ORDER_ID = oeh.ORDER_ID "
 			+"WHERE oeh.ELECTRICIAN_ID = :electricianId AND (oc.VOLTAGE like %:searchContent%)",nativeQuery=true)
 	List<OrderCustomerMoreVO> searchVOLTAGE(@Param("electricianId")String electricianId, @Param("searchContent")String searchContent);
+
+	@Query(value="SELECT oc.* ,oe.INSPECTION_REPORT,oe.ORDER_CONTRACT, oe.CONSTRUCTION_CONTENT,oe.ELECTRICIAN_DESCRIVE,oe.ELECTRICIAN_PRICE "
+			+"FROM order_customer oc "
+			+"LEFT JOIN order_electrician oe "
+			+"ON oc.ORDER_ID = oe.ORDER_ID "
+			+"WHERE oe.ELECTRICIAN_ID = :electricianId AND (oc.ELECTRICIAN_DESCRIVE like %:searchContent%) "
+			+"UNION SELECT oc.* ,oeh.INSPECTION_REPORT,oeh.ORDER_CONTRACT, oeh.CONSTRUCTION_CONTENT,oeh.ELECTRICIAN_DESCRIVE,oeh.ELECTRICIAN_PRICE "
+			+"FROM order_customer oc "
+			+"LEFT JOIN order_electrician_his oeh "
+			+"ON oc.ORDER_ID = oeh.ORDER_ID "
+			+"WHERE oeh.ELECTRICIAN_ID = :electricianId AND (oc.ELECTRICIAN_DESCRIVE like %:searchContent%)",nativeQuery=true)
+	List<OrderCustomerMoreVO> searchDescrive(String electricianId, String searchContent);
 
 	
 	

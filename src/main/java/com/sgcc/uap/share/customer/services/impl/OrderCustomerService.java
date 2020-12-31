@@ -561,7 +561,6 @@ public class OrderCustomerService implements IOrderCustomerService{
 		}else if("8".equals(status)){
 			notifyType ="4";
 		}*/
-		
 		//获取Enum通知类
 		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  status);	
 		
