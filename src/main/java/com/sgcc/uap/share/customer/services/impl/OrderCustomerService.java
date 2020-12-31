@@ -234,15 +234,6 @@ public class OrderCustomerService implements IOrderCustomerService{
 			CrudUtils.transMap2Bean(map, orderCustomer);
 			result = orderCustomerRepository.save(orderCustomer);
 			
-			//插入 客户订单位置表
-			HashMap<String, Object> positionMap = new HashMap<>();
-			positionMap.put("orderId", getNewOrderId);
-			positionMap.put("customerId", (String) map.get("customerId"));
-			positionMap.put("areaId", areaId);
-			positionMap.put("lon",  map.get("addressLongitude"));
-			positionMap.put("lat",  map.get("addressLatitude"));
-			custPositionService.saveCustPosition(positionMap);
-			
 			//获取Enum通知类
 			BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0", "0");	
 			
@@ -265,10 +256,6 @@ public class OrderCustomerService implements IOrderCustomerService{
 			
 			//发送websocket消息
 	        //WebSocketServer.sendInfo("下单成功",(String)map.get("customerId"));  前台自动反馈用户
-			
-			//放入队列中，电工侧获取队列消息，群发给就近电工
-			redisTemplate.opsForList().rightPush("newCustomerOrder", orderCustomer);
-			
 		}
 		return result;
 	}
@@ -641,6 +628,83 @@ public class OrderCustomerService implements IOrderCustomerService{
 		List<OrderCustomer> list = orderCustomerRepository.findByOrderStatus(orderStatus,pastTime);
 		return list;
 	}
+	
+	@Override
+	public OrderCustomer payPrice(String orderId,String orderStatus){
+		logger.info("OrderCustomerService payPrice = " +orderId + "," +orderStatus); 
+		OrderCustomer orderCustomer = new OrderCustomer();
+		OrderCustomer result = new OrderCustomer();
+		try {
+			//修改
+			orderCustomer = orderCustomerRepository.findOne(orderId);
+			
+			String dateString = TimeStamp.toString(new Date());
+			Map<String, Object> newMap = new HashMap<String, Object>();
+			newMap.put("orderId", orderId);
+			newMap.put("updateTime", dateString);
+			newMap.put("orderStatus", orderStatus);
+			
+			if("3".equals(orderStatus)){
+				if("23".equals(orderCustomer.getOrderStatus())){
+					CrudUtils.mapToObject(newMap, orderCustomer,  "orderId");
+					result = orderCustomerRepository.save(orderCustomer);
+					//插入流水
+					sendNotify(newMap, orderCustomer,2,1);
+					
+					//修改电工表状态
+					List<String> listStatus = new ArrayList<String>();
+					listStatus.add("1");
+					listStatus.add("4");
+					listStatus.add("5");
+					//获取当前子订单
+					OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianTypeNotIn(orderCustomer.getOrderId(), listStatus);
+					if(null!=orderElectrician){
+						//修改电工订单状态 由 23 改为3
+						if("23".equals(orderCustomer.getOrderStatus())){
+							orderElectricianService.esc(orderElectrician.getElectricianId(), orderStatus);
+						}else{
+							throw new Exception("子订单状态异常");
+						}
+					}else{
+						throw new Exception("未查询到子订单");
+					}
+				}else{
+					throw new Exception("该订单未处于待支付状态");
+				}
+			}else{
+				if("0".equals(orderCustomer.getOrderStatus())){
+					CrudUtils.mapToObject(newMap, orderCustomer,  "orderId");
+					result = orderCustomerRepository.save(orderCustomer);
+					//插入 客户订单位置表
+					HashMap<String, Object> positionMap = new HashMap<>();
+					positionMap.put("orderId", orderId);
+					positionMap.put("customerId", orderCustomer.getCustomerId());
+					positionMap.put("areaId", orderCustomer.getCreateAreaId());
+					positionMap.put("lon",  orderCustomer.getAddressLongitude());
+					positionMap.put("lat",  orderCustomer.getAddressLatitude());
+					custPositionService.saveCustPosition(positionMap);
+					//插入流水
+					sendNotify(newMap, orderCustomer,2,1);
+					//放入队列中，电工侧获取队列消息，群发给就近电工
+					redisTemplate.opsForList().rightPush("newCustomerOrder", orderCustomer);
+				}else{
+					throw new Exception("该订单未处于待支付状态");
+				}
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+		return result;
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	

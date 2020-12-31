@@ -14,6 +14,14 @@ import com.sgcc.uap.rest.support.RequestCondition;
 public class MapUtil {
 	/**
 	 * 新增流水
+	 * @param orDERId 
+	 * @param flowType 0 客户操作 1 电工操作 
+	 * @param currStatus 当前状态
+	 * @param operatorId 操作人id
+	 * @param operatorTime 操作时间
+	 * @param operatorType 0增 1删 2改
+	 * @param remark
+	 * @return
 	 */
 	public static Map<String,Object> flowAdd(String orDERId,int flowType,int currStatus,String operatorId,
 			String operatorTime,int operatorType,String remark) {
