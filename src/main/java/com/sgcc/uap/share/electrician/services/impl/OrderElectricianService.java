@@ -1252,18 +1252,18 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	public void esc(String orderElectricianId, String orderElectricianType) {
 				
 		try {
-		//先根据orderId查询客户订单，将其状态变为11
-			
-			
+			Timestamp nowDate = Timestamp.valueOf(String.valueOf(new Date()));
+			String nowString = TimeStamp.toString(new Date());
 		
 		OrderElectrician orderElectrician=findByOrderElectricianId(orderElectricianId);
 		orderElectrician.setOrderElectricianType(orderElectricianType);
 		if (orderElectricianType.equals("1") || orderElectricianType.equals("4")) {
-			orderElectrician.setUpdateTime(Timestamp.valueOf(String.valueOf(new Date())));
-			orderElectrician.setFinishTime(Timestamp.valueOf(String.valueOf(new Date())));
+			orderElectrician.setUpdateTime(nowDate);
+			orderElectrician.setFinishTime(nowDate);
 		}else {
-			orderElectrician.setUpdateTime(Timestamp.valueOf(String.valueOf(new Date())));
+			orderElectrician.setUpdateTime(nowDate);
 		}
+		orderElectrician.setOrderElectricianType(orderElectricianType);
 		orderElectricianRepository.save(orderElectrician);
 				
 		//1维修 2支付 3验收 4评价
@@ -1277,32 +1277,34 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		}
 	
 		//获取Enum通知类
-		
-				BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  orderElectricianType);
+		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  orderElectricianType);
 		
 		Map<String,Object> mapOrderFlow = 
-				MapUtil.flowAdd(orderElectrician.getOrDERId(), 1,  Integer.parseInt(orderElectricianType), orderElectrician.getElectricianId(),TimeStamp.toString(new Date()), 2,  baseEnums.getEnumsA());
+				MapUtil.flowAdd(orderElectrician.getOrDERId(), 1,  Integer.parseInt(orderElectricianType), orderElectrician.getElectricianId(),nowString, 2,  baseEnums.getEnumsA());
 		orderFlowService.saveOrderFlow(mapOrderFlow);
 				
 		//新增通知
 		Map<String, Object> map=new HashMap<>();
-				String announceId = UuidUtil.getUuid32();
-				
-				Map<String,Object> mapNotify =
-						MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
-								notifyType,orderElectrician.getOrDERId(),"");
-				notifyAnnounceService.saveNotifyAnnounce(mapNotify);
-				
-				Map<String,Object> mapNotifyUser = 
-						MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, 2, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
-				notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+		String announceId = UuidUtil.getUuid32();
+		
+		Map<String,Object> mapNotify =
+				MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), nowString, 
+						notifyType,orderElectrician.getOrDERId(),"");
+		notifyAnnounceService.saveNotifyAnnounce(mapNotify);
+		
+		Map<String,Object> mapNotifyUser = 
+				MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, 2, 0, nowString, baseEnums.getEnumsD());
+		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 								
-				if (orderElectricianType.equals("4")) {
-				
-					map.put("orderStatus", 4);
-					sendNotify(map, orderElectrician, 1, 2);
-					WebSocketServer.sendInfo("用户取消",(String)orderElectrician.getElectricianId());
-				}
+		if (orderElectricianType.equals("4")) {
+			map.put("orderStatus", 4);
+			sendNotify(map, orderElectrician, 1, 2);
+			WebSocketServer.sendInfo("用户取消",(String)orderElectrician.getElectricianId());
+		}else if (orderElectricianType.equals("22")) {
+			map.put("orderStatus", 22);
+			sendNotify(map, orderElectrician, 1, 2);
+			WebSocketServer.sendInfo("用户取消付款",(String)orderElectrician.getElectricianId());
+		}
 						
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
