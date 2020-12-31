@@ -95,5 +95,14 @@ public interface IOrderCustomerService {
 	public QueryResultObject query(RequestCondition queryCondition);
 
 	public OrderCustomer updateOrderCustomer(Map<String,Object> map);
+	
+	/**
+	 * 支付成功后 修改订单状态
+	 * @param orderId
+	 * @param orderStatus
+	 * @return
+	 * @throws Exception
+	 */
+	public OrderCustomer payPrice(String orderId,String orderStatus) throws Exception;
 
 }
