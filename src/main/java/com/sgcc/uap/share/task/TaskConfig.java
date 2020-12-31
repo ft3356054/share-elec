@@ -20,7 +20,7 @@ public class TaskConfig {
 	@Autowired
     private AutoSendOrderTask autoSendOrderTask;
 	
-	@Scheduled(initialDelay = 1000*5 , fixedDelay = 1000*5)
+	/*@Scheduled(initialDelay = 1000*5 , fixedDelay = 1000*5)
 	public void elecGrabOrderTask() {
 		elecGrabOrderTask.start();
 	}
@@ -33,6 +33,6 @@ public class TaskConfig {
 	@Scheduled(initialDelay = 1000*10 , fixedDelay = 1000*6)
 	public void autoSendOrderTask() {
 		autoSendOrderTask.run();
-	}
+	}*/
 	
 }

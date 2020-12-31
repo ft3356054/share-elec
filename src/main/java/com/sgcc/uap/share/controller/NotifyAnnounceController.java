@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,7 @@ import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.services.INotifyAnnounceService;
 import com.sgcc.uap.share.vo.NotifyAnnounceVO;
 import com.sgcc.uap.util.MapUtil;
+import com.sgcc.uap.utils.json.JsonUtils;
 
 
 /**
@@ -289,6 +291,32 @@ public class NotifyAnnounceController {
 			if(isDev){
 				errorMessage = e.getMessage();
 			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	//http://localhost:8083/notifyAnnounce/testWebsocket/?params={"filter":["orderId=2020113016481399b534d5707d4b11bdbb0c979e800a6c","content=您有一笔待支付订单","userId=089b56b5535042d5ab63898b7a97f1d7"]}
+    @RequestMapping(value = "/testWebsocket")
+	public WrappedResult testWebsocket(@QueryRequestParam("params") RequestCondition requestCondition) {
+		try {
+			Map<String, String> map = MapUtil.getParam(requestCondition);
+			String orderId = map.get("orderId");
+			String content = map.get("content");
+			String userId = map.get("userId");
+
+			Map<String,String> mapString = new HashMap<String,String>();
+			mapString.put("orderId", orderId);
+			mapString.put("content", content);
+			String jsonString1 = JsonUtils.toJson(mapString);
+			String jsonString2 = com.sgcc.uap.util.JsonUtils.mapToJson(mapString);
+			
+			//单发
+			WebSocketServer.sendInfo(jsonString1,userId);
+			//群发
+			WebSocketServer.sendInfo(jsonString2,null);
+			
+			return WrappedResult.successWrapedResult("发送成功");
+		} catch (Exception e) {
+			String errorMessage = "查询异常";
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}

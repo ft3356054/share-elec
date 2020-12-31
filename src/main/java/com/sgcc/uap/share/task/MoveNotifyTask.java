@@ -2,12 +2,10 @@ package com.sgcc.uap.share.task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimerTask;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.sgcc.uap.share.domain.NotifyAnnounce;
@@ -19,7 +17,7 @@ import com.sgcc.uap.share.repositories.NotifyAnnounceUserRepository;
  * 消息通知搬迁
  * */
 @Component
-public class MoveNotifyTask  extends TimerTask{
+public class MoveNotifyTask{
 	/** 
      * 日志
      */
@@ -32,9 +30,7 @@ public class MoveNotifyTask  extends TimerTask{
 	
 	
 
-	@Override
     @Async
-    @Scheduled(initialDelay = 1000*60*5 ,fixedDelay = 60000*60*24) //每天执行一次
 	public void run() {
 			logger.info("MoveNotifyTask start ! ");
 		
