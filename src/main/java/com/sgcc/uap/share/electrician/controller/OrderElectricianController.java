@@ -1211,16 +1211,13 @@ public class OrderElectricianController {
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						System.out.println("我执行完了保存操作");
 						orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						
 						result.setFormItems(orderCustomer);
 						
 					}
 					
 					if (method.equals("评价")) {//两个订单的状态是9
 						//将map中的数据分别送到两个类中，在进行更新
-						//客户订单需要跟新的信息
-						orderCustomerMap.put("orderStatus", map.get("orderStatus"));
-						orderCustomerMap.put("orderId", map.get("orderId"));
-						orderCustomerMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 						
 						//电工订单需要更新的信息
 						orderElectricianMap.put("orderId", map.get("orderId"));
@@ -1231,16 +1228,13 @@ public class OrderElectricianController {
 						//添加订单完结时间
 						orderElectricianMap.put("finishTime", DateTimeUtil.formatDateTime(new Date()));
 						
-						
-						//OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap,file);
 						System.out.println("我执行完了保存操作");
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						
 						result.setFormItems(orderElectrician);
 						
 					}
 					
-
-				
 			}
 			
 			
@@ -1255,8 +1249,6 @@ public class OrderElectricianController {
 				errorMessage = e.getMessage();
 			}
 			return WrappedResult.failedWrappedResult(errorMessage);
-			
-		
 		
 	}
 		

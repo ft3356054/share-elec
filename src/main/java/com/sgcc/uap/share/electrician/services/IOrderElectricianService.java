@@ -66,7 +66,7 @@ public List<OrderElectrician> findByElectricianEvaluateIsNullAndOrderElectrician
 
 public List<OrderCustomer> findByOrderStatusOrderByCreateTime(int id1,int id2);
 public List<OrderElectrician> findByElectricianIdAndOrderElectricianTypeEqualsOrderByCreateTime(String electricianId,String orderElectricianType);
-public List<OrderElectrician> findByElectricianIdAndOrderByCreateTimeAsc(String electricianId);
+
 public List<OrderElectrician> findByElectricianId(String electricianId);
 //public QueryResultObject queryMore(RequestCondition requestCondition);
 QueryResultObject queryMore(RequestCondition queryCondition, String electricianId);
@@ -84,8 +84,6 @@ public Object saveElectricianEvaluate(Map<String, Object> map, MultipartFile fil
  */
 OrderElectrician findByOrderId(String orderId, String electricianId);
 
-
-
 OrderCustomer saveOrderCustomerByOrderElectricianService(Map<String, Object> map) throws Exception;
 public List<OrderElectrician> findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(String orderId,
 		String orderElectricianType);
@@ -93,19 +91,7 @@ public OrderElectrician findByElectricianIdAndOrderId(String electricianId, Stri
 public QueryResultObject queryAllHaveEsc(String electricianId);
 OrderElectrician saveOrderElectrician(Map<String, Object> map) throws Exception;
 
-
-/**
- * 给刘哥准备的接口
- * 根据传送过来的客户订单ID去查询
- * 
- * 结果放到websocket
- * @throws Exception 
- */
-
-
-
 public OrderElectrician saveNewOrderElectrician(String orderId, String electricianId) throws Exception;
-//void qiangdantanchuang(String orderId);
 
 OrderElectrician saveNewNullOrderElectrician(String orderId) throws Exception;
 public void esc(String orderElectricianId, String orderElectricianType);
@@ -115,6 +101,7 @@ void qiangdantanchuang(OrderCustomer orderCustomer);
 public String jisuanjuli(OrderCustomer orderCustomer, OrderElectrician orderElectrician);
 
 public void sendNotify(Map<String, Object> orderCustomerMap, OrderCustomer orderCustomer, int i, int j);
+public void sendOederFlow(OrderElectrician orderElectrician, int i);
 
 
 

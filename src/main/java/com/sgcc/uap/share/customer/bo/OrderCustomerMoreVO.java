@@ -1148,7 +1148,7 @@ public class OrderCustomerMoreVO {
 		this.inspectionReport = inspectionReport;
 	} 
     
-    /*
+    
     @Column(name = "CONSTRUCTION_CONTENT", nullable = true, length = 32)
     private String constructionContent ;
     
@@ -1186,5 +1186,31 @@ public class OrderCustomerMoreVO {
     public void setElectricianDescrive(String electricianDescrive){
 		this.electricianDescrive = electricianDescrive;
 }
-    */
+    
+    /** 
+     * 维修费
+     */
+    @Column(name = "ELECTRICIAN_PRICE", nullable = true, length = 6)
+    private String electricianPrice ;
+    
+    /**
+     * @getElectricianPrice:维修费的get方法
+     * @params
+     * @return electricianPrice
+     * @date 2020-12-15 17:38:15
+     * @author 18511
+     */
+    public String getElectricianPrice(){
+        return this.electricianPrice;
+    }
+    /**
+     * @setElectricianPrice:维修费的set方法
+     * @param electricianPrice
+     * @return
+     * @date 2020-12-15 17:38:15
+     * @author 18511
+     */
+    public void setElectricianPrice(String electricianPrice){
+		this.electricianPrice = electricianPrice;
+	} 
 }
