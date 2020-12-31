@@ -2,12 +2,10 @@ package com.sgcc.uap.share.task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimerTask;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
@@ -20,7 +18,7 @@ import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
  * 现表搬迁历史表
  * */
 @Component
-public class MoveOrderTask  extends TimerTask{
+public class MoveOrderTask{
 	/** 
      * 日志
      */
@@ -32,9 +30,7 @@ public class MoveOrderTask  extends TimerTask{
 	
 	
 
-	@Override
     @Async
-    @Scheduled(initialDelay = 1000*60*5 ,fixedDelay = 60000*60) //每小时执行一次
 	public void run() {
 			logger.info("MoveOrderTask start ! ");
 		
