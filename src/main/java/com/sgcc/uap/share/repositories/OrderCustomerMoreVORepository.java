@@ -35,13 +35,13 @@ public interface OrderCustomerMoreVORepository extends JpaRepository<OrderCustom
 			+"FROM order_customer oc "
 			+"LEFT JOIN order_electrician oe "
 			+"ON oc.ORDER_ID = oe.ORDER_ID "
-			+"WHERE oe.ELECTRICIAN_ID = :electricianId AND (oc.ELECTRICIAN_DESCRIVE like %:searchContent%) "
+			+"WHERE oe.ELECTRICIAN_ID = :electricianId AND (oe.ELECTRICIAN_DESCRIVE like %:searchContent%) "
 			+"UNION SELECT oc.* ,oeh.INSPECTION_REPORT,oeh.ORDER_CONTRACT, oeh.CONSTRUCTION_CONTENT,oeh.ELECTRICIAN_DESCRIVE,oeh.ELECTRICIAN_PRICE "
 			+"FROM order_customer oc "
 			+"LEFT JOIN order_electrician_his oeh "
 			+"ON oc.ORDER_ID = oeh.ORDER_ID "
-			+"WHERE oeh.ELECTRICIAN_ID = :electricianId AND (oc.ELECTRICIAN_DESCRIVE like %:searchContent%)",nativeQuery=true)
-	List<OrderCustomerMoreVO> searchDescrive(String electricianId, String searchContent);
+			+"WHERE oeh.ELECTRICIAN_ID = :electricianId AND (oeh.ELECTRICIAN_DESCRIVE like %:searchContent%)",nativeQuery=true)
+	List<OrderCustomerMoreVO> searchDescrive(@Param("electricianId")String electricianId, @Param("searchContent")String searchContent);
 
 	
 	
