@@ -475,7 +475,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 					elecStatus.add("2");
 					elecStatus.add("21");
 					if(sites.contains(orderCustomer.getOrderStatus())){
-						orderElectricianService.esc(orderElectrician.getElectricianId(), orderStatus);
+						orderElectricianService.esc(orderElectrician.getOrderElectricianId(), orderStatus);
 						String dateString = TimeStamp.toString(new Date());
 						map.put("updateTime", dateString);
 						map.put("finishTime", dateString);
@@ -540,7 +540,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 					List<String> elecStatus = new ArrayList<String>();
 					elecStatus.add("23");
 					if(sites.contains(orderCustomer.getOrderStatus())){
-						orderElectricianService.esc(orderElectrician.getElectricianId(), orderStatus);
+						orderElectricianService.esc(orderElectrician.getOrderElectricianId(), orderStatus);
 						String dateString = TimeStamp.toString(new Date());
 						map.put("updateTime", dateString);
 						result.put("key", "0");
@@ -661,7 +661,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 					if(null!=orderElectrician){
 						//修改电工订单状态 由 23 改为3
 						if("23".equals(orderCustomer.getOrderStatus())){
-							orderElectricianService.esc(orderElectrician.getElectricianId(), orderStatus);
+							orderElectricianService.esc(orderElectrician.getOrderElectricianId(), orderStatus);
 						}else{
 							throw new Exception("子订单状态异常");
 						}
