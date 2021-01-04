@@ -98,10 +98,11 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 		
 		Integer pageIndex = queryCondition.getPageIndex()-1;
 		Integer pageSize = queryCondition.getPageSize();
-		QueryFilter queryFilter = queryCondition.getQueryFilter().get(0); 
-		String userId = (String) queryFilter.getValue();
+		Map<String, String> map = MapUtil.getParam(queryCondition);
+		String userId = map.get("userId");
+		String status = map.get("status");
 		
-		result = notifyAnnounceAndUserRepository.findByAnnounceUserIdDesc(pageIndex,pageSize,userId);
+		result = notifyAnnounceAndUserRepository.findByAnnounceUserIdDesc(pageIndex,pageSize,userId,status);
 		count = result.size();
 		return RestUtils.wrappQueryResult(result, count);
 	}
