@@ -92,6 +92,22 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 	}
 	
 	@Override
+	public QueryResultObject getAllNotifyAnnounceByAnnounceIds(RequestCondition queryCondition) {
+		List<NotifyAnnounceAndUser> result = new ArrayList<>();
+		long count = 0;
+		
+		Integer pageIndex = queryCondition.getPageIndex()-1;
+		Integer pageSize = queryCondition.getPageSize();
+		Map<String, String> map = MapUtil.getParam(queryCondition);
+		String userId = map.get("userId");
+		String status = map.get("status");
+		
+		result = notifyAnnounceAndUserRepository.findByAnnounceUserIdDesc(pageIndex,pageSize,userId,status);
+		count = result.size();
+		return RestUtils.wrappQueryResult(result, count);
+	}
+	
+	@Override
 	public Long getNotReadNum(String announceUserId) {
 		Long notReadNum = notifyAnnounceUserRepository.countByAnnounceUserIdAndState(announceUserId,"0");
 		return notReadNum;

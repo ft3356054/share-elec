@@ -92,7 +92,7 @@ public class NotifyAnnounceUserController {
 	}
 
 	/**
-	 * @getById:根据userId查询
+	 * @getById:根据userId查询 （没有分页不用了）
 	 * @param id
 	 * @return WrappedResult 查询结果
 	 * @date 2020-11-30 16:13:38
@@ -112,6 +112,29 @@ public class NotifyAnnounceUserController {
 			QueryResultObject result = notifyAnnounceService.getNotifyAnnounceByAnnounceIds(id);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
+	/**
+	 * @getByOrderId:根据userId查询全部
+	 * @param orderId
+	 * @return WrappedResult 查询结果
+	 * @date 2020-11-26 14:32:47
+	 * @author 18511
+	 */
+	@RequestMapping("/queryAll")
+	public WrappedResult getAllByCustomerId(@QueryRequestParam("params") RequestCondition requestCondition) {
+		try {
+			QueryResultObject queryResult = notifyAnnounceService.getAllNotifyAnnounceByAnnounceIds(requestCondition);
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			String errorMessage = "查询异常";
