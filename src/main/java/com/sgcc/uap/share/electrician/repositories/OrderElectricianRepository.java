@@ -27,12 +27,12 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 
 	//List<OrderElectrician> findByElectricianEvaluateIsNull();
 
-	List<OrderElectrician> findByElectricianEvaluateIsNullAndOrderElectricianTypeEquals(String orderElectricianType);
+	List<OrderElectrician> findByElectricianEvaluateIsNullAndOrderElectricianStatusEquals(String orderElectricianStatus);
 
 	//@Query(value="select * from order_customer where ORDER_STATUS=?1 or ORDER_STATUS=?2 order by CREATE_TIME asc",nativeQuery=true)
-	@Query(value="select * from order_electrician o where ELECTRICIAN_ID=?1 and ORDER_ELECTRICIAN_TYPE !=?2 order by CREATE_TIME asc ",nativeQuery=true)
-	List<OrderElectrician> findByElectricianIdAndOrderElectricianTypeEqualsOrderByCreateTime(String electricianId,
-			String orderElectricianType);
+	@Query(value="select * from order_electrician o where ELECTRICIAN_ID=?1 and ORDER_ELECTRICIAN_STATUS !=?2 order by CREATE_TIME asc ",nativeQuery=true)
+	List<OrderElectrician> findByElectricianIdAndorderElectricianStatusEqualsOrderByCreateTime(String electricianId,
+			String orderElectricianStatus);
 
 	/*
 	@Query(value = "SELECT * FROM Electrician_Company_Info WHERE company_Name like %:companyName%  "
@@ -40,9 +40,9 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 			+ " limit :pageIndex,:pageSize",
 			nativeQuery = true)
 			*/
-	@Query(value = "select * from order_electrician where ELECTRICIAN_ID=:electricianId and ORDER_ELECTRICIAN_TYPE"+
-			"!= :orderElectricianType and ORDER_ELECTRICIAN_TYPE !=5  and ORDER_ELECTRICIAN_TYPE !=4 order by CREATE_TIME asc limit :pageIndex,:pageSize",nativeQuery = true)
-	List<OrderElectrician> queryMore(@Param("pageIndex")Integer pageIndex, @Param("pageSize")Integer pageSize, @Param("electricianId")String electricianId, @Param("orderElectricianType")String orderElectricianType);
+	@Query(value = "select * from order_electrician where ELECTRICIAN_ID=:electricianId and ORDER_ELECTRICIAN_STATUS"+
+			"!= :orderElectricianStatus and ORDER_ELECTRICIAN_STATUS !=5  and ORDER_ELECTRICIAN_STATUS !=4 order by CREATE_TIME asc limit :pageIndex,:pageSize",nativeQuery = true)
+	List<OrderElectrician> queryMore(@Param("pageIndex")Integer pageIndex, @Param("pageSize")Integer pageSize, @Param("electricianId")String electricianId, @Param("orderElectricianStatus")String orderElectricianStatus);
 
 	//List<OrderElectrician> queryWaitToDo(Integer pageIndex, Integer pageSize, String electricianId, String string);
 
@@ -51,19 +51,19 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	 * @param pageIndex
 	 * @param pageSize
 	 * @param electricianId
-	 * @param orderElectricianType
+	 * @param orderElectricianStatus
 	 * @return
 	 */
-	@Query(value = "select * from order_electrician where ELECTRICIAN_ID=:electricianId and ORDER_ELECTRICIAN_TYPE"+
-			"= :orderElectricianType order by CREATE_TIME asc limit :pageIndex,:pageSize",nativeQuery = true)
-	List<OrderElectrician> queryWaitToDo(@Param("pageIndex")Integer pageIndex, @Param("pageSize")Integer pageSize, @Param("electricianId")String electricianId, @Param("orderElectricianType")String orderElectricianType);
+	@Query(value = "select * from order_electrician where ELECTRICIAN_ID=:electricianId and ORDER_ELECTRICIAN_STATUS"+
+			"= :orderElectricianStatus order by CREATE_TIME asc limit :pageIndex,:pageSize",nativeQuery = true)
+	List<OrderElectrician> queryWaitToDo(@Param("pageIndex")Integer pageIndex, @Param("pageSize")Integer pageSize, @Param("electricianId")String electricianId, @Param("orderElectricianStatus")String orderElectricianStatus);
 
 	
-	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_TYPE=2",nativeQuery = true)
-	OrderElectrician findByOrDERIdAndOrderElectricianType(@Param("orderId")String orderId);
+	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_STATUS=2",nativeQuery = true)
+	OrderElectrician findByOrDERIdAndOrderElectricianStatus(@Param("orderId")String orderId);
 
 	
-	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_TYPE != 9 and ORDER_ELECTRICIAN_TYPE != 5 and ORDER_ELECTRICIAN_TYPE != 4 and ORDER_ELECTRICIAN_TYPE != 1",nativeQuery=true)
+	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_STATUS != 9 and ORDER_ELECTRICIAN_STATUS != 5 and ORDER_ELECTRICIAN_STATUS != 4 and ORDER_ELECTRICIAN_STATUS != 1",nativeQuery=true)
 	List<OrderElectrician> queryAllDoing(String electricianId);
 
 	/**
@@ -87,23 +87,23 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	
 	
 	//通过orderId 和状态查询
-	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_TYPE in :orderElectricianType",nativeQuery = true)
-	public OrderElectrician findByOrderIdAndOrderElectricianTypeIn(String orDERId,Collection<String> orderElectricianType);
+	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_STATUS in :orderElectricianStatus",nativeQuery = true)
+	public OrderElectrician findByOrderIdAndorderElectricianStatusIn(String orDERId,Collection<String> orderElectricianStatus);
 	
-	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_TYPE not in :orderElectricianType",nativeQuery = true)
-	public OrderElectrician findByOrderIdAndOrderElectricianTypeNotIn(@Param("orderId")String orderId,@Param("orderElectricianType")Collection<String> orderElectricianType);
+	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_STATUS not in :orderElectricianStatus",nativeQuery = true)
+	public OrderElectrician findByOrderIdAndorderElectricianStatusNotIn(@Param("orderId")String orderId,@Param("orderElectricianStatus")Collection<String> orderElectricianStatus);
 	
-	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_TYPE = :orderElectricianType order by FINISH_TIME desc",nativeQuery = true)
-	List<OrderElectrician> findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(@Param("orderId")String orderId,
-			@Param("orderElectricianType")String orderElectricianType);
+	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_STATUS = :orderElectricianStatus order by FINISH_TIME desc",nativeQuery = true)
+	List<OrderElectrician> findByOrderIdAndOrderElectricianStatusOrderByFinishTimeDesc(@Param("orderId")String orderId,
+			@Param("orderElectricianStatus")String orderElectricianStatus);
 
 	@Query(value="select * from order_electrician where ELECTRICIAN_ID=?",nativeQuery = true)
 	List<OrderElectrician> findByElectricianId(String electricianId);
 
 	
 
-	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_TYPE = 4 or ORDER_ELECTRICIAN_TYPE = 5",nativeQuery=true)
-	List<OrderElectrician> queryAllHaveEsc(String electricianId);
+	@Query(value="select * from order_electrician where ELECTRICIAN_ID = :electricianId and ORDER_ELECTRICIAN_STATUS = 4 or ORDER_ELECTRICIAN_STATUS = 5",nativeQuery=true)
+	List<OrderElectrician> queryAllHaveEsc(@Param("electricianId")String electricianId);
 
 	
 	

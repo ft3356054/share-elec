@@ -61,18 +61,18 @@ public interface IOrderElectricianService {
 	/**
 	 * 以下是测试代码
 	 */
-	//public QueryResultObject findByElectricianId(String electricianId)
-public List<OrderElectrician> findByElectricianEvaluateIsNullAndOrderElectricianTypeEquals(String orderElectricianType);
+	
+public List<OrderElectrician> findByElectricianEvaluateIsNullAndOrderElectricianStatusEquals(String orderElectricianType);
 
-public List<OrderCustomer> findByOrderStatusOrderByCreateTime(int id1,int id2);
-public List<OrderElectrician> findByElectricianIdAndOrderElectricianTypeEqualsOrderByCreateTime(String electricianId,String orderElectricianType);
+
+public List<OrderElectrician> findByElectricianIdAndOrderElectricianStatusEqualsOrderByCreateTime(String electricianId,String orderElectricianType);
 
 public List<OrderElectrician> findByElectricianId(String electricianId);
 //public QueryResultObject queryMore(RequestCondition requestCondition);
 QueryResultObject queryMore(RequestCondition queryCondition, String electricianId);
 public QueryResultObject queryWaitToDo(RequestCondition requestCondition, String electricianId);
 public OrderElectrician saveOrderElectrician2(Map<String, Object> map,String electricianId) throws Exception ;
-public OrderElectrician findByOrDERIdAndOrderElectricianType(String orderId);
+public OrderElectrician findByOrDERIdAndOrderElectricianStatus(String orderId);
 
 public QueryResultObject queryAllDoing(String electricianId);
 public Object saveElectricianEvaluate(Map<String, Object> map, MultipartFile file) ;
@@ -85,8 +85,8 @@ public Object saveElectricianEvaluate(Map<String, Object> map, MultipartFile fil
 OrderElectrician findByOrderId(String orderId, String electricianId);
 
 OrderCustomer saveOrderCustomerByOrderElectricianService(Map<String, Object> map) throws Exception;
-public List<OrderElectrician> findByOrderIdAndOrderElectricianTypeOrderByFinishTimeDesc(String orderId,
-		String orderElectricianType);
+public List<OrderElectrician> findByOrderIdAndOrderElectricianStatusOrderByFinishTimeDesc(String orderId,
+		String orderElectricianStatus);
 public OrderElectrician findByElectricianIdAndOrderId(String electricianId, String orderId);
 public QueryResultObject queryAllHaveEsc(String electricianId);
 OrderElectrician saveOrderElectrician(Map<String, Object> map) throws Exception;
@@ -94,7 +94,7 @@ OrderElectrician saveOrderElectrician(Map<String, Object> map) throws Exception;
 public OrderElectrician saveNewOrderElectrician(String orderId, String electricianId) throws Exception;
 
 OrderElectrician saveNewNullOrderElectrician(String orderId) throws Exception;
-public void esc(String orderElectricianId, String orderElectricianType);
+public void esc(String orderElectricianId, String orderElectricianStatus);
 public QueryResultObject searchBox(String electricianId, String searchContent);
 void paidanchaxun(OrderCustomer orderCustomer);
 void qiangdantanchuang(OrderCustomer orderCustomer);
