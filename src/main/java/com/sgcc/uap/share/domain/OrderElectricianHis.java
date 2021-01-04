@@ -86,6 +86,11 @@ public class OrderElectricianHis implements Serializable {
     /** 
      * 订单状态
      */
+    @Column(name = "ORDER_ELECTRICIAN_STATUS", nullable = true, length = 2)
+    private String orderElectricianStatus ;
+    /** 
+     * 订单类型
+     */
     @Column(name = "ORDER_ELECTRICIAN_TYPE", nullable = true, length = 2)
     private String orderElectricianType ;
     
@@ -540,6 +545,12 @@ public class OrderElectricianHis implements Serializable {
     public String getElectricianDescriveIcon(){
         return this.electricianDescriveIcon;
     }
+    public String getOrderElectricianStatus() {
+		return orderElectricianStatus;
+	}
+	public void setOrderElectricianStatus(String orderElectricianStatus) {
+		this.orderElectricianStatus = orderElectricianStatus;
+	}
     /**
      * @setElectricianDescriveIcon:电工拍照的set方法
      * @param electricianDescriveIcon

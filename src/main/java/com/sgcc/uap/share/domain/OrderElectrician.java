@@ -5,12 +5,9 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -89,6 +86,11 @@ public class OrderElectrician implements Serializable {
     
     /** 
      * 订单状态
+     */
+    @Column(name = "ORDER_ELECTRICIAN_STATUS", nullable = true, length = 2)
+    private String orderElectricianStatus ;
+    /** 
+     * 订单类型
      */
     @Column(name = "ORDER_ELECTRICIAN_TYPE", nullable = true, length = 2)
     private String orderElectricianType ;
@@ -382,7 +384,14 @@ public class OrderElectrician implements Serializable {
     public void setElectricianPrice(String electricianPrice){
 		this.electricianPrice = electricianPrice;
 	} 
-    /**
+    
+    public String getOrderElectricianStatus() {
+		return orderElectricianStatus;
+	}
+	public void setOrderElectricianStatus(String orderElectricianStatus) {
+		this.orderElectricianStatus = orderElectricianStatus;
+	}
+	/**
      * @getOrderElectricianType:订单状态的get方法
      * @params
      * @return orderElectricianType
