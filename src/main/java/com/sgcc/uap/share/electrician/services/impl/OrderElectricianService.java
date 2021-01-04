@@ -673,7 +673,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		}else if (map.get("orderElectricianStatus").equals("8")) {
 			messageString="要进行验收申请";
 		}
-		WebSocketServer.sendInfo(messageString,(String)map.get("electricianId"));
+		//WebSocketServer.sendInfo(messageString,(String)map.get("electricianId"));
 	}
 
 	
@@ -1158,44 +1158,17 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			orderElectrician.setUpdateTime(nowDate);
 		}
 		orderElectrician.setOrderElectricianStatus(orderElectricianStatus);
-		orderElectricianRepository.save(orderElectrician);
-				
-		//1维修 2支付 3验收 4评价
-		String notifyType ="1";
-		if("23".equals(orderElectricianStatus)){
-			notifyType ="2";
-		}else if("24".equals(orderElectricianStatus)){
-			notifyType ="3";
-		}else if("8".equals(orderElectricianStatus)){
-			notifyType ="4";
-		}
-	
-		//获取Enum通知类
-		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  orderElectricianStatus);
+		orderElectricianRepository.save(orderElectrician);				
 		
-		Map<String,Object> mapOrderFlow = 
-				MapUtil.flowAdd(orderElectrician.getOrDERId(), 1,  Integer.parseInt(orderElectricianStatus), orderElectrician.getElectricianId(),nowString, 2,  baseEnums.getEnumsA());
-		orderFlowService.saveOrderFlow(mapOrderFlow);
-				
-		//新增通知
 		Map<String, Object> map=new HashMap<>();
-		String announceId = UuidUtil.getUuid32();
-		
-		Map<String,Object> mapNotify =
-				MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), nowString, 
-						notifyType,orderElectrician.getOrDERId(),"");
-		notifyAnnounceService.saveNotifyAnnounce(mapNotify);
-		
-		Map<String,Object> mapNotifyUser = 
-				MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, 2, 0, nowString, baseEnums.getEnumsD());
-		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+	
 								
 		if (orderElectricianStatus.equals("4")) {
-			map.put("orderStatus", 4);
+			map.put("orderElectricianStatus", "4");
 			sendNotify(map, orderElectrician, 1, 2);
 			WebSocketServer.sendInfo("用户取消",(String)orderElectrician.getElectricianId());
 		}else if (orderElectricianStatus.equals("22")) {
-			map.put("orderStatus", 22);
+			map.put("orderElectricianStatus", "22");
 			sendNotify(map, orderElectrician, 1, 2);
 			WebSocketServer.sendInfo("用户取消付款",(String)orderElectrician.getElectricianId());
 		}
