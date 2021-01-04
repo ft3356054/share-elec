@@ -28,6 +28,7 @@ public interface INotifyAnnounceService {
 	 */
 	public QueryResultObject getNotifyAnnounceByAnnounceId(String announceId,String announceUserId);
 	public QueryResultObject getNotifyAnnounceByAnnounceIds(String announceUserId);
+	public QueryResultObject getAllNotifyAnnounceByAnnounceIds(RequestCondition queryCondition);
 	public Long getNotReadNum(String announceUserId);
 	/**
 	 * @remove:根据idObject删除
