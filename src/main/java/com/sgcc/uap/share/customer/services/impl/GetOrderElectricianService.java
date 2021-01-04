@@ -26,8 +26,8 @@ public class GetOrderElectricianService implements IGetOrderElectricianService{
 	private GetOrderElectricianRepository orderElectricianRepository;
 	 
 	@Override
-	public List<OrderElectrician> findByOrderElectricianType(String orderElectricianType, String pastTime){
-		List<OrderElectrician> list = orderElectricianRepository.findByOrderElectricianType(orderElectricianType,pastTime);
+	public List<OrderElectrician> findByOrderElectricianStatus(String orderElectricianStatus, String pastTime){
+		List<OrderElectrician> list = orderElectricianRepository.findByOrderElectricianStatus(orderElectricianStatus,pastTime);
 		return list;
 	}
 }

@@ -28,6 +28,7 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.customer.repositories.GetOrderElectricianRepository;
 import com.sgcc.uap.share.customer.repositories.OrderComplaintRepository;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderComplaintService;
@@ -38,7 +39,6 @@ import com.sgcc.uap.share.domain.OrderComplaint;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.electrician.repositories.ElectricianInfoRepository;
-import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.services.IBaseEnumsService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
@@ -70,7 +70,7 @@ public class OrderComplaintService implements IOrderComplaintService{
 	@Autowired
 	private IOrderCustomerService orderCustomerService;
 	@Autowired
-	private OrderElectricianRepository orderElectricianRepository;
+	private GetOrderElectricianRepository orderElectricianRepository;
 	@Autowired
 	private ElectricianInfoRepository electricianInfoRepository;
 	@Autowired
@@ -151,7 +151,7 @@ public class OrderComplaintService implements IOrderComplaintService{
 					listStatus.add("1");
 					listStatus.add("4");
 					listStatus.add("5");
-					OrderElectrician orderElectrician = orderElectricianRepository.findByOrderIdAndOrderElectricianTypeNotIn(orderId, listStatus);
+					OrderElectrician orderElectrician = orderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderId, listStatus);
 					if(null!=orderElectrician){
 						ElectricianInfo electricianInfo = electricianInfoRepository.findOne(orderElectrician.getElectricianId());
 						

@@ -22,17 +22,17 @@ import com.sgcc.uap.share.domain.OrderElectrician;
  */
 public interface GetOrderElectricianRepository extends JpaRepository<OrderElectrician,String>,JpaSpecificationExecutor<OrderElectrician> {
 
-	@Query(value="select * from order_electrician o where ORDER_ELECTRICIAN_TYPE =?1 "
+	@Query(value="select * from order_electrician o where ORDER_ELECTRICIAN_STATUS =?1 "
 			+ " and DATE_SUB(CURDATE(), INTERVAL ?2 MINUTE) >= CREATE_TIME "
 			,nativeQuery=true)
-	List<OrderElectrician> findByOrderElectricianType(String orderElectricianType, String pastTime);
+	List<OrderElectrician> findByOrderElectricianStatus(String orderElectricianStatus, String pastTime);
 	
 	
 	//通过orderId 和状态查询
-	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_TYPE in :orderElectricianType",nativeQuery = true)
-	public OrderElectrician findByOrderIdAndOrderElectricianTypeIn(String orDERId,Collection<String> orderElectricianType);
+	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_STATUS in :orderElectricianStatus",nativeQuery = true)
+	public OrderElectrician findByOrderIdAndOrderElectricianStatusIn(String orDERId,Collection<String> orderElectricianStatus);
 	
-	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_TYPE not in :orderElectricianType",nativeQuery = true)
-	public OrderElectrician findByOrderIdAndOrderElectricianTypeNotIn(@Param("orderId")String orderId,@Param("orderElectricianType")Collection<String> orderElectricianType);
+	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_STATUS not in :orderElectricianStatus",nativeQuery = true)
+	public OrderElectrician findByOrderIdAndOrderElectricianStatusNotIn(@Param("orderId")String orderId,@Param("orderElectricianStatus")Collection<String> orderElectricianType);
 	
 }

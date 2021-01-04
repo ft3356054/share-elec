@@ -48,7 +48,7 @@ public interface IOrderCustomerService {
 	
 	/**
 	 * 通过 订单状态 批量获取订单
-	 * @param orderElectricianType
+	 * @param OrderElectricianStatus
 	 * @param pastTime
 	 * @return
 	 */

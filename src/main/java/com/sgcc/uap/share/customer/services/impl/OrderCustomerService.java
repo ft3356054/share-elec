@@ -465,7 +465,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 				listStatus.add("4");
 				listStatus.add("5");
 				//获取当前子订单
-				OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianTypeNotIn(orderCustomer.getOrderId(), listStatus);
+				OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderCustomer.getOrderId(), listStatus);
 				if(null!=orderElectrician){
 					//通知电工
 					//notifyAnnounceService.userDefinedNotify(orderCustomer.getOrderId(), "1", "4");
@@ -534,7 +534,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 				listStatus.add("4");
 				listStatus.add("5");
 				//获取当前子订单
-				OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianTypeNotIn(orderCustomer.getOrderId(), listStatus);
+				OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderCustomer.getOrderId(), listStatus);
 				if(null!=orderElectrician){
 					//修改电工订单状态 由 23 改为22
 					List<String> elecStatus = new ArrayList<String>();
@@ -657,7 +657,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 					listStatus.add("4");
 					listStatus.add("5");
 					//获取当前子订单
-					OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianTypeNotIn(orderCustomer.getOrderId(), listStatus);
+					OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderCustomer.getOrderId(), listStatus);
 					if(null!=orderElectrician){
 						//修改电工订单状态 由 23 改为3
 						if("23".equals(orderCustomer.getOrderStatus())){

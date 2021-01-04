@@ -34,7 +34,7 @@ public interface OrderCustomerBeginPageRepository extends JpaRepository<OrderCus
 			+ " e.ELECTRICIAN_PHONENUMBER,e.CREATE_TIME AS ACCEPT_TIME,e.CONSTRUCTION_CONTENT "
 			+ " FROM order_customer c  "
 			+ " LEFT JOIN order_electrician e ON c.ORDER_ID = e.ORDER_ID "
-			+ " AND e.ORDER_ELECTRICIAN_TYPE NOT IN :elecStatus "
+			+ " AND e.ORDER_ELECTRICIAN_STATUS NOT IN :elecStatus "
 			+ " WHERE c.CUSTOMER_ID =:customerId  AND c.order_Status IN :statusList  "
 			+ " limit :pageIndex,:pageSize",
 			nativeQuery = true)
@@ -50,7 +50,7 @@ public interface OrderCustomerBeginPageRepository extends JpaRepository<OrderCus
 			+ " e.ELECTRICIAN_PHONENUMBER,e.CREATE_TIME AS ACCEPT_TIME,e.CONSTRUCTION_CONTENT "
 			+ " FROM order_customer c  "
 			+ " LEFT JOIN order_electrician e ON c.ORDER_ID = e.ORDER_ID "
-			+ " AND e.ORDER_ELECTRICIAN_TYPE NOT IN :elecStatus "
+			+ " AND e.ORDER_ELECTRICIAN_STATUS NOT IN :elecStatus "
 			+ " WHERE c.ORDER_ID =:orderId  ",
 			nativeQuery = true)
 	OrderCustomerBeginPage findOrderDetail(@Param("orderId")String orderId,@Param("elecStatus")Collection<String> elecStatus);

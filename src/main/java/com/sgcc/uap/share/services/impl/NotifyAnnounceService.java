@@ -26,11 +26,11 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.customer.bo.NotifyAnnounceAndUser;
+import com.sgcc.uap.share.customer.repositories.GetOrderElectricianRepository;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.NotifyAnnounce;
 import com.sgcc.uap.share.domain.NotifyAnnounceUser;
 import com.sgcc.uap.share.domain.OrderElectrician;
-import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.repositories.NotifyAnnounceAndUserRepository;
 import com.sgcc.uap.share.repositories.NotifyAnnounceRepository;
 import com.sgcc.uap.share.repositories.NotifyAnnounceUserRepository;
@@ -62,7 +62,7 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 	@Autowired
 	private NotifyAnnounceUserRepository notifyAnnounceUserRepository;
 	@Autowired
-	private OrderElectricianRepository orderElectricianRepository;
+	private GetOrderElectricianRepository orderElectricianRepository;
 	@Autowired
 	private NotifyAnnounceUserService notifyAnnounceUserService;
 	@Autowired
@@ -277,10 +277,10 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 	@Override
 	public QueryResultObject hastenByCustomer(String orderId) {
 		try {
-			ArrayList<String> orderElectricianType = new ArrayList<String>();
-			orderElectricianType.add("4");
-			orderElectricianType.add("5");
-			OrderElectrician orderElectrician = orderElectricianRepository.findByOrderIdAndOrderElectricianTypeNotIn(orderId, orderElectricianType);
+			ArrayList<String> orderElectricianStatus = new ArrayList<String>();
+			orderElectricianStatus.add("4");
+			orderElectricianStatus.add("5");
+			OrderElectrician orderElectrician = orderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderId, orderElectricianStatus);
 			
 			if(null!=orderElectrician){
 				String electricianId = orderElectrician.getElectricianId();
@@ -314,10 +314,10 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 				
 			}else if("1".equals(enumType)){
 				//给电工发送通知
-				ArrayList<String> orderElectricianType = new ArrayList<String>();
-				orderElectricianType.add("4");
-				orderElectricianType.add("5");
-				OrderElectrician orderElectrician = orderElectricianRepository.findByOrderIdAndOrderElectricianTypeNotIn(orderId, orderElectricianType);
+				ArrayList<String> orderElectricianStatus = new ArrayList<String>();
+				orderElectricianStatus.add("4");
+				orderElectricianStatus.add("5");
+				OrderElectrician orderElectrician = orderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderId, orderElectricianStatus);
 				
 				if(null!=orderElectrician){
 					String electricianId = orderElectrician.getElectricianId();

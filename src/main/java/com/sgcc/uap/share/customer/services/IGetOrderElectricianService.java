@@ -22,5 +22,5 @@ public interface IGetOrderElectricianService {
 	 * @param pastTime
 	 * @return
 	 */
-	public List<OrderElectrician> findByOrderElectricianType(String orderElectricianType, String pastTime);
+	public List<OrderElectrician> findByOrderElectricianStatus(String orderElectricianStatus, String pastTime);
 }

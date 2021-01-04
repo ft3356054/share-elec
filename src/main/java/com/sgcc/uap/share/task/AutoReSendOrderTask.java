@@ -43,7 +43,7 @@ public class AutoReSendOrderTask {
 
 			BaseSystemConfig baseSystemConfig = baseSystemConfigService.getBaseSystemConfigByConfigType("7");
 			
-			List<OrderElectrician> orderElectricians = getOrderElectricianService.findByOrderElectricianType("2", baseSystemConfig.getConfigValue());
+			List<OrderElectrician> orderElectricians = getOrderElectricianService.findByOrderElectricianStatus("2", baseSystemConfig.getConfigValue());
 		
 			//修改状态 待郭庆提供接口
 			List<String> orderIds = null;
