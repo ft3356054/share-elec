@@ -466,8 +466,8 @@ public class OrderElectricianService implements IOrderElectricianService{
 		
 	}	
 	@Override
-	public OrderElectrician findByOrDERIdAndOrderElectricianStatus(String orderId){
-		OrderElectrician orderElectrician=orderElectricianRepository.findByOrDERIdAndOrderElectricianStatus(orderId);
+	public OrderElectrician findByOrDERIdAndOrderElectricianStatus(String orderId,String orderElectricianEtatus){
+		OrderElectrician orderElectrician=orderElectricianRepository.findByOrDERIdAndOrderElectricianStatus(orderId,orderElectricianEtatus);
 		return orderElectrician;		
 	}
 	
@@ -972,7 +972,8 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		map.put("otherElectricianId",null);
 		map.put("orderTypeId",null);
 		map.put("electricianPrice",null);
-		map.put("orderElectricianStatus","20");
+		//0 表示电工已经接单，
+		map.put("orderElectricianStatus","0");
 		map.put("payStatus",orderCustomer.getPayStatus());
 		map.put("createTime",DateTimeUtil.formatDateTime(new Date()));
 		map.put("orderTypeId", orderCustomer2.getOrderTypeId());

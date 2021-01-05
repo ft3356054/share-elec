@@ -165,6 +165,12 @@ public class OrderCustomerVO extends ParentVO implements Serializable{
     
     private String distance;
     
+    /** 
+     * 属性电工订单ID
+     */  
+    @ViewAttribute(name ="orderElectricianId",caption="电工订单ID", editor=EditorType.TextEditor,nullable =false,readOnly=false, type=AttributeType.STRING)
+    private String orderElectricianId;
+    
     /**
      * 用来存放勘察情况描述的
      */
@@ -686,7 +692,24 @@ public class OrderCustomerVO extends ParentVO implements Serializable{
 	public void setConstructionContent(String constructionContent) {
 		this.constructionContent = constructionContent;
 	} 
-   
+	/**
+     * 电工订单ID的get方法
+     * @return orderElectricianId
+     */
+    public String getOrderElectricianId(){
+        return orderElectricianId;
+    }
+    /**
+     * 电工订单ID的set方法
+     * @param orderElectricianId
+     */
+    public void setOrderElectricianId(String orderElectricianId){
+        if(orderElectricianId != null && orderElectricianId.trim().length() == 0){
+        	this.orderElectricianId = null;
+        }else{
+        	this.orderElectricianId = orderElectricianId;
+        }
+	} 
 
 
 }

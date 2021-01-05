@@ -59,8 +59,8 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	List<OrderElectrician> queryWaitToDo(@Param("pageIndex")Integer pageIndex, @Param("pageSize")Integer pageSize, @Param("electricianId")String electricianId, @Param("orderElectricianStatus")String orderElectricianStatus);
 
 	
-	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_STATUS=2",nativeQuery = true)
-	OrderElectrician findByOrDERIdAndOrderElectricianStatus(@Param("orderId")String orderId);
+	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_STATUS=:orderElectricianEtatus",nativeQuery = true)
+	OrderElectrician findByOrDERIdAndOrderElectricianStatus(@Param("orderId")String orderId,@Param("orderElectricianEtatus")String orderElectricianEtatus);
 
 	
 	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_STATUS != 9 and ORDER_ELECTRICIAN_STATUS != 5 and ORDER_ELECTRICIAN_STATUS != 4 and ORDER_ELECTRICIAN_STATUS != 1",nativeQuery=true)

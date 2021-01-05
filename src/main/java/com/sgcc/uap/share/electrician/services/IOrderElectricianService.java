@@ -72,7 +72,7 @@ public List<OrderElectrician> findByElectricianId(String electricianId);
 QueryResultObject queryMore(RequestCondition queryCondition, String electricianId);
 public QueryResultObject queryWaitToDo(RequestCondition requestCondition, String electricianId);
 public OrderElectrician saveOrderElectrician2(Map<String, Object> map,String electricianId) throws Exception ;
-public OrderElectrician findByOrDERIdAndOrderElectricianStatus(String orderId);
+public OrderElectrician findByOrDERIdAndOrderElectricianStatus(String orderId,String orderElectricianEtatus);
 
 public QueryResultObject queryAllDoing(String electricianId);
 public Object saveElectricianEvaluate(Map<String, Object> map, MultipartFile file) ;

@@ -322,7 +322,7 @@ public class OrderElectricianController {
 	public WrappedResult qiangdanrecept(@RequestParam(value="orderId" )String orderId,
 			@RequestParam(value="electricianId") String electricianId
 			) throws Exception{
-		//OrderElectrician saveOrderElectrician=null;
+		
 		QueryResultObject resultObject=new QueryResultObject();
 		try {
 
@@ -330,13 +330,28 @@ public class OrderElectricianController {
 			OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
 			
 			//插入一个条件，如果查询出来的客户表订单为20，表明是已经有人接了单子
-			if(orderCustomer.getOrderStatus().equals("20")){
+			if(orderCustomer.getOrderStatus().equals("20") ){
 				String msg="已经有人接了客户订单";
 				return WrappedResult.failedWrappedResult(msg);	 
 			}
+			//查询是否有旧订单
+			OrderElectrician orderElectricianOld=orderElectricianService.findByOrDERIdAndOrderElectricianStatus(orderId,"0");
+			if (orderElectricianOld==null) { //如果订单为空
+				//保存电工订单
+				OrderElectrician orderElectrician=orderElectricianService.saveNewOrderElectrician(orderId,electricianId);
+				//查询电工订单的主订单
+				OrderCustomer orderCustomerNew=orderCustomerService.findByOrderId(orderId);
+				OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
+				BeanUtils.copyProperties(orderCustomerNew, orderCustomerVO);
+				String orderElectricianId=orderElectrician.getOrderElectricianId();
+				orderCustomerVO.setOrderElectricianId(orderElectricianId);
+				
+				return WrappedResult.successWrapedResult(orderCustomerVO);
+			}else {
+				String msg="已经有人接了客户订单";
+				return WrappedResult.failedWrappedResult(msg);	
+			}
 			
-			OrderElectrician orderElectrician=orderElectricianService.saveNewOrderElectrician(orderId,electricianId);			
-			return WrappedResult.successWrapedResult(orderElectrician);
 		
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
