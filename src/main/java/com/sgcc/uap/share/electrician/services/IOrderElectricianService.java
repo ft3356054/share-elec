@@ -102,6 +102,7 @@ public String jisuanjuli(OrderCustomer orderCustomer, OrderElectrician orderElec
 
 public void sendNotify(Map<String, Object> orderCustomerMap, OrderCustomer orderCustomer, int i, int j);
 public void sendOederFlow(OrderElectrician orderElectrician, int i);
+public Map<String, Object> pojo2Map(Object obj);
 
 
 

@@ -333,6 +333,11 @@ public class OrderElectricianController {
 			if(orderCustomer.getOrderStatus().equals("20") ){
 				String msg="已经有人接了客户订单";
 				return WrappedResult.failedWrappedResult(msg);	 
+			}else {
+				orderCustomer.setOrderStatus("20");
+				Map<String, Object> map=new HashMap<>();
+				map=orderElectricianService.pojo2Map(orderCustomer);
+				orderElectricianService.saveOrderCustomerByOrderElectricianService(map);
 			}
 			//查询是否有旧订单
 			OrderElectrician orderElectricianOld=orderElectricianService.findByOrDERIdAndOrderElectricianStatus(orderId,"0");

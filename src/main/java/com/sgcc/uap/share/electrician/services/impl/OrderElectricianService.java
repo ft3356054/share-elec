@@ -1,5 +1,10 @@
 package com.sgcc.uap.share.electrician.services.impl;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -649,10 +654,16 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		String orderId=orderElectrician.getOrDERId();
 		String electricianId=orderElectrician.getElectricianId();
 		String EnumsA=baseEnums.getEnumsA();
-		//新增流水
-		Map<String,Object> mapOrderFlow = 
-				MapUtil.flowAdd(orderId, 1,  Integer.parseInt(orderElectricianStatus), electricianId, TimeStamp.toString(new Date()), oper,EnumsA);
-		orderFlowService.saveOrderFlow(mapOrderFlow);
+		
+		//如果状态是1,3,4,22则让客户那边自己插入流水
+		if (!orderElectricianStatus.equals("1") ||(!orderElectricianStatus.equals("3") ||(!orderElectricianStatus.equals("4") ||(!orderElectricianStatus.equals("22")))) ) {
+			
+			//新增流水
+			Map<String,Object> mapOrderFlow = 
+					MapUtil.flowAdd(orderId, 1,  Integer.parseInt(orderElectricianStatus), electricianId, TimeStamp.toString(new Date()), oper,EnumsA);
+			orderFlowService.saveOrderFlow(mapOrderFlow);
+		}
+		
 		
 		//新增通知
 		String announceId = UuidUtil.getUuid32();
@@ -663,7 +674,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 		
 		Map<String,Object> mapNotifyUser = 
-				MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, getPeople, 2, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+				MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, getPeople, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 		
 		//发送websocket消息
@@ -1144,35 +1155,29 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	}
 	@Override
 	public void esc(String orderElectricianId, String orderElectricianStatus) {
-				
+				//能进来说明状态应该是5
 		try {
 			
 			Timestamp nowDate =new Timestamp(System.currentTimeMillis());
 			String nowString = TimeStamp.toString(new Date());
 		
 		OrderElectrician orderElectrician=findByOrderElectricianId(orderElectricianId);
-		orderElectrician.setOrderElectricianStatus(orderElectricianStatus);
-		if (orderElectricianStatus.equals("1") || orderElectricianStatus.equals("4")) {
+	
+		
 			orderElectrician.setUpdateTime(nowDate);
 			orderElectrician.setFinishTime(nowDate);
-		}else {
-			orderElectrician.setUpdateTime(nowDate);
-		}
+		
 		orderElectrician.setOrderElectricianStatus(orderElectricianStatus);
 		orderElectricianRepository.save(orderElectrician);				
 		
 		Map<String, Object> map=new HashMap<>();
 	
 								
-		if (orderElectricianStatus.equals("4")) {
-			map.put("orderElectricianStatus", "4");
-			sendNotify(map, orderElectrician, 1, 2);
-			WebSocketServer.sendInfo("用户取消",(String)orderElectrician.getElectricianId());
-		}else if (orderElectricianStatus.equals("22")) {
-			map.put("orderElectricianStatus", "22");
+		
+			map.put("orderElectricianStatus", orderElectricianStatus);
 			sendNotify(map, orderElectrician, 1, 2);
 			WebSocketServer.sendInfo("用户取消付款",(String)orderElectrician.getElectricianId());
-		}
+		
 						
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -1249,12 +1254,36 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 	}
 	
+	
+
+public Map<String, Object> pojo2Map(Object obj)  { 
+	try{
+	if (obj == null) {
+		 return null;
+		 }
+		 Map<String, Object> map = new HashMap<String, Object>();
+		 BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());
+		 PropertyDescriptor[] propertyDescriptors = beanInfo
+		  .getPropertyDescriptors();
+		 for (PropertyDescriptor property : propertyDescriptors) {
+		 String key = property.getName();
+		 if (key.compareToIgnoreCase("class") == 0) {
+		  continue;
+		 }
+		 Method getter = property.getReadMethod();
+		 Object value = getter != null ? getter.invoke(obj) : null;
+		 map.put(key, value);
+		 }
+		 return map;
+ 
+	}catch (Exception e) {
+		// TODO: handle exception
+		return null;
 	}
 
 	
-	
-	
-
+}	
+}
 	
 	
 	
