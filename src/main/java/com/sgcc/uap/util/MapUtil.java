@@ -15,7 +15,7 @@ public class MapUtil {
 	/**
 	 * 新增流水
 	 * @param orDERId 
-	 * @param flowType 0 客户操作 1 电工操作 
+	 * @param flowType 0 客户操作 1 电工操作 2系统操作
 	 * @param currStatus 当前状态
 	 * @param operatorId 操作人id
 	 * @param operatorTime 操作时间

@@ -2,11 +2,8 @@ package com.sgcc.uap.share.customer.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +36,6 @@ import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.customer.services.ICustomerInfoService;
 import com.sgcc.uap.share.customer.vo.CustomerInfoVO;
-import com.sgcc.uap.util.JsonUtils;
-import com.sgcc.uap.util.MapUtil;
 
 /**
  * <b>概述</b>：<br>
@@ -233,7 +228,7 @@ public class CustomerInfoController {
 	 * @author 18511
 	 * http://localhost:8083/customerInfo/locationPut/?params={"filter":["userId=customerId001","area=123212","lon=13.144","lat=251.21465"]}	
 	 */
-	@RequestMapping(value = "/locationPut")
+	/*@RequestMapping(value = "/locationPut")
 	public WrappedResult locationPut(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
 			Map<String, String> map = MapUtil.getParam(requestCondition);
@@ -248,7 +243,7 @@ public class CustomerInfoController {
 			String errorMessage = "存储位置信息异常";
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
-	}
+	}*/
 	
 	/**
 	 * @saveOrUpdate:获取位置测试
@@ -258,7 +253,7 @@ public class CustomerInfoController {
 	 * @author 18511
 	 * http://localhost:8083/customerInfo/locationGet/customerId001
 	 */
-	@RequestMapping(value = "/locationGet/{customerId}")
+	/*@RequestMapping(value = "/locationGet/{customerId}")
 	public WrappedResult locationGetTest(@PathVariable String customerId) {
 		try {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -277,7 +272,7 @@ public class CustomerInfoController {
 			String errorMessage = "存储位置信息异常";
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
-	}
+	}*/
 	
 	@RequestMapping(value = "/testjson", method = RequestMethod.POST)
 	public WrappedResult testjson(

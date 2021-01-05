@@ -23,4 +23,12 @@ public interface IGetOrderElectricianService {
 	 * @return
 	 */
 	public List<OrderElectrician> findByOrderElectricianStatus(String orderElectricianStatus, String pastTime);
+	
+	/**
+	 * 修改电工订单状态
+	 * @param orderElectricianType
+	 * @param pastTime
+	 * @return
+	 */
+	public OrderElectrician updateOrderElectricianStatus(OrderElectrician orderElectrician);
 }
