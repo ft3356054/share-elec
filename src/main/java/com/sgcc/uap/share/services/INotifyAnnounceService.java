@@ -58,8 +58,9 @@ public interface INotifyAnnounceService {
 	/**
 	 * @param orderId
 	 * @return
+	 * @throws Exception 
 	 */
-	public QueryResultObject hastenByCustomer(String orderId);
+	public QueryResultObject hastenByCustomer(String orderId) throws Exception;
 	
 	/**
 	 * 自定义通知发送

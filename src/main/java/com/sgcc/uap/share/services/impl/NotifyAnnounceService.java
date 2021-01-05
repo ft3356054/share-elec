@@ -2,19 +2,23 @@ package com.sgcc.uap.share.services.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.sgcc.uap.exception.NullArgumentException;
@@ -25,6 +29,7 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.bo.NotifyAnnounceAndUser;
 import com.sgcc.uap.share.customer.repositories.GetOrderElectricianRepository;
 import com.sgcc.uap.share.domain.BaseEnums;
@@ -39,6 +44,7 @@ import com.sgcc.uap.util.DateTimeUtil;
 import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
+import com.sgcc.uap.utils.json.JsonUtils;
 
 
 /**
@@ -62,14 +68,15 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 	@Autowired
 	private NotifyAnnounceUserRepository notifyAnnounceUserRepository;
 	@Autowired
-	private GetOrderElectricianRepository orderElectricianRepository;
+	private GetOrderElectricianRepository getOrderElectricianRepository;
 	@Autowired
 	private NotifyAnnounceUserService notifyAnnounceUserService;
 	@Autowired
 	private BaseEnumsService baseEnumsService;
 	@Autowired
 	private NotifyAnnounceAndUserRepository notifyAnnounceAndUserRepository;
-	
+	@Autowired
+    private StringRedisTemplate stringRedisTemplate;
 	
 	
 	@Override
@@ -291,34 +298,46 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 	}
 
 	@Override
-	public QueryResultObject hastenByCustomer(String orderId) {
-		try {
-			ArrayList<String> orderElectricianStatus = new ArrayList<String>();
-			orderElectricianStatus.add("4");
-			orderElectricianStatus.add("5");
-			OrderElectrician orderElectrician = orderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderId, orderElectricianStatus);
-			
-			if(null!=orderElectrician){
-				String electricianId = orderElectrician.getElectricianId();
+	@Transactional
+	public QueryResultObject hastenByCustomer(String orderId) throws Exception {
+			//查看是否已经催单过 5分钟内不可重复催单
+			String flag = stringRedisTemplate.opsForValue().get("hasten"+orderId);
+			if(null!=flag && !"".equals(flag)){
+				System.out.println("5分钟内重复催单");
+			}else{
+				ArrayList<String> orderElectricianStatus = new ArrayList<String>();
+				orderElectricianStatus.add("4");
+				orderElectricianStatus.add("5");
+				OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderId, orderElectricianStatus);
 				
-				//新增通知
-				String announceId = UuidUtil.getUuid32();
-				
-				Map<String,Object> mapNotify =
-						MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", "用户催单", "用户催单", TimeStamp.toString(new Date()), "1",orderId,"");
-				
-				saveNotifyAnnounce(mapNotify);
-				
-				
-				Map<String,Object> mapNotifyUser = 
-						MapUtil.notifyUserAdd(electricianId, announceId, 2, 0, TimeStamp.toString(new Date()), "用户催单");
-				notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
-				
+				if(null!=orderElectrician){
+					String electricianId = orderElectrician.getElectricianId();
+					//获取Enum通知类
+					BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("2",  "1");
+					
+					//新增通知
+					String announceId = UuidUtil.getUuid32();
+					
+					Map<String,Object> mapNotify =
+							MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), "1",orderId,baseEnums.getEnumsD());
+					saveNotifyAnnounce(mapNotify);
+					
+					Map<String,Object> mapNotifyUser = 
+							MapUtil.notifyUserAdd(electricianId, announceId, 2, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsB());
+					notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+					
+					//发送websocket消息
+					Map<String,String> mapString = new HashMap<String,String>();
+					mapString.put("orderId", orderId);
+					mapString.put("content", baseEnums.getEnumsB());
+					String jsonString = JsonUtils.toJson(mapString);
+					WebSocketServer.sendInfo(jsonString,orderElectrician.getElectricianId());
+					
+					stringRedisTemplate.opsForValue().set("hasten"+orderId, orderId, 5L, TimeUnit.MINUTES);
+				}
 			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				
+			
 		return RestUtils.wrappQueryResult(null);
 	}
 	
@@ -333,7 +352,7 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 				ArrayList<String> orderElectricianStatus = new ArrayList<String>();
 				orderElectricianStatus.add("4");
 				orderElectricianStatus.add("5");
-				OrderElectrician orderElectrician = orderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderId, orderElectricianStatus);
+				OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderId, orderElectricianStatus);
 				
 				if(null!=orderElectrician){
 					String electricianId = orderElectrician.getElectricianId();
