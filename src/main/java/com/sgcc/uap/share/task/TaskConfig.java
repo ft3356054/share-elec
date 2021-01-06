@@ -19,6 +19,9 @@ public class TaskConfig {
     private ElecAssignOrderTask elecAssignOrderTask;
 	@Autowired
     private AutoSendOrderTask autoSendOrderTask;
+	@Autowired
+    private AutoReSendOrderTask autoReSendOrderTask;
+	
 	
 	/*@Scheduled(initialDelay = 1000*5 , fixedDelay = 1000*5)
 	public void elecGrabOrderTask() {
@@ -33,6 +36,12 @@ public class TaskConfig {
 	@Scheduled(initialDelay = 1000*10 , fixedDelay = 1000*6)
 	public void autoSendOrderTask() {
 		autoSendOrderTask.run();
-	}*/
+	}
+	
+	@Scheduled(initialDelay = 1000*5 , fixedDelay = 1000*10)
+	public void autoReSendOrderTask() {
+		autoReSendOrderTask.run();
+	}
+	*/
 	
 }

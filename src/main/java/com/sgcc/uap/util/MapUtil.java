@@ -15,7 +15,7 @@ public class MapUtil {
 	/**
 	 * 新增流水
 	 * @param orDERId 
-	 * @param flowType 0 客户操作 1 电工操作 
+	 * @param flowType 0 客户操作 1 电工操作 2系统操作
 	 * @param currStatus 当前状态
 	 * @param operatorId 操作人id
 	 * @param operatorTime 操作时间
@@ -38,6 +38,17 @@ public class MapUtil {
 	
 	/**
 	 * 新增通知
+	 */
+	/**
+	 * @param announceId
+	 * @param serderId 发送者编号
+	 * @param title
+	 * @param content
+	 * @param createTime
+	 * @param notifyType 1维修 2支付 3验收 4评价
+	 * @param orderId 
+	 * @param remark
+	 * @return
 	 */
 	public static Map<String,Object> notifyAdd(String announceId,String serderId,String title,String content,
 			String createTime,String notifyType,String orderId,String remark){

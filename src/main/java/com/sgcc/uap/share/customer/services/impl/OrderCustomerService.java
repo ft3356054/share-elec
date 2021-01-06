@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.customer.services.impl;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.bo.OrderCustomerBeginPage;
 import com.sgcc.uap.share.customer.repositories.GetOrderElectricianRepository;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerBeginPageRepository;
@@ -42,10 +44,11 @@ import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.BaseIdentityPrice;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
-import com.sgcc.uap.share.electrician.services.impl.OrderElectricianService;
 import com.sgcc.uap.share.services.IBaseEnumsService;
 import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
 import com.sgcc.uap.share.services.impl.BaseIdentityPriceService;
+import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
+import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
 import com.sgcc.uap.util.DecimalUtil;
 import com.sgcc.uap.util.FileUtil;
@@ -53,6 +56,7 @@ import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.SorterUtil;
 import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
+import com.sgcc.uap.utils.json.JsonUtils;
 
 
 /**
@@ -81,8 +85,6 @@ public class OrderCustomerService implements IOrderCustomerService{
 	@Autowired
 	private OrderFlowService orderFlowService;
 	@Autowired
-	private OrderElectricianService orderElectricianService;
-	@Autowired
 	private BaseIdentityPriceService baseIdentityPriceService;
 	@Autowired
 	private BaseAreaPriceService baseAreaPriceService;
@@ -94,6 +96,11 @@ public class OrderCustomerService implements IOrderCustomerService{
     private GetOrderElectricianRepository getOrderElectricianRepository;
 	@Autowired
 	private CustPositionService custPositionService;
+	@Autowired
+	private NotifyAnnounceService notifyAnnounceService;
+	@Autowired
+	private NotifyAnnounceUserService notifyAnnounceUserService;
+	
 	@SuppressWarnings("rawtypes")
 	@Autowired
     private RedisTemplate redisTemplate;
@@ -194,11 +201,11 @@ public class OrderCustomerService implements IOrderCustomerService{
 					String iconUrl = FileUtil.uploadFile(file, orderId,"ORDER_CUSTOMER",fileName);
 					map.put(fileName, iconUrl);
 				}
-				
 				Map<String, Object> newMap = (Map) getStatus.get("map");
 				CrudUtils.mapToObject(newMap, orderCustomer,  "orderId");
 				result = orderCustomerRepository.save(orderCustomer);
-				sendNotify(newMap, orderCustomer,2,1);
+				sendNotify(newMap, orderCustomer , null,2,"0");
+				
 			}else{
 				throw new Exception((String) getStatus.get("desc"));
 			}
@@ -263,20 +270,15 @@ public class OrderCustomerService implements IOrderCustomerService{
 	
 	
 	@Override
-	public OrderCustomer updateOrderCustomer(Map<String,Object> map){
+	public OrderCustomer updateOrderCustomer(Map<String,Object> map) throws Exception{
 		logger.info("OrderCustomerService updateOrderCustomer map = " +map); 
 		OrderCustomer orderCustomer = new OrderCustomer();
 		OrderCustomer result = new OrderCustomer();
-		try {
 		//修改
 		String orderId = (String) map.get("orderId");
 		orderCustomer = orderCustomerRepository.findOne(orderId);
 			CrudUtils.mapToObject(map, orderCustomer,  "orderId");
 			result = orderCustomerRepository.save(orderCustomer);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return result;
 	}
 	
@@ -449,7 +451,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	
 	private Map<String,Object> getOrderStatus(Map map,OrderCustomer orderCustomer) throws Exception{
 		Map<String,Object> result = new HashMap<String, Object>();
-		
+		Timestamp nowDate =new Timestamp(System.currentTimeMillis());
 		String orderStatus = (String) map.get("orderStatus");
 		
 		if("4".equals(orderStatus)){
@@ -474,8 +476,13 @@ public class OrderCustomerService implements IOrderCustomerService{
 					elecStatus.add("0");
 					elecStatus.add("2");
 					elecStatus.add("21");
-					if(sites.contains(orderCustomer.getOrderStatus())){
-						orderElectricianService.esc(orderElectrician.getOrderElectricianId(), orderStatus);
+					if(sites.contains(orderElectrician.getOrderElectricianStatus())){
+						orderElectrician.setUpdateTime(nowDate);
+						orderElectrician.setFinishTime(nowDate);
+						orderElectrician.setOrderElectricianStatus(orderStatus);
+						getOrderElectricianRepository.save(orderElectrician);
+						//插入电工流水
+						sendNotify(map, orderCustomer , orderElectrician,2,"1");
 						String dateString = TimeStamp.toString(new Date());
 						map.put("updateTime", dateString);
 						map.put("finishTime", dateString);
@@ -539,8 +546,12 @@ public class OrderCustomerService implements IOrderCustomerService{
 					//修改电工订单状态 由 23 改为22
 					List<String> elecStatus = new ArrayList<String>();
 					elecStatus.add("23");
-					if(sites.contains(orderCustomer.getOrderStatus())){
-						orderElectricianService.esc(orderElectrician.getOrderElectricianId(), orderStatus);
+					if(sites.contains(orderElectrician.getOrderElectricianStatus())){
+						orderElectrician.setUpdateTime(nowDate);
+						orderElectrician.setOrderElectricianStatus(orderStatus);
+						getOrderElectricianRepository.save(orderElectrician);
+						//插入电工流水
+						sendNotify(map, orderCustomer , orderElectrician,2,"1");
 						String dateString = TimeStamp.toString(new Date());
 						map.put("updateTime", dateString);
 						result.put("key", "0");
@@ -566,42 +577,55 @@ public class OrderCustomerService implements IOrderCustomerService{
 	 * @param map
 	 * @param orderCustomer
 	 * @param oper 0增 1删 2改
-	 * @param getPeople 1客户 2电工 
+	 * @param getPeople 0 客户订单 1 电工订单 2 投诉订单
 	 * @throws Exception
 	 */
-	private void sendNotify(Map map,OrderCustomer orderCustomer,int oper,int getPeople) throws Exception{
+	private void sendNotify(Map map,OrderCustomer orderCustomer,OrderElectrician orderElectrician,int oper,String getPeople) throws Exception{
 		String status =(String)map.get("orderStatus");
 		//1维修 2支付 3验收 4评价
-		/*String notifyType ="1";
+		String notifyType ="1";
 		if("23".equals(status)){
 			notifyType ="2";
 		}else if("24".equals(status)){
 			notifyType ="3";
 		}else if("8".equals(status)){
 			notifyType ="4";
-		}*/
+		}
 		//获取Enum通知类
-		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  status);	
+		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus(getPeople,  status);	
 		
 		//新增流水
-		Map<String,Object> mapOrderFlow = 
-				MapUtil.flowAdd(orderCustomer.getOrderId(), 0,  Integer.parseInt(status), orderCustomer.getCustomerId(), TimeStamp.toString(new Date()), oper,  baseEnums.getEnumsA());
-		orderFlowService.saveOrderFlow(mapOrderFlow);
-		
-		//新增通知
-		/*String announceId = UuidUtil.getUuid32();
-		
-		Map<String,Object> mapNotify =
-				MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
-						notifyType,orderCustomer.getOrderId(),"");
-		notifyAnnounceService.saveNotifyAnnounce(mapNotify);
-		
-		Map<String,Object> mapNotifyUser = 
-				MapUtil.notifyUserAdd(orderCustomer.getCustomerId(), announceId, getPeople, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
-		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);*/
-		
-		//发送websocket消息
-        //WebSocketServer.sendInfo(baseEnums.getEnumsB(),(String)map.get("customerId"));
+		Map<String,Object> mapOrderFlow = null;
+		if(!"1".equals(getPeople)){
+			mapOrderFlow = MapUtil.flowAdd(orderCustomer.getOrderId(), 0,  Integer.parseInt(status), orderCustomer.getCustomerId(), TimeStamp.toString(new Date()), oper,  baseEnums.getEnumsA());
+			orderFlowService.saveOrderFlow(mapOrderFlow);
+		}else{
+			//由于流水表关联的是主订单，所以子订单不插入流水表
+			//新增通知
+			List<String> statusList = new ArrayList<String>();
+			statusList.add("3"); //用户支付维修费
+			statusList.add("4"); //用户主动退单
+			statusList.add("22"); //用户主动退回，电工重新填写价格
+			if(statusList.contains(status)){
+				String announceId = UuidUtil.getUuid32();
+				
+				Map<String,Object> mapNotify =
+						MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
+								notifyType,orderElectrician.getOrDERId(),"");
+				notifyAnnounceService.saveNotifyAnnounce(mapNotify);
+				
+				Map<String,Object> mapNotifyUser = 
+						MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+				notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+				
+				//发送websocket消息
+				Map<String,String> mapString = new HashMap<String,String>();
+				mapString.put("orderId", orderElectrician.getOrderElectricianId());
+				mapString.put("content", baseEnums.getEnumsB());
+				String jsonString = JsonUtils.toJson(mapString);
+				WebSocketServer.sendInfo(jsonString,orderElectrician.getElectricianId());
+			}
+		}
 	}
 	
 	@Override
@@ -630,11 +654,13 @@ public class OrderCustomerService implements IOrderCustomerService{
 	}
 	
 	@Override
-	public OrderCustomer payPrice(String orderId,String orderStatus){
+	@Transactional
+	public OrderCustomer payPrice(String orderId,String orderStatus) throws Exception{
 		logger.info("OrderCustomerService payPrice = " +orderId + "," +orderStatus); 
+		Timestamp nowDate =new Timestamp(System.currentTimeMillis());
 		OrderCustomer orderCustomer = new OrderCustomer();
 		OrderCustomer result = new OrderCustomer();
-		try {
+		
 			//修改
 			orderCustomer = orderCustomerRepository.findOne(orderId);
 			
@@ -649,7 +675,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 					CrudUtils.mapToObject(newMap, orderCustomer,  "orderId");
 					result = orderCustomerRepository.save(orderCustomer);
 					//插入流水
-					sendNotify(newMap, orderCustomer,2,1);
+					sendNotify(newMap, orderCustomer , null ,2,"0");
 					
 					//修改电工表状态
 					List<String> listStatus = new ArrayList<String>();
@@ -660,8 +686,12 @@ public class OrderCustomerService implements IOrderCustomerService{
 					OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderCustomer.getOrderId(), listStatus);
 					if(null!=orderElectrician){
 						//修改电工订单状态 由 23 改为3
-						if("23".equals(orderCustomer.getOrderStatus())){
-							orderElectricianService.esc(orderElectrician.getOrderElectricianId(), orderStatus);
+						if("23".equals(orderElectrician.getOrderElectricianStatus())){
+							orderElectrician.setUpdateTime(nowDate);
+							orderElectrician.setOrderElectricianStatus(orderStatus);
+							getOrderElectricianRepository.save(orderElectrician);
+							//插入电工流水
+							sendNotify(newMap, orderCustomer , orderElectrician,2,"1");
 						}else{
 							throw new Exception("子订单状态异常");
 						}
@@ -684,7 +714,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 					positionMap.put("lat",  orderCustomer.getAddressLatitude());
 					custPositionService.saveCustPosition(positionMap);
 					//插入流水
-					sendNotify(newMap, orderCustomer,2,1);
+					sendNotify(newMap, orderCustomer , null,2,"0");
 					//放入队列中，电工侧获取队列消息，群发给就近电工
 					redisTemplate.opsForList().rightPush("newCustomerOrder", orderCustomer);
 				}else{
@@ -692,10 +722,6 @@ public class OrderCustomerService implements IOrderCustomerService{
 				}
 			}
 			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 			
 		return result;
 	}

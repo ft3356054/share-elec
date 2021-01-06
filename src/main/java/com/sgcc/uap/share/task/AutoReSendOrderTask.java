@@ -1,5 +1,8 @@
 package com.sgcc.uap.share.task;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,6 +19,7 @@ import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.share.services.IBaseSystemConfigService;
+import com.sgcc.uap.util.TimeStamp;
 
 
 /*
@@ -30,7 +34,6 @@ public class AutoReSendOrderTask {
 	private final static Logger logger = (Logger) LoggerFactory.getLogger(AutoReSendOrderTask.class);
 	
 	IGetOrderElectricianService getOrderElectricianService = (IGetOrderElectricianService) ApplicationContextUtil.getBean("getOrderElectricianService");
-	IOrderElectricianService orderElectricianService = (IOrderElectricianService) ApplicationContextUtil.getBean("orderElectricianService");
 	IBaseSystemConfigService baseSystemConfigService = (IBaseSystemConfigService) ApplicationContextUtil.getBean("baseSystemConfigService");
 	IOrderCustomerService orderCustomerService = (IOrderCustomerService) ApplicationContextUtil.getBean("orderCustomerService");
 	@SuppressWarnings("rawtypes")
@@ -45,12 +48,17 @@ public class AutoReSendOrderTask {
 			
 			List<OrderElectrician> orderElectricians = getOrderElectricianService.findByOrderElectricianStatus("2", baseSystemConfig.getConfigValue());
 		
-			//修改状态 待郭庆提供接口
-			List<String> orderIds = null;
+			//修改状态 
+			List<String> orderIds = new ArrayList<String>();
 			if(orderElectricians.size()>0){
+				Timestamp nowDate =new Timestamp(System.currentTimeMillis());
+				//String nowString = TimeStamp.toString(new Date());
 				for(OrderElectrician orderElectrician :orderElectricians){
 					orderIds.add(orderElectrician.getOrDERId());
-					orderElectricianService.esc(orderElectrician.getOrderElectricianId(), "1");
+					orderElectrician.setUpdateTime(nowDate);
+					orderElectrician.setOrderElectricianStatus("1");
+					orderElectrician.setFinishTime(nowDate);
+					getOrderElectricianService.updateOrderElectricianStatus(orderElectrician);
 				}
 				List<OrderCustomer> orderCustomers = orderCustomerService.getOrderCustomerByOrderIds(orderIds);
 				for(OrderCustomer orderCustomer :orderCustomers){
