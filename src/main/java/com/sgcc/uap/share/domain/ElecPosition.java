@@ -49,6 +49,12 @@ public class ElecPosition implements Serializable {
     @Column(name = "LAT", nullable = true, length = 64)
     private String lat ;
     
+    /** 
+     * STATUS
+     */
+    @Column(name = "STATUS", nullable = true, length = 2)
+    private String status ;
+    
 	/**
 	  *虚拟主键
 	  */
@@ -142,6 +148,13 @@ public class ElecPosition implements Serializable {
     public void setLat(String lat){
 		this.lat = lat;
 	} 
+    
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	public String getMxVirtualId() {
         return this.mxVirtualId;
     }
