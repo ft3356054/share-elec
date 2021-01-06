@@ -532,7 +532,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 				result.put("key", "1");
 				result.put("desc", "该订单不处于待评价状态");
 			}
-		}else if("22".equals(orderStatus)){
+		}else if("26".equals(orderStatus)){
 			ArrayList<String> sites = new ArrayList<>();
 	        sites.add("23"); //待用户支付
 			if(sites.contains(orderCustomer.getOrderStatus())){
@@ -543,7 +543,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 				//获取当前子订单
 				OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderCustomer.getOrderId(), listStatus);
 				if(null!=orderElectrician){
-					//修改电工订单状态 由 23 改为22
+					//修改电工订单状态 由 23 改为26
 					List<String> elecStatus = new ArrayList<String>();
 					elecStatus.add("23");
 					if(sites.contains(orderElectrician.getOrderElectricianStatus())){
@@ -605,7 +605,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			List<String> statusList = new ArrayList<String>();
 			statusList.add("3"); //用户支付维修费
 			statusList.add("4"); //用户主动退单
-			statusList.add("22"); //用户主动退回，电工重新填写价格
+			statusList.add("26"); //用户主动退回，电工重新填写价格
 			if(statusList.contains(status)){
 				String announceId = UuidUtil.getUuid32();
 				
