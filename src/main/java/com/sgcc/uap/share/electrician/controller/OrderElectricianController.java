@@ -1068,13 +1068,14 @@ public class OrderElectricianController {
 			@RequestParam("telephone") String telephone,@RequestParam("electricianId") String electricianId){
 		//查询当前电工的信息
 		ElecPosition elecPosition=elecPositionService.findByElectricianId(electricianId);
+		
 		//如果姓名不为空
 		if (!electricianName.isEmpty()) {
 			//根据电工的姓名去模糊查询
 			List<ElectricianInfo> electricianInfoList=electricianInfoService.findByElectricianNameLike(electricianName);
 			for (ElectricianInfo electricianInfo : electricianInfoList) {
 				ElecPosition elecPosition2=elecPositionService.findByElectricianId(electricianInfo.getElectricianId());
-				//if (!electricianInfo.getElectricianStatus().equals("1") && !elecPosition2.get) {
+				//if (!electricianInfo.getElectricianStatus().equals("1") && !elecPosition2) {
 					
 				//}
 				
