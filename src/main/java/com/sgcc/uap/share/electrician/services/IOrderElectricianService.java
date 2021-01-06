@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
+import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 
@@ -103,6 +104,7 @@ public String jisuanjuli(OrderCustomer orderCustomer, OrderElectrician orderElec
 public void sendNotify(Map<String, Object> map, OrderElectrician orderElectrician, int i, int j);
 public void sendOederFlow(OrderElectrician orderElectrician, int i);
 public Map<String, Object> pojo2Map(Object obj);
+public OrderCustomerVO convert(OrderCustomer orderCustomer, OrderElectrician orderElectrician);
 
 
 

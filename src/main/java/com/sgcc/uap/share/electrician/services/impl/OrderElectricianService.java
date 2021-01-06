@@ -1167,6 +1167,16 @@ public Map<String, Object> pojo2Map(Object obj)  {
 
 	
 }	
+
+public OrderCustomerVO convert(OrderCustomer orderCustomer,OrderElectrician orderElectrician){
+	OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
+	BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
+	orderCustomerVO.setElectrician_descrive(orderElectrician.getElectricianDescrive());
+	orderCustomerVO.setChargeback_reason(orderElectrician.getChargebackReason());
+	orderCustomerVO.setConstructionContent(orderElectrician.getChargebackReason());
+	orderCustomerVO.setOrderElectricianId(orderElectrician.getElectricianId());
+	return orderCustomerVO;
+}
 }
 	
 	

@@ -32,5 +32,7 @@ public interface ElectricianInfoRepository extends JpaRepository<ElectricianInfo
 
 	List<ElectricianInfo> findByElectricianNameLike(String electricianName);
 
+	List<ElectricianInfo> findByElectricianPhonenumberLike(String electricianPhonenumber);
+
 	
 }

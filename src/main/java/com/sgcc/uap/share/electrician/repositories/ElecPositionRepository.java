@@ -23,6 +23,6 @@ public interface ElecPositionRepository extends JpaRepository<ElecPosition,Strin
 
 	public ElecPosition findByElectricianId(String electricianId);
 
-	public List<ElectricianInfo> findByElectricianName(String electricianName);
+	
 	
 }

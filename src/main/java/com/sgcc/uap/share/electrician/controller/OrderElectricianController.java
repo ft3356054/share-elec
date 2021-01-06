@@ -815,6 +815,23 @@ public class OrderElectricianController {
 						orderElectricianMap.put("chargebackReason",orderElectrician.getChargebackReason());
 						
 					}
+						if (method.equals("22")) { //方法ID：22 表明电工到达现场
+							
+							orderCustomerMap.put("orderStatus",map.get("orderStatus"));
+							orderCustomerMap.put("orderId", map.get("orderId"));
+							orderCustomerMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
+							
+							orderElectricianMap.put("orderId", map.get("orderId"));
+							orderElectricianMap.put("orderElectricianStatus", map.get("orderElectricianStatus"));
+							orderElectricianMap.put("electricianId", map.get("electricianId"));
+							orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
+							OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
+							OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+							OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+							
+							result.setFormItems(orderCustomerVO);
+							
+						}
 				
 					//如果状态是：1，等待接单（用户已支付上门费）状态转为2 
 						orderCustomerMap.put("appointmentTime", map.get("appointmentTime"));//给客户订单设置更新时间
@@ -828,12 +845,12 @@ public class OrderElectricianController {
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-						
-						result.setFormItems(orderCustomer);
+						OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+						result.setFormItems(orderCustomerVO);
 						
 				
 				}
-				if (method.equals("现场勘查")) {//此时电工和客户订单的状态都是22，电工到达现场，勘察
+				if (method.equals("现场勘查")) {//此时电工和客户订单的状态都是26，电工到达现场，勘察
 				
 					//将map中的数据分别送到两个类中，在进行更新
 					//客户订单需要跟新的信息
@@ -850,7 +867,8 @@ public class OrderElectricianController {
 				
 					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-					result.setFormItems(orderCustomer);
+					OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+					result.setFormItems(orderCustomerVO);
 					
 				}
 				
@@ -873,7 +891,8 @@ public class OrderElectricianController {
 					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 					System.out.println("我执行完了保存操作");
 					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-					result.setFormItems(orderCustomer);
+					OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+					result.setFormItems(orderCustomerVO);
 			
 				}
 				if(method.equals("上传合同")){//状态应该从22---->23电工上传合同（报价）
@@ -901,8 +920,8 @@ public class OrderElectricianController {
 							OrderCustomer orderCustomer1=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 							System.out.println("我执行完了保存操作");
 							OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-							
-							result.setFormItems(orderCustomer);
+							OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+							result.setFormItems(orderCustomerVO);
 							
 							//给客户发送消息，让其支付维修费
 							orderElectricianService.sendNotify(orderCustomerMap,orderElectrician,0,1);
@@ -922,7 +941,36 @@ public class OrderElectricianController {
 					 * 开始施工
 					 */
 					if(method.equals("开始施工")){//只能改状态就好
-						
+						List<Map<String, String>> remark_str1=(List<Map<String, String>>) map.get("remark_str1");
+						String remark_str1sString="";
+						if (remark_str1.size()==1) {
+							
+							for (String key : remark_str1.get(0).keySet()) {
+						        Object value =  remark_str1.get(0).get(key);
+						        remark_str1sString=key+":"+value;
+						        System.out.println("Key = " + key + ", Value = " + value.toString());
+							}
+
+						}else if (remark_str1.size()>1) {
+							
+							for (int i = 0; i < remark_str1.size(); i++) {
+								for (String key : remark_str1.get(0).keySet()) {
+							        Object value =  remark_str1.get(0).get(key);
+							        if (i==0) {
+							        	remark_str1sString=key+":"+value;
+								
+									}else {
+										remark_str1sString=remark_str1sString+","+key+":"+value;
+									
+									}
+
+							        System.out.println("Key = " + key + ", Value = " + value.toString());
+								
+								
+							}
+						}
+							
+						}
 						
 						//将map中的数据分别送到两个类中，在进行更新
 						//客户订单需要跟新的信息
@@ -935,12 +983,13 @@ public class OrderElectricianController {
 						orderElectricianMap.put("orderElectricianStatus",map.get("orderElectricianStatus"));
 						orderElectricianMap.put("electricianId", map.get("electricianId"));
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
-						
+						orderElectricianMap.put("remarkStr1", remark_str1sString);
 						
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						System.out.println("我执行完了保存操作");
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-						result.setFormItems(orderCustomer);
+						OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+						result.setFormItems(orderCustomerVO);
 					
 					}
 					
@@ -961,8 +1010,9 @@ public class OrderElectricianController {
 						
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						System.out.println("我执行完了保存操作");
-						orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-						result.setFormItems(orderCustomer);
+						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+						result.setFormItems(orderCustomerVO);
 						
 					}
 					
@@ -983,9 +1033,9 @@ public class OrderElectricianController {
 						
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						System.out.println("我执行完了保存操作");
-						orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-						
-						result.setFormItems(orderCustomer);
+						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+						result.setFormItems(orderCustomerVO);
 						
 					}
 					
@@ -1065,28 +1115,57 @@ public class OrderElectricianController {
 	
 	@RequestMapping(value="/queryElectrician",name="查询电工是否存在")
 	public WrappedResult queryElectrician(@RequestParam("electricianName") String electricianName,
-			@RequestParam("telephone") String telephone,@RequestParam("electricianId") String electricianId){
-		//查询当前电工的信息
-		ElecPosition elecPosition=elecPositionService.findByElectricianId(electricianId);
-		
-		//如果姓名不为空
-		if (!electricianName.isEmpty()) {
-			//根据电工的姓名去模糊查询
-			List<ElectricianInfo> electricianInfoList=electricianInfoService.findByElectricianNameLike(electricianName);
-			for (ElectricianInfo electricianInfo : electricianInfoList) {
-				ElecPosition elecPosition2=elecPositionService.findByElectricianId(electricianInfo.getElectricianId());
-				//if (!electricianInfo.getElectricianStatus().equals("1") && !elecPosition2) {
-					
-				//}
-				
-			}
-			return WrappedResult.successWrapedResult(electricianInfoList);
-		}else if (!telephone.isEmpty()) {
+			@RequestParam("electricianPhonenumber") String electricianPhonenumber,@RequestParam("electricianId") String electricianId){
+		try {
 			
+
+			//查询当前电工的信息
+			ElecPosition elecPosition=elecPositionService.findByElectricianId(electricianId);
+			//用于存放返回的数据
+			List<ElectricianInfo> list=new ArrayList<>();
+			//如果姓名不为空
+			if (!electricianName.isEmpty()) {
+				//根据电工的姓名去模糊查询
+				List<ElectricianInfo> electricianInfoList=electricianInfoService.findByElectricianNameLike(electricianName);
+				for (ElectricianInfo electricianInfo : electricianInfoList) {
+					ElecPosition elecPosition2=elecPositionService.findByElectricianId(electricianInfo.getElectricianId());
+					//电工都是空闲状态
+					if (!electricianInfo.getElectricianStatus().equals("1") && !elecPosition2.getStatus().equals("1") && elecPosition.getAreaId().equals(elecPosition2.getAreaId())) {
+						list.add(electricianInfo);
+					}
+					
+				}
+				return WrappedResult.successWrapedResult(list);
+			}else if (!electricianPhonenumber.isEmpty()) {
+				
+				//根据电工的姓名去模糊查询
+				List<ElectricianInfo> electricianInfoList=electricianInfoService.findByElectricianPhonenumberLike(electricianPhonenumber);
+				for (ElectricianInfo electricianInfo : electricianInfoList) {
+					ElecPosition elecPosition2=elecPositionService.findByElectricianId(electricianInfo.getElectricianId());
+					//电工都是空闲状态
+					if (!electricianInfo.getElectricianStatus().equals("1") && !elecPosition2.getStatus().equals("1") && elecPosition.getAreaId().equals(elecPosition2.getAreaId())) {
+						list.add(electricianInfo);
+					}
+					
+				}
+				return WrappedResult.successWrapedResult(list);
+				
+			}else {
+				return WrappedResult.failedWrappedResult("未找到电工");
+			}
+			
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult("查找电工出错");
 		}
 		
 		
-		return null;
+		
 		
 	}
 	
