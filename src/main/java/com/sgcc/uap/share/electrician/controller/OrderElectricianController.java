@@ -1,8 +1,6 @@
 package com.sgcc.uap.share.electrician.controller;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,18 +10,15 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.math.RandomUtils;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
@@ -33,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -43,45 +37,36 @@ import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.rest.annotation.ColumnRequestParam;
 import com.sgcc.uap.rest.annotation.QueryRequestParam;
 import com.sgcc.uap.rest.annotation.attribute.ViewAttributeData;
-import com.sgcc.uap.rest.support.FormRequestObject;
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
-import com.sgcc.uap.rest.utils.CrudUtils;
-import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
-import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.services.impl.CustPositionService;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.customer.services.impl.OrderFlowService;
 import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
 import com.sgcc.uap.share.domain.BaseOrderType;
-import com.sgcc.uap.share.domain.BaseSystemConfig;
 import com.sgcc.uap.share.domain.CustPosition;
 import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderElectricianHis;
-import com.sgcc.uap.share.domain.OrderFlow;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.share.electrician.services.impl.ElecPositionService;
 import com.sgcc.uap.share.electrician.services.impl.ElectricianInfoService;
 import com.sgcc.uap.share.electrician.services.impl.OrderElectricianHisService;
-import com.sgcc.uap.share.electrician.services.impl.OrderElectricianService;
 import com.sgcc.uap.share.electrician.vo.OrderElectricianVO;
 import com.sgcc.uap.share.services.impl.BaseOrderTypeService;
-import com.sgcc.uap.share.services.impl.BaseSystemConfigService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
 import com.sgcc.uap.util.JsonUtils;
 import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.PointUtil;
-import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
 
 
@@ -426,7 +411,7 @@ public class OrderElectricianController {
 			}
 			List<OrderCustomerVO> oevList=new ArrayList<>();
 			 
-			ElecPosition elecPosition=elecPositionService.findByElectricianId(electricianId);
+			ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianId);
 			Double distanceDouble=null;
 			for (OrderCustomer orderCustomer : orderCustomers) {
 				OrderCustomerVO oev=new OrderCustomerVO();
@@ -514,9 +499,7 @@ public class OrderElectricianController {
 		//4.根据查询出来的订单ID,进行距离计算，然后进行排序，筛选出一定距离内的客户
 				
 		//1.先根据电工的ID获取区域ID
-		QueryResultObject resultObject=elecPositionService.getElecPositionByElectricianId(electricianId);
-		List<ElecPosition> elecPositionList=resultObject.getItems();
-		ElecPosition elecPosition=elecPositionList.get(0);
+		ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianId);
 		String eleArea=elecPosition.getAreaId();
 		
 		//2获取此电工的经纬度范围
@@ -1125,7 +1108,7 @@ public class OrderElectricianController {
 			
 
 			//查询当前电工的信息
-			ElecPosition elecPosition=elecPositionService.findByElectricianId(electricianId);
+			ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianId);
 			//用于存放返回的数据
 			List<ElectricianInfo> list=new ArrayList<>();
 			//如果姓名不为空
@@ -1133,7 +1116,7 @@ public class OrderElectricianController {
 				//根据电工的姓名去模糊查询
 				List<ElectricianInfo> electricianInfoList=electricianInfoService.findByElectricianNameLike(electricianName);
 				for (ElectricianInfo electricianInfo : electricianInfoList) {
-					ElecPosition elecPosition2=elecPositionService.findByElectricianId(electricianInfo.getElectricianId());
+					ElecPosition elecPosition2=elecPositionService.getElecPositionByElectricianId(electricianInfo.getElectricianId());
 					//电工都是空闲状态
 					if (!electricianInfo.getElectricianStatus().equals("1") && !elecPosition2.getStatus().equals("1") && elecPosition.getAreaId().equals(elecPosition2.getAreaId())) {
 						list.add(electricianInfo);
@@ -1146,7 +1129,7 @@ public class OrderElectricianController {
 				//根据电工的姓名去模糊查询
 				List<ElectricianInfo> electricianInfoList=electricianInfoService.findByElectricianPhonenumberLike(electricianPhonenumber);
 				for (ElectricianInfo electricianInfo : electricianInfoList) {
-					ElecPosition elecPosition2=elecPositionService.findByElectricianId(electricianInfo.getElectricianId());
+					ElecPosition elecPosition2=elecPositionService.getElecPositionByElectricianId(electricianInfo.getElectricianId());
 					//电工都是空闲状态
 					if (!electricianInfo.getElectricianStatus().equals("1") && !elecPosition2.getStatus().equals("1") && elecPosition.getAreaId().equals(elecPosition2.getAreaId())) {
 						list.add(electricianInfo);

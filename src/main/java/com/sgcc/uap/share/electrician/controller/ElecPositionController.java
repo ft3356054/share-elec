@@ -74,7 +74,7 @@ public class ElecPositionController {
 	@RequestMapping(value = "/{electricianId}")
 	public WrappedResult getByElectricianId(@PathVariable String electricianId) {
 		try {
-			QueryResultObject result = elecPositionService.getElecPositionByElectricianId(electricianId);
+			ElecPosition result = elecPositionService.getElecPositionByElectricianId(electricianId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {

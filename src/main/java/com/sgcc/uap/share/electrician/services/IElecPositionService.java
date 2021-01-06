@@ -27,7 +27,7 @@ public interface IElecPositionService {
 	 * @date 2020-12-21 09:31:09
 	 * @author 18511
 	 */
-	public QueryResultObject getElecPositionByElectricianId(String electricianId);
+	public ElecPosition getElecPositionByElectricianId(String electricianId);
 	public List<ElecPosition> getByAreaId(String areaId);
 	/**
 	 * @remove:根据idObject删除

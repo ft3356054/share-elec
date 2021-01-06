@@ -57,7 +57,7 @@ public class ElecPositionService implements IElecPositionService{
     private StringRedisTemplate stringRedisTemplate;
 	
 	@Override
-	public QueryResultObject getElecPositionByElectricianId(String electricianId) {
+	public ElecPosition getElecPositionByElectricianId(String electricianId) {
 		String json = stringRedisTemplate.opsForValue().get("ep"+electricianId);
 		ElecPosition elecPosition = null;
 		if("".equals(json)||null==json){
@@ -75,7 +75,7 @@ public class ElecPositionService implements IElecPositionService{
 				e.printStackTrace();
 			}
 		}
-		return RestUtils.wrappQueryResult(elecPosition);
+		return elecPosition;
 	}
 	
 	@Override

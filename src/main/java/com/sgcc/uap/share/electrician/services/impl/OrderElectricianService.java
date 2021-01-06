@@ -1091,7 +1091,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * @return
 	 */
 	public String jisuanjuli(OrderCustomer orderCustomer,OrderElectrician orderElectrician){
-		ElecPosition elecPosition=elecPositionService.findByElectricianId(orderElectrician.getElectricianId());
+		ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(orderElectrician.getElectricianId());
 		String lon=elecPosition.getLon();
 		String electricianInfoLat=elecPosition.getLat();
 		
