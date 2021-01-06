@@ -100,6 +100,12 @@ public class CustomerInfo implements Serializable {
     @Column(name = "REGISTERED_NUMBER", nullable = true, length = 32)
     private String registeredNumber ;
     
+    /** 
+     * AuditStatus电工认证状态 0未认证 1待审核
+     */
+    @Transient
+    private String AuditStatus ;
+    
 	/**
 	  *虚拟主键
 	  */
@@ -360,7 +366,13 @@ public class CustomerInfo implements Serializable {
     public void setMxVirtualId(String mxVirtualId) {
         this.mxVirtualId = mxVirtualId;
     } 
-    /**
+    public String getAuditStatus() {
+		return AuditStatus;
+	}
+	public void setAuditStatus(String auditStatus) {
+		AuditStatus = auditStatus;
+	}
+	/**
      * Hibernate通过该方法判断对象是否相等
      * @return boolean
      */  

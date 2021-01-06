@@ -16,7 +16,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.sgcc.uap.exception.NullArgumentException;
@@ -51,15 +50,19 @@ public class CustomerInfoService implements ICustomerInfoService{
 	@Autowired
 	private ValidateService validateService;
 	
-	@Autowired
-    private StringRedisTemplate stringRedisTemplate;
-	
 	@Override
 	@Cacheable(cacheNames = "customerInfo" ,  keyGenerator = "wiselyKeyGenerator") //redis缓存
 	public QueryResultObject getCustomerInfoByCustomerId(String customerId) {
-		CustomerInfo customerInfo = customerInfoRepository.findOne(customerId);
-		//stringRedisTemplate.opsForValue().set("aaa", "111");
-		//stringRedisTemplate.opsForValue().set("mykeys", "value", 1L, TimeUnit.DAYS);
+		CustomerInfo customerInfo = customerInfoRepository.findCustomerInfoAndAuditStatus(customerId);
+		if(null!=customerInfo){
+			String auditStatus = customerInfo.getRemark();
+			if("".equals(auditStatus)||null==auditStatus){
+				customerInfo.setAuditStatus("0");
+			}else if("9".equals(auditStatus)){
+				customerInfo.setAuditStatus("2");
+			}else
+				customerInfo.setAuditStatus("1");
+		}
 		return RestUtils.wrappQueryResult(customerInfo);
 	}
 	

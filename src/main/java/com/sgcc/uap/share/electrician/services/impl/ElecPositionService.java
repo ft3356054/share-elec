@@ -30,7 +30,6 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.ElecPosition;
-import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.electrician.repositories.ElecPositionRepository;
 import com.sgcc.uap.share.electrician.services.IElecPositionService;
 import com.sgcc.uap.utils.json.JsonUtils;
@@ -257,13 +256,5 @@ public class ElecPositionService implements IElecPositionService{
 		List<ElecPosition> list=elecPositionRepository.findByAreaId(areaId);
 		return list;
 	}
-
-	public ElecPosition findByElectricianId(String electricianId) {
-		ElecPosition elecPosition=elecPositionRepository.findByElectricianId(electricianId);
-		return elecPosition;
-	}
-
 	
-
-
 }
