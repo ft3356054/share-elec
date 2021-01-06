@@ -828,12 +828,13 @@ public class OrderElectricianController {
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						
 						result.setFormItems(orderCustomer);
-						result.setFormItems(orderElectrician);
+						
 				
 				}
 				if (method.equals("现场勘查")) {//此时电工和客户订单的状态都是22，电工到达现场，勘察
-					
+				
 					//将map中的数据分别送到两个类中，在进行更新
 					//客户订单需要跟新的信息
 					orderCustomerMap.put("orderStatus", map.get("orderStatus"));
@@ -878,110 +879,45 @@ public class OrderElectricianController {
 				if(method.equals("上传合同")){//状态应该从22---->23电工上传合同（报价）
 					
 					try {
+						//根据orderId查询主订单，查看订单来源
+						String orderId = (String) map.get("orderId");
+						OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
+						//如果状态是0，则说明是app来源，只需要给客户发送通知就好
+						if (orderCustomer.getOrderFrom().equals("0")) {
+							//将map中的数据分别送到两个类中，在进行更新
+							//客户订单需要跟新的信息
+							orderCustomerMap.put("orderStatus", map.get("orderStatus"));
+							orderCustomerMap.put("orderId", map.get("orderId"));
+							orderCustomerMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
+							//OrderCustomer orderCustomer=orderCustomerService.findByOrderId(String.valueOf(map.get("orderId")));
+							//电工订单需要更新的信息
+							orderElectricianMap.put("orderId", map.get("orderId"));
+							orderElectricianMap.put("orderElectricianStatus",map.get("orderElectricianStatus"));
+							orderElectricianMap.put("electricianDescrive", map.get("electricianDescrive"));
+							orderElectricianMap.put("electricianId", map.get("electricianId"));
+							orderElectricianMap.put("electricianPrice", map.get("electricianPrice"));
+							orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
+							
+							OrderCustomer orderCustomer1=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
+							System.out.println("我执行完了保存操作");
+							OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+							
+							result.setFormItems(orderCustomer);
+							
+							//给客户发送消息，让其支付维修费
+							orderElectricianService.sendNotify(orderCustomerMap,orderElectrician,0,1);
+							WebSocketServer.sendInfo("等待支付维修费",(String)orderCustomer.getCustomerId());
+							//订单来源是客服，则直接出示二维码
+						}else {
+							// TODO: handle exception
+						}
 					
-					//将map中的数据分别送到两个类中，在进行更新
-					//客户订单需要跟新的信息
-					orderCustomerMap.put("orderStatus", map.get("orderStatus"));
-					orderCustomerMap.put("orderId", map.get("orderId"));
-					orderCustomerMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
-					//OrderCustomer orderCustomer=orderCustomerService.findByOrderId(String.valueOf(map.get("orderId")));
-					//电工订单需要更新的信息
-					orderElectricianMap.put("orderId", map.get("orderId"));
-					orderElectricianMap.put("orderElectricianStatus",map.get("orderElectricianStatus"));
-					orderElectricianMap.put("electricianDescrive", map.get("electricianDescrive"));
-					orderElectricianMap.put("electricianId", map.get("electricianId"));
-					orderElectricianMap.put("electricianPrice", map.get("electricianPrice"));
-					orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 					
-					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
-					System.out.println("我执行完了保存操作");
-					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-					result.setFormItems(orderCustomer);
-					
-					//给客户发送消息，让其支付维修费
-					orderElectricianService.sendNotify(orderCustomerMap,orderCustomer,0,1);
-					WebSocketServer.sendInfo("等待支付维修费",(String)orderCustomer.getCustomerId());
 					} catch (Exception e) {
 						// TODO: handle exception
 					}
 				}
 				
-				if(method.equals("电工人员保存")){// 每点一下就触发一次
-					
-					//电工订单需要更新的信息
-					orderElectricianMap.put("orderId", map.get("orderId"));
-					orderElectricianMap.put("electricianId", map.get("electricianId"));
-					orderElectricianMap.put("electricianName", map.get("name"));
-					//orderElectricianMap.put("telephone", map.get("telephone"));
-					
-					//根据电工ID查询当下电工的信息
-					ElectricianInfo electricianInfoOld=electricianInfoService.findInfo((String)map.get("electricianId"));
-					
-					String electricianId=(String)map.get("electricianId");
-					 String orderId=(String)map.get("orderId");
-					//查询当前电工订单，
-					OrderElectrician orderElectrician=orderElectricianService.findByElectricianIdAndOrderId(electricianId,orderId);
-					
-					String telephone=(String)map.get("telephone");
-					//根据电话号查询是否有当前电工
-					ElectricianInfo electricianInfo=electricianInfoService.findByElectricianPhonenumber(telephone);
-
-					//先对比新查出来的电工姓名和电话是否对的上
-					if (orderElectricianMap.get("electricianName").equals(electricianInfo.getElectricianName())) {//查询信息对等
-						map.put("otherElectricianId", electricianInfo.getElectricianId());
-						orderElectrician.setOtherElectricianId(orderElectrician.getOtherElectricianId()+electricianInfo.getElectricianId()+",");
-						orderElectricianMap.put("otherElectricianId", orderElectrician.getOtherElectricianId());
-						OrderElectrician orderElectrician2=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-						result.setFormItems(orderElectrician2);
-					}else {//信息不对等，则返回错误
-						WrappedResult.failedWrappedResult("人员信息不符~");
-					}
-				}
-				
-				/**
-				 * 删除人员
-				 */
-					if(method.equals("电工人员删除")){// 每点一下就触发一次
-					
-					//电工订单需要更新的信息
-					orderElectricianMap.put("orderId", map.get("orderId"));
-					orderElectricianMap.put("electricianId", map.get("electricianId"));
-					orderElectricianMap.put("electricianName", map.get("name"));
-					//orderElectricianMap.put("telephone", map.get("telephone"));
-					
-					//根据电工ID查询当下电工的信息
-					ElectricianInfo electricianInfoOld=electricianInfoService.findInfo((String)map.get("electricianId"));
-					
-					String electricianId=(String)map.get("electricianId");
-					 String orderId=(String)map.get("orderId");
-					//查询当前电工订单，
-					OrderElectrician orderElectrician=orderElectricianService.findByElectricianIdAndOrderId(electricianId,orderId);
-					
-					String telephone=(String)map.get("telephone");
-					//根据电话号查询是否有当前电工
-					ElectricianInfo electricianInfo=electricianInfoService.findByElectricianPhonenumber(telephone);
-
-					//先对比新查出来的电工姓名和电话是否对的上
-					if (orderElectricianMap.get("electricianName").equals(electricianInfo.getElectricianName())) {//查询信息对等
-						map.put("otherElectricianId", electricianInfo.getElectricianId());
-						
-						//获取要删除id
-						
-						String deleteElectricianId=electricianInfo.getElectricianId()+",";
-						
-						String str=orderElectrician.getOtherElectricianId();
-						String a=str.replace(deleteElectricianId, "");
-						
-						orderElectrician.setOtherElectricianId(a);
-						System.out.print(a+"*******************************");
-						orderElectricianMap.put("otherElectricianId", orderElectrician.getOtherElectricianId());
-						orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-						
-					}else {//信息不对等，则返回错误
-						WrappedResult.failedWrappedResult("人员信息不符~");
-					}
-				}
-					
 					/**
 					 * 开始施工
 					 */
@@ -1126,4 +1062,31 @@ public class OrderElectricianController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
+	@RequestMapping(value="/queryElectrician",name="查询电工是否存在")
+	public WrappedResult queryElectrician(@RequestParam("electricianName") String electricianName,
+			@RequestParam("telephone") String telephone,@RequestParam("electricianId") String electricianId){
+		//查询当前电工的信息
+		ElecPosition elecPosition=elecPositionService.findByElectricianId(electricianId);
+		//如果姓名不为空
+		if (!electricianName.isEmpty()) {
+			//根据电工的姓名去模糊查询
+			List<ElectricianInfo> electricianInfoList=electricianInfoService.findByElectricianNameLike(electricianName);
+			for (ElectricianInfo electricianInfo : electricianInfoList) {
+				ElecPosition elecPosition2=elecPositionService.findByElectricianId(electricianInfo.getElectricianId());
+				//if (!electricianInfo.getElectricianStatus().equals("1") && !elecPosition2.get) {
+					
+				//}
+				
+			}
+			return WrappedResult.successWrapedResult(electricianInfoList);
+		}else if (!telephone.isEmpty()) {
+			
+		}
+		
+		
+		return null;
+		
+	}
+	
 }

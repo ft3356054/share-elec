@@ -407,9 +407,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 		}
 		return new PageRequest(pageIndex - 1, pageSize, SorterUtil.sortBy(queryCondition));
 	}
-	
-	
-	
+
 	
 	/**
 	 * 待评价按钮
@@ -443,8 +441,9 @@ public class OrderElectricianService implements IOrderElectricianService{
 
 		Map<String, String> map = MapUtil.getParam(queryCondition);
 		
+		String orderElectricianStatus=map.get("orderElectricianStatus");
 		List<OrderElectrician> result = orderElectricianRepository.queryMore(pageIndex,pageSize,
-				electricianId,map.get("orderElectricianStatus"));
+				electricianId,orderElectricianStatus);
 		long count = 0;
 		count = result.size();
 		return RestUtils.wrappQueryResult(result, count);		
@@ -489,8 +488,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 	
 			CrudUtils.mapToObject(map, orderCustomer,  "orderId");
 			result = orderCustomerRepository.save(orderCustomer);
-			sendNotify(map, orderCustomer,2,1);
-	
+			
 		return result;
 	}
 
@@ -632,10 +630,9 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * @param orderCustomer
 	 * @param oper 0增 1删 2改
 	 * @param getPeople 1客户 2电工 
-	 * @throws Exception
 	 */
 	
-	public void sendNotify(Map map,OrderElectrician orderElectrician,int oper,int getPeople) throws Exception{
+	public void sendNotify(Map map,OrderElectrician orderElectrician,int oper,int getPeople){
 		String orderElectricianStatus =(String)map.get("orderElectricianStatus");
 		//1维修 2支付 3验收 4评价
 		String notifyType ="1";
@@ -654,6 +651,9 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		String orderId=orderElectrician.getOrDERId();
 		String electricianId=orderElectrician.getElectricianId();
 		String EnumsA=baseEnums.getEnumsA();
+		
+		try {
+			
 		
 		//如果状态是1,3,4,22则让客户那边自己插入流水
 		if (!orderElectricianStatus.equals("1") ||(!orderElectricianStatus.equals("3") ||(!orderElectricianStatus.equals("4") ||(!orderElectricianStatus.equals("22")))) ) {
@@ -684,131 +684,13 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		}else if (map.get("orderElectricianStatus").equals("8")) {
 			messageString="要进行验收申请";
 		}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		//WebSocketServer.sendInfo(messageString,(String)map.get("electricianId"));
 	}
 
 	
-	private Map<String,Object> orderStatus(Map map,OrderElectrician orderElectrician) throws Exception{
-		Map<String,Object> result = new HashMap<String, Object>();
-		
-		String orderStatus = (String) map.get("orderStatus");
-		
-		if("4".equals(orderStatus)){
-	        ArrayList<String> sites = new ArrayList<>();
-	        sites.add("0");
-	        sites.add("1");
-	        sites.add("11");
-			//用户主动取消订单，只有在状态为0,1,11 时可以取消
-			if(sites.contains(orderElectrician.getOrderElectricianStatus())){
-				String dateString = TimeStamp.toString(new Date());
-				map.put("updateTime", dateString);
-				map.put("finishTime", dateString);
-				result.put("key", "0");
-				result.put("desc", "该订单处于可取消状态");
-				result.put("map", map);
-			}else{
-				result.put("key", "1");
-				result.put("desc", "该订单不处于可取消状态");
-			}
-		}else if("8".equals(orderStatus)){
-			ArrayList<String> sites = new ArrayList<>();
-	        sites.add("24"); //待用户验收
-			if(sites.contains(orderElectrician.getOrderElectricianStatus())){
-				String dateString = TimeStamp.toString(new Date());
-				map.put("updateTime", dateString);
-				result.put("key", "0");
-				result.put("desc", "该订单处于可验收状态");
-				result.put("map", map);
-			}else{
-				result.put("key", "1");
-				result.put("desc", "该订单不处于可验收状态");
-			}
-		}else if("9".equals(orderStatus)){
-			ArrayList<String> sites = new ArrayList<>();
-	        sites.add("8"); //待用户评价
-			if(sites.contains(orderElectrician.getOrderElectricianStatus())){
-				String dateString = TimeStamp.toString(new Date());
-				map.put("updateTime", dateString);
-				map.put("finishTime", dateString);
-				result.put("key", "0");
-				result.put("desc", "该订单处于待评价状态");
-				result.put("map", map);
-			}else if ("21".equals(orderStatus)) {
-				
-			}
-			
-			else{
-				result.put("key", "1");
-				result.put("desc", "该订单不处于待评价状态");
-			}
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * @param map
-	 * @param orderCustomer
-	 * @param oper 0增 1删 2改
-	 * @param getPeople 1客户 2电工 
-	 * @throws Exception
-	 */
-	public void sendNotify(Map map,OrderCustomer orderCustomer,int oper,int getPeople){
-		try {
-			
-		
-		String status =(String)map.get("orderStatus");
-		//1维修 2支付 3验收 4评价
-		String notifyType ="1";
-		if("23".equals(status)){
-			notifyType ="2";
-		}else if("24".equals(status)){
-			notifyType ="3";
-		}else if("8".equals(status)){
-			notifyType ="4";
-		}
-		
-		//获取Enum通知类
-		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0",  status);	
-		
-		//新增流水
-		Map<String,Object> mapOrderFlow = 
-				MapUtil.flowAdd(orderCustomer.getOrderId(), 0,  Integer.parseInt(status), orderCustomer.getCustomerId(), TimeStamp.toString(new Date()), oper,  baseEnums.getEnumsA());
-		orderFlowService.saveOrderFlow(mapOrderFlow);
-		
-		//新增通知
-		String announceId = UuidUtil.getUuid32();
-		
-		Map<String,Object> mapNotify =
-				MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
-						notifyType,orderCustomer.getOrderId(),"");
-		notifyAnnounceService.saveNotifyAnnounce(mapNotify);
-		
-		Map<String,Object> mapNotifyUser = 
-				MapUtil.notifyUserAdd(orderCustomer.getCustomerId(), announceId, getPeople, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
-		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		
-	}
-	
-	private String getPrice(String identityId,String provinceId){
-		//获取身份价格
-		QueryResultObject getBaseIdentityPrice = baseIdentityPriceService.getBaseIdentityPriceByIdentityId(identityId);
-		BaseIdentityPrice baseIdentityPrice = (BaseIdentityPrice) (getBaseIdentityPrice.getItems().get(0));
-		String identityPrice = baseIdentityPrice.getIdentityPrice();
-		
-		//获取省份价格
-		List<BaseAreaPrice> list = baseAreaPriceService.getBaseAreaPriceByProvinceId(provinceId);
-		String areaPrice = list.get(0).getPrice();
-		
-		BigDecimal identityPriceBD=new BigDecimal(identityPrice);
-		BigDecimal areaPriceBD=new BigDecimal(areaPrice);
-		String resultBD = DecimalUtil.add(identityPriceBD,areaPriceBD).toString();
-		
-		return resultBD;
-	}
 	@Override
 	public List<OrderElectrician> findByOrderIdAndOrderElectricianStatusOrderByFinishTimeDesc(String orderId,
 			String orderElectricianStatus) {
@@ -994,7 +876,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		saveOrderElectrician = saveOrderElectrician(map);
 		
 		//电工接单成功，就发送给客户消息
-		sendNotify(map, orderCustomer2, 0, 1);
+		sendNotify(map, orderElectrician, 0, 1);
 		WebSocketServer.sendInfo("电工已接单",(String)orderCustomer2.getCustomerId());
 		return saveOrderElectrician;
 		
@@ -1254,7 +1136,9 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 	}
 	
-	
+	/**
+	 * 用于将javabean转换成Map
+	 */
 
 public Map<String, Object> pojo2Map(Object obj)  { 
 	try{

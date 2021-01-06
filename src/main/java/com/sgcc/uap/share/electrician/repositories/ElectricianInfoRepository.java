@@ -30,5 +30,7 @@ public interface ElectricianInfoRepository extends JpaRepository<ElectricianInfo
 	@Query(value="select * from electrician_info where COMPANY_NAME=? and ELECTRICIAN_STATUS=0",nativeQuery=true)
 	List<ElectricianInfo> findBycompanyName(String companyName);
 
+	List<ElectricianInfo> findByElectricianNameLike(String electricianName);
+
 	
 }
