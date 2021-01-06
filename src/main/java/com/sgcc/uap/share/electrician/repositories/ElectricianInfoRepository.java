@@ -32,6 +32,7 @@ public interface ElectricianInfoRepository extends JpaRepository<ElectricianInfo
 
 	List<ElectricianInfo> findByElectricianNameLike(String electricianName);
 
+	//@Query(value="select * from electrician_info where ELECTRICIAN_PHONENUMBER = %electricianPhonenumber%",nativeQuery=true)
 	List<ElectricianInfo> findByElectricianPhonenumberLike(String electricianPhonenumber);
 
 	

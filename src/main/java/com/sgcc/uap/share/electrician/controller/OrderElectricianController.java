@@ -596,10 +596,15 @@ public class OrderElectricianController {
 	 * 全部已完成的订单  ，，，根据电工ID查询所有订单
 	 */
 	@RequestMapping(value="/queryAllHaveDone/{electricianId}",name="查询所有已经完结的订单")
-	public WrappedResult queryAllHaveDone(@PathVariable String electricianId){
+	public WrappedResult queryAllHaveDone(@PathVariable String electricianId,
+			@RequestParam(value="pageIndex") int pageIndex,@RequestParam(value="") int pageSize
+			){
 		
 		try {	
-		QueryResultObject queryResult=orderElectricianHisService.findqQueryAllHaveDone(electricianId);
+			
+		QueryResultObject queryResult=orderElectricianHisService.findqQueryAllHaveDone(pageIndex,pageSize,electricianId);
+		
+		
 		return WrappedResult.successWrapedResult(queryResult);	
 	}
 	catch (Exception e) {
@@ -1114,8 +1119,8 @@ public class OrderElectricianController {
 	}
 	
 	@RequestMapping(value="/queryElectrician",name="查询电工是否存在")
-	public WrappedResult queryElectrician(@RequestParam("electricianName") String electricianName,
-			@RequestParam("electricianPhonenumber") String electricianPhonenumber,@RequestParam("electricianId") String electricianId){
+	public WrappedResult queryElectrician(@RequestParam( value="electricianName",required = false) String electricianName,
+			@RequestParam(value="electricianPhonenumber",required = false) String electricianPhonenumber,@RequestParam("electricianId") String electricianId){
 		try {
 			
 

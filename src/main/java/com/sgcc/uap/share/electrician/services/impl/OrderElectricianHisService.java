@@ -10,6 +10,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,9 +25,14 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.customer.bo.OrderCustomerBeginPage;
+import com.sgcc.uap.share.customer.services.impl.OrderCustomerHisService;
 import com.sgcc.uap.share.domain.OrderCustomer;
+import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderElectricianHis;
+import com.sgcc.uap.share.electrician.repositories.ElectricainQueryOrderRepository;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianHisRepository;
+import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianHisService;
 import com.sgcc.uap.utils.string.StringUtil;
 
@@ -49,6 +55,18 @@ public class OrderElectricianHisService implements IOrderElectricianHisService{
 	private OrderElectricianHisRepository orderElectricianHisRepository;
 	@Autowired
 	private ValidateService validateService;
+	
+	@Autowired
+	private OrderElectricianRepository orderElectricianRepository;
+	
+	@Autowired
+	private OrderElectricianService orderElectricianService;
+	
+	@Autowired
+	private OrderCustomerHisService orderCustomerHisService;
+	
+	@Autowired
+	private ElectricainQueryOrderRepository electricainQueryOrderRepository;
 	
 	@Override
 	public QueryResultObject getOrderElectricianHisByOrderElectricianId(String orderElectricianId) {
@@ -226,8 +244,23 @@ public class OrderElectricianHisService implements IOrderElectricianHisService{
 	/**
 	 * guoqing2020/12/14
 	 */
-	public QueryResultObject  findqQueryAllHaveDone(String electricianId) {
-		List<OrderElectricianHis> result=orderElectricianHisRepository.findqQueryAllHaveDone(electricianId);
+	public QueryResultObject  findqQueryAllHaveDone(int pageIndex,int pageSize,String electricianId) {
+		//List<OrderElectricianHis> result=orderElectricianHisRepository.findqQueryAllHaveDone(electricianId);
+		
+		
+		//List<OrderElectrician> orderElectricians=orderElectricianService.findqQueryAllHaveDone(electricianId);
+		List<OrderCustomerBeginPage> result= electricainQueryOrderRepository.findqQueryAllHaveDone(pageIndex,pageSize,electricianId);
+		/*
+		for (OrderElectricianHis orderElectricianHis : result) {
+			OrderElectrician orderElectrician=new OrderElectrician();
+			BeanUtils.copyProperties(orderElectricianHis, orderElectrician);
+			orderElectricians.add(orderElectrician);
+		}
+		//将获取到的所有电工订单，查询主订单
+		for (OrderElectrician orderElectrician : orderElectricians) {
+			OrderCustomer orderCustomer=orderCustomerHisService.findByOrderId((orderElectrician.getOrDERId()));
+		}
+		*/
 		long count=0;
 		count=result.size();
 		return RestUtils.wrappQueryResult(result,count);

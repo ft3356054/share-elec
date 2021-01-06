@@ -1177,6 +1177,10 @@ public OrderCustomerVO convert(OrderCustomer orderCustomer,OrderElectrician orde
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getElectricianId());
 	return orderCustomerVO;
 }
+public List<OrderElectrician> findqQueryAllHaveDone(String electricianId) {
+	List<OrderElectrician> list=orderElectricianRepository.findqQueryAllHaveDone(electricianId);
+	return list;
+}
 }
 	
 	

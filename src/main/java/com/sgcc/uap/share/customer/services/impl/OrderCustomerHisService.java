@@ -28,6 +28,7 @@ import com.sgcc.uap.share.customer.repositories.OrderCustomerHisRepository;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.repositories.OrderFlowRepository;
 import com.sgcc.uap.share.customer.services.IOrderCustomerHisService;
+import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderCustomerHis;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 
@@ -229,6 +230,10 @@ public class OrderCustomerHisService implements IOrderCustomerHisService{
 			pageSize = queryCondition.getPageSize();
 		}
 		return new PageRequest(pageIndex - 1, pageSize, null);
+	}
+	public OrderCustomer findByOrderId(String string) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
