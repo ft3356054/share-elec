@@ -890,6 +890,9 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		map.put("orderId", orderId);
 		saveOrderElectrician = saveOrderElectrician(map);
 		
+		//将电工 的状态置1
+		
+		
 		//电工接单成功，就发送给客户消息
 		sendNotify(map, orderElectrician, 0, 1);
 		WebSocketServer.sendInfo("电工已接单",(String)orderCustomer2.getCustomerId());

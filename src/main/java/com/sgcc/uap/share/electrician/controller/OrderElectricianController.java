@@ -710,22 +710,14 @@ public class OrderElectricianController {
 			//查询客户订单
 			QueryResultObject queryResult=orderCustomerService.getOrderCustomerByOrderId(orderId);
 			List<OrderCustomer> orderCustomersList=queryResult.getItems();
-			List<OrderCustomerVO> orderCustomersVOList=new ArrayList<>();
+			List<OrderElectricianBeginPageVO> OrderElectricianBeginPageVOList=new ArrayList<>();
 			
 			OrderCustomer orderCustomer=orderCustomersList.get(0);
-			OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
-			
-			//如果客户订单是11，则说明是一个旧的订单，还需要查询电工订单，查询出电工描述
-			if (orderCustomer.getOrderStatus().equals("11")) {//说明是一个老订单，则需要查询电工订单
-				OrderElectrician electrician=orderElectricianService.findByOrderId(orderId,electricianId);
-				//将查询出来的电工描述插入到VO中
-				orderCustomerVO.setCustomerDescrive(electrician.getElectricianDescrive());
-			
-			} 
-				
-			BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
-			orderCustomersVOList.add(orderCustomerVO);
-			queryResult.setItems(orderCustomersVOList);
+			OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+			OrderElectrician orderElectrician=orderElectricianService.findByOrderId(orderId,electricianId);
+			orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+			OrderElectricianBeginPageVOList.add(orderElectricianBeginPageVO);
+			queryResult.setItems(OrderElectricianBeginPageVOList);
 			
 			System.out.println("我查询成功了");
 			return WrappedResult.successWrapedResult(queryResult);
