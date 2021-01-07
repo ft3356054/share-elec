@@ -1183,10 +1183,12 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer,OrderElec
 	orderCustomerVO.setChargeback_reason(orderElectrician.getChargebackReason());
 	orderCustomerVO.setConstructionContent(orderElectrician.getChargebackReason());
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getElectricianId());
+	//子订单ID
+	orderCustomerVO.setOrderElectricianId(orderElectrician.getOrderElectricianId());
 	//如果订单类型不为null.则返回描述性信息
-	if (orderCustomerVO.getOrderTypeId().isEmpty()) {
-		
-	}
+//	if (orderCustomerVO.getOrderTypeId().isEmpty()) {
+//		String orderTypeId=
+//	}
 	return orderCustomerVO;
 }
 public List<OrderElectrician> findqQueryAllHaveDone(String electricianId) {
