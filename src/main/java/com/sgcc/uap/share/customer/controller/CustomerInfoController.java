@@ -41,6 +41,7 @@ import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.customer.services.ICustomerInfoService;
 import com.sgcc.uap.share.customer.vo.CustomerInfoVO;
+import com.sgcc.uap.share.domain.CustomerInfo;
 import com.sgcc.uap.util.JsonUtils;
 
 /**
@@ -88,7 +89,7 @@ public class CustomerInfoController {
 	@RequestMapping(value = "/{customerId}")
 	public WrappedResult getByCustomerId(@PathVariable String customerId) {
 		try {
-			QueryResultObject result = customerInfoService.getCustomerInfoByCustomerId(customerId);
+			CustomerInfo result = customerInfoService.getCustomerInfoByCustomerId(customerId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {

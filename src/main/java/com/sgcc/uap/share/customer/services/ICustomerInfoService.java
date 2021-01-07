@@ -29,7 +29,8 @@ public interface ICustomerInfoService {
 	 * @date 2020-11-26 14:32:47
 	 * @author 18511
 	 */
-	public QueryResultObject getCustomerInfoByCustomerId(String customerId);
+	public CustomerInfo getCustomerInfoByCustomerId(String customerId);
+	public boolean getNumberByCustomerId(String electricianId);
 	/**
 	 * @remove:根据idObject删除
 	 * @param idObject 主键id

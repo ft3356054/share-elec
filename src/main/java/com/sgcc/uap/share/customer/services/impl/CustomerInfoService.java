@@ -62,8 +62,18 @@ public class CustomerInfoService implements ICustomerInfoService{
 	private ValidateService validateService;
 	
 	@Override
+	public boolean getNumberByCustomerId(String customerId) {
+		boolean result = false;
+		Integer number = customerInfoRepository.countByCustomerId(customerId);
+		if(number>0){
+			result = true;
+		}
+		return result;
+	}
+	
+	@Override
 	@Cacheable(cacheNames = "customerInfo" ,  keyGenerator = "wiselyKeyGenerator") //redis缓存
-	public QueryResultObject getCustomerInfoByCustomerId(String customerId) {
+	public CustomerInfo getCustomerInfoByCustomerId(String customerId) {
 		CustomerInfo customerInfo = customerInfoRepository.findCustomerInfoAndAuditStatus(customerId);
 		if(null!=customerInfo){
 			String auditStatus = customerInfo.getRemark();
@@ -76,7 +86,7 @@ public class CustomerInfoService implements ICustomerInfoService{
 				customerInfo.setAuditStatus("2");
 			}*/
 		}
-		return RestUtils.wrappQueryResult(customerInfo);
+		return customerInfo;
 	}
 	
 	
