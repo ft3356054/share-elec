@@ -52,6 +52,7 @@ import com.sgcc.uap.share.domain.BaseOrderType;
 import com.sgcc.uap.share.domain.CustPosition;
 import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.domain.ElectricianInfo;
+import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderElectricianHis;
@@ -60,6 +61,7 @@ import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPageVO;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.share.electrician.services.impl.ElecPositionService;
 import com.sgcc.uap.share.electrician.services.impl.ElectricianInfoService;
+import com.sgcc.uap.share.electrician.services.impl.ElectricianSubCompanyInfoService;
 import com.sgcc.uap.share.electrician.services.impl.OrderElectricianHisService;
 import com.sgcc.uap.share.electrician.vo.OrderElectricianVO;
 import com.sgcc.uap.share.services.impl.BaseOrderTypeService;
@@ -143,6 +145,9 @@ public class OrderElectricianController {
 	
 	@Autowired
 	private BaseOrderTypeService baseOrderTypeService;
+	
+	@Autowired
+	private ElectricianSubCompanyInfoService electricianSubCompanyInfoService;
 	
 	/**
 	 * @getByOrderElectricianId:根据orderElectricianId查询
@@ -319,10 +324,26 @@ public class OrderElectricianController {
 			//2根据电工的状态查询是否在线，身上是否有单
 			//2.1查询电工的信息是否在线
 			ElectricianInfo electricianInfo=electricianInfoService.findByElectricianId(electricianId);
+			//2.2.1查询电工公司是否在线
+			String subCompanyId=electricianInfo.getSubCompanyId();
+			ElectricianSubCompanyInfo electricianSubCompanyInfo=electricianSubCompanyInfoService.findBySubCompanyId(subCompanyId);
+			if (electricianSubCompanyInfo.equals("1")) {//1 代表的是停业状态
+				String msg="您所属公司已停业";
+				return WrappedResult.failedWrappedResult(msg);
+			}
+			if (!electricianInfo.getElectricianStatus().equals("1")) {//1表明电工在线
+				String msg="请先更改接单状态";
+				return WrappedResult.failedWrappedResult(msg);
+			}
 			//2.2查询
 			 ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianId);
+			if ( elecPosition.getStatus().equals("1")) {  //电工已经有单子了，是系统更改的
+				String msg="请先完成名下的订单";
+				return WrappedResult.failedWrappedResult(msg);
+			}
+			
 			//插入一个条件，如果查询出来的客户表订单为20，表明是已经有人接了单子
-			if(orderCustomer.getOrderStatus().equals("20") ){
+			if(orderCustomer.getOrderStatus().equals("20") ){ //主订单20表明已经有人接了单子
 				String msg="已经有人接了客户订单";
 				return WrappedResult.failedWrappedResult(msg);	 
 			}else {
@@ -331,25 +352,17 @@ public class OrderElectricianController {
 				map=orderElectricianService.pojo2Map(orderCustomer);
 				orderElectricianService.saveOrderCustomerByOrderElectricianService(map);
 			}
-			//查询是否有旧订单
-			OrderElectrician orderElectricianOld=orderElectricianService.findByOrDERIdAndOrderElectricianStatus(orderId,"0");
-			if (orderElectricianOld==null) { //如果订单为空
+			
 				//保存电工订单
 				OrderElectrician orderElectrician=orderElectricianService.saveNewOrderElectrician(orderId,electricianId);
 				//查询电工订单的主订单
 				OrderCustomer orderCustomerNew=orderCustomerService.findByOrderId(orderId);
-				OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
-				BeanUtils.copyProperties(orderCustomerNew, orderCustomerVO);
-				String orderElectricianId=orderElectrician.getOrderElectricianId();
-				orderCustomerVO.setOrderElectricianId(orderElectricianId);
 				
-				return WrappedResult.successWrapedResult(orderCustomerVO);
-			}else {
-				String msg="已经有人接了客户订单";
-				return WrappedResult.failedWrappedResult(msg);	
-			}
+				String orderElectricianId=orderElectrician.getOrderElectricianId();
+				OrderElectricianBeginPageVO orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+				
+				return WrappedResult.successWrapedResult(orderElectricianBeginPageVO);
 			
-		
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			String errorMessage = "查询异常";

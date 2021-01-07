@@ -256,7 +256,7 @@ public class ElectricianInfoService implements IElectricianInfoService{
 		return list;
 	}
 	public ElectricianInfo findByElectricianId(String electricianId) {
-		ElectricianInfo electricianInfo =electricianInfoRepository.findByElectricianId(electricianId);
+		ElectricianInfo electricianInfo =electricianInfoRepository.findOne(electricianId);
 		return electricianInfo;
 	}
 
