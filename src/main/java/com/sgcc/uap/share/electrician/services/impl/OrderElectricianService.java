@@ -1200,6 +1200,8 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer,OrderElec
 	orderCustomerVO.setChargeback_reason(orderElectrician.getChargebackReason());
 	orderCustomerVO.setConstructionContent(orderElectrician.getChargebackReason());
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getElectricianId());
+	orderCustomerVO.setElectricianPrice(orderElectrician.getElectricianPrice());
+	orderCustomerVO.setOrderContract(orderElectrician.getOrderContract());
 	//子订单ID
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getOrderElectricianId());
 	//如果订单类型不为null.则返回描述性信息

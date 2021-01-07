@@ -547,9 +547,9 @@ public class OrderElectricianController {
 			}
 		}	
 		//5.创建的是前端展示的VO对象集合
-		List<OrderCustomerVO> ovcList=new ArrayList<>();
+		List<OrderElectricianBeginPageVO> ovcList=new ArrayList<>();
 		
-		 Map<Double, OrderCustomerVO> map = new TreeMap<Double, OrderCustomerVO>(
+		 Map<Double, OrderElectricianBeginPageVO> map = new TreeMap<Double, OrderElectricianBeginPageVO>(
 	                new Comparator<Double>() {
 	                    public int compare(Double obj1, Double obj2) {
 	                        // 降序排序
@@ -561,17 +561,20 @@ public class OrderElectricianController {
 		//6.将查询到的客户订单进行距离排序
 		
 			for (OrderCustomer orderCustomer : orderCustomerList) {
-				OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
-				BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
-				//获取订单 的位置,即经纬度，进行对比
-				String orderCustomerLon=orderCustomerVO.getAddressLongitude();
-				String orderCustomerLat=orderCustomerVO.getAddressLatitude();
+				OrderElectricianBeginPageVO orderCustomerVO=new OrderElectricianBeginPageVO();
 				
+				//获取订单 的位置,即经纬度，进行对比
+				String orderCustomerLon=orderCustomer.getAddressLongitude();
+				String orderCustomerLat=orderCustomer.getAddressLatitude();
+				BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
 				
 				distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPosition.getLon()), String.valueOf(elecPosition.getLat()), orderCustomerLon, orderCustomerLat);
 				System.out.println("计算的距离是："+distanceDouble);
 				orderCustomerVO.setDistance(String.valueOf(distanceDouble)+"KM");
-      
+				if (orderCustomer.getOrderStatus().equals("11")) {
+					
+				}
+    
 				map.put(distanceDouble, orderCustomerVO);
 	
 			}
