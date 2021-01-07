@@ -1,16 +1,12 @@
 package com.sgcc.uap.share.domain;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -30,8 +26,8 @@ public class OrderAuditElectrician implements Serializable {
      * ORDER_ID
      */
 	@Id
-	@GeneratedValue(generator = "idGenerator")
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")
+	/*@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "uuid")*/
     @Column(name = "ORDER_ID", nullable = false, length = 64)
     private String orderId ;
     
@@ -45,19 +41,19 @@ public class OrderAuditElectrician implements Serializable {
      * CREATE_TIME
      */
     @Column(name = "CREATE_TIME", nullable = true, length = 19)
-    private Timestamp createTime ;
+    private String createTime ;
     
     /** 
      * UPDATE_TIME
      */
     @Column(name = "UPDATE_TIME", nullable = true, length = 19)
-    private Timestamp updateTime ;
+    private String updateTime ;
     
     /** 
      * FINISH_TIME
      */
     @Column(name = "FINISH_TIME", nullable = true, length = 19)
-    private Timestamp finishTime ;
+    private String finishTime ;
     
     /** 
      * AUDITOR_ID
@@ -161,6 +157,12 @@ public class OrderAuditElectrician implements Serializable {
     @Column(name = "REMARK", nullable = true, length = 512)
     private String remark ;
     
+    /** 
+     * ORDER_STATUS
+     */
+    @Column(name = "ORDER_STATUS", nullable = true, length = 2)
+    private String orderStatus ;
+    
 	/**
 	  *虚拟主键
 	  */
@@ -221,7 +223,7 @@ public class OrderAuditElectrician implements Serializable {
      * @date 2020-12-18 15:20:05
      * @author 18511
      */
-    public Timestamp getCreateTime(){
+    public String getCreateTime(){
         return this.createTime;
     }
     /**
@@ -231,7 +233,7 @@ public class OrderAuditElectrician implements Serializable {
      * @date 2020-12-18 15:20:05
      * @author 18511
      */
-    public void setCreateTime(Timestamp createTime){
+    public void setCreateTime(String createTime){
 		this.createTime = createTime;
 	} 
     /**
@@ -241,7 +243,7 @@ public class OrderAuditElectrician implements Serializable {
      * @date 2020-12-18 15:20:05
      * @author 18511
      */
-    public Timestamp getUpdateTime(){
+    public String getUpdateTime(){
         return this.updateTime;
     }
     /**
@@ -251,7 +253,7 @@ public class OrderAuditElectrician implements Serializable {
      * @date 2020-12-18 15:20:05
      * @author 18511
      */
-    public void setUpdateTime(Timestamp updateTime){
+    public void setUpdateTime(String updateTime){
 		this.updateTime = updateTime;
 	} 
     /**
@@ -261,7 +263,7 @@ public class OrderAuditElectrician implements Serializable {
      * @date 2020-12-18 15:20:05
      * @author 18511
      */
-    public Timestamp getFinishTime(){
+    public String getFinishTime(){
         return this.finishTime;
     }
     /**
@@ -271,7 +273,7 @@ public class OrderAuditElectrician implements Serializable {
      * @date 2020-12-18 15:20:05
      * @author 18511
      */
-    public void setFinishTime(Timestamp finishTime){
+    public void setFinishTime(String finishTime){
 		this.finishTime = finishTime;
 	} 
     /**
@@ -614,6 +616,13 @@ public class OrderAuditElectrician implements Serializable {
     public void setRemark(String remark){
 		this.remark = remark;
 	} 
+    
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
 	public String getMxVirtualId() {
         return this.mxVirtualId;
     }

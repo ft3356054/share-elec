@@ -31,12 +31,10 @@ import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.customer.repositories.CustomerInfoRepository;
 import com.sgcc.uap.share.customer.services.ICustomerInfoService;
-import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.CustomerInfo;
 import com.sgcc.uap.share.domain.OrderAuditElectrician;
-import com.sgcc.uap.util.DateTimeUtil;
+import com.sgcc.uap.share.electrician.repositories.OrderAuditElectricianRepository;
 import com.sgcc.uap.util.FileUtil;
-import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
 
@@ -57,6 +55,9 @@ public class CustomerInfoService implements ICustomerInfoService{
      */
 	@Autowired
 	private CustomerInfoRepository customerInfoRepository;
+	@Autowired
+	private OrderAuditElectricianRepository orderAuditElectricianRepository;
+	
 	@Autowired
 	private ValidateService validateService;
 	
@@ -116,20 +117,53 @@ public class CustomerInfoService implements ICustomerInfoService{
 	@Transactional
 	public OrderAuditElectrician changeToElecInfo(Map<String,Object> map,MultipartFile identityInfoFile,MultipartFile electricianCertificateFile) throws Exception{
 		OrderAuditElectrician result = new OrderAuditElectrician();
+		OrderAuditElectrician orderAuditElectrician = new OrderAuditElectrician();
 		if (map.containsKey("customerId")) {
 			//修改SUB_COMPANY_ID
 			String customerId = (String) map.get("customerId");
 			CustomerInfo customerInfo = customerInfoRepository.findOne(customerId);
 			
+			String getNewOrderId = UuidUtil.getIntUuid32();
+			
 			//上传图片
-			/*if (null!=identityInfoFile&&!"".equals(identityInfoFile)) {
-				String iconUrl = FileUtil.uploadFile(identityInfoFile, orderId,"ORDER_AUDIT_ELECTRICIAN","identityInfoFile");
-				map.put(fileName, iconUrl);
+			if (null!=identityInfoFile&&!"".equals(identityInfoFile)) {
+				String identityInfoFileUrl = FileUtil.uploadFile(identityInfoFile, getNewOrderId,"ORDER_AUDIT_ELECTRICIAN","identityInfoFile");
+				map.put("identityInfo", identityInfoFileUrl);
 			}
-			Map<String, Object> newMap = (Map) getStatus.get("map");
-			CrudUtils.mapToObject(newMap, orderCustomer,  "orderId");
-			result = orderCustomerRepository.save(orderCustomer);
-			sendNotify(newMap, orderCustomer , null,2,"0");*/
+			if (null!=electricianCertificateFile&&!"".equals(electricianCertificateFile)) {
+				String electricianCertificateFileUrl = FileUtil.uploadFile(electricianCertificateFile, getNewOrderId,"ORDER_AUDIT_ELECTRICIAN","electricianCertificateFileUrl");
+				map.put("electricianCertificate", electricianCertificateFileUrl);
+			}
+			/*
+			FINISH_TIME	完工时间
+			AUDITOR_ID	审核人
+			AUDITOR_COMMENT	审核意见
+			
+			ELECTRICIAN_LEVEL	电工等级
+			RATING_CERTIFICATE	等级证书
+			COMPANY_CONTRACT	公司合同
+			
+			CERTIFICATE_A	证件
+			CERTIFICATE_B	证件
+			CERTIFICATE_C	证件
+			REMARK	备注
+			*/
+			orderAuditElectrician.setOrderId(getNewOrderId);
+			orderAuditElectrician.setOrderType("0"); //0 电工认证  1 电工升级
+			orderAuditElectrician.setOrderStatus("0");
+			//orderAuditElectrician.setCreateTime(new Timestamp(System.currentTimeMillis()));
+			String dateString = TimeStamp.toString(new Date());
+			orderAuditElectrician.setCreateTime(dateString);
+			orderAuditElectrician.setUpdateTime(dateString);
+			orderAuditElectrician.setElectricianId(customerId);
+			orderAuditElectrician.setElectricianName(customerInfo.getCustomerName());
+			orderAuditElectrician.setElectricianPhonenumber(customerInfo.getCustomerPhonenumber());
+			orderAuditElectrician.setCompanyId((String) map.get("companyId"));
+			orderAuditElectrician.setSubCompanyId((String) map.get("subCompanyId"));
+			orderAuditElectrician.setCompanyName((String) map.get("companyName"));
+			orderAuditElectrician.setIdentityInfo((String) map.get("identityInfo"));
+			orderAuditElectrician.setElectricianCertificate((String) map.get("electricianCertificate"));
+			result = orderAuditElectricianRepository.save(orderAuditElectrician);
 			
 		}else{
 			throw new Exception("提交文件格式错误");
