@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.util.WebUtils;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.rest.annotation.ColumnRequestParam;
@@ -36,6 +41,7 @@ import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.customer.services.ICustomerInfoService;
 import com.sgcc.uap.share.customer.vo.CustomerInfoVO;
+import com.sgcc.uap.util.JsonUtils;
 
 /**
  * <b>概述</b>：<br>
@@ -218,6 +224,58 @@ public class CustomerInfoController {
 	public void initBinder(WebDataBinder binder){
 		binder.setDisallowedFields(DISALLOWED_PARAMS);
 	}
+	
+
+	/**
+	 * 点击电工认证 
+	 * @param items
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/changeToElecInfo", method = RequestMethod.POST)
+	public WrappedResult changeToElecInfo(
+		@RequestParam(value = "items", required = false) String items
+		,HttpServletRequest request
+		) throws IOException {	
+	
+		try {
+			MultipartFile identityInfoFile = null;
+			MultipartFile electricianCertificateFile = null;
+	        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+	        if (isMultipart){ 
+	            MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
+	            identityInfoFile = multipartRequest.getFile("identityInfo");
+	            electricianCertificateFile = multipartRequest.getFile("electricianCertificate");
+	        }
+			
+			
+			QueryResultObject result = new QueryResultObject();
+			
+			if(items != null && !items.isEmpty()){
+				Map<String,Object> map = JsonUtils.parseJSONstr2Map(items); 
+				result.setFormItems(customerInfoService.changeToElecInfo(map,identityInfoFile,electricianCertificateFile));
+			}
+			
+			logger.info("保存数据成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (ServiceValidatorBaseException e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "校验异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedValidateWrappedResult(errorMessage);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "保存异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
 
 	
 	/**

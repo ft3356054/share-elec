@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.customer.services.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.mdd.runtime.validate.ValidateService;
@@ -28,7 +31,14 @@ import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.customer.repositories.CustomerInfoRepository;
 import com.sgcc.uap.share.customer.services.ICustomerInfoService;
+import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.CustomerInfo;
+import com.sgcc.uap.share.domain.OrderAuditElectrician;
+import com.sgcc.uap.util.DateTimeUtil;
+import com.sgcc.uap.util.FileUtil;
+import com.sgcc.uap.util.MapUtil;
+import com.sgcc.uap.util.TimeStamp;
+import com.sgcc.uap.util.UuidUtil;
 
 
 /**
@@ -56,12 +66,14 @@ public class CustomerInfoService implements ICustomerInfoService{
 		CustomerInfo customerInfo = customerInfoRepository.findCustomerInfoAndAuditStatus(customerId);
 		if(null!=customerInfo){
 			String auditStatus = customerInfo.getRemark();
-			if("".equals(auditStatus)||null==auditStatus){
+			if("".equals(auditStatus)||null==auditStatus||"4".equals(auditStatus)){
 				customerInfo.setAuditStatus("0");
-			}else if("9".equals(auditStatus)){
-				customerInfo.setAuditStatus("2");
-			}else
+			}else if("0".equals(auditStatus)){
 				customerInfo.setAuditStatus("1");
+			}
+			/*else if("9".equals(auditStatus)){
+				customerInfo.setAuditStatus("2");
+			}*/
 		}
 		return RestUtils.wrappQueryResult(customerInfo);
 	}
@@ -99,6 +111,33 @@ public class CustomerInfoService implements ICustomerInfoService{
 		}
 		return customerInfoRepository.save(customerInfo);
 	}
+	
+	@Override
+	@Transactional
+	public OrderAuditElectrician changeToElecInfo(Map<String,Object> map,MultipartFile identityInfoFile,MultipartFile electricianCertificateFile) throws Exception{
+		OrderAuditElectrician result = new OrderAuditElectrician();
+		if (map.containsKey("customerId")) {
+			//修改SUB_COMPANY_ID
+			String customerId = (String) map.get("customerId");
+			CustomerInfo customerInfo = customerInfoRepository.findOne(customerId);
+			
+			//上传图片
+			/*if (null!=identityInfoFile&&!"".equals(identityInfoFile)) {
+				String iconUrl = FileUtil.uploadFile(identityInfoFile, orderId,"ORDER_AUDIT_ELECTRICIAN","identityInfoFile");
+				map.put(fileName, iconUrl);
+			}
+			Map<String, Object> newMap = (Map) getStatus.get("map");
+			CrudUtils.mapToObject(newMap, orderCustomer,  "orderId");
+			result = orderCustomerRepository.save(orderCustomer);
+			sendNotify(newMap, orderCustomer , null,2,"0");*/
+			
+		}else{
+			throw new Exception("提交文件格式错误");
+		}
+		return result;
+	}
+	
+	
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
 		if(queryCondition == null){

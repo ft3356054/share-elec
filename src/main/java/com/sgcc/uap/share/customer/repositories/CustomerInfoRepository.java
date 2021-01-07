@@ -22,7 +22,7 @@ public interface CustomerInfoRepository extends JpaRepository<CustomerInfo,Strin
 			+ " ,ci.IDENTITY_ID,ci.CUSTOMER_SCORE,ci.HEAD_ICON,ci.REAL_NAME_AUTH,ci.REGISTERED_NUMBER,oae.ORDER_TYPE as REMARK "
 			+ " from Customer_Info ci  "
 			+ " left join ORDER_AUDIT_ELECTRICIAN oae on oae.ELECTRICIAN_ID = ci.CUSTOMER_ID "
-			+ " where ci.CUSTOMER_ID =?1 "
+			+ " where ci.CUSTOMER_ID =?1 AND oae.ORDER_TYPE='0' and oae.ORDER_STATUS='0' "
 			,nativeQuery=true)
 	public CustomerInfo findCustomerInfoAndAuditStatus(String customerId);
 	
