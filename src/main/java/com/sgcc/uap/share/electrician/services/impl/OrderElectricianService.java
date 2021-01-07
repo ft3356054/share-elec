@@ -561,9 +561,17 @@ public class OrderElectricianService implements IOrderElectricianService{
 	@Override
 public QueryResultObject queryAllDoing(String electricianId) {
 	List<OrderElectrician> result=orderElectricianRepository.queryAllDoing(electricianId);
+	List<OrderElectricianBeginPageVO> list=new ArrayList<>();
+	for (OrderElectrician orderElectrician : result) {
+		OrderElectricianBeginPageVO orderElectricianBeginPageVO= new OrderElectricianBeginPageVO();
+		String orderId=orderElectrician.getOrDERId();
+		OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
+		orderElectricianBeginPageVO =convert(orderCustomer, orderElectrician);
+		list.add(orderElectricianBeginPageVO);
+	}
 	long count=0;
-	count=result.size();
-	return RestUtils.wrappQueryResult(result,count);
+	count=list.size();
+	return RestUtils.wrappQueryResult(list,count);
 	
 	
 }
