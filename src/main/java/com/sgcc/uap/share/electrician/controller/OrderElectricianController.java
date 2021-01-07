@@ -327,7 +327,7 @@ public class OrderElectricianController {
 			//2.2.1查询电工公司是否在线
 			String subCompanyId=electricianInfo.getSubCompanyId();
 			ElectricianSubCompanyInfo electricianSubCompanyInfo=electricianSubCompanyInfoService.findBySubCompanyId(subCompanyId);
-			if (electricianSubCompanyInfo.equals("1")) {//1 代表的是停业状态
+			if (electricianSubCompanyInfo.getBusinessStatus().equals("1")) {//1 代表的是停业状态
 				String msg="您所属公司已停业";
 				return WrappedResult.failedWrappedResult(msg);
 			}
