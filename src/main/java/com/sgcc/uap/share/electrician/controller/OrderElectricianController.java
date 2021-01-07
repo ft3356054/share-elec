@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.electrician.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -542,13 +543,14 @@ public class OrderElectricianController {
 			//获取客户的ID，
 			String orderId=custPosition.getOrderId();
 			OrderCustomer orderCustomer=orderCustomerService.findByOrderIdAndOrderStatus(orderId);
-			if (orderCustomer !=null) {
+			if (orderCustomer !=null && (orderCustomer.getOrderStatus().equals("1") || orderCustomer.getOrderStatus().equals("11"))) {
 				orderCustomerList.add(orderCustomer);
 			}
 		}	
 		//5.创建的是前端展示的VO对象集合
-		List<OrderElectricianBeginPageVO> ovcList=new ArrayList<>();
 		
+		List<OrderElectricianBeginPageVO> ovcList=new ArrayList<>();
+		/*
 		 Map<Double, OrderElectricianBeginPageVO> map = new TreeMap<Double, OrderElectricianBeginPageVO>(
 	                new Comparator<Double>() {
 	                    public int compare(Double obj1, Double obj2) {
@@ -556,6 +558,7 @@ public class OrderElectricianController {
 	                        return obj1.compareTo(obj2);
 	                    }
 	                });
+	                */
 		
 		 Double distanceDouble=null;
 		//6.将查询到的客户订单进行距离排序
@@ -566,26 +569,51 @@ public class OrderElectricianController {
 				//获取订单 的位置,即经纬度，进行对比
 				String orderCustomerLon=orderCustomer.getAddressLongitude();
 				String orderCustomerLat=orderCustomer.getAddressLatitude();
-				BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
+				
 				
 				distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPosition.getLon()), String.valueOf(elecPosition.getLat()), orderCustomerLon, orderCustomerLat);
 				System.out.println("计算的距离是："+distanceDouble);
 				orderCustomerVO.setDistance(String.valueOf(distanceDouble)+"KM");
 				if (orderCustomer.getOrderStatus().equals("11")) {
-					
+					String orderId=orderCustomer.getOrderId();
+					OrderElectrician orderElectrician=orderElectricianService.findByOrderId(orderId, electricianId);
+					orderCustomerVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+				}else {
+					BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
 				}
-    
-				map.put(distanceDouble, orderCustomerVO);
-	
+				orderCustomerVO.setDistance(String.valueOf(distanceDouble));
+				//map.put(distanceDouble, orderCustomerVO);
+				ovcList.add(orderCustomerVO);
+				
 			}
-			
+			/*
 			Set<Double> keySet = map.keySet();
 	        Iterator<Double> iter = keySet.iterator();
 	        while (iter.hasNext()) {
 	            Double key = iter.next();
 	            System.out.println(key + ":" + map.get(key));
 	            ovcList.add(map.get(key));
-	        }       
+	        }  
+	        */ 
+			//Double op=Double.parseDouble(ovcList.get(0).getDistance());
+			//Double.compare(d1, d2)
+			//System.out.println("op的值是："+op);
+			Collections.sort(ovcList, new Comparator<OrderElectricianBeginPageVO>() {
+
+	            @Override
+
+	            public int compare(OrderElectricianBeginPageVO o1, OrderElectricianBeginPageVO o2) {
+
+	                //return o1.para - o2.para;  //升序
+
+	               //return Double.parseDouble(o1.getDistance()) - Double.parseDouble(o2.getDistance()); //降序
+	                return Double.compare(Double.parseDouble(o1.getDistance()), Double.parseDouble(o2.getDistance()));
+	                
+
+	            }
+
+	        });
+			
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(ovcList);		
 		} 

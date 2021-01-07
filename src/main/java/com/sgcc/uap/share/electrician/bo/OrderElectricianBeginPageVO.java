@@ -8,7 +8,7 @@ import javax.persistence.Transient;
 
 import com.sgcc.uap.rest.support.ParentVO;
 
-public class OrderElectricianBeginPageVO extends ParentVO implements Serializable{
+public class OrderElectricianBeginPageVO extends ParentVO implements Serializable {
 	
 	 /** 
      * serialVersionUID
