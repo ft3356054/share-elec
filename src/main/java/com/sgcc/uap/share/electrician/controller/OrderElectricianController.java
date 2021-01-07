@@ -316,6 +316,11 @@ public class OrderElectricianController {
 			//1.查询出来客户表
 			OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
 			
+			//2根据电工的状态查询是否在线，身上是否有单
+			//2.1查询电工的信息是否在线
+			ElectricianInfo electricianInfo=electricianInfoService.findByElectricianId(electricianId);
+			//2.2查询
+			 ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianId);
 			//插入一个条件，如果查询出来的客户表订单为20，表明是已经有人接了单子
 			if(orderCustomer.getOrderStatus().equals("20") ){
 				String msg="已经有人接了客户订单";
