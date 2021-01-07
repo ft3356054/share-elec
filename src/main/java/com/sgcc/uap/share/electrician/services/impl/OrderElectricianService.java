@@ -1044,17 +1044,24 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			Timestamp nowDate =new Timestamp(System.currentTimeMillis());
 			String nowString = TimeStamp.toString(new Date());
 		
-		OrderElectrician orderElectrician=findByOrderElectricianId(orderElectricianId);
-	
-		
+			OrderElectrician orderElectrician=findByOrderElectricianId(orderElectricianId);
+			//	根据电工订单中orderID查询主订单
+			String orderId=orderElectrician.getOrDERId();
+			OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
+			orderCustomer.setOrderStatus("11");
 			orderElectrician.setUpdateTime(nowDate);
 			orderElectrician.setFinishTime(nowDate);
 		
 		orderElectrician.setOrderElectricianStatus(orderElectricianStatus);
-		orderElectricianRepository.save(orderElectrician);				
-		
+		//保存后的子订单
+		OrderElectrician orderElectrician2=orderElectricianRepository.save(orderElectrician);
 		Map<String, Object> map=new HashMap<>();
-	
+		map=pojo2Map(orderCustomer);
+		//保存后的主订单
+		OrderCustomer orderCustomer2=saveOrderCustomerByOrderElectricianService(map);
+		
+		Map<String, Object> map2=new HashMap<>();
+		
 								
 		
 			map.put("orderElectricianStatus", orderElectricianStatus);
@@ -1176,6 +1183,12 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer,OrderElec
 	orderCustomerVO.setChargeback_reason(orderElectrician.getChargebackReason());
 	orderCustomerVO.setConstructionContent(orderElectrician.getChargebackReason());
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getElectricianId());
+	//子订单ID
+	orderCustomerVO.setOrderElectricianId(orderElectrician.getOrderElectricianId());
+	//如果订单类型不为null.则返回描述性信息
+//	if (orderCustomerVO.getOrderTypeId().isEmpty()) {
+//		String orderTypeId=
+//	}
 	return orderCustomerVO;
 }
 public List<OrderElectrician> findqQueryAllHaveDone(String electricianId) {

@@ -234,31 +234,30 @@ public class ElectricianInfoController {
 		
 		try {
 			ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
-			ElectricianStatus eleElectricianStatus=electricianStatusService.findOne(electricianId);
+			
 			if (statu.equals("接单中")) {
 				electricianInfo.setElectricianStatus("1");//1代表接单中
-				eleElectricianStatus.setElectricianStatus("1");
+				
 				//设置电工的上线时间
 				String date=DateTimeUtil.formatDateTime(new Date());
-				eleElectricianStatus.setOnlineTime(Timestamp.valueOf(date));
-				
+			
 				//保存状态
 				electricianInfoService.save(electricianInfo);
-				electricianStatusService.save(eleElectricianStatus);
+				
 				
 			}
 			if (statu.equals("休息中")) {
 				
 				electricianInfo.setElectricianStatus("0");//0代表休息中
-				eleElectricianStatus.setElectricianStatus("0");
+				
 				
 				//设置电工的上线时间
 				String date=DateTimeUtil.formatDateTime(new Date());
-				eleElectricianStatus.setOfflineTime(Timestamp.valueOf(date));
+				
 				
 				//保存状态
 				electricianInfoService.save(electricianInfo);
-				electricianStatusService.save(eleElectricianStatus);
+				
 				
 			}
 			return result.successWrapedResult("successful");

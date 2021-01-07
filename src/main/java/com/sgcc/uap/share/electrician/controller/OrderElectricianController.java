@@ -421,35 +421,38 @@ public class OrderElectricianController {
 			
 			//1.2查询出来的电工订单，如果订单状态是2(系统派单)，则随机生成公里数
 			
-			List<OrderCustomer> orderCustomers=new ArrayList<>();
+			
+			List<OrderElectricianBeginPageVO> orderElectricianBeginPageVOList=new ArrayList<>();
+			
+			
 			List<OrderElectrician> list=queryResult.getItems();
 			for (OrderElectrician orderElectrician : list) {
+				OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
 				String orderId=orderElectrician.getOrDERId();
 				OrderCustomer orderCustomer=orderCustomerService.findOrderId(orderId);
-				orderCustomers.add(orderCustomer);
+				orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+				orderElectricianBeginPageVOList.add(orderElectricianBeginPageVO);
 			}
-			List<OrderCustomerVO> oevList=new ArrayList<>();
+			
 			 
 			ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianId);
+			List<OrderElectricianBeginPageVO> returBeginPageVOs=new ArrayList<>();
 			Double distanceDouble=null;
-			for (OrderCustomer orderCustomer : orderCustomers) {
-				OrderCustomerVO oev=new OrderCustomerVO();
-				BeanUtils.copyProperties(orderCustomer, oev);
+			for (OrderElectricianBeginPageVO orderElectricianBeginPageVO : orderElectricianBeginPageVOList) {
 				
 				//添加订单类型
-				String orderTypeId=oev.getOrderTypeId();
+				String orderTypeId=orderElectricianBeginPageVO.getOrderTypeId();
 				BaseOrderType baseOrderType=baseOrderTypeService.findByOrderTypeId(orderTypeId);
 				
-				oev.setOrderTypeId(baseOrderType.getOrderTypeName());
+				orderElectricianBeginPageVO.setOrderTypeId(baseOrderType.getOrderTypeName());
 		
-					distanceDouble=PointUtil.getDistanceString(String.valueOf(orderCustomer.getAddressLongitude()), String.valueOf(orderCustomer.getAddressLatitude()), elecPosition.getLon(), elecPosition.getLat());
-					oev.setDistance(String.valueOf(distanceDouble)+"KM");
+					distanceDouble=PointUtil.getDistanceString(String.valueOf(orderElectricianBeginPageVO.getAddressLongitude()), String.valueOf(orderElectricianBeginPageVO.getAddressLatitude()), elecPosition.getLon(), elecPosition.getLat());
+					orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble)+"KM");
 	
-				System.out.println("************oov的值是：**********"+oev);
-				oevList.add(oev);
+					returBeginPageVOs.add(orderElectricianBeginPageVO);
 				
 			}						
-			queryResult.setItems(oevList);
+			queryResult.setItems(returBeginPageVOs);
 						
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
