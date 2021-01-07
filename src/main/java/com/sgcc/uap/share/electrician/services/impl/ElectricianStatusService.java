@@ -228,11 +228,6 @@ public class ElectricianStatusService implements IElectricianStatusService{
 		ElectricianStatus electricianStatus=electricianStatusRepository.findOne(electricianId);
 		return electricianStatus;
 	}
-	public void save(ElectricianStatus eleElectricianStatus) {
-		// TODO Auto-generated method stub
-		electricianStatusRepository.save(eleElectricianStatus);
-		
-	}
 	
 	
 
