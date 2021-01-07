@@ -55,6 +55,7 @@ import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
 import com.sgcc.uap.share.domain.BaseAreaPrice;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.BaseIdentityPrice;
+import com.sgcc.uap.share.domain.BaseOrderType;
 import com.sgcc.uap.share.domain.CustPosition;
 import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
@@ -63,6 +64,7 @@ import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderElectricianHis;
+import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPage;
 import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPageVO;
 import com.sgcc.uap.share.electrician.controller.OrderElectricianController;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
@@ -72,6 +74,7 @@ import com.sgcc.uap.share.repositories.OrderCustomerMoreVORepository;
 import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
 import com.sgcc.uap.share.services.impl.BaseEnumsService;
 import com.sgcc.uap.share.services.impl.BaseIdentityPriceService;
+import com.sgcc.uap.share.services.impl.BaseOrderTypeService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
@@ -117,6 +120,9 @@ public class OrderElectricianService implements IOrderElectricianService{
 	
 	@Autowired
 	private OrderFlowService orderFlowService;
+	
+	@Autowired
+	private BaseOrderTypeService baseOrderTypeService;
 	
 	@Autowired
 	private NotifyAnnounceService notifyAnnounceService;
@@ -1186,15 +1192,36 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer,OrderElec
 	//子订单ID
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getOrderElectricianId());
 	//如果订单类型不为null.则返回描述性信息
-//	if (orderCustomerVO.getOrderTypeId().isEmpty()) {
-//		String orderTypeId=
-//	}
+	if (!orderCustomerVO.getOrderTypeId().isEmpty()) {
+		String orderTypeId=orderCustomerVO.getOrderTypeId();
+		
+		BaseOrderType baseOrderType=baseOrderTypeService.findByOrderTypeId(orderTypeId);
+		orderCustomerVO.setOrderTypeId(baseOrderType.getOrderTypeName());
+		
+	}
 	return orderCustomerVO;
 }
 public List<OrderElectrician> findqQueryAllHaveDone(String electricianId) {
 	List<OrderElectrician> list=orderElectricianRepository.findqQueryAllHaveDone(electricianId);
 	return list;
 }
+
+public  OrderElectricianBeginPageVO orderElectricianBeginPage2VO(OrderElectricianBeginPage orderElectricianBeginPage){
+	OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+	BeanUtils.copyProperties(orderElectricianBeginPage, orderElectricianBeginPageVO);
+	
+	if (!orderElectricianBeginPageVO.getOrderTypeId().isEmpty()) {
+		String orderTypeId=orderElectricianBeginPageVO.getOrderTypeId();
+		
+		BaseOrderType baseOrderType=baseOrderTypeService.findByOrderTypeId(orderTypeId);
+		orderElectricianBeginPageVO.setOrderTypeId(baseOrderType.getOrderTypeName());
+		
+	}
+	
+	
+	return orderElectricianBeginPageVO;
+}
+
 }
 	
 	

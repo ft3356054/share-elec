@@ -1172,6 +1172,41 @@ package com.sgcc.uap.share.electrician.bo;
 			return true;
 		}
 	    
+	    
+	    //2021.1.7
+	    
+	    /** 
+	     * 电工订单ID
+	     */
+	    @Column(name = "ORDER_ELECTRICIAN_ID", nullable = false, length = 64)
+	    private String orderElectricianId ;
+	    
+	    
+	    /**
+	     * @getOrderElectricianId:电工订单ID的get方法
+	     * @params
+	     * @return orderElectricianId
+	     * @date 2020-12-15 17:38:15
+	     * @author 18511
+	     */
+	    public String getOrderElectricianId(){
+	        return this.orderElectricianId;
+	    }
+	    /**
+	     * @setOrderElectricianId:电工订单ID的set方法
+	     * @param orderElectricianId
+	     * @return
+	     * @date 2020-12-15 17:38:15
+	     * @author 18511
+	     */
+	    public void setOrderElectricianId(String orderElectricianId){
+	        if(orderElectricianId != null && orderElectricianId.trim().length() == 0){
+	        	this.orderElectricianId = null;
+	        }else{
+	        	this.orderElectricianId = orderElectricianId;
+	        }
+		} 
+	    
 	    /**
 	     * toString方法
 	     * @return String
@@ -1206,6 +1241,7 @@ package com.sgcc.uap.share.electrician.bo;
 				+ ", remarkStr2=" + remarkStr2
 				+ ", remarkStr3=" + remarkStr3
 				+ ", remarkNum1=" + remarkNum1
+				+ ", orderElectricianId=" + orderElectricianId
 				+ ", remarkNum2=" + remarkNum2;
 		}
 	   

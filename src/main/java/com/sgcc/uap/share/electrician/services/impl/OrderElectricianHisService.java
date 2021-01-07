@@ -31,6 +31,7 @@ import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderElectricianHis;
 import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPage;
+import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPageVO;
 import com.sgcc.uap.share.electrician.repositories.ElectricainQueryOrderRepository;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianHisRepository;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
@@ -68,6 +69,8 @@ public class OrderElectricianHisService implements IOrderElectricianHisService{
 	
 	@Autowired
 	private ElectricainQueryOrderRepository electricainQueryOrderRepository;
+	
+	
 	
 	@Override
 	public QueryResultObject getOrderElectricianHisByOrderElectricianId(String orderElectricianId) {
@@ -248,10 +251,17 @@ public class OrderElectricianHisService implements IOrderElectricianHisService{
 	public QueryResultObject  findqQueryAllHaveDone(int pageIndex,int pageSize,String electricianId) {
 		
 		List<OrderElectricianBeginPage> result= electricainQueryOrderRepository.findqQueryAllHaveDone(electricianId);
+		List<OrderElectricianBeginPageVO> list=new ArrayList<>();
+		for (OrderElectricianBeginPage orderElectricianBeginPage : result) {
+			OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+			orderElectricianBeginPageVO=orderElectricianService.orderElectricianBeginPage2VO(orderElectricianBeginPage);
+			
+			list.add(orderElectricianBeginPageVO);
+		}
 		
 		long count=0;
-		count=result.size();
-		return RestUtils.wrappQueryResult(result,count);
+		count=list.size();
+		return RestUtils.wrappQueryResult(list,count);
 	}
 	public QueryResultObject queryAllHaveEsc(String electricianId) {
 		List<OrderElectricianHis> result=orderElectricianHisRepository.queryAllHaveEsc(electricianId);
