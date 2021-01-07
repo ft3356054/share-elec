@@ -26,4 +26,6 @@ public interface CustomerInfoRepository extends JpaRepository<CustomerInfo,Strin
 			,nativeQuery=true)
 	public CustomerInfo findCustomerInfoAndAuditStatus(String customerId);
 	
+	public Integer countByCustomerId(String customerId);
+	
 }
