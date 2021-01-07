@@ -402,12 +402,7 @@ public class OrderElectricianController {
 		return orderCustomerVOs;
 	}
 	
-	/**
-	 * 开始用统一的数据结构做返回
-	 * http://localhost:8083/electricianCompanyInfo/queryMore/?params={"pageIndex":1,"pageSize":20,
-	 * "filter":[""electricianId=2256"","orderElectricianStatus=8","regiseterTimeBegin=2020-11-10 18:20:00","regiseterTimeEnd=2020-12-10 18:20:00"],
-	 * "sorter":"DESC=createTime"}
-	 */
+	
 	
 	
 	@RequestMapping("/queryMore")
@@ -426,29 +421,25 @@ public class OrderElectricianController {
 			
 			
 			List<OrderElectrician> list=queryResult.getItems();
+			List<OrderCustomer> orderCustomers=new ArrayList<>();
 			for (OrderElectrician orderElectrician : list) {
 				OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
 				String orderId=orderElectrician.getOrDERId();
 				OrderCustomer orderCustomer=orderCustomerService.findOrderId(orderId);
-				orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
-				orderElectricianBeginPageVOList.add(orderElectricianBeginPageVO);
+				orderCustomers.add(orderCustomer);
 			}
 			
 			 
 			ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianId);
 			List<OrderElectricianBeginPageVO> returBeginPageVOs=new ArrayList<>();
 			Double distanceDouble=null;
-			for (OrderElectricianBeginPageVO orderElectricianBeginPageVO : orderElectricianBeginPageVOList) {
+			int i=0;
+			for (OrderCustomer orderCustomer : orderCustomers) {
+				OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
 				
-				//添加订单类型
-				String orderTypeId=orderElectricianBeginPageVO.getOrderTypeId();
-				BaseOrderType baseOrderType=baseOrderTypeService.findByOrderTypeId(orderTypeId);
-				
-				orderElectricianBeginPageVO.setOrderTypeId(baseOrderType.getOrderTypeName());
-		
-					distanceDouble=PointUtil.getDistanceString(String.valueOf(orderElectricianBeginPageVO.getAddressLongitude()), String.valueOf(orderElectricianBeginPageVO.getAddressLatitude()), elecPosition.getLon(), elecPosition.getLat());
+					distanceDouble=PointUtil.getDistanceString(String.valueOf(orderCustomer.getAddressLongitude()), String.valueOf(orderCustomer.getAddressLatitude()), elecPosition.getLon(), elecPosition.getLat());
 					orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble)+"KM");
-	
+					orderElectricianService.convert(orderCustomer, list.get(i));
 					returBeginPageVOs.add(orderElectricianBeginPageVO);
 				
 			}						
@@ -601,11 +592,12 @@ public class OrderElectricianController {
 	 * 全部已完成的订单  ，，，根据电工ID查询所有订单
 	 */
 	@RequestMapping(value="/queryAllHaveDone/{electricianId}",name="查询所有已经完结的订单")
-	public WrappedResult queryAllHaveDone(@PathVariable String electricianId,
-			@RequestParam(value="pageIndex") int pageIndex,@RequestParam(value="") int pageSize
+	public WrappedResult queryAllHaveDone(@PathVariable String electricianId ,
+			@RequestParam(value="pageIndex",required=false) int pageIndex,@RequestParam(value="pageSize",required=false) int pageSize
 			){
 		
-		try {	
+		
+		try {
 			
 		QueryResultObject queryResult=orderElectricianHisService.findqQueryAllHaveDone(pageIndex,pageSize,electricianId);
 		
