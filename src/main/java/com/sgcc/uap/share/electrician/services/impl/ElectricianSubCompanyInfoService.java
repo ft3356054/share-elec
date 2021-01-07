@@ -234,6 +234,10 @@ public class ElectricianSubCompanyInfoService implements IElectricianSubCompanyI
 		List<ElectricianSubCompanyInfo> list=electricianSubCompanyInfoRepository.findByCompanyAreaId(areaId);
 		return list;
 	}
+	public ElectricianSubCompanyInfo findBySubCompanyId(String subCompanyId) {
+		ElectricianSubCompanyInfo electricianSubCompanyInfo=electricianSubCompanyInfoRepository.findOne(subCompanyId);
+		return electricianSubCompanyInfo;
+	}
 
 
 }

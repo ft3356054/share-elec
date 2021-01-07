@@ -52,12 +52,16 @@ import com.sgcc.uap.share.domain.BaseOrderType;
 import com.sgcc.uap.share.domain.CustPosition;
 import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.domain.ElectricianInfo;
+import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderElectricianHis;
+import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPage;
+import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPageVO;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.share.electrician.services.impl.ElecPositionService;
 import com.sgcc.uap.share.electrician.services.impl.ElectricianInfoService;
+import com.sgcc.uap.share.electrician.services.impl.ElectricianSubCompanyInfoService;
 import com.sgcc.uap.share.electrician.services.impl.OrderElectricianHisService;
 import com.sgcc.uap.share.electrician.vo.OrderElectricianVO;
 import com.sgcc.uap.share.services.impl.BaseOrderTypeService;
@@ -141,6 +145,9 @@ public class OrderElectricianController {
 	
 	@Autowired
 	private BaseOrderTypeService baseOrderTypeService;
+	
+	@Autowired
+	private ElectricianSubCompanyInfoService electricianSubCompanyInfoService;
 	
 	/**
 	 * @getByOrderElectricianId:根据orderElectricianId查询
@@ -303,7 +310,7 @@ public class OrderElectricianController {
 	 * 
 	 */
 	
-	@RequestMapping(value="/qiangdanrecept",name="电工接受了用户的订单")
+	@RequestMapping(value="/qiangdanrecept",name="电工接受了用户的订单，抢单")
 	public WrappedResult qiangdanrecept(@RequestParam(value="orderId" )String orderId,
 			@RequestParam(value="electricianId") String electricianId
 			) throws Exception{
@@ -314,8 +321,29 @@ public class OrderElectricianController {
 			//1.查询出来客户表
 			OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
 			
+			//2根据电工的状态查询是否在线，身上是否有单
+			//2.1查询电工的信息是否在线
+			ElectricianInfo electricianInfo=electricianInfoService.findByElectricianId(electricianId);
+			//2.2.1查询电工公司是否在线
+			String subCompanyId=electricianInfo.getSubCompanyId();
+			ElectricianSubCompanyInfo electricianSubCompanyInfo=electricianSubCompanyInfoService.findBySubCompanyId(subCompanyId);
+			if (electricianSubCompanyInfo.equals("1")) {//1 代表的是停业状态
+				String msg="您所属公司已停业";
+				return WrappedResult.failedWrappedResult(msg);
+			}
+			if (!electricianInfo.getElectricianStatus().equals("1")) {//1表明电工在线
+				String msg="请先更改接单状态";
+				return WrappedResult.failedWrappedResult(msg);
+			}
+			//2.2查询
+			 ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianId);
+			if ( elecPosition.getStatus().equals("1")) {  //电工已经有单子了，是系统更改的
+				String msg="请先完成名下的订单";
+				return WrappedResult.failedWrappedResult(msg);
+			}
+			
 			//插入一个条件，如果查询出来的客户表订单为20，表明是已经有人接了单子
-			if(orderCustomer.getOrderStatus().equals("20") ){
+			if(orderCustomer.getOrderStatus().equals("20") ){ //主订单20表明已经有人接了单子
 				String msg="已经有人接了客户订单";
 				return WrappedResult.failedWrappedResult(msg);	 
 			}else {
@@ -324,25 +352,17 @@ public class OrderElectricianController {
 				map=orderElectricianService.pojo2Map(orderCustomer);
 				orderElectricianService.saveOrderCustomerByOrderElectricianService(map);
 			}
-			//查询是否有旧订单
-			OrderElectrician orderElectricianOld=orderElectricianService.findByOrDERIdAndOrderElectricianStatus(orderId,"0");
-			if (orderElectricianOld==null) { //如果订单为空
+			
 				//保存电工订单
 				OrderElectrician orderElectrician=orderElectricianService.saveNewOrderElectrician(orderId,electricianId);
 				//查询电工订单的主订单
 				OrderCustomer orderCustomerNew=orderCustomerService.findByOrderId(orderId);
-				OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
-				BeanUtils.copyProperties(orderCustomerNew, orderCustomerVO);
-				String orderElectricianId=orderElectrician.getOrderElectricianId();
-				orderCustomerVO.setOrderElectricianId(orderElectricianId);
 				
-				return WrappedResult.successWrapedResult(orderCustomerVO);
-			}else {
-				String msg="已经有人接了客户订单";
-				return WrappedResult.failedWrappedResult(msg);	
-			}
+				String orderElectricianId=orderElectrician.getOrderElectricianId();
+				OrderElectricianBeginPageVO orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+				
+				return WrappedResult.successWrapedResult(orderElectricianBeginPageVO);
 			
-		
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			String errorMessage = "查询异常";
@@ -399,7 +419,6 @@ public class OrderElectricianController {
 			//1.1查询电工所有待办订单
 			QueryResultObject queryResult = orderElectricianService.queryMore(requestCondition,electricianId);
 			
-			//
 			//1.2查询出来的电工订单，如果订单状态是2(系统派单)，则随机生成公里数
 			
 			List<OrderCustomer> orderCustomers=new ArrayList<>();
@@ -803,23 +822,7 @@ public class OrderElectricianController {
 						orderElectricianMap.put("chargebackReason",orderElectrician.getChargebackReason());
 						
 					}
-						if (method.equals("22")) { //方法ID：22 表明电工到达现场
-							
-							orderCustomerMap.put("orderStatus",map.get("orderStatus"));
-							orderCustomerMap.put("orderId", map.get("orderId"));
-							orderCustomerMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
-							
-							orderElectricianMap.put("orderId", map.get("orderId"));
-							orderElectricianMap.put("orderElectricianStatus", map.get("orderElectricianStatus"));
-							orderElectricianMap.put("electricianId", map.get("electricianId"));
-							orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
-							OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
-							OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-							OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
-							
-							result.setFormItems(orderCustomerVO);
-							
-						}
+						
 				
 					//如果状态是：1，等待接单（用户已支付上门费）状态转为2 
 						orderCustomerMap.put("appointmentTime", map.get("appointmentTime"));//给客户订单设置更新时间
@@ -833,7 +836,7 @@ public class OrderElectricianController {
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-						OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+						OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
 						result.setFormItems(orderCustomerVO);
 						
 				
@@ -855,7 +858,25 @@ public class OrderElectricianController {
 				
 					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-					OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+					OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+					result.setFormItems(orderCustomerVO);
+					
+				}
+				
+				if (method.equals("22")) { //方法ID：22 表明电工到达现场
+					
+					orderCustomerMap.put("orderStatus",map.get("orderStatus"));
+					orderCustomerMap.put("orderId", map.get("orderId"));
+					orderCustomerMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
+					
+					orderElectricianMap.put("orderId", map.get("orderId"));
+					orderElectricianMap.put("orderElectricianStatus", map.get("orderElectricianStatus"));
+					orderElectricianMap.put("electricianId", map.get("electricianId"));
+					orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
+					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
+					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+					OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+					
 					result.setFormItems(orderCustomerVO);
 					
 				}
@@ -879,7 +900,7 @@ public class OrderElectricianController {
 					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 					System.out.println("我执行完了保存操作");
 					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-					OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+					OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
 					result.setFormItems(orderCustomerVO);
 			
 				}
@@ -908,7 +929,7 @@ public class OrderElectricianController {
 							OrderCustomer orderCustomer1=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 							System.out.println("我执行完了保存操作");
 							OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-							OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+							OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
 							result.setFormItems(orderCustomerVO);
 							
 							//给客户发送消息，让其支付维修费
@@ -976,7 +997,7 @@ public class OrderElectricianController {
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						System.out.println("我执行完了保存操作");
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-						OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+						OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
 						result.setFormItems(orderCustomerVO);
 					
 					}
@@ -999,7 +1020,7 @@ public class OrderElectricianController {
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						System.out.println("我执行完了保存操作");
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-						OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+						OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
 						result.setFormItems(orderCustomerVO);
 						
 					}
@@ -1022,7 +1043,7 @@ public class OrderElectricianController {
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						System.out.println("我执行完了保存操作");
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
-						OrderCustomerVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+						OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
 						result.setFormItems(orderCustomerVO);
 						
 					}

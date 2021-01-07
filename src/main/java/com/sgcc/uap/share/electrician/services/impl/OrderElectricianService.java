@@ -63,6 +63,7 @@ import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderElectricianHis;
+import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPageVO;
 import com.sgcc.uap.share.electrician.controller.OrderElectricianController;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
@@ -1168,10 +1169,10 @@ public Map<String, Object> pojo2Map(Object obj)  {
 	
 }	
 
-public OrderCustomerVO convert(OrderCustomer orderCustomer,OrderElectrician orderElectrician){
-	OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
+public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer,OrderElectrician orderElectrician){
+	OrderElectricianBeginPageVO orderCustomerVO=new OrderElectricianBeginPageVO();
 	BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
-	orderCustomerVO.setElectrician_descrive(orderElectrician.getElectricianDescrive());
+	orderCustomerVO.setElectricianDescrive(orderElectrician.getElectricianDescrive());
 	orderCustomerVO.setChargeback_reason(orderElectrician.getChargebackReason());
 	orderCustomerVO.setConstructionContent(orderElectrician.getChargebackReason());
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getElectricianId());
