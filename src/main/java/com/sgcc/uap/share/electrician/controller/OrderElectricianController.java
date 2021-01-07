@@ -439,7 +439,7 @@ public class OrderElectricianController {
 				
 					distanceDouble=PointUtil.getDistanceString(String.valueOf(orderCustomer.getAddressLongitude()), String.valueOf(orderCustomer.getAddressLatitude()), elecPosition.getLon(), elecPosition.getLat());
 					orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble)+"KM");
-					orderElectricianService.convert(orderCustomer, list.get(i));
+					orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, list.get(i));
 					returBeginPageVOs.add(orderElectricianBeginPageVO);
 				
 			}						
