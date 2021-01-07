@@ -508,7 +508,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 		
 			String orderId = (String) map.get("orderId");
 			String electricianId =(String) map.get("electricianId");
-			orderElectrician=orderElectricianRepository.findByElectricianIdAndOrderId(electricianId,orderId);
+			orderElectrician=orderElectricianRepository.findByElectricianIdAndOrderId(orderId,electricianId);
 			
 			if("23".equals(map.get("orderElectricianStatus"))){
 				//上传图片
