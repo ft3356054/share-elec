@@ -30,6 +30,7 @@ import com.sgcc.uap.share.customer.services.impl.OrderCustomerHisService;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderElectricianHis;
+import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPage;
 import com.sgcc.uap.share.electrician.repositories.ElectricainQueryOrderRepository;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianHisRepository;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
@@ -245,22 +246,9 @@ public class OrderElectricianHisService implements IOrderElectricianHisService{
 	 * guoqing2020/12/14
 	 */
 	public QueryResultObject  findqQueryAllHaveDone(int pageIndex,int pageSize,String electricianId) {
-		//List<OrderElectricianHis> result=orderElectricianHisRepository.findqQueryAllHaveDone(electricianId);
 		
+		List<OrderElectricianBeginPage> result= electricainQueryOrderRepository.findqQueryAllHaveDone(electricianId);
 		
-		//List<OrderElectrician> orderElectricians=orderElectricianService.findqQueryAllHaveDone(electricianId);
-		List<OrderCustomerBeginPage> result= electricainQueryOrderRepository.findqQueryAllHaveDone(pageIndex,pageSize,electricianId);
-		/*
-		for (OrderElectricianHis orderElectricianHis : result) {
-			OrderElectrician orderElectrician=new OrderElectrician();
-			BeanUtils.copyProperties(orderElectricianHis, orderElectrician);
-			orderElectricians.add(orderElectrician);
-		}
-		//将获取到的所有电工订单，查询主订单
-		for (OrderElectrician orderElectrician : orderElectricians) {
-			OrderCustomer orderCustomer=orderCustomerHisService.findByOrderId((orderElectrician.getOrDERId()));
-		}
-		*/
 		long count=0;
 		count=result.size();
 		return RestUtils.wrappQueryResult(result,count);

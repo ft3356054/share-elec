@@ -11,6 +11,7 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
+import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPageVO;
 
 
 /**
@@ -104,7 +105,7 @@ public String jisuanjuli(OrderCustomer orderCustomer, OrderElectrician orderElec
 public void sendNotify(Map<String, Object> map, OrderElectrician orderElectrician, int i, int j);
 public void sendOederFlow(OrderElectrician orderElectrician, int i);
 public Map<String, Object> pojo2Map(Object obj);
-public OrderCustomerVO convert(OrderCustomer orderCustomer, OrderElectrician orderElectrician);
+public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer, OrderElectrician orderElectrician);
 
 
 

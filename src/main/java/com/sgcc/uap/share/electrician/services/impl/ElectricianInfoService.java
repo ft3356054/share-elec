@@ -255,6 +255,10 @@ public class ElectricianInfoService implements IElectricianInfoService{
 		List<ElectricianInfo> list=electricianInfoRepository.findByElectricianPhonenumberLike(electricianPhonenumber);
 		return list;
 	}
+	public ElectricianInfo findByElectricianId(String electricianId) {
+		ElectricianInfo electricianInfo =electricianInfoRepository.findByElectricianId(electricianId);
+		return electricianInfo;
+	}
 
 
 }

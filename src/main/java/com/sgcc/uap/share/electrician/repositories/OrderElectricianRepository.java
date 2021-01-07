@@ -25,26 +25,21 @@ import com.sgcc.uap.share.domain.OrderElectrician;
  */
 public interface OrderElectricianRepository extends JpaRepository<OrderElectrician,String>,JpaSpecificationExecutor<OrderElectrician> {
 
-	//List<OrderElectrician> findByElectricianEvaluateIsNull();
+	
 
 	List<OrderElectrician> findByElectricianEvaluateIsNullAndOrderElectricianStatusEquals(String orderElectricianStatus);
 
-	//@Query(value="select * from order_customer where ORDER_STATUS=?1 or ORDER_STATUS=?2 order by CREATE_TIME asc",nativeQuery=true)
+	
 	@Query(value="select * from order_electrician o where ELECTRICIAN_ID=?1 and ORDER_ELECTRICIAN_STATUS !=?2 order by CREATE_TIME asc ",nativeQuery=true)
 	List<OrderElectrician> findByElectricianIdAndorderElectricianStatusEqualsOrderByCreateTime(String electricianId,
 			String orderElectricianStatus);
 
-	/*
-	@Query(value = "SELECT * FROM Electrician_Company_Info WHERE company_Name like %:companyName%  "
-			+ " and company_Level =:companyLevel and regiseter_Time between :regiseterTimeBegin and :regiseterTimeEnd "
-			+ " limit :pageIndex,:pageSize",
-			nativeQuery = true)
-			*/
+	
 	@Query(value = "select * from order_electrician where ELECTRICIAN_ID=:electricianId and ORDER_ELECTRICIAN_STATUS"+
-			"!= :orderElectricianStatus and ORDER_ELECTRICIAN_STATUS !=5  and ORDER_ELECTRICIAN_STATUS !=4 order by CREATE_TIME asc limit :pageIndex,:pageSize",nativeQuery = true)
+			"!= :orderElectricianStatus and ORDER_ELECTRICIAN_STATUS !=5  and ORDER_ELECTRICIAN_STATUS !=4 ORDER_ELECTRICIAN_STATUS !=1 order by CREATE_TIME asc limit :pageIndex,:pageSize",nativeQuery = true)
 	List<OrderElectrician> queryMore(@Param("pageIndex")Integer pageIndex, @Param("pageSize")Integer pageSize, @Param("electricianId")String electricianId, @Param("orderElectricianStatus")String orderElectricianStatus);
 
-	//List<OrderElectrician> queryWaitToDo(Integer pageIndex, Integer pageSize, String electricianId, String string);
+	
 
 	/**
 	 * 待评价
