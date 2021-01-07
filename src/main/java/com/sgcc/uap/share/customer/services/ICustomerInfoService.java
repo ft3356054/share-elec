@@ -2,11 +2,13 @@ package com.sgcc.uap.share.customer.services;
 
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.share.domain.CustomerInfo;
+import com.sgcc.uap.share.domain.OrderAuditElectrician;
 
 
 /**
@@ -44,6 +46,15 @@ public interface ICustomerInfoService {
 	 * @author 18511
 	 */
 	public CustomerInfo saveCustomerInfo(Map<String,Object> map) throws Exception;
+	
+	/**
+	 * 电工认证新增
+	 * @param map
+	 * @param file
+	 * @return
+	 * @throws Exception 
+	 */
+	public OrderAuditElectrician changeToElecInfo(Map<String,Object> map,MultipartFile identityInfoFile,MultipartFile electricianCertificateFile) throws Exception;
 	/**
 	 * @query:根据查询条件 查询
 	 * @param queryCondition 查询条件
