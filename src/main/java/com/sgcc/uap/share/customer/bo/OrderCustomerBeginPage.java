@@ -245,7 +245,7 @@ public class OrderCustomerBeginPage implements Serializable {
     private String electricianPhonenumber ;
     @Column(name = "ACCEPT_TIME", nullable = true, length = 64)
     private String acceptTime ;
-    @Transient
+    @Column(name = "OTHER_ELECTRICIAN_NAME", nullable = true, length = 512)
     private String otherElectricianName ;
     @Column(name = "CONSTRUCTION_CONTENT", nullable = true, length = 64)
     private String constructionContent ;

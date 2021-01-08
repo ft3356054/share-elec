@@ -123,9 +123,9 @@ public class OrderCustomerService implements IOrderCustomerService{
 		elecStatus.add("4");
 		elecStatus.add("5");
 		OrderCustomerBeginPage orderCustomerBeginPage = orderCustomerBeginPageRepository.findOrderDetail(orderId,elecStatus);
-		String OtherElectricianId = orderCustomerBeginPage.getOtherElectricianId();
+		/*String OtherElectricianId = orderCustomerBeginPage.getOtherElectricianId();
 		String electricianName = orderCustomerBeginPage.getElectricianName();
-		orderCustomerBeginPage.setOtherElectricianName(electricianName+","+OtherElectricianId);
+		orderCustomerBeginPage.setOtherElectricianName(electricianName+","+OtherElectricianId);*/
 		return RestUtils.wrappQueryResult(orderCustomerBeginPage);
 	}
 	
@@ -197,7 +197,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			String orderId = (String) map.get("orderId");
 			orderCustomer = orderCustomerRepository.findOne(orderId);
 			
-			Map<String, Object> getStatus = getOrderStatus(map, orderCustomer);
+			Map<String, Object> getStatus = checkOrderStatus(map, orderCustomer);
 			
 			if("0".equals(getStatus.get("key"))){
 				//上传图片
@@ -209,8 +209,8 @@ public class OrderCustomerService implements IOrderCustomerService{
 				Map<String, Object> newMap = (Map) getStatus.get("map");
 				CrudUtils.mapToObject(newMap, orderCustomer,  "orderId");
 				result = orderCustomerRepository.save(orderCustomer);
-				sendNotify(newMap, orderCustomer , null,2,"0");
 				
+				sendNotify(newMap, orderCustomer , null,2,"0");
 			}else{
 				throw new Exception((String) getStatus.get("desc"));
 			}
@@ -454,7 +454,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	}
 	
 	
-	private Map<String,Object> getOrderStatus(Map<String, Object> map,OrderCustomer orderCustomer) throws Exception{
+	private Map<String,Object> checkOrderStatus(Map<String, Object> map,OrderCustomer orderCustomer) throws Exception{
 		Map<String,Object> result = new HashMap<String, Object>();
 		Timestamp nowDate =new Timestamp(System.currentTimeMillis());
 		String orderStatus = (String) map.get("orderStatus");
@@ -492,7 +492,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 						ElecPosition elecPosition = elecPositionService.getElecPositionByElectricianId(orderElectrician.getElectricianId());
 						Map<String,Object> elecPositionMap = new HashMap<String, Object>();
 						elecPositionMap.put("electricianId", elecPosition.getElectricianId());
-						elecPositionMap.put("status", elecPosition.getStatus());
+						elecPositionMap.put("status", "0");
 						elecPositionService.saveElecPosition(elecPositionMap);
 						
 						String dateString = TimeStamp.toString(new Date());
@@ -509,7 +509,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 					String dateString = TimeStamp.toString(new Date());
 					map.put("updateTime", dateString);
 					map.put("finishTime", dateString);
-					result.put("key", "0");
+					result.put("key", "1");
 					result.put("desc", "未找到子订单");
 					result.put("map", map);
 				}
@@ -521,12 +521,49 @@ public class OrderCustomerService implements IOrderCustomerService{
 			ArrayList<String> sites = new ArrayList<>();
 	        sites.add("25"); //待用户验收
 			if(sites.contains(orderCustomer.getOrderStatus())){
-				String dateString = TimeStamp.toString(new Date());
-				map.put("updateTime", dateString);
-				map.put("finishTime", dateString);
-				result.put("key", "0");
-				result.put("desc", "该订单处于可验收状态");
-				result.put("map", map);
+				List<String> listStatus = new ArrayList<String>();
+				listStatus.add("1");
+				listStatus.add("4");
+				listStatus.add("5");
+				//获取当前子订单
+				OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderCustomer.getOrderId(), listStatus);
+				if(null!=orderElectrician){
+					//修改电工订单状态 
+					List<String> elecStatus = new ArrayList<String>();
+					elecStatus.add("25");
+					if(sites.contains(orderElectrician.getOrderElectricianStatus())){
+						orderElectrician.setUpdateTime(nowDate);
+						orderElectrician.setFinishTime(nowDate);
+						orderElectrician.setOrderElectricianStatus(orderStatus);
+						getOrderElectricianRepository.save(orderElectrician);
+						//插入电工流水
+						//sendNotify(map, orderCustomer , orderElectrician,2,"1");
+						
+						ElecPosition elecPosition = elecPositionService.getElecPositionByElectricianId(orderElectrician.getElectricianId());
+						Map<String,Object> elecPositionMap = new HashMap<String, Object>();
+						elecPositionMap.put("electricianId", elecPosition.getElectricianId());
+						elecPositionMap.put("status", "0");
+						elecPositionService.saveElecPosition(elecPositionMap);
+						
+						String dateString = TimeStamp.toString(new Date());
+						map.put("updateTime", dateString);
+						map.put("finishTime", dateString);
+						result.put("key", "0");
+						result.put("desc", "该订单处于可验收状态");
+						result.put("map", map);
+					}else{
+						result.put("key", "1");
+						result.put("desc", "该订单不处于可验收状态");
+					}
+				}else{
+					String dateString = TimeStamp.toString(new Date());
+					map.put("updateTime", dateString);
+					map.put("finishTime", dateString);
+					result.put("key", "1");
+					result.put("desc", "未找到子订单");
+					result.put("map", map);
+				}
+				
 			}else{
 				result.put("key", "1");
 				result.put("desc", "该订单不处于可验收状态");
