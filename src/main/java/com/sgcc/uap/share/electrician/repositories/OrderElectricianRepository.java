@@ -36,7 +36,7 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 
 	
 	@Query(value = "select * from order_electrician where ELECTRICIAN_ID=:electricianId and ORDER_ELECTRICIAN_STATUS"+
-			"!= :orderElectricianStatus and ORDER_ELECTRICIAN_STATUS  not in (1,5,4) ORDER by CREATE_TIME asc limit :pageIndex,:pageSize",nativeQuery = true)
+			"!= :orderElectricianStatus and ORDER_ELECTRICIAN_STATUS  not in (1,4,5,8) ORDER by CREATE_TIME asc limit :pageIndex,:pageSize",nativeQuery = true)
 	List<OrderElectrician> queryMore(@Param("pageIndex")Integer pageIndex, @Param("pageSize")Integer pageSize, @Param("electricianId")String electricianId, @Param("orderElectricianStatus")String orderElectricianStatus);
 
 	

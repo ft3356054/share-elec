@@ -189,10 +189,14 @@ public class OrderElectricianService implements IOrderElectricianService{
 			String orderElectricianId = (String) map.get("orderElectricianId");
 			orderElectrician = orderElectricianRepository.findOne(orderElectricianId);
 			if(null!=orderElectrician){
-				CrudUtils.mapToObject(map, orderElectrician,  "orderElectricianId");
+				String orderElectricianId2=orderElectrician.getOrderElectricianId();
+				CrudUtils.mapToObject(map, orderElectrician,  "orderElectricianId2");
+				
 			}else{
 				orderElectrician = new OrderElectrician();
-				CrudUtils.transMap2Bean(map, orderElectrician);
+				
+				String orderElectricianId2=orderElectrician.getOrderElectricianId();
+				CrudUtils.mapToObject(map, orderElectrician,  "orderElectricianId2");
 			}
 			
 			//CrudUtils.mapToObject(map, orderElectrician,  "orderElectricianId");
@@ -529,7 +533,9 @@ public class OrderElectricianService implements IOrderElectricianService{
 				}
 				
 			}
-			CrudUtils.mapToObject(map, orderElectrician,  "orderId");
+			
+			String orderElectricianId=orderElectrician.getOrderElectricianId();
+			CrudUtils.mapToObject(map, orderElectrician,  "orderElectricianId");
 			result = orderElectricianRepository.save(orderElectrician);
 			
 			
@@ -543,8 +549,9 @@ public class OrderElectricianService implements IOrderElectricianService{
 		OrderElectrician orderElectrician = new OrderElectrician();
 		OrderElectrician result = new OrderElectrician();
 		
-			String orderId = (String) map.get("orderId");			
-			CrudUtils.mapToObject(map, orderElectrician,  "orderId");
+			String orderId = (String) map.get("orderId");
+			String orderElectricianId=orderElectrician.getOrderElectricianId();
+			CrudUtils.mapToObject(map, orderElectrician,  "orderElectricianId");
 			result = orderElectricianRepository.save(orderElectrician);
 			
 			return result;		

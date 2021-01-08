@@ -844,11 +844,11 @@ public class OrderElectricianController {
 						//获取一个客户订单
 						OrderCustomer orderCustomerNew=orderCustomerService.findByOrderId(orderId);
 						
-						//获取电工订单,状态是：5的订单,根据完工时间进行排序
+						
 						List<OrderElectrician> list=orderElectricianService.findByOrderIdAndOrderElectricianStatusOrderByFinishTimeDesc(orderId,orderElectricianStatus);
 						
 						if(list.size()!=0){
-							//获取最新的状态是5的订单，则说明是老订单,则创建一个新的订单
+							//获取最新的状态是5的订单，则说明是老订单,则创建一个新的订
 							OrderElectrician orderElectrician=list.get(0);
 						
 						//查询电工的详细信息
@@ -861,7 +861,7 @@ public class OrderElectricianController {
 						orderElectricianMap.put("electricianId",electricianId);
 						orderElectricianMap.put("electricianName",electricianInfo.getElectricianName() );
 						orderElectricianMap.put("electricianPhonenumber",electricianInfo.getElectricianPhonenumber());
-						orderElectricianMap.put("electricianAddress",electricianInfo);
+						//orderElectricianMap.put("electricianAddress",electricianInfo.getelectr);
 						orderElectricianMap.put("electricianPrice",orderCustomerNew.getCustomerPrice());
 						orderElectricianMap.put("orderTypeId",0);
 						orderElectricianMap.put("payStatus",orderCustomerNew.getPayStatus());
