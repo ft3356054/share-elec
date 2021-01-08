@@ -198,6 +198,12 @@ public class OrderElectrician implements Serializable {
     private String remarkNum2 ;
     
     /** 
+     * ELECTRICIAN_EVALUATE_ICON
+     */
+    @Column(name = "ELECTRICIAN_EVALUATE_ICON", nullable = true, length = 512)
+    private String electricianEvaluateIcon ;
+    
+    /** 
      * CONSTRUCTION_CONTENT
      */
     /*
@@ -331,10 +337,17 @@ public class OrderElectrician implements Serializable {
      * @date 2020-12-15 17:38:15
      * @author 18511
      */
+    
     public String getOtherElectricianId(){
         return this.otherElectricianId;
     }
-    /**
+    public String getElectricianEvaluateIcon() {
+		return electricianEvaluateIcon;
+	}
+	public void setElectricianEvaluateIcon(String electricianEvaluateIcon) {
+		this.electricianEvaluateIcon = electricianEvaluateIcon;
+	}
+	/**
      * @setOtherElectricianId:其他电工ID的set方法
      * @param otherElectricianId
      * @return
