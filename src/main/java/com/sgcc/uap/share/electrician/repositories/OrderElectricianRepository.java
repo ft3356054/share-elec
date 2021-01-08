@@ -126,7 +126,7 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	List<OrderElectrician> findqQueryAllHaveDone(String electricianId);
 
 
-	@Query(value="select * from order_electrician where ORDER_ID = ? Order by FINISH_TIME desc")
+	@Query(value="select * from order_electrician where ORDER_ID = ? Order by FINISH_TIME desc",nativeQuery=true)
 	List<OrderElectrician> queryByOrderIdOrderByCreatetime(String orderId);
 
 	
