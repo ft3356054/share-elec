@@ -888,6 +888,7 @@ public class OrderElectricianController {
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 						OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
 						result.setFormItems(orderCustomerVO);
+						orderElectricianService.sendNotify(orderElectrician, 2, "1");
 						
 				
 				}

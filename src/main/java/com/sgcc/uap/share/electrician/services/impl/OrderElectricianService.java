@@ -520,7 +520,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 					map.put("orderContract", orderContract);
 				}
 				
-			}else if ("25".equals(map.get("orderElectricianStatus"))) {//8状态说明是验收状态页面要进行验收，需要保存图片
+			}else if ("8".equals(map.get("orderElectricianStatus"))) {//8状态说明是验收状态页面要进行验收，需要保存图片
 				
 				//上传图片
 				if (null!=file&&!"".equals(file))  {
@@ -1337,6 +1337,7 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer,OrderElec
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getElectricianId());
 	orderCustomerVO.setElectricianPrice(orderElectrician.getElectricianPrice());
 	orderCustomerVO.setOrderContract(orderElectrician.getOrderContract());
+	orderCustomerVO.setOrderElectricianStatus(orderElectrician.getOrderElectricianStatus());
 	//子订单ID
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getOrderElectricianId());
 	//如果订单类型不为null.则返回描述性信息

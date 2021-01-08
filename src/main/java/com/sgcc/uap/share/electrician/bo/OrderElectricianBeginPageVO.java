@@ -1008,6 +1008,21 @@ public class OrderElectricianBeginPageVO extends ParentVO implements Serializabl
 		this.distance = distance;
 	}
 	
+	
+	//2021.1.8 号添加
+	 /** 
+     * 订单状态
+     */
+    @Column(name = "ORDER_ELECTRICIAN_STATUS", nullable = true, length = 2)
+    private String orderElectricianStatus ;
+    
+    public String getOrderElectricianStatus() {
+		return orderElectricianStatus;
+	}
+	public void setOrderElectricianStatus(String orderElectricianStatus) {
+		this.orderElectricianStatus = orderElectricianStatus;
+	}
+	
 	 /**
      * toString方法
      * @return String
