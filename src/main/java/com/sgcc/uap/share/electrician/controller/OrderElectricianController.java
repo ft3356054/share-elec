@@ -910,7 +910,7 @@ public class OrderElectricianController {
 					
 				}
 				
-				if(method.equals("现场勘查退回订单")){   
+				if(method.equals("abc")){   
 					//客户订单将状态改变成：11   电工订单将订单状态改变成：5
 					
 					//将map中的数据分别送到两个类中，在进行更新
