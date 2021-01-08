@@ -1339,12 +1339,14 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer,OrderElec
 	BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
 	orderCustomerVO.setElectricianDescrive(orderElectrician.getElectricianDescrive());
 	orderCustomerVO.setChargeback_reason(orderElectrician.getChargebackReason());
-	orderCustomerVO.setConstructionContent(orderElectrician.getChargebackReason());
+	orderCustomerVO.setChargebackReason(orderElectrician.getChargebackReason());
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getElectricianId());
 	orderCustomerVO.setElectricianPrice(orderElectrician.getElectricianPrice());
 	orderCustomerVO.setOrderContract(orderElectrician.getOrderContract());
 	orderCustomerVO.setOrderElectricianStatus(orderElectrician.getOrderElectricianStatus());
 	orderCustomerVO.setConstructionContent(orderElectrician.getConstructionContent());
+	orderCustomerVO.setOtherElectricianId(orderElectrician.getOrderElectricianId());
+	orderCustomerVO.setRemarkStr1(orderElectrician.getRemarkStr1());
 	//子订单ID
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getOrderElectricianId());
 	//如果订单类型不为null.则返回描述性信息
