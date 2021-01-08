@@ -352,7 +352,7 @@ public class OrderElectricianController {
 				String msg="您所属公司已停业";
 				return WrappedResult.failedWrappedResult(msg);
 			}
-			if (!electricianInfo.getElectricianStatus().equals("1")) {//1表明电工在线
+			if (electricianInfo.getElectricianStatus().equals("0")) {//0表明电工不在线
 				String msg="请先更改接单状态";
 				return WrappedResult.failedWrappedResult(msg);
 			}
@@ -382,6 +382,8 @@ public class OrderElectricianController {
 				String orderElectricianId=orderElectrician.getOrderElectricianId();
 				OrderElectricianBeginPageVO orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
 				
+				
+				orderElectricianService.sendNotify(orderElectrician, 0, "1");
 				return WrappedResult.successWrapedResult(orderElectricianBeginPageVO);
 			
 		} catch (Exception e) {
@@ -868,6 +870,7 @@ public class OrderElectricianController {
 						orderElectricianMap.put("electricianDescriveIcon",orderElectrician.getElectricianDescriveIcon());
 						orderElectricianMap.put("chargebackReason",orderElectrician.getChargebackReason());
 						
+						
 					}
 						
 				
@@ -980,7 +983,8 @@ public class OrderElectricianController {
 							result.setFormItems(orderCustomerVO);
 							
 							//给客户发送消息，让其支付维修费
-							orderElectricianService.sendNotify(orderCustomerMap,orderElectrician,0,1);
+							//TODO
+							orderElectricianService.sendNotify(orderElectrician,0,"1");
 							WebSocketServer.sendInfo("等待支付维修费",(String)orderCustomer.getCustomerId());
 							//订单来源是客服，则直接出示二维码
 						}else {

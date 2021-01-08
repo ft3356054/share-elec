@@ -102,10 +102,11 @@ void paidanchaxun(OrderCustomer orderCustomer);
 void qiangdantanchuang(OrderCustomer orderCustomer);
 public String jisuanjuli(OrderCustomer orderCustomer, OrderElectrician orderElectrician);
 
-public void sendNotify(Map<String, Object> map, OrderElectrician orderElectrician, int i, int j);
+
 public void sendOederFlow(OrderElectrician orderElectrician, int i);
 public Map<String, Object> pojo2Map(Object obj);
 public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer, OrderElectrician orderElectrician);
+public void sendNotify(OrderElectrician orderElectrician, int i, String string);
 
 
 

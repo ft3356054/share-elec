@@ -80,15 +80,17 @@ import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
 import com.sgcc.uap.util.DecimalUtil;
 import com.sgcc.uap.util.FileUtil;
-import com.sgcc.uap.util.JsonUtils;
+
 import com.sgcc.uap.util.MapGetValueUtil;
 import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.PointUtil;
 import com.sgcc.uap.util.SorterUtil;
 import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
+import com.sgcc.uap.utils.json.JsonUtils;
 import com.sgcc.uap.utils.string.StringUtil;
 
+import ch.qos.logback.core.status.StatusUtil;
 import groovy.util.logging.Log4j;
 
 
@@ -530,11 +532,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 			CrudUtils.mapToObject(map, orderElectrician,  "orderId");
 			result = orderElectricianRepository.save(orderElectrician);
 			
-			if ((String)map.get("orderElectricianStatus")!=null) {
-				sendNotify(map, orderElectrician,2,1);
-			}
-
-	        WebSocketServer.sendInfo("下单成功",(String)map.get("electricianId"));
+			
 	       
 		return result;
 	}
@@ -648,20 +646,99 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * @param getPeople 1客户 2电工 
 	 */
 	
-	public void sendNotify(Map map,OrderElectrician orderElectrician,int oper,int getPeople){
-		String orderElectricianStatus =(String)map.get("orderElectricianStatus");
+	public void sendNotify(OrderElectrician orderElectrician,int oper,String getPeople){
+		//String orderElectricianStatus =(String)map.get("orderElectricianStatus");
+		String orderElectricianStatus =orderElectrician.getOrderElectricianStatus();
 		//1维修 2支付 3验收 4评价
 		String notifyType ="1";
 		if("23".equals(orderElectricianStatus)){
 			notifyType ="2";
-		}else if("24".equals(orderElectricianStatus)){
-			notifyType ="3";
 		}else if("8".equals(orderElectricianStatus)){
+			notifyType ="3";
+		}else if("9".equals(orderElectricianStatus)){
 			notifyType ="4";
 		}
 		
 		//获取Enum通知类
-		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  orderElectricianStatus);	
+		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus(getPeople,  orderElectricianStatus);	
+		System.out.println("baseEnums转化成字符串后是："+baseEnums.toString());
+		System.out.println("");
+		
+		String orderId=orderElectrician.getOrDERId();
+		String electricianId=orderElectrician.getElectricianId();
+		String EnumsA=baseEnums.getEnumsA();
+		
+		try {
+			
+		
+		//如果状态是1,3,4,22则让客户那边自己插入流水
+		if (!orderElectricianStatus.equals("1") ||(!orderElectricianStatus.equals("3") ||(!orderElectricianStatus.equals("4") ||(!orderElectricianStatus.equals("22")))) ) {
+			
+			//新增流水
+			Map<String,Object> mapOrderFlow = 
+					MapUtil.flowAdd(orderId, 1,  Integer.parseInt(orderElectricianStatus), electricianId, TimeStamp.toString(new Date()), oper,EnumsA);
+			orderFlowService.saveOrderFlow(mapOrderFlow);
+		}
+		
+		
+		//新增通知
+		String announceId = UuidUtil.getUuid32();
+		String EnumsB=baseEnums.getEnumsB();
+		System.out.println("EnumsB的值是："+EnumsB);
+		
+		Map<String,Object> mapNotify =
+				MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", EnumsB, baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
+						notifyType,orderElectrician.getOrDERId(),"");
+		notifyAnnounceService.saveNotifyAnnounce(mapNotify);
+		
+		Map<String,Object> mapNotifyUser = 
+				MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+		
+		List<String> statusList = new ArrayList<String>();
+		statusList.add("0"); //0 接单成功【待预约】
+		statusList.add("5"); //23 等待支付维修费【待支付】--> 3
+		statusList.add("23"); //5 电工退回（无法完成）【已完成】
+		if (statusList.contains(orderElectricianStatus)) {
+
+		//发送websocket消息
+				Map<String,String> mapString = new HashMap<String,String>();
+				mapString.put("orderId", orderElectrician.getOrderElectricianId());
+				mapString.put("content", baseEnums.getEnumsB());
+				String jsonString = JsonUtils.toJson(mapString);
+				WebSocketServer.sendInfo(jsonString,orderElectrician.getElectricianId());
+		}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+
+	}
+	
+	
+	/**
+	 * @param map
+	 * @param orderCustomer
+	 * @param oper 0增 1删 2改
+	 * @param getPeople 1客户 2电工 
+	 */
+	
+	public void sendNotify(OrderCustomer orderCustomer,int oper,String getPeople){
+		/*
+		//String orderElectricianStatus =(String)map.get("orderElectricianStatus");
+		String orderElectricianStatus =orderCustomer.getOrderStatus();
+		//1维修 2支付 3验收 4评价
+		String notifyType ="1";
+		if("23".equals(orderElectricianStatus)){
+			notifyType ="2";
+		}else if("8".equals(orderElectricianStatus)){
+			notifyType ="3";
+		}else if("9".equals(orderElectricianStatus)){
+			notifyType ="4";
+		}
+		
+		//获取Enum通知类
+		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus(getPeople,  orderElectricianStatus);	
 		
 		
 		String orderId=orderElectrician.getOrDERId();
@@ -690,21 +767,30 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 		
 		Map<String,Object> mapNotifyUser = 
-				MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, getPeople, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+				MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 		
+		List<String> statusList = new ArrayList<String>();
+		statusList.add("0"); //0 接单成功【待预约】
+		statusList.add("5"); //23 等待支付维修费【待支付】--> 3
+		statusList.add("23"); //5 电工退回（无法完成）【已完成】
+		if (statusList.contains(orderElectricianStatus)) {
+
 		//发送websocket消息
-		String messageString=new String();
-		if (map.get("orderElectricianStatus").equals("9")) {
-			messageString="订单已经完成";
-		}else if (map.get("orderElectricianStatus").equals("8")) {
-			messageString="要进行验收申请";
+				Map<String,String> mapString = new HashMap<String,String>();
+				mapString.put("orderId", orderElectrician.getOrderElectricianId());
+				mapString.put("content", baseEnums.getEnumsB());
+				String jsonString = JsonUtils.toJson(mapString);
+				WebSocketServer.sendInfo(jsonString,orderElectrician.getElectricianId());
 		}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		//WebSocketServer.sendInfo(messageString,(String)map.get("electricianId"));
+		*/
+		
+
 	}
+
 
 	
 	@Override
@@ -773,15 +859,18 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			Double distanceDouble=null;	
 			
 			for (ElectricianSubCompanyInfo electricianSubCompanyInfo1 : electricianSubCompanyInfoList) {
-				
-				//获取订单 的位置,即经纬度，进行对比
-				String electricianSubCompanyInfoLon=electricianSubCompanyInfo1.getAddressLongitude();
-				String electricianSubCompanyInfoLat=electricianSubCompanyInfo1.getAddressLatitude();
-				
-				
-				distanceDouble=PointUtil.getDistanceString(String.valueOf(custPosition.getLon()), String.valueOf(custPosition.getLat()), electricianSubCompanyInfoLon, electricianSubCompanyInfoLat);
-				System.out.println("计算的距离是："+distanceDouble);
-				map.put(distanceDouble, electricianSubCompanyInfo1);	
+				//如果电工子公司的状态是0，则代表营业中
+				if (electricianSubCompanyInfo1.getBusinessStatus().equals("0")) {
+					//获取订单 的位置,即经纬度，进行对比
+					String electricianSubCompanyInfoLon=electricianSubCompanyInfo1.getAddressLongitude();
+					String electricianSubCompanyInfoLat=electricianSubCompanyInfo1.getAddressLatitude();
+					
+					
+					distanceDouble=PointUtil.getDistanceString(String.valueOf(custPosition.getLon()), String.valueOf(custPosition.getLat()), electricianSubCompanyInfoLon, electricianSubCompanyInfoLat);
+					System.out.println("计算的距离是："+distanceDouble);
+					map.put(distanceDouble, electricianSubCompanyInfo1);
+				}
+					
 			}
 			electricianSubCompanyInfo=MapGetValueUtil.getFirstOrNull(map);			
 		}else {//说明有一个电力子公司
@@ -802,23 +891,56 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	            });
 		
 		Double distanceDouble=null;
-		
+		List<Double> distanceList=new ArrayList<>();
+		OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+		List<OrderElectricianBeginPageVO> orderElectricianBeginPageVOs=new ArrayList<>();
 		if (electricianInfoList.size()>1) {
 			for (ElectricianInfo electricianInfo2 : electricianInfoList) {
-				
-				//获取订单 的位置,即经纬度，进行对比
-				String electricianInfoLon=electricianInfo2.getAddressLongitude();
-				String electricianInfoLat=electricianInfo2.getAddressLatitude();
+				//1.电工信息中的状态是1，  2.电工的位置状态是0   3.电工的名下没有这个订单
+				//查询电工的位置中的状态
+				ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianInfo2.getElectricianId());
+				List<OrderElectrician> electricians=findByElectricianId(electricianInfo2.getElectricianId());
+				String temp=null;
+				for (OrderElectrician orderElectrician : electricians) {
+					temp=orderElectrician.getOrDERId();
+				}
+				if (electricianInfo2.getElectricianStatus().equals("1") && elecPosition.getStatus().equals("0") && temp.isEmpty()) {
+					//获取订单 的位置,即经纬度，进行对比
+					String electricianInfoLon=electricianInfo2.getAddressLongitude();
+					String electricianInfoLat=electricianInfo2.getAddressLatitude();
 
-				distanceDouble=PointUtil.getDistanceString(String.valueOf(custPosition.getLon()), String.valueOf(custPosition.getLat()), electricianInfoLon, electricianInfoLat);
-				System.out.println("计算的距离是："+distanceDouble);
-				map.put(distanceDouble, electricianInfo2);
+					distanceDouble=PointUtil.getDistanceString(String.valueOf(custPosition.getLon()), String.valueOf(custPosition.getLat()), electricianInfoLon, electricianInfoLat);
+					System.out.println("计算的距离是："+distanceDouble);
+					map.put(distanceDouble, electricianInfo2);
+					
+				}
+				
+				
 				
 			}
+			int num=0;
 			electricianInfo=getFirstElectricianInfo(map);
+		
 			
 		}else {
 			electricianInfo=electricianInfoList.get(0);
+			//1.电工信息中的状态是1，  2.电工的位置状态是0   3.电工的名下没有这个订单
+			ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianInfo.getElectricianId());
+			List<OrderElectrician> electricians=findByElectricianId(electricianInfo.getElectricianId());
+			String temp=null;
+			for (OrderElectrician orderElectrician : electricians) {
+				temp=orderElectrician.getOrDERId();
+			}
+			if (electricianInfo.getElectricianStatus().equals("1") && elecPosition.getStatus().equals("0") && temp.isEmpty()) {
+				//获取订单 的位置,即经纬度，进行对比
+				String electricianInfoLon=electricianInfo.getAddressLongitude();
+				String electricianInfoLat=electricianInfo.getAddressLatitude();
+
+				distanceDouble=PointUtil.getDistanceString(String.valueOf(custPosition.getLon()), String.valueOf(custPosition.getLat()), electricianInfoLon, electricianInfoLat);
+				System.out.println("计算的距离是："+distanceDouble);
+				orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
+				
+			}
 						
 		}
 				
@@ -831,7 +953,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		nesMap=CrudUtils.objectToMap(orderCustomer);
 		saveOrderCustomerByOrderElectricianService(nesMap);
 		
-		WebSocketServer.sendInfo(JsonUtils.objToJson(orderElectrician),(String)electricianInfo.getElectricianId());
+		sendNotify(orderElectrician,0,"1");
 
 	} catch (Exception e) {
 		logger.error(e.getMessage(), e);
@@ -899,8 +1021,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		elecPositionService.saveElecPosition(map);
 		
 		
-		//电工接单成功，就发送给客户消息
-		sendNotify(map, orderElectrician, 0, 1);
+		
 		WebSocketServer.sendInfo("电工已接单",(String)orderCustomer2.getCustomerId());
 		return saveOrderElectrician;
 		
@@ -983,7 +1104,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			orderElectricianBeginPageVO=convert(orderCustomer, orderElectrician2);
 			orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
 			
-			WebSocketServer.sendInfo(JsonUtils.objToJson(orderElectricianBeginPageVO),(String)elecPositions.get(0).getElectricianId());
+			sendNotify(orderElectrician2, 0, "1");
 			
 		}else {//表明有多个电工
 			for (ElecPosition elecPosition1 : elecPositions) {
@@ -993,7 +1114,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 				orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
 				
 				
-				WebSocketServer.sendInfo(JsonUtils.objToJson(orderElectricianBeginPageVO),(String)elecPosition1.getElectricianId());
+				sendNotify(orderElectrician2, 0, "1");
 				
 			}
 			
@@ -1097,8 +1218,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 								
 		
 			map.put("orderElectricianStatus", orderElectricianStatus);
-			sendNotify(map, orderElectrician, 1, 2);
-			WebSocketServer.sendInfo("用户取消付款",(String)orderElectrician.getElectricianId());
+			
 		
 						
 		} catch (Exception e) {
