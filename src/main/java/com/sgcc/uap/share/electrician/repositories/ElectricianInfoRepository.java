@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.sgcc.uap.share.domain.ElectricianInfo;
 
@@ -29,11 +30,12 @@ public interface ElectricianInfoRepository extends JpaRepository<ElectricianInfo
 	
 	@Query(value="select * from electrician_info where COMPANY_NAME=? and ELECTRICIAN_STATUS=0",nativeQuery=true)
 	List<ElectricianInfo> findBycompanyName(String companyName);
-
-	List<ElectricianInfo> findByElectricianNameLike(String electricianName);
+	
+	@Query(value="select * from electrician_info where ELECTRICIAN_NAME like %:electricianName% ",nativeQuery=true)
+	List<ElectricianInfo> LikeElectricianName(@Param("electricianName")String electricianName);
 
 	//@Query(value="select * from electrician_info where ELECTRICIAN_PHONENUMBER = %electricianPhonenumber%",nativeQuery=true)
-	List<ElectricianInfo> findByElectricianPhonenumberLike(String electricianPhonenumber);
+	List<ElectricianInfo> findByElectricianPhonenumberLike(@Param("electricianPhonenumber")String electricianPhonenumber);
 
 	
 

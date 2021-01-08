@@ -278,6 +278,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 				}
 			}
 		} 
+		
 		return queryCommon(queryCondition);
 	}
 	/**
@@ -891,6 +892,11 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		saveOrderElectrician = saveOrderElectrician(map);
 		
 		//将电工 的状态置1
+		ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianId);
+		elecPosition.setStatus("1");
+		Map<String, Object> map2=new HashMap<>();
+		map=pojo2Map(elecPosition);
+		elecPositionService.saveElecPosition(map);
 		
 		
 		//电工接单成功，就发送给客户消息
@@ -914,7 +920,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * @param map
 	 * @return
 	 */
-	
+	//当有新订单后，向符合条件的电工发送
 	@Override
 	public void qiangdantanchuang(OrderCustomer orderCustomer){
 		
@@ -945,9 +951,13 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			//3.1 根据电工的ID查询电工信息
 			String electricianId=elecPosition.getElectricianId();
 			
+			//查询电工的信息
 			ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
-		
-			if (electricianInfo.getElectricianStatus().equals("1")) {  //如果电工的状态是1,则代表电工在线
+			//查询电工所属电力公司的
+			ElectricianSubCompanyInfo electricianSubCompanyInfo=electricianSubCompanyInfoService.findBySubCompanyId(electricianInfo.getSubCompanyId());
+			
+			//如果电工的状态是1,位置状态是0，电力公司的状态是0营业中，则代表电工在线
+			if (electricianInfo.getElectricianStatus().equals("1") && elecPosition.getStatus().equals("0") && electricianSubCompanyInfo.equals("0")) {  
 				if (Double.valueOf(elecPosition.getLon())>around[0] && Double.valueOf(elecPosition.getLon())<around[2] && Double.valueOf(elecPosition.getLat())>around[1] && Double.valueOf(elecPosition.getLat())<around[3]){
 					
 					//3.2获取到了范围内的可以接单的电工
@@ -959,8 +969,8 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		//4.创建一个电工子订单，然后将子订单po转化成VO	
 			OrderElectrician orderElectrician=saveNewNullOrderElectrician(orderId);
-			OrderElectricianVO orderElectricianVO=new OrderElectricianVO();
-			BeanUtils.copyProperties(orderElectrician, orderElectricianVO);
+			OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+			
 		
 			Double distanceDouble=null;
 			
@@ -969,16 +979,21 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		}else if (elecPositions.size()==1) {
 			//获取电工与客户之间的距离
 			distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPositions.get(0).getLon()), String.valueOf(elecPositions.get(0).getLat()), custPosition.getLon(), custPosition.getLat());
-			orderElectricianVO.setDistance(String.valueOf(distanceDouble));
+			OrderElectrician orderElectrician2=findByOrderId(orderCustomer.getOrderId(), elecPositions.get(0).getElectricianId());
+			orderElectricianBeginPageVO=convert(orderCustomer, orderElectrician2);
+			orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
 			
-			WebSocketServer.sendInfo(JsonUtils.objToJson(orderElectricianVO),(String)elecPositions.get(0).getElectricianId());
+			WebSocketServer.sendInfo(JsonUtils.objToJson(orderElectricianBeginPageVO),(String)elecPositions.get(0).getElectricianId());
 			
 		}else {//表明有多个电工
 			for (ElecPosition elecPosition1 : elecPositions) {
 				distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPosition1.getLon()), String.valueOf(elecPosition1.getLat()), custPosition.getLon(), custPosition.getLat());
-				orderElectricianVO.setDistance(String.valueOf(distanceDouble));
+				OrderElectrician orderElectrician2=findByOrderId(orderCustomer.getOrderId(), elecPositions.get(0).getElectricianId());
+				orderElectricianBeginPageVO=convert(orderCustomer, orderElectrician2);
+				orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
 				
-				WebSocketServer.sendInfo(JsonUtils.objToJson(orderElectricianVO),(String)elecPosition1.getElectricianId());
+				
+				WebSocketServer.sendInfo(JsonUtils.objToJson(orderElectricianBeginPageVO),(String)elecPosition1.getElectricianId());
 				
 			}
 			
@@ -1211,7 +1226,15 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer,OrderElec
 		BaseOrderType baseOrderType=baseOrderTypeService.findByOrderTypeId(orderTypeId);
 		orderCustomerVO.setOrderTypeId(baseOrderType.getOrderTypeName());
 		
+	}if (!orderCustomer.getOrderFrom().isEmpty()) {
+		String orderFromString=orderCustomer.getOrderFrom();
+		if (orderFromString.equals("0")) {
+			orderCustomerVO.setOrderFrom("来源APP端");
+		}else if (orderFromString.equals("1")) {
+			orderCustomerVO.setOrderFrom("来源客服端");
+		}
 	}
+	
 	return orderCustomerVO;
 }
 public List<OrderElectrician> findqQueryAllHaveDone(String electricianId) {

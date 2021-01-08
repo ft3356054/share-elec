@@ -132,6 +132,12 @@ public class OrderCustomerHis implements Serializable {
     private Timestamp finishTime ;
     
     /** 
+     * 订单来源
+     */
+    @Column(name = "ORDER_FROM", nullable = true, length = 2)
+    private String orderFrom ;
+    
+    /** 
      * 客户描述
      */
     @Column(name = "CUSTOMER_DESCRIVE", nullable = true, length = 512)
@@ -360,6 +366,13 @@ public class OrderCustomerHis implements Serializable {
     public String getAddressLongitude(){
         return this.addressLongitude;
     }
+    
+    public String getOrderFrom() {
+		return orderFrom;
+	}
+	public void setOrderFrom(String orderFrom) {
+		this.orderFrom = orderFrom;
+	}
     /**
      * @setAddressLongitude:地址经度的set方法
      * @param addressLongitude

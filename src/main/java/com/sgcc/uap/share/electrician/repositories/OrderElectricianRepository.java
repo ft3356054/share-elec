@@ -97,7 +97,8 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 
 	
 
-	@Query(value="select * from order_electrician where ELECTRICIAN_ID = :electricianId and ORDER_ELECTRICIAN_STATUS = 4 or ORDER_ELECTRICIAN_STATUS = 5",nativeQuery=true)
+	@Query(value="select * from order_electrician where ELECTRICIAN_ID = :electricianId and ORDER_ELECTRICIAN_STATUS in (1,4,5,9)"
+			+ "UNION select * from order_electrician_his where ELECTRICIAN_ID = :electricianId and ORDER_ELECTRICIAN_STATUS in (1,4,5,9)",nativeQuery=true)
 	List<OrderElectrician> queryAllHaveEsc(@Param("electricianId")String electricianId);
 
 	

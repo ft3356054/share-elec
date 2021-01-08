@@ -46,6 +46,7 @@ import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.services.impl.CustPositionService;
+import com.sgcc.uap.share.customer.services.impl.OrderCustomerHisService;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.customer.services.impl.OrderFlowService;
 import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
@@ -55,6 +56,7 @@ import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
+import com.sgcc.uap.share.domain.OrderCustomerHis;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderElectricianHis;
 import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPage;
@@ -149,6 +151,9 @@ public class OrderElectricianController {
 	
 	@Autowired
 	private ElectricianSubCompanyInfoService electricianSubCompanyInfoService;
+	
+	@Autowired
+	private OrderCustomerHisService orderCustomerHisService;
 	
 	/**
 	 * @getByOrderElectricianId:根据orderElectricianId查询
@@ -250,6 +255,21 @@ public class OrderElectricianController {
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
 			QueryResultObject queryResult = orderElectricianService.query(requestCondition);
+			List<OrderElectricianBeginPageVO> orderElectricianBeginPageVOs=new ArrayList<>();
+			List<OrderElectrician> orderElectricians=queryResult.getItems();
+			for (OrderElectrician orderElectrician : orderElectricians) {
+				OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+				OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderElectrician.getOrDERId());
+				
+				orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+				//子订单状态是2，表明是派单，还未接受
+				if (orderElectrician.getOrderElectricianStatus().equals("2")) { 
+					String distance=orderElectricianService.jisuanjuli(orderCustomer, orderElectrician);
+					orderElectricianBeginPageVO.setDistance(distance);
+				}
+				orderElectricianBeginPageVOs.add(orderElectricianBeginPageVO);
+			}
+			queryResult.setItems(orderElectricianBeginPageVOs);
 			logger.info("查询数据成功"); 
 			
 			return WrappedResult.successWrapedResult(queryResult);
@@ -468,7 +488,7 @@ public class OrderElectricianController {
 			
 			QueryResultObject queryResult = orderElectricianService.queryWaitToDo(requestCondition,electricianId);
 			List<OrderElectrician>orderElectricians=queryResult.getItems();
-			//OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
+			
 			String orderTypeId=null;
 			List<OrderCustomerVO> orderCustomerVOs=new ArrayList<>();
 			for (OrderElectrician orderElectrician : orderElectricians) {
@@ -678,23 +698,33 @@ public class OrderElectricianController {
 	public WrappedResult queryAllHaveEsc(@PathVariable String electricianId){
 		
 		try {
-		//查询电工历史订单
-		QueryResultObject queryResult=orderElectricianHisService.queryAllHaveEsc(electricianId);
 		
 		//查询电工订单
-		QueryResultObject queryResult2=orderElectricianService.queryAllHaveEsc(electricianId);
-		
+		QueryResultObject queryResult=orderElectricianService.queryAllHaveEsc(electricianId);
 		OrderElectrician orderElectrician=new OrderElectrician();
-		List<OrderElectrician> list2=queryResult2.getItems();
-		List<OrderElectricianHis> list=queryResult.getItems();
-		for (OrderElectricianHis orderElectricianHis : list) {
-			BeanUtils.copyProperties(orderElectricianHis, orderElectrician);
-			list2.add(orderElectrician);
+		List<OrderElectrician> list=queryResult.getItems();
+		List<OrderElectricianBeginPageVO> orderElectricianBeginPageVOs=new ArrayList<>();
+		for (OrderElectrician orderElectrician2 : list) {
+			OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+			OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderElectrician2.getOrDERId());
+			if (orderCustomer!=null) {
+				orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician2);
+			}else {
+				OrderCustomerHis orderCustomerHis=orderCustomerHisService.findByOrderId(orderElectrician2.getOrDERId());
+				OrderCustomer orderCustomer2=new OrderCustomer();
+				BeanUtils.copyProperties(orderCustomerHis, orderCustomer2);
+				orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer2, orderElectrician2);
+			}
+			
+			
+			orderElectricianBeginPageVOs.add(orderElectricianBeginPageVO);
 		}
-		queryResult2.setItems(list2);
-		queryResult2.setItemCount(list2.size());
 		
-		return WrappedResult.successWrapedResult(queryResult2);
+		queryResult.setItems(orderElectricianBeginPageVOs);
+		
+		queryResult.setItemCount(orderElectricianBeginPageVOs.size());
+		
+		return WrappedResult.successWrapedResult(queryResult);
 		
 	}
 		catch (Exception e) {
@@ -806,8 +836,7 @@ public class OrderElectricianController {
 					
 					System.out.println("我现在进行的是预约成功的方法");
 					String orderElectricianStatus=(String) map.get("orderElectricianStatus");//获取电工订单的订单状态是否是5
-					//if(orderElectricianStatus.equals("5")){//说明是电工的退单，则将旧订单查出来后保存成新 的订单
-						//查询出客户订单的详情
+					
 						String orderId=(String) map.get("orderId");
 						
 						//获取一个客户订单
@@ -899,7 +928,7 @@ public class OrderElectricianController {
 					
 				}
 				
-				if(method.equals("现场勘查退回订单")){
+				if(method.equals("现场勘查退回订单")){   
 					//客户订单将状态改变成：11   电工订单将订单状态改变成：5
 					
 					//将map中的数据分别送到两个类中，在进行更新
@@ -1056,6 +1085,7 @@ public class OrderElectricianController {
 						orderElectricianMap.put("orderElectricianStatus",map.get("orderElectricianStatus"));
 						orderElectricianMap.put("electricianId", map.get("electricianId"));
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
+						orderElectricianMap.put("finishTime", DateTimeUtil.formatDateTime(new Date()));
 						
 						
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
@@ -1075,8 +1105,7 @@ public class OrderElectricianController {
 						orderElectricianMap.put("electricianId", map.get("electricianId"));
 						orderElectricianMap.put("electricianEvaluate", map.get("electricianEvaluate"));
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
-						//添加订单完结时间
-						orderElectricianMap.put("finishTime", DateTimeUtil.formatDateTime(new Date()));
+						
 						
 						System.out.println("我执行完了保存操作");
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
@@ -1153,11 +1182,11 @@ public class OrderElectricianController {
 			//如果姓名不为空
 			if (!electricianName.isEmpty()) {
 				//根据电工的姓名去模糊查询
-				List<ElectricianInfo> electricianInfoList=electricianInfoService.findByElectricianNameLike(electricianName);
+				List<ElectricianInfo> electricianInfoList=electricianInfoService.LikeElectricianName(electricianName);
 				for (ElectricianInfo electricianInfo : electricianInfoList) {
 					ElecPosition elecPosition2=elecPositionService.getElecPositionByElectricianId(electricianInfo.getElectricianId());
 					//电工都是空闲状态
-					if (!electricianInfo.getElectricianStatus().equals("1") && !elecPosition2.getStatus().equals("1") && elecPosition.getAreaId().equals(elecPosition2.getAreaId())) {
+					if (electricianInfo.getElectricianStatus().equals("1") && elecPosition2.getStatus().equals("0") && elecPosition.getAreaId().equals(elecPosition2.getAreaId())) {
 						list.add(electricianInfo);
 					}
 					
@@ -1170,7 +1199,7 @@ public class OrderElectricianController {
 				for (ElectricianInfo electricianInfo : electricianInfoList) {
 					ElecPosition elecPosition2=elecPositionService.getElecPositionByElectricianId(electricianInfo.getElectricianId());
 					//电工都是空闲状态
-					if (!electricianInfo.getElectricianStatus().equals("1") && !elecPosition2.getStatus().equals("1") && elecPosition.getAreaId().equals(elecPosition2.getAreaId())) {
+					if (!electricianInfo.getElectricianStatus().equals("1") && elecPosition2.getStatus().equals("0") && elecPosition.getAreaId().equals(elecPosition2.getAreaId())) {
 						list.add(electricianInfo);
 					}
 					
@@ -1195,5 +1224,6 @@ public class OrderElectricianController {
 		
 		
 	}
+	
 	
 }

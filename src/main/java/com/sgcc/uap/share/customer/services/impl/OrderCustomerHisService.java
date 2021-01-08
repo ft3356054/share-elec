@@ -231,9 +231,9 @@ public class OrderCustomerHisService implements IOrderCustomerHisService{
 		}
 		return new PageRequest(pageIndex - 1, pageSize, null);
 	}
-	public OrderCustomer findByOrderId(String string) {
-		// TODO Auto-generated method stub
-		return null;
+	public OrderCustomerHis findByOrderId(String string) {
+		OrderCustomerHis orderCustomerHis=orderCustomerHisRepository.findOne(string);
+		return orderCustomerHis;
 	}
 	
 }

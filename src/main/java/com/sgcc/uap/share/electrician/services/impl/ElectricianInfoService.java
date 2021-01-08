@@ -247,9 +247,9 @@ public class ElectricianInfoService implements IElectricianInfoService{
 		List<ElectricianInfo> list=electricianInfoRepository.findBycompanyName(companyName);
 		return list;
 	}
-	public List<ElectricianInfo> findByElectricianNameLike(String electricianName) {
-		List<ElectricianInfo> list=electricianInfoRepository.findByElectricianNameLike(electricianName);
-		return null;
+	public List<ElectricianInfo> LikeElectricianName(String electricianName) {
+		List<ElectricianInfo> list=electricianInfoRepository.LikeElectricianName(electricianName);
+		return list;
 	}
 	public List<ElectricianInfo> findByElectricianPhonenumberLike(String electricianPhonenumber) {
 		List<ElectricianInfo> list=electricianInfoRepository.findByElectricianPhonenumberLike(electricianPhonenumber);
