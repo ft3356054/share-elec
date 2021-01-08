@@ -546,14 +546,11 @@ public class OrderElectricianController {
 		
 		//3.根据电工的区域ID获取此区域下的客户区域ID集合
 		List<CustPosition> custPositionList=custPositionService.getByAreaId(eleArea);
-		
-		int i=custPositionList.size();
-		
+	
 		for (CustPosition custPosition : custPositionList) {
 			if (Double.valueOf(custPosition.getLon())>around[0] && Double.valueOf(custPosition.getLon())<around[2]){
 				if (Double.valueOf(custPosition.getLat())>around[1] && Double.valueOf(custPosition.getLat())<around[3]) {
 					list.add(custPosition);
-					i++;
 				}
 			}				
 			}
@@ -572,15 +569,6 @@ public class OrderElectricianController {
 		//5.创建的是前端展示的VO对象集合
 		
 		List<OrderElectricianBeginPageVO> ovcList=new ArrayList<>();
-		/*
-		 Map<Double, OrderElectricianBeginPageVO> map = new TreeMap<Double, OrderElectricianBeginPageVO>(
-	                new Comparator<Double>() {
-	                    public int compare(Double obj1, Double obj2) {
-	                        // 降序排序
-	                        return obj1.compareTo(obj2);
-	                    }
-	                });
-	                */
 		
 		 Double distanceDouble=null;
 		//6.将查询到的客户订单进行距离排序
@@ -604,22 +592,10 @@ public class OrderElectricianController {
 					BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
 				}
 				orderCustomerVO.setDistance(String.valueOf(distanceDouble));
-				//map.put(distanceDouble, orderCustomerVO);
 				ovcList.add(orderCustomerVO);
 				
 			}
-			/*
-			Set<Double> keySet = map.keySet();
-	        Iterator<Double> iter = keySet.iterator();
-	        while (iter.hasNext()) {
-	            Double key = iter.next();
-	            System.out.println(key + ":" + map.get(key));
-	            ovcList.add(map.get(key));
-	        }  
-	        */ 
-			//Double op=Double.parseDouble(ovcList.get(0).getDistance());
-			//Double.compare(d1, d2)
-			//System.out.println("op的值是："+op);
+		
 			Collections.sort(ovcList, new Comparator<OrderElectricianBeginPageVO>() {
 
 	            @Override
