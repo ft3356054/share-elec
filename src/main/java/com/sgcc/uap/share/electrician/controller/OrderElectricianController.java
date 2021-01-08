@@ -1032,8 +1032,18 @@ public class OrderElectricianController {
 						}
 							
 						}
-						String otherElectricianId=(String) map.get("otherElectricianId");
+						
+						String temp=(String) map.get("otherElectricianId");
+						String electricianId = (String) map.get("electricianId");
+						String otherElectricianId=electricianId+","+temp;
 						System.out.println(otherElectricianId);
+						
+						//查询电工的名字
+						ElectricianInfo electricianInfo=electricianInfoService.findByElectricianId(electricianId);
+						String electricianName=electricianInfo.getElectricianName();
+						String telephone=electricianInfo.getElectricianPhonenumber();
+						remark_str1sString=electricianName+":"+telephone+","+remark_str1sString;
+						
 						//将map中的数据分别送到两个类中，在进行更新
 						//客户订单需要跟新的信息
 						orderCustomerMap.put("orderStatus", map.get("orderStatus"));
@@ -1046,6 +1056,7 @@ public class OrderElectricianController {
 						orderElectricianMap.put("electricianId", map.get("electricianId"));
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 						orderElectricianMap.put("remarkStr1", remark_str1sString);
+						orderElectricianMap.put("otherElectricianId", otherElectricianId);
 						
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						System.out.println("我执行完了保存操作");
