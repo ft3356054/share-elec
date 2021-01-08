@@ -985,8 +985,8 @@ public class OrderElectricianController {
 							
 							//给客户发送消息，让其支付维修费
 							//TODO
-							orderElectricianService.sendNotify(orderElectrician,0,"1");
-							WebSocketServer.sendInfo("等待支付维修费",(String)orderCustomer.getCustomerId());
+							orderElectricianService.sendNotify(orderCustomer1,0,"1");
+							
 							//订单来源是客服，则直接出示二维码
 						}else {
 							// TODO: handle exception
@@ -1032,7 +1032,8 @@ public class OrderElectricianController {
 						}
 							
 						}
-						
+						String otherElectricianId=(String) map.get("otherElectricianId");
+						System.out.println(otherElectricianId);
 						//将map中的数据分别送到两个类中，在进行更新
 						//客户订单需要跟新的信息
 						orderCustomerMap.put("orderStatus", map.get("orderStatus"));
@@ -1074,6 +1075,7 @@ public class OrderElectricianController {
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 						OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
 						result.setFormItems(orderCustomerVO);
+						orderElectricianService.sendNotify(orderElectrician, 2, "1");
 						
 					}
 					
@@ -1090,7 +1092,7 @@ public class OrderElectricianController {
 						orderElectricianMap.put("orderElectricianStatus",map.get("orderElectricianStatus"));
 						orderElectricianMap.put("electricianId", map.get("electricianId"));
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
-						orderElectricianMap.put("finishTime", DateTimeUtil.formatDateTime(new Date()));
+						
 						
 						
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
@@ -1115,7 +1117,8 @@ public class OrderElectricianController {
 						System.out.println("我执行完了保存操作");
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 						
-						result.setFormItems(orderElectrician);						
+						result.setFormItems(orderElectrician);	
+						orderElectricianService.sendNotify(orderElectrician, 2, "1");
 					}
 			}
 
