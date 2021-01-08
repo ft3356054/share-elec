@@ -2,8 +2,9 @@ package com.sgcc.uap.share.task;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +16,11 @@ import org.springframework.stereotype.Component;
 import com.sgcc.uap.share.customer.services.IGetOrderElectricianService;
 import com.sgcc.uap.share.customer.services.IOrderCustomerService;
 import com.sgcc.uap.share.domain.BaseSystemConfig;
+import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
-import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
+import com.sgcc.uap.share.electrician.services.IElecPositionService;
 import com.sgcc.uap.share.services.IBaseSystemConfigService;
-import com.sgcc.uap.util.TimeStamp;
 
 
 /*
@@ -36,6 +37,7 @@ public class AutoReSendOrderTask {
 	IGetOrderElectricianService getOrderElectricianService = (IGetOrderElectricianService) ApplicationContextUtil.getBean("getOrderElectricianService");
 	IBaseSystemConfigService baseSystemConfigService = (IBaseSystemConfigService) ApplicationContextUtil.getBean("baseSystemConfigService");
 	IOrderCustomerService orderCustomerService = (IOrderCustomerService) ApplicationContextUtil.getBean("orderCustomerService");
+	IElecPositionService elecPositionService = (IElecPositionService) ApplicationContextUtil.getBean("elecPositionService");
 	@SuppressWarnings("rawtypes")
 	@Autowired
     private RedisTemplate redisTemplate;
@@ -59,6 +61,17 @@ public class AutoReSendOrderTask {
 					orderElectrician.setOrderElectricianStatus("1");
 					orderElectrician.setFinishTime(nowDate);
 					getOrderElectricianService.updateOrderElectricianStatus(orderElectrician);
+					
+					ElecPosition elecPosition = elecPositionService.getElecPositionByElectricianId(orderElectrician.getElectricianId());
+					Map<String,Object> map = new HashMap<String, Object>();
+					map.put("electricianId", elecPosition.getElectricianId());
+					map.put("status", elecPosition.getStatus());
+					try {
+						elecPositionService.saveElecPosition(map);
+					} catch (Exception e) {
+						// {"items":[{"electricianId":"123","areaId":"1","lon":"12.546","lat":"52.698","status":"1"}]}
+						e.printStackTrace();
+					}
 				}
 				List<OrderCustomer> orderCustomers = orderCustomerService.getOrderCustomerByOrderIds(orderIds);
 				for(OrderCustomer orderCustomer :orderCustomers){
