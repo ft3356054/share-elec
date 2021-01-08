@@ -972,7 +972,7 @@ public class OrderElectricianController {
 							//电工订单需要更新的信息
 							orderElectricianMap.put("orderId", map.get("orderId"));
 							orderElectricianMap.put("orderElectricianStatus",map.get("orderElectricianStatus"));
-							orderElectricianMap.put("electricianDescrive", map.get("electricianDescrive"));
+							//orderElectricianMap.put("electricianDescrive", map.get("electricianDescrive"));
 							orderElectricianMap.put("electricianId", map.get("electricianId"));
 							orderElectricianMap.put("electricianPrice", map.get("electricianPrice"));
 							orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
