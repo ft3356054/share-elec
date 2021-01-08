@@ -588,7 +588,8 @@ public class OrderElectricianController {
 				orderCustomerVO.setDistance(String.valueOf(distanceDouble)+"KM");
 				if (orderCustomer.getOrderStatus().equals("11")) {
 					String orderId=orderCustomer.getOrderId();
-					OrderElectrician orderElectrician=orderElectricianService.findByOrderId(orderId, electricianId);
+					List<OrderElectrician> orderElectricianList=orderElectricianService.queryByOrderIdOrderByCreatetime(orderId);
+					OrderElectrician orderElectrician=orderElectricianList.get(0);
 					orderCustomerVO=orderElectricianService.convert(orderCustomer, orderElectrician);
 				}else {
 					BeanUtils.copyProperties(orderCustomer, orderCustomerVO);

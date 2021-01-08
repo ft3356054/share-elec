@@ -1387,6 +1387,11 @@ public  OrderElectricianBeginPageVO orderElectricianBeginPage2VO(OrderElectricia
 	
 	return orderElectricianBeginPageVO;
 }
+@Override
+public List<OrderElectrician> queryByOrderIdOrderByCreatetime(String orderId) {
+	List<OrderElectrician> list=orderElectricianRepository.queryByOrderIdOrderByCreatetime(orderId);
+	return list;
+}
 
 }
 	

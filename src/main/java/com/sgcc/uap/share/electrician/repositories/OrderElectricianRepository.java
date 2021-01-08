@@ -125,6 +125,10 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 			+ "or ORDER_ELECTRICIAN_TYPE=1 or ORDER_ELECTRICIAN_TYPE=5",nativeQuery=true)
 	List<OrderElectrician> findqQueryAllHaveDone(String electricianId);
 
+
+	@Query(value="select * from order_electrician where ORDER_ID = ? Order by FINISH_TIME desc")
+	List<OrderElectrician> queryByOrderIdOrderByCreatetime(String orderId);
+
 	
 	
 
