@@ -99,8 +99,21 @@ public class ElecPositionService implements IElecPositionService{
 	@Override
 	public ElecPosition saveElecPosition(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(ElecPosition.class,map);
-		ElecPosition elecPosition = new ElecPosition();
-		CrudUtils.transMap2Bean(map, elecPosition);
+		
+		ElecPosition elecPosition = null;
+		if (map.containsKey("electricianId")) {
+			String electricianId = (String) map.get("electricianId");
+			elecPosition = getElecPositionByElectricianId(electricianId);
+			if(null!=elecPosition){
+				CrudUtils.mapToObject(map, elecPosition,  "electricianId");
+			}else{
+				elecPosition = new ElecPosition();
+				CrudUtils.transMap2Bean(map, elecPosition);
+			}
+		}else{
+			throw new Exception("electricianId 不可为空");
+		}
+		
 		String posiJson = JsonUtils.toJsonString(elecPosition);
 		stringRedisTemplate.opsForValue().set("ep"+elecPosition.getElectricianId(), posiJson, 1L, TimeUnit.HOURS);
 		return elecPositionRepository.save(elecPosition);

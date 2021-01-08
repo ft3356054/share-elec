@@ -2,6 +2,8 @@ package com.sgcc.uap.share.customer.controller;
 
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +53,10 @@ public class LoginController {
 	 * 登录方法的编写——用户登录后，通过判断是否为电工，如果为电工则跳转电工首页，并获取位置信息储存，如果没有获取到，则提示打开定位；
 	 * 如果不为电工，则查询用户信息，如果没有则录入信息，然后跳转用户首页。
 	 * 用户下单后储存位置信息，电工登录后储存位置信息
+	 * http://localhost:8083/userLogin/customer002
 	 */
 	@RequestMapping(value = "/{userId}")
-	public WrappedResult getLoginUserId(@PathVariable String userId) {
+	public WrappedResult getLoginUserId(HttpServletResponse response,@PathVariable String userId) {
 		try {
 			
 			boolean isElec = getElectricianInfoService.getElectricianInfoNumberByElectricianId(userId);
@@ -69,12 +72,12 @@ public class LoginController {
 				elecPositionService.saveElecPosition(map);
 				
 				//跳转到电工首页
-				
+				response.sendRedirect("http://127.0.0.1:8080/electricianend");
 			}else{
 				boolean isCust = customerInfoService.getNumberByCustomerId(userId);
 				if(isCust){
 					//跳转到客户首页
-					
+					response.sendRedirect("http://127.0.0.1:8080/customer");
 				}else{
 					//调用国网接口，获取用户信息
 					
@@ -83,7 +86,7 @@ public class LoginController {
 					
 					
 					//跳转到客户首页
-					
+					response.sendRedirect("http://127.0.0.1:8080/customer");
 				}
 			}
 			logger.info("登录跳转成功"); 

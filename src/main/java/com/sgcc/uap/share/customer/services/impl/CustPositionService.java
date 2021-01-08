@@ -100,17 +100,14 @@ public class CustPositionService implements ICustPositionService{
 	
 	@Override
 	public CustPosition saveCustPosition(Map<String,Object> map) throws Exception{
+		//目前应该没有修改的时候，只有新增
 		validateService.validateWithException(CustPosition.class,map);
 		CustPosition custPosition = new CustPosition();
-		/*if (map.containsKey("orderId")) {
-			String orderId = (String) map.get("orderId");
-			custPosition = custPositionRepository.findOne(orderId);
-			CrudUtils.mapToObject(map, custPosition,  "orderId");
-		}else{
-			CrudUtils.transMap2Bean(map, custPosition);
-		}*/
 		CrudUtils.transMap2Bean(map, custPosition);
-		return custPositionRepository.save(custPosition);
+		CustPosition result = custPositionRepository.save(custPosition);
+		String posiJson = JsonUtils.toJsonString(result);
+		stringRedisTemplate.opsForValue().set("cp"+result.getOrderId(), posiJson, 7L, TimeUnit.DAYS);
+		return result;
 	}
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {

@@ -42,8 +42,10 @@ import com.sgcc.uap.share.customer.services.IOrderCustomerService;
 import com.sgcc.uap.share.domain.BaseAreaPrice;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.BaseIdentityPrice;
+import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
+import com.sgcc.uap.share.electrician.services.impl.ElecPositionService;
 import com.sgcc.uap.share.services.IBaseEnumsService;
 import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
 import com.sgcc.uap.share.services.impl.BaseIdentityPriceService;
@@ -100,6 +102,9 @@ public class OrderCustomerService implements IOrderCustomerService{
 	private NotifyAnnounceService notifyAnnounceService;
 	@Autowired
 	private NotifyAnnounceUserService notifyAnnounceUserService;
+	@Autowired
+	private ElecPositionService elecPositionService;
+	
 	
 	@SuppressWarnings("rawtypes")
 	@Autowired
@@ -449,7 +454,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	}
 	
 	
-	private Map<String,Object> getOrderStatus(Map map,OrderCustomer orderCustomer) throws Exception{
+	private Map<String,Object> getOrderStatus(Map<String, Object> map,OrderCustomer orderCustomer) throws Exception{
 		Map<String,Object> result = new HashMap<String, Object>();
 		Timestamp nowDate =new Timestamp(System.currentTimeMillis());
 		String orderStatus = (String) map.get("orderStatus");
@@ -552,6 +557,13 @@ public class OrderCustomerService implements IOrderCustomerService{
 						getOrderElectricianRepository.save(orderElectrician);
 						//插入电工流水
 						sendNotify(map, orderCustomer , orderElectrician,2,"1");
+						
+						ElecPosition elecPosition = elecPositionService.getElecPositionByElectricianId(orderElectrician.getElectricianId());
+						Map<String,Object> elecPositionMap = new HashMap<String, Object>();
+						elecPositionMap.put("electricianId", elecPosition.getElectricianId());
+						elecPositionMap.put("status", elecPosition.getStatus());
+						elecPositionService.saveElecPosition(elecPositionMap);
+						
 						String dateString = TimeStamp.toString(new Date());
 						map.put("updateTime", dateString);
 						result.put("key", "0");
