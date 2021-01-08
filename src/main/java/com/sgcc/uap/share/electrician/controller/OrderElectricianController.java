@@ -837,18 +837,17 @@ public class OrderElectricianController {
 					
 					
 					System.out.println("我现在进行的是预约成功的方法");
-					String orderElectricianStatus=(String) map.get("orderElectricianStatus");//获取电工订单的订单状态是否是5
+					String orderElectricianStatus=(String) map.get("orderElectricianStatus");
 					
 						String orderId=(String) map.get("orderId");
 						
-						//获取一个客户订单
+						//获取预约子订单的主订单
 						OrderCustomer orderCustomerNew=orderCustomerService.findByOrderId(orderId);
 						
 						
-						List<OrderElectrician> list=orderElectricianService.findByOrderIdAndOrderElectricianStatusOrderByFinishTimeDesc(orderId,orderElectricianStatus);
 						
-						if(list.size()!=0){
-							//获取最新的状态是5的订单，则说明是老订单,则创建一个新的订
+						List<OrderElectrician> list=orderElectricianService.findByOrderIdAndOrderElectricianStatusOrderByFinishTimeDesc(orderId,orderElectricianStatus);
+	
 							OrderElectrician orderElectrician=list.get(0);
 						
 						//查询电工的详细信息
@@ -856,39 +855,40 @@ public class OrderElectricianController {
 						ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
 						
 						//创建一个新的电工订单
-						orderElectricianMap.put("orderElectricianId", UuidUtil.getIntUuid32());
+						//orderElectricianMap.put("orderElectricianId", UuidUtil.getIntUuid32());
 						orderElectricianMap.put("orderId", orderId);
 						orderElectricianMap.put("electricianId",electricianId);
-						orderElectricianMap.put("electricianName",electricianInfo.getElectricianName() );
-						orderElectricianMap.put("electricianPhonenumber",electricianInfo.getElectricianPhonenumber());
-						//orderElectricianMap.put("electricianAddress",electricianInfo.getelectr);
-						orderElectricianMap.put("electricianPrice",orderCustomerNew.getCustomerPrice());
-						orderElectricianMap.put("orderTypeId",0);
-						orderElectricianMap.put("payStatus",orderCustomerNew.getPayStatus());
-						orderElectricianMap.put("createTime",orderCustomerNew.getCreateTime());
-						orderElectricianMap.put("electricianDescrive",orderElectrician.getElectricianDescrive());
-						orderElectricianMap.put("electricianDescriveIcon",orderElectrician.getElectricianDescriveIcon());
-						orderElectricianMap.put("chargebackReason",orderElectrician.getChargebackReason());
+						//orderElectricianMap.put("electricianName",electricianInfo.getElectricianName() );
+						//orderElectricianMap.put("electricianPhonenumber",electricianInfo.getElectricianPhonenumber());
+						
+						//orderElectricianMap.put("electricianPrice",orderCustomerNew.getCustomerPrice());
+						//orderElectricianMap.put("orderTypeId",0);
+						//orderElectricianMap.put("payStatus",orderCustomerNew.getPayStatus());
+						//orderElectricianMap.put("createTime",orderCustomerNew.getCreateTime());
+						//orderElectricianMap.put("electricianDescrive",orderElectrician.getElectricianDescrive());
+						//orderElectricianMap.put("electricianDescriveIcon",orderElectrician.getElectricianDescriveIcon());
+						//orderElectricianMap.put("chargebackReason",orderElectrician.getChargebackReason());
 						
 						
-					}
+					
 						
 				
-					//如果状态是：1，等待接单（用户已支付上门费）状态转为2 
-						orderCustomerMap.put("appointmentTime", map.get("appointmentTime"));//给客户订单设置更新时间
-						orderCustomerMap.put("orderStatus", "21");
-						orderCustomerMap.put("orderId", map.get("orderId"));
+					
+						orderCustomerMap.put("appointmentTime", map.get("appointmentTime"));//给客户订单设置更新时
 						orderCustomerMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
+						orderCustomerMap.put("orderStatus",map.get("orderStatus"));
+						orderCustomerMap.put("orderId", map.get("orderId"));
+						
 						
 						orderElectricianMap.put("orderId", map.get("orderId"));
-						orderElectricianMap.put("orderElectricianStatus", "21");
-						orderElectricianMap.put("electricianId", map.get("electricianId"));
+						orderElectricianMap.put("orderElectricianStatus", map.get("orderElectricianStatus"));
+						
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
-						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						OrderElectrician orderElectrician1=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 						OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
 						result.setFormItems(orderCustomerVO);
-						orderElectricianService.sendNotify(orderElectrician, 2, "1");
+						orderElectricianService.sendNotify(orderElectrician1, 2, "1");
 						
 				
 				}
