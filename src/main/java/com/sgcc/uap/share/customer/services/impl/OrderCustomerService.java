@@ -488,6 +488,13 @@ public class OrderCustomerService implements IOrderCustomerService{
 						getOrderElectricianRepository.save(orderElectrician);
 						//插入电工流水
 						sendNotify(map, orderCustomer , orderElectrician,2,"1");
+						
+						ElecPosition elecPosition = elecPositionService.getElecPositionByElectricianId(orderElectrician.getElectricianId());
+						Map<String,Object> elecPositionMap = new HashMap<String, Object>();
+						elecPositionMap.put("electricianId", elecPosition.getElectricianId());
+						elecPositionMap.put("status", elecPosition.getStatus());
+						elecPositionService.saveElecPosition(elecPositionMap);
+						
 						String dateString = TimeStamp.toString(new Date());
 						map.put("updateTime", dateString);
 						map.put("finishTime", dateString);
@@ -557,12 +564,6 @@ public class OrderCustomerService implements IOrderCustomerService{
 						getOrderElectricianRepository.save(orderElectrician);
 						//插入电工流水
 						sendNotify(map, orderCustomer , orderElectrician,2,"1");
-						
-						ElecPosition elecPosition = elecPositionService.getElecPositionByElectricianId(orderElectrician.getElectricianId());
-						Map<String,Object> elecPositionMap = new HashMap<String, Object>();
-						elecPositionMap.put("electricianId", elecPosition.getElectricianId());
-						elecPositionMap.put("status", elecPosition.getStatus());
-						elecPositionService.saveElecPosition(elecPositionMap);
 						
 						String dateString = TimeStamp.toString(new Date());
 						map.put("updateTime", dateString);
