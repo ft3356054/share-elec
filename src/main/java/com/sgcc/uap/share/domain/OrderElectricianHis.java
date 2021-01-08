@@ -147,7 +147,11 @@ public class OrderElectricianHis implements Serializable {
      */
     @Column(name = "ELECTRICIAN_EVALUATE", nullable = true, length = 512)
     private String electricianEvaluate ;
-    
+    /** 
+     * ELECTRICIAN_EVALUATE_ICON
+     */
+    @Column(name = "ELECTRICIAN_EVALUATE_ICON", nullable = true, length = 512)
+    private String electricianEvaluateIcon ;
     /** 
      * 退单原因
      */
@@ -210,6 +214,12 @@ public class OrderElectricianHis implements Serializable {
 	
 	public OrderElectricianHis(){
 	
+	}
+    public String getElectricianEvaluateIcon() {
+		return electricianEvaluateIcon;
+	}
+	public void setElectricianEvaluateIcon(String electricianEvaluateIcon) {
+		this.electricianEvaluateIcon = electricianEvaluateIcon;
 	}
     /**
      * @getOrderElectricianId:电工订单ID的get方法
