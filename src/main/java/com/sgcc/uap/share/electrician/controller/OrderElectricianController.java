@@ -562,7 +562,9 @@ public class OrderElectricianController {
 			//获取客户的ID，
 			String orderId=custPosition.getOrderId();
 			OrderCustomer orderCustomer=orderCustomerService.findByOrderIdAndOrderStatus(orderId);
-			if (orderCustomer !=null && (orderCustomer.getOrderStatus().equals("1") || orderCustomer.getOrderStatus().equals("11"))) {
+			OrderElectrician orderElectrician=orderElectricianService.findByElectricianIdAndOrderId(orderId,electricianId);
+			
+			if (orderCustomer !=null && orderElectrician==null && (orderCustomer.getOrderStatus().equals("1") || orderCustomer.getOrderStatus().equals("11"))) {
 				orderCustomerList.add(orderCustomer);
 			}
 		}	

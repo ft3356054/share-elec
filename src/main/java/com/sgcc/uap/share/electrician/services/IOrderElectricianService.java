@@ -89,7 +89,7 @@ OrderElectrician findByOrderId(String orderId, String electricianId);
 OrderCustomer saveOrderCustomerByOrderElectricianService(Map<String, Object> map) throws Exception;
 public List<OrderElectrician> findByOrderIdAndOrderElectricianStatusOrderByFinishTimeDesc(String orderId,
 		String orderElectricianStatus);
-public OrderElectrician findByElectricianIdAndOrderId(String electricianId, String orderId);
+public OrderElectrician findByElectricianIdAndOrderId( String orderId,String electricianId);
 public QueryResultObject queryAllHaveEsc(String electricianId);
 OrderElectrician saveOrderElectrician(Map<String, Object> map) throws Exception;
 

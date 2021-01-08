@@ -811,8 +811,8 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	/**
 	 * 根据电工ID和订单ID查询出一个电工订单
 	 */
-	public OrderElectrician findByElectricianIdAndOrderId(String electricianId, String orderId){
-		OrderElectrician orderElectrician=orderElectricianRepository.findByElectricianIdAndOrderId(electricianId,orderId);
+	public OrderElectrician findByElectricianIdAndOrderId(String orderId,String electricianId ){
+		OrderElectrician orderElectrician=orderElectricianRepository.findByElectricianIdAndOrderId(orderId,electricianId);
 		return orderElectrician;
 		
 	}
