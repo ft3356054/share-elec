@@ -552,8 +552,8 @@ public class OrderElectricianController {
 	 * acceptAround电工的接单范围
 	 */
 	@RequestMapping("/queryAllOrder/{electricianId}")
-	public WrappedResult queryAllOrder(@PathVariable String electricianId,
-			@RequestParam(value="acceptAround",required= false)String acceptAround
+	public WrappedResult queryAllOrder(@PathVariable String electricianId
+			
 			){
 		
 		//1.先根据电工的ID获取区域ID
@@ -567,12 +567,10 @@ public class OrderElectricianController {
 		
 		//2获取此电工的经纬度范围
 		//电工默认接收订单范围是 15KM
-		if (acceptAround.isEmpty()) {
-			acceptAround="15";
-		}
-		int acceptAroundNumber=Integer.valueOf(acceptAround);
-		acceptAroundNumber=acceptAroundNumber*1000;
-		double[] around=PointUtil.getAround(Double.valueOf(elecPosition.getLon()), Double.valueOf(elecPosition.getLat()), acceptAroundNumber);
+		
+		
+	
+		double[] around=PointUtil.getAround(Double.valueOf(elecPosition.getLon()), Double.valueOf(elecPosition.getLat()), 15*1000);
 		
 		//地理经纬度在范围内的客户集合
 		List<CustPosition> list=new ArrayList<>();
