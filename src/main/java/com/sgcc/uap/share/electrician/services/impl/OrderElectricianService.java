@@ -1359,6 +1359,7 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer,OrderElec
 	orderCustomerVO.setOtherElectricianId(orderElectrician.getOrderElectricianId());
 	orderCustomerVO.setRemarkStr1(orderElectrician.getRemarkStr1());
 	orderCustomerVO.setElectricianEvaluateIcon(orderElectrician.getElectricianEvaluateIcon());
+	orderCustomerVO.setOrderContract(orderElectrician.getOrderContract());
 	//子订单ID
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getOrderElectricianId());
 	//如果订单类型不为null.则返回描述性信息
