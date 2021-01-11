@@ -825,9 +825,9 @@ public class OrderElectricianController {
 						
 						
 						
-						List<OrderElectrician> list=orderElectricianService.findByOrderIdAndOrderElectricianStatusOrderByFinishTimeDesc(orderId,orderElectricianStatus);
+						//List<OrderElectrician> list=orderElectricianService.findByOrderIdAndOrderElectricianStatusOrderByFinishTimeDesc(orderId,orderElectricianStatus);
 	
-							OrderElectrician orderElectrician=list.get(0);
+							//OrderElectrician orderElectrician=list.get(0);
 						
 						//查询电工的详细信息
 						String electricianId=(String) map.get("electricianId");
@@ -864,10 +864,10 @@ public class OrderElectricianController {
 						
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
-						OrderElectrician orderElectrician1=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 						OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
 						result.setFormItems(orderCustomerVO);
-						orderElectricianService.sendNotify(orderElectrician1, 2, "1");
+						orderElectricianService.sendNotify(orderElectrician, 2, "1");
 						
 				
 				}
