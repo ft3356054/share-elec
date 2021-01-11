@@ -525,7 +525,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 					map.put("orderContract", orderContract);
 				}
 				
-			}else if ("8".equals(map.get("orderElectricianStatus"))) {//8状态说明是验收状态页面要进行验收，需要保存图片
+			}else if ("25".equals(map.get("orderElectricianStatus"))) {//8状态说明是验收状态页面要进行验收，需要保存图片
 				
 				//上传图片
 				if (null!=file&&!"".equals(file))  {
@@ -1360,6 +1360,7 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer,OrderElec
 	orderCustomerVO.setRemarkStr1(orderElectrician.getRemarkStr1());
 	orderCustomerVO.setElectricianEvaluateIcon(orderElectrician.getElectricianEvaluateIcon());
 	orderCustomerVO.setOrderContract(orderElectrician.getOrderContract());
+	orderCustomerVO.setInspectionReport(orderElectrician.getInspectionReport());
 	//子订单ID
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getOrderElectricianId());
 	//如果订单类型不为null.则返回描述性信息
@@ -1427,8 +1428,8 @@ public void testSpec() {
 		@Override
 		public Predicate toPredicate(Root<OrderElectrician> root, CriteriaQuery<?> arg1, CriteriaBuilder cb) {
 			
-			Path<Object> orderPath = root.get("ORDER_ID");
-			Path<Object> phonemumber = root.get("ELECTRICIAN_PHONENUMBER");
+			Path<Object> orderPath = root.get("orDERId");
+			Path<Object> phonemumber = root.get("electricianPhonenumber");
 			
 			Predicate p1 = cb.equal(orderPath, "26");
 			Predicate p2 = cb.equal(phonemumber, "13473284256");
