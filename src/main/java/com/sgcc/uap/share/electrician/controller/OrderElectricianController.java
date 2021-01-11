@@ -622,7 +622,7 @@ public class OrderElectricianController {
 				String orderCustomerLat=orderCustomer.getAddressLatitude();
 				
 				
-				distanceDouble=PointUtil.getDistanceString2(String.valueOf(elecPosition.getLon()), String.valueOf(elecPosition.getLat()), orderCustomerLon, orderCustomerLat);
+				distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPosition.getLon()), String.valueOf(elecPosition.getLat()), orderCustomerLon, orderCustomerLat);
 				System.out.println("计算的距离是："+distanceDouble);
 				
 				orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
