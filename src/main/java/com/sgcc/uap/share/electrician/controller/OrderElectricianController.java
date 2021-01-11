@@ -625,18 +625,24 @@ public class OrderElectricianController {
 				distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPosition.getLon()), String.valueOf(elecPosition.getLat()), orderCustomerLon, orderCustomerLat);
 				System.out.println("计算的距离是："+distanceDouble);
 				
-				orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
-				if (orderCustomer.getOrderStatus().equals("11")) {
-					String orderId=orderCustomer.getOrderId();
-					List<OrderElectrician> orderElectricianList=orderElectricianService.queryByOrderIdOrderByCreatetime(orderId);
-					OrderElectrician orderElectrician=orderElectricianList.get(0);
-					orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+				if (distanceDouble<=15 && distanceDouble>0) {
+					orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
+					if (orderCustomer.getOrderStatus().equals("11")) {
+						String orderId=orderCustomer.getOrderId();
+						List<OrderElectrician> orderElectricianList=orderElectricianService.queryByOrderIdOrderByCreatetime(orderId);
+						OrderElectrician orderElectrician=orderElectricianList.get(0);
+						orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+					}else {
+						//BeanUtils.copyProperties(orderCustomer, orderElectricianBeginPageVO);
+						orderElectricianBeginPageVO=orderElectricianService.convertOrderCustomer2OrderElectricianBeginPageVO(orderCustomer, orderElectricianBeginPageVO);
+					}
+					orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
+					ovcList.add(orderElectricianBeginPageVO);
+					
 				}else {
-					//BeanUtils.copyProperties(orderCustomer, orderElectricianBeginPageVO);
-					orderElectricianBeginPageVO=orderElectricianService.convertOrderCustomer2OrderElectricianBeginPageVO(orderCustomer, orderElectricianBeginPageVO);
+					return WrappedResult.successWrapedResult("此区域没有订单");
 				}
-				orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
-				ovcList.add(orderElectricianBeginPageVO);
+				
 				
 			}
 		
