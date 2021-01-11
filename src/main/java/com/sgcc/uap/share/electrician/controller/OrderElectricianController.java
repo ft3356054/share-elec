@@ -1090,6 +1090,7 @@ public class OrderElectricianController {
 						orderElectricianMap.put("orderElectricianStatus",map.get("orderElectricianStatus"));
 						orderElectricianMap.put("electricianId", map.get("electricianId"));
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
+						orderElectricianMap.put("finishTime", DateTimeUtil.formatDateTime(new Date()));
 						
 						
 						

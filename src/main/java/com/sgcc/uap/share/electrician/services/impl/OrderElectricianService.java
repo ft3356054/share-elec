@@ -22,6 +22,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.validator.constraints.br.CNPJ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -524,13 +525,23 @@ public class OrderElectricianService implements IOrderElectricianService{
 					map.put("orderContract", orderContract);
 				}
 				
-			}else if ("8".equals(map.get("orderElectricianStatus"))) {//8状态说明是验收状态页面要进行验收，需要保存图片
+			}else if ("25".equals(map.get("orderElectricianStatus"))) {//8状态说明是验收状态页面要进行验收，需要保存图片
 				
 				//上传图片
 				if (null!=file&&!"".equals(file))  {
 					String inspectionReport = FileUtil.uploadFile(file, orderElectrician.getOrDERId(),"ORDER_ELECTRICIAN", "inspectionReport");
 					map.put("inspectionReport", inspectionReport);
 				}
+				
+			}
+			else if ("9".equals(map.get("orderElectricianStatus"))) {
+
+				//上传图片
+				if (null!=file&&!"".equals(file))  {
+					String electricianEvaluateIcon = FileUtil.uploadFile(file, orderElectrician.getOrDERId(),"ORDER_ELECTRICIAN", "electricianEvaluateIcon");
+					map.put("electricianEvaluateIcon", electricianEvaluateIcon);
+				}
+				
 				
 			}
 			
@@ -1347,6 +1358,9 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer,OrderElec
 	orderCustomerVO.setConstructionContent(orderElectrician.getConstructionContent());
 	orderCustomerVO.setOtherElectricianId(orderElectrician.getOrderElectricianId());
 	orderCustomerVO.setRemarkStr1(orderElectrician.getRemarkStr1());
+	orderCustomerVO.setElectricianEvaluateIcon(orderElectrician.getElectricianEvaluateIcon());
+	orderCustomerVO.setOrderContract(orderElectrician.getOrderContract());
+	orderCustomerVO.setInspectionReport(orderElectrician.getInspectionReport());
 	//子订单ID
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getOrderElectricianId());
 	//如果订单类型不为null.则返回描述性信息
@@ -1394,17 +1408,37 @@ public List<OrderElectrician> queryByOrderIdOrderByCreatetime(String orderId) {
 }
 @Override
 public void testSpec() {
-	
+	/*
 	Specification<OrderElectrician> specification=new Specification<OrderElectrician>() {
 
 		@Override
 		public Predicate toPredicate(Root<OrderElectrician> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 			
-			root.get("electricianId");
-			return null;
+			Path<Object> electricianId = root.get("electricianId");
+			Predicate predicate = cb.equal(electricianId, "321");
+			return predicate;
 		}
 	};
+	OrderElectrician orderElectrician = orderElectricianRepository.findOne(specification);
+	System.out.println("我测试的数据是：++++++++"+orderElectrician);
+	*/
 	
+	Specification<OrderElectrician> specification=new Specification<OrderElectrician>() {
+
+		@Override
+		public Predicate toPredicate(Root<OrderElectrician> root, CriteriaQuery<?> arg1, CriteriaBuilder cb) {
+			
+			Path<Object> orderPath = root.get("orDERId");
+			Path<Object> phonemumber = root.get("electricianPhonenumber");
+			
+			Predicate p1 = cb.equal(orderPath, "26");
+			Predicate p2 = cb.equal(phonemumber, "13473284256");
+			Predicate and = cb.and(p1, p2);
+			return and;
+		}
+	};
+	OrderElectrician orderElectrician = orderElectricianRepository.findOne(specification);
+	System.out.println("我测试的数据是：++++++++"+orderElectrician);
 }
 
 }

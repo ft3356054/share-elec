@@ -217,6 +217,9 @@ public class OrderElectricianBeginPageVO extends ParentVO implements Serializabl
     
     
     
+    
+    
+    
     /*************************************************** 
      * 新增数据库没有的字段
      */
@@ -1021,6 +1024,21 @@ public class OrderElectricianBeginPageVO extends ParentVO implements Serializabl
 	}
 	public void setOrderElectricianStatus(String orderElectricianStatus) {
 		this.orderElectricianStatus = orderElectricianStatus;
+	}
+	
+	//2020.1.11添加
+
+    /** 
+     * ELECTRICIAN_EVALUATE_ICON
+     */
+    @Column(name = "ELECTRICIAN_EVALUATE_ICON", nullable = true, length = 512)
+    private String electricianEvaluateIcon ;
+    
+    public String getElectricianEvaluateIcon() {
+		return electricianEvaluateIcon;
+	}
+	public void setElectricianEvaluateIcon(String electricianEvaluateIcon) {
+		this.electricianEvaluateIcon = electricianEvaluateIcon;
 	}
 	
 	 /**
