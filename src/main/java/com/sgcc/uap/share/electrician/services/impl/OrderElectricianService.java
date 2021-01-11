@@ -1392,6 +1392,20 @@ public List<OrderElectrician> queryByOrderIdOrderByCreatetime(String orderId) {
 	List<OrderElectrician> list=orderElectricianRepository.queryByOrderIdOrderByCreatetime(orderId);
 	return list;
 }
+@Override
+public void testSpec() {
+	
+	Specification<OrderElectrician> specification=new Specification<OrderElectrician>() {
+
+		@Override
+		public Predicate toPredicate(Root<OrderElectrician> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			
+			root.get("electricianId");
+			return null;
+		}
+	};
+	
+}
 
 }
 	

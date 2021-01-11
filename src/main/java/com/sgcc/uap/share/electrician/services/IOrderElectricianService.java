@@ -109,6 +109,7 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer, OrderEle
 public void sendNotify(OrderElectrician orderElectrician, int i, String string);
 public void sendNotify(OrderCustomer orderCustomer, int i, String string);
 public List<OrderElectrician> queryByOrderIdOrderByCreatetime(String orderId);
+public void testSpec();
 
 
 

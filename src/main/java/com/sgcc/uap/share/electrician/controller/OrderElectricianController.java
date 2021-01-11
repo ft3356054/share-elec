@@ -546,14 +546,22 @@ public class OrderElectricianController {
 		
 		//3.根据电工的区域ID获取此区域下的客户区域ID集合
 		List<CustPosition> custPositionList=custPositionService.getByAreaId(eleArea);
-	
-		for (CustPosition custPosition : custPositionList) {
-			if (Double.valueOf(custPosition.getLon())>around[0] && Double.valueOf(custPosition.getLon())<around[2]){
-				if (Double.valueOf(custPosition.getLat())>around[1] && Double.valueOf(custPosition.getLat())<around[3]) {
-					list.add(custPosition);
+		if (custPositionList.size()==0) {
+			//没有客户订单，则返回该区域没有客户订单
+			return WrappedResult.failedWrappedResult("该区域没有订单");
+		}if (custPositionList.size()==1) {
+			list.add(custPositionList.get(0));
+		} else {
+			for (CustPosition custPosition : custPositionList) {
+				if (Double.valueOf(custPosition.getLon())>around[0] && Double.valueOf(custPosition.getLon())<around[2]){
+					if (Double.valueOf(custPosition.getLat())>around[1] && Double.valueOf(custPosition.getLat())<around[3]) {
+						list.add(custPosition);
+					}
+				}				
 				}
-			}				
-			}
+		}
+	
+		
 	
 		List<OrderCustomer> orderCustomerList= new ArrayList<>();
 		
@@ -1221,6 +1229,12 @@ public class OrderElectricianController {
 		
 		
 		
+	}
+	
+	
+	@RequestMapping("/test")
+	public void testSpec(){
+		orderElectricianService.testSpec();
 	}
 	
 	
