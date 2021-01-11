@@ -30,6 +30,7 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.customer.repositories.CustomerInfoRepository;
+import com.sgcc.uap.share.customer.repositories.GetOrderAuditElectricianRepository;
 import com.sgcc.uap.share.customer.services.ICustomerInfoService;
 import com.sgcc.uap.share.domain.CustomerInfo;
 import com.sgcc.uap.share.domain.OrderAuditElectrician;
@@ -57,6 +58,9 @@ public class CustomerInfoService implements ICustomerInfoService{
 	private CustomerInfoRepository customerInfoRepository;
 	@Autowired
 	private OrderAuditElectricianRepository orderAuditElectricianRepository;
+	@Autowired
+	private GetOrderAuditElectricianRepository getOrderAuditElectricianRepository;
+	
 	
 	@Autowired
 	private ValidateService validateService;
@@ -74,13 +78,25 @@ public class CustomerInfoService implements ICustomerInfoService{
 	@Override
 	@Cacheable(cacheNames = "customerInfo" ,  keyGenerator = "wiselyKeyGenerator") //redis缓存
 	public CustomerInfo getCustomerInfoByCustomerId(String customerId) {
-		CustomerInfo customerInfo = customerInfoRepository.findCustomerInfoAndAuditStatus(customerId);
+		
+		List<String> statusList = new ArrayList<String>();
+		statusList.add("0"); 
+		statusList.add("9"); 
+		
+		int count = getOrderAuditElectricianRepository.countByElectricianIdAndOrderStatusIn(customerId, statusList);
+		
+		CustomerInfo customerInfo = customerInfoRepository.findOne(customerId);
+		
+		/*
+		 	0 初始状态  1
+			4 未通过    0
+			9 订单完结  2
+		 * */
 		if(null!=customerInfo){
-			String auditStatus = customerInfo.getRemark();
-			if("".equals(auditStatus)||null==auditStatus||"4".equals(auditStatus)){
-				customerInfo.setAuditStatus("0");
-			}else if("0".equals(auditStatus)){
+			if(count>0){
 				customerInfo.setAuditStatus("1");
+			}else{
+				customerInfo.setAuditStatus("0");
 			}
 			/*else if("9".equals(auditStatus)){
 				customerInfo.setAuditStatus("2");
