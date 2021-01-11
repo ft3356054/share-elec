@@ -33,7 +33,8 @@ public interface OrderCustomerBeginPageRepository extends JpaRepository<OrderCus
 			+ " FROM order_customer c  "
 			+ " LEFT JOIN order_electrician e ON c.ORDER_ID = e.ORDER_ID "
 			+ " AND e.ORDER_ELECTRICIAN_STATUS NOT IN :elecStatus "
-			+ " WHERE c.CUSTOMER_ID =:customerId  AND c.order_Status IN :statusList  "
+			+ " WHERE c.CUSTOMER_ID =:customerId  AND c.order_Status IN :statusList "
+			+ " order by c.CREATE_TIME DESC "
 			+ " limit :pageIndex,:pageSize",
 			nativeQuery = true)
 	List<OrderCustomerBeginPage> getOrderCustomerByCustomerIdAndEnot(@Param("pageIndex")int pageIndex,@Param("pageSize")int pageSize

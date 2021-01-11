@@ -36,8 +36,10 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 			+ " limit :pageIndex,:pageSize",
 			nativeQuery = true)
 	 * */
-	@Query(value = "SELECT * FROM order_customer WHERE CUSTOMER_ID =:customerId "
+	@Query(value = " SELECT * FROM ( "
+			+ " SELECT * FROM order_customer WHERE CUSTOMER_ID =:customerId "
 			+ " UNION SELECT * FROM order_customer_his WHERE CUSTOMER_ID =:customerId "
+			+ " ) t ORDER BY t.CREATE_TIME DESC  "
 			+ " limit :pageIndex,:pageSize",
 			nativeQuery = true)
 	List<OrderCustomer> getAllOrderCustomerByCustomerId(@Param("pageIndex")int pageIndex,@Param("pageSize")int pageSize
