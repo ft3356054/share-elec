@@ -89,7 +89,7 @@ OrderElectrician findByOrderId(String orderId, String electricianId);
 OrderCustomer saveOrderCustomerByOrderElectricianService(Map<String, Object> map) throws Exception;
 public List<OrderElectrician> findByOrderIdAndOrderElectricianStatusOrderByFinishTimeDesc(String orderId,
 		String orderElectricianStatus);
-public OrderElectrician findByElectricianIdAndOrderId(String electricianId, String orderId);
+public OrderElectrician findByElectricianIdAndOrderId( String orderId,String electricianId);
 public QueryResultObject queryAllHaveEsc(String electricianId);
 OrderElectrician saveOrderElectrician(Map<String, Object> map) throws Exception;
 
@@ -107,6 +107,9 @@ public void sendOederFlow(OrderElectrician orderElectrician, int i);
 public Map<String, Object> pojo2Map(Object obj);
 public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer, OrderElectrician orderElectrician);
 public void sendNotify(OrderElectrician orderElectrician, int i, String string);
+public void sendNotify(OrderCustomer orderCustomer, int i, String string);
+public List<OrderElectrician> queryByOrderIdOrderByCreatetime(String orderId);
+public void testSpec();
 
 
 

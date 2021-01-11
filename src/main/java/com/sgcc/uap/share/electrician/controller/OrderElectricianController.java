@@ -546,17 +546,22 @@ public class OrderElectricianController {
 		
 		//3.根据电工的区域ID获取此区域下的客户区域ID集合
 		List<CustPosition> custPositionList=custPositionService.getByAreaId(eleArea);
-		
-		int i=custPositionList.size();
-		
-		for (CustPosition custPosition : custPositionList) {
-			if (Double.valueOf(custPosition.getLon())>around[0] && Double.valueOf(custPosition.getLon())<around[2]){
-				if (Double.valueOf(custPosition.getLat())>around[1] && Double.valueOf(custPosition.getLat())<around[3]) {
-					list.add(custPosition);
-					i++;
+		if (custPositionList.size()==0) {
+			//没有客户订单，则返回该区域没有客户订单
+			return WrappedResult.failedWrappedResult("该区域没有订单");
+		}if (custPositionList.size()==1) {
+			list.add(custPositionList.get(0));
+		} else {
+			for (CustPosition custPosition : custPositionList) {
+				if (Double.valueOf(custPosition.getLon())>around[0] && Double.valueOf(custPosition.getLon())<around[2]){
+					if (Double.valueOf(custPosition.getLat())>around[1] && Double.valueOf(custPosition.getLat())<around[3]) {
+						list.add(custPosition);
+					}
+				}				
 				}
-			}				
-			}
+		}
+	
+		
 	
 		List<OrderCustomer> orderCustomerList= new ArrayList<>();
 		
@@ -565,22 +570,15 @@ public class OrderElectricianController {
 			//获取客户的ID，
 			String orderId=custPosition.getOrderId();
 			OrderCustomer orderCustomer=orderCustomerService.findByOrderIdAndOrderStatus(orderId);
-			if (orderCustomer !=null && (orderCustomer.getOrderStatus().equals("1") || orderCustomer.getOrderStatus().equals("11"))) {
+			OrderElectrician orderElectrician=orderElectricianService.findByElectricianIdAndOrderId(orderId,electricianId);
+			
+			if (orderCustomer !=null && orderElectrician==null && (orderCustomer.getOrderStatus().equals("1") || orderCustomer.getOrderStatus().equals("11"))) {
 				orderCustomerList.add(orderCustomer);
 			}
 		}	
 		//5.创建的是前端展示的VO对象集合
 		
 		List<OrderElectricianBeginPageVO> ovcList=new ArrayList<>();
-		/*
-		 Map<Double, OrderElectricianBeginPageVO> map = new TreeMap<Double, OrderElectricianBeginPageVO>(
-	                new Comparator<Double>() {
-	                    public int compare(Double obj1, Double obj2) {
-	                        // 降序排序
-	                        return obj1.compareTo(obj2);
-	                    }
-	                });
-	                */
 		
 		 Double distanceDouble=null;
 		//6.将查询到的客户订单进行距离排序
@@ -598,28 +596,17 @@ public class OrderElectricianController {
 				orderCustomerVO.setDistance(String.valueOf(distanceDouble)+"KM");
 				if (orderCustomer.getOrderStatus().equals("11")) {
 					String orderId=orderCustomer.getOrderId();
-					OrderElectrician orderElectrician=orderElectricianService.findByOrderId(orderId, electricianId);
+					List<OrderElectrician> orderElectricianList=orderElectricianService.queryByOrderIdOrderByCreatetime(orderId);
+					OrderElectrician orderElectrician=orderElectricianList.get(0);
 					orderCustomerVO=orderElectricianService.convert(orderCustomer, orderElectrician);
 				}else {
 					BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
 				}
 				orderCustomerVO.setDistance(String.valueOf(distanceDouble));
-				//map.put(distanceDouble, orderCustomerVO);
 				ovcList.add(orderCustomerVO);
 				
 			}
-			/*
-			Set<Double> keySet = map.keySet();
-	        Iterator<Double> iter = keySet.iterator();
-	        while (iter.hasNext()) {
-	            Double key = iter.next();
-	            System.out.println(key + ":" + map.get(key));
-	            ovcList.add(map.get(key));
-	        }  
-	        */ 
-			//Double op=Double.parseDouble(ovcList.get(0).getDistance());
-			//Double.compare(d1, d2)
-			//System.out.println("op的值是："+op);
+		
 			Collections.sort(ovcList, new Comparator<OrderElectricianBeginPageVO>() {
 
 	            @Override
@@ -846,9 +833,9 @@ public class OrderElectricianController {
 						
 						
 						
-						List<OrderElectrician> list=orderElectricianService.findByOrderIdAndOrderElectricianStatusOrderByFinishTimeDesc(orderId,orderElectricianStatus);
+						//List<OrderElectrician> list=orderElectricianService.findByOrderIdAndOrderElectricianStatusOrderByFinishTimeDesc(orderId,orderElectricianStatus);
 	
-							OrderElectrician orderElectrician=list.get(0);
+							//OrderElectrician orderElectrician=list.get(0);
 						
 						//查询电工的详细信息
 						String electricianId=(String) map.get("electricianId");
@@ -885,10 +872,10 @@ public class OrderElectricianController {
 						
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
-						OrderElectrician orderElectrician1=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
+						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 						OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
 						result.setFormItems(orderCustomerVO);
-						orderElectricianService.sendNotify(orderElectrician1, 2, "1");
+						orderElectricianService.sendNotify(orderElectrician, 2, "1");
 						
 				
 				}
@@ -932,7 +919,7 @@ public class OrderElectricianController {
 					
 				}
 				
-				if(method.equals("现场勘查退回订单")){   
+				if(method.equals("abc")){   
 					//客户订单将状态改变成：11   电工订单将订单状态改变成：5
 					
 					//将map中的数据分别送到两个类中，在进行更新
@@ -972,7 +959,7 @@ public class OrderElectricianController {
 							//电工订单需要更新的信息
 							orderElectricianMap.put("orderId", map.get("orderId"));
 							orderElectricianMap.put("orderElectricianStatus",map.get("orderElectricianStatus"));
-							orderElectricianMap.put("electricianDescrive", map.get("electricianDescrive"));
+							//orderElectricianMap.put("electricianDescrive", map.get("electricianDescrive"));
 							orderElectricianMap.put("electricianId", map.get("electricianId"));
 							orderElectricianMap.put("electricianPrice", map.get("electricianPrice"));
 							orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
@@ -985,8 +972,8 @@ public class OrderElectricianController {
 							
 							//给客户发送消息，让其支付维修费
 							//TODO
-							orderElectricianService.sendNotify(orderElectrician,0,"1");
-							WebSocketServer.sendInfo("等待支付维修费",(String)orderCustomer.getCustomerId());
+							orderElectricianService.sendNotify(orderCustomer1,0,"1");
+							
 							//订单来源是客服，则直接出示二维码
 						}else {
 							// TODO: handle exception
@@ -1033,6 +1020,17 @@ public class OrderElectricianController {
 							
 						}
 						
+						String temp=(String) map.get("otherElectricianId");
+						String electricianId = (String) map.get("electricianId");
+						String otherElectricianId=electricianId+","+temp;
+						System.out.println(otherElectricianId);
+						
+						//查询电工的名字
+						ElectricianInfo electricianInfo=electricianInfoService.findByElectricianId(electricianId);
+						String electricianName=electricianInfo.getElectricianName();
+						String telephone=electricianInfo.getElectricianPhonenumber();
+						remark_str1sString=electricianName+":"+telephone+","+remark_str1sString;
+						
 						//将map中的数据分别送到两个类中，在进行更新
 						//客户订单需要跟新的信息
 						orderCustomerMap.put("orderStatus", map.get("orderStatus"));
@@ -1045,6 +1043,7 @@ public class OrderElectricianController {
 						orderElectricianMap.put("electricianId", map.get("electricianId"));
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 						orderElectricianMap.put("remarkStr1", remark_str1sString);
+						orderElectricianMap.put("otherElectricianId", otherElectricianId);
 						
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						System.out.println("我执行完了保存操作");
@@ -1074,6 +1073,7 @@ public class OrderElectricianController {
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 						OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
 						result.setFormItems(orderCustomerVO);
+						orderElectricianService.sendNotify(orderElectrician, 2, "1");
 						
 					}
 					
@@ -1090,7 +1090,7 @@ public class OrderElectricianController {
 						orderElectricianMap.put("orderElectricianStatus",map.get("orderElectricianStatus"));
 						orderElectricianMap.put("electricianId", map.get("electricianId"));
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
-						orderElectricianMap.put("finishTime", DateTimeUtil.formatDateTime(new Date()));
+						
 						
 						
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
@@ -1115,7 +1115,8 @@ public class OrderElectricianController {
 						System.out.println("我执行完了保存操作");
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 						
-						result.setFormItems(orderElectrician);						
+						result.setFormItems(orderElectrician);	
+						orderElectricianService.sendNotify(orderElectrician, 2, "1");
 					}
 			}
 
@@ -1228,6 +1229,12 @@ public class OrderElectricianController {
 		
 		
 		
+	}
+	
+	
+	@RequestMapping("/test")
+	public void testSpec(){
+		orderElectricianService.testSpec();
 	}
 	
 	
