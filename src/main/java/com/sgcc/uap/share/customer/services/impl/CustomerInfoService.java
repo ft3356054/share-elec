@@ -13,8 +13,6 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -76,7 +74,6 @@ public class CustomerInfoService implements ICustomerInfoService{
 	}
 	
 	@Override
-	@Cacheable(cacheNames = "customerInfo" ,  keyGenerator = "wiselyKeyGenerator") //redis缓存
 	public CustomerInfo getCustomerInfoByCustomerId(String customerId) {
 		
 		List<String> statusList = new ArrayList<String>();
@@ -107,7 +104,6 @@ public class CustomerInfoService implements ICustomerInfoService{
 	
 	
 	@Override
-	@CacheEvict(cacheNames = "customerInfo",keyGenerator = "wiselyKeyGenerator" , allEntries = true) //redis缓存
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){
 			throw new NullArgumentException("idObject");
@@ -119,7 +115,6 @@ public class CustomerInfoService implements ICustomerInfoService{
 	}
 	
 	@Override
-	@CacheEvict(cacheNames = "customerInfo",keyGenerator = "wiselyKeyGenerator" , allEntries = true) //redis缓存
 	public CustomerInfo saveCustomerInfo(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(CustomerInfo.class,map);
 		CustomerInfo customerInfo = null;

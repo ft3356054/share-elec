@@ -60,7 +60,7 @@ public class ElecPositionService implements IElecPositionService{
 	public ElecPosition getElecPositionByElectricianId(String electricianId) {
 		String json = stringRedisTemplate.opsForValue().get("ep"+electricianId);
 		ElecPosition elecPosition = null;
-		if("".equals(json)||null==json){
+		if("".equals(json)||null==json||"null".equals(json)){
 			elecPosition = elecPositionRepository.findOne(electricianId);
 			String posiJson = JsonUtils.toJsonString(elecPosition);
 			stringRedisTemplate.opsForValue().set("ep"+electricianId, posiJson, 1L, TimeUnit.HOURS);
