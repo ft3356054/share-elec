@@ -27,7 +27,8 @@ public interface NotifyAnnounceAndUserRepository extends JpaRepository<NotifyAnn
 			nativeQuery = true)
 	public List<NotifyAnnounceAndUser> findByAnnounceUserId(@Param("ids")String ids);
 	
-	@Query(value = "SELECT na.*,nau.ANNOUNCE_USER_ID,nau.STATE,nau.READ_TIME FROM notify_announce_user nau "
+	@Query(value = "SELECT na.ANNOUNCE_ID,na.SERDER_ID,na.TITLE,na.CONTENT,na.NOTIFY_TYPE,na.ORDER_ID,na.REMARK,"
+			+ " nau.ANNOUNCE_USER_ID,nau.STATE,nau.READ_TIME,nau.CREATE_TIME FROM notify_announce_user nau "
 			+ " LEFT JOIN NOTIFY_ANNOUNCE na ON nau.ANNOUNCE_ID = na.ANNOUNCE_ID "
 			+ " WHERE nau.ANNOUNCE_USER_ID = :userId  "
 			+ " AND IF(:status !='2',nau.STATE = :status,1=1) "
