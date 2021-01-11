@@ -99,7 +99,7 @@ OrderElectrician saveNewNullOrderElectrician(String orderId) throws Exception;
 public void esc(String orderElectricianId, String orderElectricianStatus);
 public QueryResultObject searchBox(String electricianId, String searchContent);
 void paidanchaxun(OrderCustomer orderCustomer);
-void qiangdantanchuang(OrderCustomer orderCustomer);
+
 public String jisuanjuli(OrderCustomer orderCustomer, OrderElectrician orderElectrician);
 
 
@@ -110,6 +110,10 @@ public void sendNotify(OrderElectrician orderElectrician, int i, String string);
 public void sendNotify(OrderCustomer orderCustomer, int i, String string);
 public List<OrderElectrician> queryByOrderIdOrderByCreatetime(String orderId);
 public void testSpec();
+public OrderElectricianBeginPageVO convertDistance(OrderElectricianBeginPageVO orderElectricianBeginPageVO);
+public OrderElectricianBeginPageVO convertOrderCustomer2OrderElectricianBeginPageVO(OrderCustomer orderCustomer,
+		OrderElectricianBeginPageVO orderElectricianBeginPageVO);
+void qiangdantanchuang(OrderCustomer orderCustomer, Integer acceptAround);
 
 
 

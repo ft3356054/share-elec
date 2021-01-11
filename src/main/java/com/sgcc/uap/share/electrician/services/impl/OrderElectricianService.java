@@ -932,9 +932,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 					map.put(distanceDouble, electricianInfo2);
 					
 				}
-				
-				
-				
+			
 			}
 			int num=0;
 			electricianInfo=getFirstElectricianInfo(map);
@@ -1056,11 +1054,12 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	/**
 	 * 进行抢单弹窗功能接口
 	 * @param map
+	 *  acceptAround   电工的接单范围，单位：KM
 	 * @return
 	 */
 	//当有新订单后，向符合条件的电工发送
 	@Override
-	public void qiangdantanchuang(OrderCustomer orderCustomer){
+	public void qiangdantanchuang(OrderCustomer orderCustomer,Integer acceptAround){
 		
 		//1.通过orderID查询客户的区域ID
 		//2.根据查询出来的区域ID查询此区域内的全部电工
@@ -1082,7 +1081,8 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		
 		//根据客户的区域ID得到电工的区域范围
-		double[] around=PointUtil.getAround(Double.valueOf(custPosition.getLon()), Double.valueOf(custPosition.getLat()), 100000);
+		
+		double[] around=PointUtil.getAround(Double.valueOf(custPosition.getLon()), Double.valueOf(custPosition.getLat()), acceptAround*1000);
 		
 		//3.循环查询电工状态，留下 【 范围内】  【 在线状态】    的电工
 		for (ElecPosition elecPosition : elecPositionList) {
@@ -1377,7 +1377,20 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer,OrderElec
 		}else if (orderFromString.equals("1")) {
 			orderCustomerVO.setOrderFrom("来源客服端");
 		}
+		
 	}
+	if (orderCustomerVO.getDistance()!=null) {
+		Double distance=Double.valueOf(orderCustomerVO.getDistance());
+		if (distance<1 && distance>0) {
+			distance=distance*1000;
+			orderCustomerVO.setDistance(String.valueOf(distance)+"m");
+			
+		}else {
+			int i=(int) Math.rint(distance/1000);
+			orderCustomerVO.setDistance(String.valueOf(distance)+"km");
+		}
+	}
+	
 	
 	return orderCustomerVO;
 }
@@ -1439,6 +1452,45 @@ public void testSpec() {
 	};
 	OrderElectrician orderElectrician = orderElectricianRepository.findOne(specification);
 	System.out.println("我测试的数据是：++++++++"+orderElectrician);
+}
+
+public OrderElectricianBeginPageVO convertDistance(OrderElectricianBeginPageVO orderElectricianBeginPageVO){
+	OrderElectricianBeginPageVO orderElectricianBeginPageVO2=new OrderElectricianBeginPageVO();
+	if (orderElectricianBeginPageVO.getDistance()!=null) {
+		Double distance=Double.valueOf(orderElectricianBeginPageVO.getDistance());
+		if (distance<1 && distance>0) {
+			distance=distance*1000;
+			orderElectricianBeginPageVO.setDistance(String.valueOf(distance)+"m");
+			
+		}else {
+			int i=(int) Math.rint(distance/1000);
+			orderElectricianBeginPageVO.setDistance(String.valueOf(distance)+"km");
+		}
+	}
+	
+	return orderElectricianBeginPageVO;
+}
+@Override
+public OrderElectricianBeginPageVO convertOrderCustomer2OrderElectricianBeginPageVO(OrderCustomer orderCustomer,
+		OrderElectricianBeginPageVO orderElectricianBeginPageVO) {
+	BeanUtils.copyProperties(orderCustomer, orderElectricianBeginPageVO);
+	if (!orderCustomer.getOrderFrom().isEmpty()) {
+		String orderFromString=orderCustomer.getOrderFrom();
+		if (orderFromString.equals("0")) {
+			orderElectricianBeginPageVO.setOrderFrom("来源APP端");
+		}else if (orderFromString.equals("1")) {
+			orderElectricianBeginPageVO.setOrderFrom("来源客服端");
+		}
+		
+	}
+	if (!orderElectricianBeginPageVO.getOrderTypeId().isEmpty()) {
+		String orderTypeId=orderElectricianBeginPageVO.getOrderTypeId();
+		
+		BaseOrderType baseOrderType=baseOrderTypeService.findByOrderTypeId(orderTypeId);
+		orderElectricianBeginPageVO.setOrderTypeId(baseOrderType.getOrderTypeName());
+		
+	}
+	return orderElectricianBeginPageVO;
 }
 
 }

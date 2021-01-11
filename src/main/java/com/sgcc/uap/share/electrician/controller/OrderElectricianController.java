@@ -394,6 +394,30 @@ public class OrderElectricianController {
 		
 	}
 	
+	/**
+	 * 接单接口  
+	 */
+	@RequestMapping(value="/accept",name="电工接单")
+	public WrappedResult accept(@RequestParam("electricianId") String electricianId,
+			@RequestParam("orderId") String orderId
+			){
+		
+		try {
+			
+			String orderElectricianEtatus="2";
+			OrderElectrician orderElectrician=orderElectricianService.findByOrDERIdAndOrderElectricianStatus(orderId, orderElectricianEtatus);
+			orderElectrician.setOrderElectricianStatus("0");
+			Map<String,Object> map=new HashMap<>();
+			map=orderElectricianService.pojo2Map(orderElectrician);
+			orderElectricianService.saveOrderElectrician(map);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+	
 	
 	/**
 	 * 待办按钮点下后需要显示的东西
@@ -525,9 +549,12 @@ public class OrderElectricianController {
 	 * 进行抢单页面，进行展示
 	 * 		查询条件：查询所有客户订单，订单状态是1和11的订单，然后根据经纬度计算距离
 	 * select * from order_customer where ORDER_STATUS like 1%;
+	 * acceptAround电工的接单范围
 	 */
 	@RequestMapping("/queryAllOrder/{electricianId}")
-	public WrappedResult queryAllOrder(@PathVariable String electricianId){
+	public WrappedResult queryAllOrder(@PathVariable String electricianId,
+			@RequestParam(value="acceptAround",required= false)String acceptAround
+			){
 		
 		//1.先根据电工的ID获取区域ID
 		//2.根据电工的区域ID获取此区域下的客户区域ID集合
@@ -539,7 +566,13 @@ public class OrderElectricianController {
 		String eleArea=elecPosition.getAreaId();
 		
 		//2获取此电工的经纬度范围
-		double[] around=PointUtil.getAround(Double.valueOf(elecPosition.getLon()), Double.valueOf(elecPosition.getLat()), 100000);
+		//电工默认接收订单范围是 15KM
+		if (acceptAround.isEmpty()) {
+			acceptAround="15";
+		}
+		int acceptAroundNumber=Integer.valueOf(acceptAround);
+		acceptAroundNumber=acceptAroundNumber*1000;
+		double[] around=PointUtil.getAround(Double.valueOf(elecPosition.getLon()), Double.valueOf(elecPosition.getLat()), acceptAroundNumber);
 		
 		//地理经纬度在范围内的客户集合
 		List<CustPosition> list=new ArrayList<>();
@@ -584,26 +617,28 @@ public class OrderElectricianController {
 		//6.将查询到的客户订单进行距离排序
 		
 			for (OrderCustomer orderCustomer : orderCustomerList) {
-				OrderElectricianBeginPageVO orderCustomerVO=new OrderElectricianBeginPageVO();
+				OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
 				
 				//获取订单 的位置,即经纬度，进行对比
 				String orderCustomerLon=orderCustomer.getAddressLongitude();
 				String orderCustomerLat=orderCustomer.getAddressLatitude();
 				
 				
-				distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPosition.getLon()), String.valueOf(elecPosition.getLat()), orderCustomerLon, orderCustomerLat);
+				distanceDouble=PointUtil.getDistanceString2(String.valueOf(elecPosition.getLon()), String.valueOf(elecPosition.getLat()), orderCustomerLon, orderCustomerLat);
 				System.out.println("计算的距离是："+distanceDouble);
-				orderCustomerVO.setDistance(String.valueOf(distanceDouble)+"KM");
+				
+				orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
 				if (orderCustomer.getOrderStatus().equals("11")) {
 					String orderId=orderCustomer.getOrderId();
 					List<OrderElectrician> orderElectricianList=orderElectricianService.queryByOrderIdOrderByCreatetime(orderId);
 					OrderElectrician orderElectrician=orderElectricianList.get(0);
-					orderCustomerVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+					orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
 				}else {
-					BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
+					//BeanUtils.copyProperties(orderCustomer, orderElectricianBeginPageVO);
+					orderElectricianBeginPageVO=orderElectricianService.convertOrderCustomer2OrderElectricianBeginPageVO(orderCustomer, orderElectricianBeginPageVO);
 				}
-				orderCustomerVO.setDistance(String.valueOf(distanceDouble));
-				ovcList.add(orderCustomerVO);
+				orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
+				ovcList.add(orderElectricianBeginPageVO);
 				
 			}
 		
@@ -622,9 +657,14 @@ public class OrderElectricianController {
 	            }
 
 	        });
+			List<OrderElectricianBeginPageVO> returnPageVOs=new ArrayList<>();
+			for (OrderElectricianBeginPageVO orderElectricianBeginPageVO : ovcList) {
+				orderElectricianBeginPageVO=orderElectricianService.convertDistance(orderElectricianBeginPageVO);
+				returnPageVOs.add(orderElectricianBeginPageVO);
+			}
 			
 			logger.info("查询数据成功"); 
-			return WrappedResult.successWrapedResult(ovcList);		
+			return WrappedResult.successWrapedResult(returnPageVOs);		
 		} 
 	
 	/**
