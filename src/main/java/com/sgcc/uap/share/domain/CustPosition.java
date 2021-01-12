@@ -29,8 +29,8 @@ public class CustPosition implements Serializable {
      * ORDER_ID
      */
 	@Id
-	@GeneratedValue(generator = "idGenerator")
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")
+	/*@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "uuid")*/
     @Column(name = "ORDER_ID", nullable = false, length = 64)
     private String orderId ;
     
