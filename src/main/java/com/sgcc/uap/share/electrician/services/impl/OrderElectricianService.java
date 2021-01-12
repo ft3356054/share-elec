@@ -704,14 +704,23 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		String EnumsB=baseEnums.getEnumsB();
 		System.out.println("EnumsB的值是："+EnumsB);
 		
-		Map<String,Object> mapNotify =
-				MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", EnumsB, baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
-						notifyType,orderElectrician.getOrDERId(),"");
-		notifyAnnounceService.saveNotifyAnnounce(mapNotify);
+		//电工已接单，并确认预约时间,不需要插入消息，只需要流水就行
+		List<String> flowstatusList=new ArrayList<>();
+		flowstatusList.add("21");
+		flowstatusList.add("22");
+		flowstatusList.add("26");
+		if (!flowstatusList.contains(orderElectrician.getOrderElectricianStatus())) {
+			Map<String,Object> mapNotify =
+					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", EnumsB, baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
+							notifyType,orderElectrician.getOrDERId(),"");
+			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
+			
+			Map<String,Object> mapNotifyUser = 
+					MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+			
+		}
 		
-		Map<String,Object> mapNotifyUser = 
-				MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
-		notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 		
 		List<String> statusList = new ArrayList<String>();
 		statusList.add("0"); //0 接单成功【待预约】

@@ -884,35 +884,14 @@ public class OrderElectricianController {
 						//获取预约子订单的主订单
 						OrderCustomer orderCustomerNew=orderCustomerService.findByOrderId(orderId);
 						
-						
-						
-						//List<OrderElectrician> list=orderElectricianService.findByOrderIdAndOrderElectricianStatusOrderByFinishTimeDesc(orderId,orderElectricianStatus);
-	
-							//OrderElectrician orderElectrician=list.get(0);
-						
 						//查询电工的详细信息
 						String electricianId=(String) map.get("electricianId");
 						ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
 						
 						//创建一个新的电工订单
-						//orderElectricianMap.put("orderElectricianId", UuidUtil.getIntUuid32());
+						
 						orderElectricianMap.put("orderId", orderId);
 						orderElectricianMap.put("electricianId",electricianId);
-						//orderElectricianMap.put("electricianName",electricianInfo.getElectricianName() );
-						//orderElectricianMap.put("electricianPhonenumber",electricianInfo.getElectricianPhonenumber());
-						
-						//orderElectricianMap.put("electricianPrice",orderCustomerNew.getCustomerPrice());
-						//orderElectricianMap.put("orderTypeId",0);
-						//orderElectricianMap.put("payStatus",orderCustomerNew.getPayStatus());
-						//orderElectricianMap.put("createTime",orderCustomerNew.getCreateTime());
-						//orderElectricianMap.put("electricianDescrive",orderElectrician.getElectricianDescrive());
-						//orderElectricianMap.put("electricianDescriveIcon",orderElectrician.getElectricianDescriveIcon());
-						//orderElectricianMap.put("chargebackReason",orderElectrician.getChargebackReason());
-						
-						
-					
-						
-				
 					
 						orderCustomerMap.put("appointmentTime", map.get("appointmentTime"));//给客户订单设置更新时
 						orderCustomerMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
@@ -950,6 +929,7 @@ public class OrderElectricianController {
 					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 					OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+					orderElectricianService.sendNotify(orderElectrician, 2, "1");
 					result.setFormItems(orderCustomerVO);
 					
 				}
@@ -967,7 +947,7 @@ public class OrderElectricianController {
 					OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 					OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
-					
+					orderElectricianService.sendNotify(orderElectrician, 2, "1");
 					result.setFormItems(orderCustomerVO);
 					
 				}
