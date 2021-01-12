@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.sgcc.uap.share.customer.bo.OrderCustomerBeginPage;
-import com.sgcc.uap.share.domain.OrderCustomer;
 
 
 /**
@@ -21,7 +20,7 @@ import com.sgcc.uap.share.domain.OrderCustomer;
  *	
  * @author 18511
  */
-public interface OrderCustomerBeginPageRepository extends JpaRepository<OrderCustomerBeginPage,String>,JpaSpecificationExecutor<OrderCustomer> {
+public interface OrderCustomerBeginPageRepository extends JpaRepository<OrderCustomerBeginPage,String>,JpaSpecificationExecutor<OrderCustomerBeginPage> {
 	
 	
 	@Query(value = "SELECT c.ADDRESS_LATITUDE,c.ADDRESS_LONGITUDE,c.APPOINTMENT_TIME,c.CREATE_TIME,c.CUSTOMER_ADDRESS,c.CUSTOMER_DESCRIVE,c.CUSTOMER_DESCRIVE_ICON, "
@@ -53,5 +52,13 @@ public interface OrderCustomerBeginPageRepository extends JpaRepository<OrderCus
 			+ " WHERE c.ORDER_ID =:orderId  ",
 			nativeQuery = true)
 	OrderCustomerBeginPage findOrderDetail(@Param("orderId")String orderId,@Param("elecStatus")Collection<String> elecStatus);
+	
+	@Query(value = "SELECT count(*)  "
+			+ " FROM order_customer c  "
+			+ " LEFT JOIN order_electrician e ON c.ORDER_ID = e.ORDER_ID "
+			+ " AND e.ORDER_ELECTRICIAN_STATUS NOT IN :elecStatus "
+			+ " WHERE c.CUSTOMER_ID =:customerId  AND c.order_Status IN :statusList "
+			,nativeQuery = true)
+	Integer countByCustomerIdAndStatus(@Param("customerId")String customerId,@Param("statusList")Collection<String> statusList,@Param("elecStatus")Collection<String> elecStatus);
 	
 }

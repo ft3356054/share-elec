@@ -127,6 +127,12 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	
 	public List<OrderCustomer> findOrderCustomerByOrderId(Collection<String> orderId);
 	
+	public int countByCustomerId(String customerId);
+	
+	
+	
+	
+	
 	
 	
 	/**
