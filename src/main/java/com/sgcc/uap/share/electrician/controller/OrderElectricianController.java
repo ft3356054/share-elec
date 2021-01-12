@@ -583,7 +583,7 @@ public class OrderElectricianController {
 		List<CustPosition> custPositionList=custPositionService.getByAreaId(eleArea);
 		if (custPositionList.size()==0) {
 			//没有客户订单，则返回该区域没有客户订单
-			return WrappedResult.failedWrappedResult("该区域没有订单");
+			return WrappedResult.failedWrappedResult("此区域没有订单");
 		}if (custPositionList.size()==1) {
 			list.add(custPositionList.get(0));
 		} else {
@@ -643,10 +643,7 @@ public class OrderElectricianController {
 					orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
 					ovcList.add(orderElectricianBeginPageVO);
 					
-				}else {
-					return WrappedResult.successWrapedResult("此区域没有订单");
 				}
-				
 				
 			}
 		
@@ -665,6 +662,9 @@ public class OrderElectricianController {
 	            }
 
 	        });
+			if (ovcList.size()==0) {
+				return WrappedResult.successWrapedResult("此区域没有订单");
+			}
 			List<OrderElectricianBeginPageVO> returnPageVOs=new ArrayList<>();
 			for (OrderElectricianBeginPageVO orderElectricianBeginPageVO : ovcList) {
 				orderElectricianBeginPageVO=orderElectricianService.convertDistance(orderElectricianBeginPageVO);
