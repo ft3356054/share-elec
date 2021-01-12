@@ -42,4 +42,6 @@ public interface NotifyAnnounceUserRepository extends JpaRepository<NotifyAnnoun
 	@Modifying
 	@Transactional
 	public void deleteNowTable(@Param("orderIds")Collection<String> orderIds);
+	
+	public int countByAnnounceUserId(String announceUserId);
 }

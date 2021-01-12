@@ -101,7 +101,7 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 	@Override
 	public QueryResultObject getAllNotifyAnnounceByAnnounceIds(RequestCondition queryCondition) {
 		List<NotifyAnnounceAndUser> result = new ArrayList<>();
-		long count = 0;
+		int count = 0;
 		
 		Integer pageIndex = queryCondition.getPageIndex()-1;
 		Integer pageSize = queryCondition.getPageSize();
@@ -110,7 +110,7 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 		String status = map.get("status");
 		
 		result = notifyAnnounceAndUserRepository.findByAnnounceUserIdDesc(pageIndex,pageSize,userId,status);
-		count = result.size();
+		count = notifyAnnounceUserRepository.countByAnnounceUserId(userId);
 		return RestUtils.wrappQueryResult(result, count);
 	}
 	
