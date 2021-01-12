@@ -509,7 +509,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 					String dateString = TimeStamp.toString(new Date());
 					map.put("updateTime", dateString);
 					map.put("finishTime", dateString);
-					result.put("key", "1");
+					result.put("key", "0");
 					result.put("desc", "未找到子订单");
 					result.put("map", map);
 				}
