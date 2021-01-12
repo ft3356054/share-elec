@@ -643,10 +643,7 @@ public class OrderElectricianController {
 					orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
 					ovcList.add(orderElectricianBeginPageVO);
 					
-				}else {
-					return WrappedResult.successWrapedResult("此区域没有订单");
 				}
-				
 				
 			}
 		
@@ -665,6 +662,9 @@ public class OrderElectricianController {
 	            }
 
 	        });
+			if (ovcList.size()==0) {
+				return WrappedResult.successWrapedResult("此区域没有订单");
+			}
 			List<OrderElectricianBeginPageVO> returnPageVOs=new ArrayList<>();
 			for (OrderElectricianBeginPageVO orderElectricianBeginPageVO : ovcList) {
 				orderElectricianBeginPageVO=orderElectricianService.convertDistance(orderElectricianBeginPageVO);
