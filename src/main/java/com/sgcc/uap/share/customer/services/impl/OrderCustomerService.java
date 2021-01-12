@@ -165,11 +165,11 @@ public class OrderCustomerService implements IOrderCustomerService{
 			elecStatus.add("4");
 			elecStatus.add("5");
 			resultBeginPage = orderCustomerBeginPageRepository.getOrderCustomerByCustomerIdAndEnot(pageIndex,pageSize,customerId,custStatus,elecStatus);
-			count = resultBeginPage.size();
+			count = orderCustomerBeginPageRepository.countByCustomerIdAndStatus(customerId,custStatus,elecStatus);
 			return RestUtils.wrappQueryResult(resultBeginPage, count);
 		}else{
 			result = orderCustomerRepository.getAllOrderCustomerByCustomerId(pageIndex,pageSize,customerId);
-			count = result.size();
+			count = orderCustomerRepository.countByCustomerId(customerId);
 			return RestUtils.wrappQueryResult(result, count);
 		}
 	}
