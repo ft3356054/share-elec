@@ -384,7 +384,8 @@ public class OrderElectricianController {
 				OrderElectricianBeginPageVO orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
 				
 				
-				orderElectricianService.sendNotify(orderElectrician, 0, "1");
+				//orderElectricianService.sendNotify(orderElectrician, 0, "1");
+				orderElectricianService.sendNotify(orderCustomerNew, 0, "0");
 				return WrappedResult.successWrapedResult(orderElectricianBeginPageVO);
 			
 		} catch (Exception e) {
