@@ -407,14 +407,13 @@ public class OrderElectricianController {
 			String orderElectricianEtatus="2";
 			OrderElectrician orderElectrician=orderElectricianService.findByOrDERIdAndOrderElectricianStatus(orderId, orderElectricianEtatus);
 			orderElectrician.setOrderElectricianStatus("0");
-			Map<String,Object> map=new HashMap<>();
-			map=orderElectricianService.pojo2Map(orderElectrician);
-			orderElectricianService.saveOrderElectrician(map);
+		
+			orderElectricianService.save(orderElectrician);
+			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return WrappedResult.successWrapedResult("查询失败");
 		}
-		return null;
+		
 		
 	}
 	

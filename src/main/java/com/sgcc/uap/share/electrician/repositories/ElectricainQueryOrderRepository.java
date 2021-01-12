@@ -22,7 +22,7 @@ public interface ElectricainQueryOrderRepository extends JpaRepository<OrderElec
 			+"FROM order_customer  c "
 			+"LEFT JOIN order_electrician e "
 				+"ON c.ORDER_ID = e.ORDER_ID "
-					+"WHERE e.ELECTRICIAN_ID = :electricianId AND e.ORDER_ELECTRICIAN_STATUS IN('1','4','5','9') "
+					+"WHERE e.ELECTRICIAN_ID = :electricianId AND e.ORDER_ELECTRICIAN_STATUS IN('1','4','5','8','9') "
 			+ "UNION SELECT c.ADDRESS_LATITUDE,c.ADDRESS_LONGITUDE,c.APPOINTMENT_TIME,c.CREATE_TIME,c.CUSTOMER_ADDRESS,c.CUSTOMER_DESCRIVE,c.CUSTOMER_DESCRIVE_ICON, "
 			+ " c.CUSTOMER_EVALUATE,c.CUSTOMER_EVALUATE_PHOTO,c.CUSTOMER_EVALUATE_TITLE,c.CUSTOMER_GRADE,c.CUSTOMER_ID,c.CUSTOMER_NAME,c.CUSTOMER_PHONENUMBER,"
 			+ " c.CUSTOMER_PRICE,c.FINISH_TIME,c.IDENTITY_ID,c.ORDER_COMPLAINT_ID,c.ORDER_ID,c.ORDER_STATUS,c.ORDER_TYPE_ID,c.PAY_STATUS,c.REMARK_NUM1,"
@@ -32,7 +32,7 @@ public interface ElectricainQueryOrderRepository extends JpaRepository<OrderElec
 			+"FROM order_customer  c "
 			+"LEFT JOIN order_electrician_his eh "
 				+"ON c.ORDER_ID = eh.ORDER_ID "
-					+"WHERE eh.ELECTRICIAN_ID = :electricianId AND eh.ORDER_ELECTRICIAN_STATUS IN('1','4','5','9') "
+					+"WHERE eh.ELECTRICIAN_ID = :electricianId AND eh.ORDER_ELECTRICIAN_STATUS IN('1','4','5','8','9') "
 			+ "UNION SELECT ch.ADDRESS_LATITUDE,ch.ADDRESS_LONGITUDE,ch.APPOINTMENT_TIME,ch.CREATE_TIME,ch.CUSTOMER_ADDRESS,ch.CUSTOMER_DESCRIVE,ch.CUSTOMER_DESCRIVE_ICON, "
 			+ " ch.CUSTOMER_EVALUATE,ch.CUSTOMER_EVALUATE_PHOTO,ch.CUSTOMER_EVALUATE_TITLE,ch.CUSTOMER_GRADE,ch.CUSTOMER_ID,ch.CUSTOMER_NAME,ch.CUSTOMER_PHONENUMBER,"
 			+ " ch.CUSTOMER_PRICE,ch.FINISH_TIME,ch.IDENTITY_ID,ch.ORDER_COMPLAINT_ID,ch.ORDER_ID,ch.ORDER_STATUS,ch.ORDER_TYPE_ID,ch.PAY_STATUS,ch.REMARK_NUM1,"
@@ -42,7 +42,7 @@ public interface ElectricainQueryOrderRepository extends JpaRepository<OrderElec
 			+"FROM order_customer_his  ch "
 			+"LEFT JOIN order_electrician e "
 				+"ON ch.ORDER_ID = e.ORDER_ID "
-					+"WHERE e.ELECTRICIAN_ID = :electricianId AND e.ORDER_ELECTRICIAN_STATUS IN('1','4','5','9') "
+					+"WHERE e.ELECTRICIAN_ID = :electricianId AND e.ORDER_ELECTRICIAN_STATUS IN('1','4','5','8','9') "
 			+ "UNION SELECT ch.ADDRESS_LATITUDE,ch.ADDRESS_LONGITUDE,ch.APPOINTMENT_TIME,ch.CREATE_TIME,ch.CUSTOMER_ADDRESS,ch.CUSTOMER_DESCRIVE,ch.CUSTOMER_DESCRIVE_ICON, "
 			+ " ch.CUSTOMER_EVALUATE,ch.CUSTOMER_EVALUATE_PHOTO,ch.CUSTOMER_EVALUATE_TITLE,ch.CUSTOMER_GRADE,ch.CUSTOMER_ID,ch.CUSTOMER_NAME,ch.CUSTOMER_PHONENUMBER,"
 			+ " ch.CUSTOMER_PRICE,ch.FINISH_TIME,ch.IDENTITY_ID,ch.ORDER_COMPLAINT_ID,ch.ORDER_ID,ch.ORDER_STATUS,ch.ORDER_TYPE_ID,ch.PAY_STATUS,ch.REMARK_NUM1,"
@@ -52,7 +52,7 @@ public interface ElectricainQueryOrderRepository extends JpaRepository<OrderElec
 			+"FROM order_customer_his  ch "
 			+"LEFT JOIN order_electrician_his eh "
 				+"ON ch.ORDER_ID = eh.ORDER_ID "
-					+"WHERE eh.ELECTRICIAN_ID = :electricianId AND eh.ORDER_ELECTRICIAN_STATUS IN('1','4','5','9') "
+					+"WHERE eh.ELECTRICIAN_ID = :electricianId AND eh.ORDER_ELECTRICIAN_STATUS IN('1','4','5','8','9') "
 			,nativeQuery=true)
 	List<OrderElectricianBeginPage> findqQueryAllHaveDone(@Param("electricianId")String electricianId);
 

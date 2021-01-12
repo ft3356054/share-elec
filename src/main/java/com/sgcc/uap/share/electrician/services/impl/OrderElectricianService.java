@@ -1120,7 +1120,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			OrderElectrician orderElectrician2=findByOrderId(orderCustomer.getOrderId(), elecPositions.get(0).getElectricianId());
 			orderElectricianBeginPageVO=convert(orderCustomer, orderElectrician2);
 			orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
-			
+			//orderElectricianBeginPageVO=convertDistance(orderElectricianBeginPageVO);
 			sendNotify(orderElectrician2, 0, "1");
 			
 		}else {//表明有多个电工
@@ -1491,6 +1491,15 @@ public OrderElectricianBeginPageVO convertOrderCustomer2OrderElectricianBeginPag
 		
 	}
 	return orderElectricianBeginPageVO;
+}
+
+/**
+ * 保存的是电工子订单的对象
+ */
+@Override
+public void save(OrderElectrician orderElectrician) {
+	orderElectricianRepository.save(orderElectrician);
+	
 }
 
 }

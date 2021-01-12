@@ -114,6 +114,7 @@ public OrderElectricianBeginPageVO convertDistance(OrderElectricianBeginPageVO o
 public OrderElectricianBeginPageVO convertOrderCustomer2OrderElectricianBeginPageVO(OrderCustomer orderCustomer,
 		OrderElectricianBeginPageVO orderElectricianBeginPageVO);
 void qiangdantanchuang(OrderCustomer orderCustomer, Integer acceptAround);
+public void save(OrderElectrician orderElectrician);
 
 
 
