@@ -589,12 +589,11 @@ public class OrderElectricianController {
 			list.add(custPositionList.get(0));
 		} else {
 			for (CustPosition custPosition : custPositionList) {
-				Double distance0=Double.valueOf(custPosition.getLon());
-				Double distance1=Double.valueOf(custPosition.getLat());
-				Double distance2=Double.valueOf(custPosition.getLon());
-				Double distance3=Double.valueOf(custPosition.getLat());
-				if (distance0 >around[0] && distance2 <around[2]){
-					if (distance1 >around[1] && distance3 <around[3]) {
+				//[186.8120612537026, 93.91762504168837, 157.43876074629742, 96.61319695831163]
+				Double lon=Double.valueOf(custPosition.getLon());
+				Double lat=Double.valueOf(custPosition.getLat());
+				if (lon <around[0] && lon >around[2]){
+					if (lat >around[1] && lat <around[3]) {
 						list.add(custPosition);
 					}
 				}				
