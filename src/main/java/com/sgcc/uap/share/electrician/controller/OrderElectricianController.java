@@ -583,7 +583,7 @@ public class OrderElectricianController {
 		List<CustPosition> custPositionList=custPositionService.getByAreaId(eleArea);
 		if (custPositionList.size()==0) {
 			//没有客户订单，则返回该区域没有客户订单
-			return WrappedResult.failedWrappedResult("该区域没有订单");
+			return WrappedResult.failedWrappedResult("此区域没有订单");
 		}if (custPositionList.size()==1) {
 			list.add(custPositionList.get(0));
 		} else {
