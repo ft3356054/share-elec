@@ -1501,6 +1501,11 @@ public void save(OrderElectrician orderElectrician) {
 	orderElectricianRepository.save(orderElectrician);
 	
 }
+@Override
+public void saveorderCustomerPOJO(OrderCustomer orderCustomer) {
+	orderCustomerRepository.save(orderCustomer);
+	
+}
 
 }
 	

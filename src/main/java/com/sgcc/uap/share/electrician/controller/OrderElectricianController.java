@@ -409,6 +409,11 @@ public class OrderElectricianController {
 			orderElectrician.setOrderElectricianStatus("0");
 		
 			orderElectricianService.save(orderElectrician);
+			//查询主订单，变换状态为20
+			OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
+			orderCustomer.setOrderStatus("20");
+			orderElectricianService.saveorderCustomerPOJO(orderCustomer);
+			
 			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
 			return WrappedResult.successWrapedResult("查询失败");
