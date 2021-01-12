@@ -44,6 +44,7 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
+import com.sgcc.uap.share.controller.WebSocket;
 import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.services.impl.CustPositionService;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerHisService;
@@ -456,7 +457,7 @@ public class OrderElectricianController {
 	
 	
 	
-	@RequestMapping("/queryMore")
+	@RequestMapping(value="/queryMore",name="待办")
 	public WrappedResult queryMore(@QueryRequestParam("params") RequestCondition requestCondition,@RequestParam("electricianId")String electricianId) {
 		Random r=new Random();
 		
@@ -574,7 +575,7 @@ public class OrderElectricianController {
 		
 		
 	
-		double[] around=PointUtil.getAround(Double.valueOf(elecPosition.getLon()), Double.valueOf(elecPosition.getLat()), 15*1000);
+		double[] around=PointUtil.getAround(Double.valueOf(elecPosition.getLon()), Double.valueOf(elecPosition.getLat()), 15*10000);
 		
 		//地理经纬度在范围内的客户集合
 		List<CustPosition> list=new ArrayList<>();
@@ -588,8 +589,12 @@ public class OrderElectricianController {
 			list.add(custPositionList.get(0));
 		} else {
 			for (CustPosition custPosition : custPositionList) {
-				if (Double.valueOf(custPosition.getLon())>around[0] && Double.valueOf(custPosition.getLon())<around[2]){
-					if (Double.valueOf(custPosition.getLat())>around[1] && Double.valueOf(custPosition.getLat())<around[3]) {
+				Double distance0=Double.valueOf(custPosition.getLon());
+				Double distance1=Double.valueOf(custPosition.getLat());
+				Double distance2=Double.valueOf(custPosition.getLon());
+				Double distance3=Double.valueOf(custPosition.getLat());
+				if (distance0 >around[0] && distance2 <around[2]){
+					if (distance1 >around[1] && distance3 <around[3]) {
 						list.add(custPosition);
 					}
 				}				
@@ -629,7 +634,7 @@ public class OrderElectricianController {
 				distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPosition.getLon()), String.valueOf(elecPosition.getLat()), orderCustomerLon, orderCustomerLat);
 				System.out.println("计算的距离是："+distanceDouble);
 				
-				if (distanceDouble<=15 && distanceDouble>0) {
+				if (distanceDouble<=150 && distanceDouble>0) {
 					orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
 					if (orderCustomer.getOrderStatus().equals("11")) {
 						String orderId=orderCustomer.getOrderId();
@@ -1069,15 +1074,31 @@ public class OrderElectricianController {
 						}
 						
 						String temp=(String) map.get("otherElectricianId");
-						String electricianId = (String) map.get("electricianId");
-						String otherElectricianId=electricianId+","+temp;
-						System.out.println(otherElectricianId);
+						String otherElectricianId="";
+						//如果传送过来的有数据
+						if (!temp.isEmpty() && temp.length()==0) {
+							String electricianId = (String) map.get("electricianId");
+							//给其它电工发送通知
+							String[] split = temp.split(",");
+							for (int i = 0; i < split.length; i++) {
+								//给新加入的电工创建未完成的订单
+								
+								//通过电工的ID给电工发送消息
+								WebSocketServer.sendInfo("您已有未完成的订单",split[i]);
+								
+							}
+							
+							otherElectricianId=electricianId+","+temp;
+							System.out.println(otherElectricianId);
+							
+							//查询电工的名字
+							ElectricianInfo electricianInfo=electricianInfoService.findByElectricianId(electricianId);
+							String electricianName=electricianInfo.getElectricianName();
+							String telephone=electricianInfo.getElectricianPhonenumber();
+							remark_str1sString=electricianName+":"+telephone+","+remark_str1sString;
+							
+						}
 						
-						//查询电工的名字
-						ElectricianInfo electricianInfo=electricianInfoService.findByElectricianId(electricianId);
-						String electricianName=electricianInfo.getElectricianName();
-						String telephone=electricianInfo.getElectricianPhonenumber();
-						remark_str1sString=electricianName+":"+telephone+","+remark_str1sString;
 						
 						//将map中的数据分别送到两个类中，在进行更新
 						//客户订单需要跟新的信息
