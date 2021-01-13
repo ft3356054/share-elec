@@ -328,7 +328,7 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 					
 					//发送websocket消息
 					Map<String,String> mapString = new HashMap<String,String>();
-					mapString.put("orderId", orderId);
+					mapString.put("orderId", "");
 					mapString.put("content", baseEnums.getEnumsB());
 					String jsonString = JsonUtils.toJson(mapString);
 					WebSocketServer.sendInfo(jsonString,orderElectrician.getElectricianId());
