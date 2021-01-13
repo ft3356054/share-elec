@@ -1053,22 +1053,32 @@ public class OrderElectricianController {
 							
 						}
 						
-						String temp=(String) map.get("otherElectricianId");
+						String str=(String) map.get("otherElectricianId");
 						String otherElectricianId="";
 						//如果传送过来的有数据
-						if (!temp.isEmpty() && temp.length()==0) {
+						//先将其它电工截取
+						
+						if (!str.isEmpty() && str.length()!=0) {
+							String temp=str.substring(1, str.length()-1);
+							System.out.println("temp=:"+temp);
 							String electricianId = (String) map.get("electricianId");
 							//给其它电工发送通知
 							String[] split = temp.split(",");
 							for (int i = 0; i < split.length; i++) {
 								//给新加入的电工创建未完成的订单
+								if (i>0) {
+									otherElectricianId=otherElectricianId+","+split[i];
+								}else {
+									otherElectricianId=split[i];
+								}
 								
 								//通过电工的ID给电工发送消息
 								WebSocketServer.sendInfo("您已有未完成的订单",split[i]);
 								
 							}
 							
-							otherElectricianId=electricianId+","+temp;
+							//otherElectricianId=electricianId+","+temp;
+							otherElectricianId=electricianId+","+otherElectricianId;
 							System.out.println(otherElectricianId);
 							
 							//查询电工的名字
