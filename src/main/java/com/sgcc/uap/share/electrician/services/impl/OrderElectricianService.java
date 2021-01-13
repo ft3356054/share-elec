@@ -3,9 +3,7 @@ package com.sgcc.uap.share.electrician.services.impl;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -13,8 +11,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -22,7 +20,6 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.validator.constraints.br.CNPJ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -31,7 +28,6 @@ import org.springframework.data.domain.Page;
 //import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,35 +38,26 @@ import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryFilter;
 import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
-import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
-import com.sgcc.uap.share.controller.WebSocket;
 import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.bo.OrderCustomerMoreVO;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.impl.CustPositionService;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.customer.services.impl.OrderFlowService;
-import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
-import com.sgcc.uap.share.domain.BaseAreaPrice;
 import com.sgcc.uap.share.domain.BaseEnums;
-import com.sgcc.uap.share.domain.BaseIdentityPrice;
 import com.sgcc.uap.share.domain.BaseOrderType;
 import com.sgcc.uap.share.domain.CustPosition;
 import com.sgcc.uap.share.domain.ElecPosition;
-import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
 import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
-import com.sgcc.uap.share.domain.OrderElectricianHis;
 import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPage;
 import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPageVO;
-import com.sgcc.uap.share.electrician.controller.OrderElectricianController;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
-import com.sgcc.uap.share.electrician.vo.OrderElectricianVO;
 import com.sgcc.uap.share.repositories.OrderCustomerMoreVORepository;
 import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
 import com.sgcc.uap.share.services.impl.BaseEnumsService;
@@ -79,9 +66,7 @@ import com.sgcc.uap.share.services.impl.BaseOrderTypeService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
-import com.sgcc.uap.util.DecimalUtil;
 import com.sgcc.uap.util.FileUtil;
-
 import com.sgcc.uap.util.MapGetValueUtil;
 import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.PointUtil;
@@ -89,10 +74,6 @@ import com.sgcc.uap.util.SorterUtil;
 import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
 import com.sgcc.uap.utils.json.JsonUtils;
-import com.sgcc.uap.utils.string.StringUtil;
-
-import ch.qos.logback.core.status.StatusUtil;
-import groovy.util.logging.Log4j;
 
 
 @Service
@@ -730,7 +711,10 @@ public QueryResultObject queryAllDoing(String electricianId) {
 
 		//发送websocket消息
 				Map<String,String> mapString = new HashMap<String,String>();
-				mapString.put("orderId", orderElectrician.getOrderElectricianId());
+				if (orderElectricianStatus.equals("0")) {
+					mapString.put("orderId", orderElectrician.getOrDERId());
+				}
+				
 				mapString.put("content", baseEnums.getEnumsB());
 				String jsonString = JsonUtils.toJson(mapString);
 				WebSocketServer.sendInfo(jsonString,orderElectrician.getElectricianId());
@@ -805,7 +789,12 @@ public QueryResultObject queryAllDoing(String electricianId) {
 
 		//发送websocket消息
 				Map<String,String> mapString = new HashMap<String,String>();
-				mapString.put("orderId", orderCustomer.getOrderId());
+				/*if("23".equals(orderStatus)){
+					mapString.put("orderId", orderCustomer.getOrderId());
+				}else*/
+				
+				mapString.put("orderId", "");
+				
 				mapString.put("content", baseEnums.getEnumsB());
 				String jsonString = JsonUtils.toJson(mapString);
 				WebSocketServer.sendInfo(jsonString,orderCustomer.getCustomerId());
@@ -1115,8 +1104,10 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		}
 		
 		//4.创建一个电工子订单，然后将子订单po转化成VO	
-			OrderElectrician orderElectrician=saveNewNullOrderElectrician(orderId);
+			//由于抢单派单的时候只是给电工发送消息，并不创建子订单
+			//OrderElectrician orderElectrician=saveNewNullOrderElectrician(orderId);
 			OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+			
 			
 		
 			Double distanceDouble=null;
@@ -1126,21 +1117,39 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		}else if (elecPositions.size()==1) {
 			//获取电工与客户之间的距离
 			distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPositions.get(0).getLon()), String.valueOf(elecPositions.get(0).getLat()), custPosition.getLon(), custPosition.getLat());
-			OrderElectrician orderElectrician2=findByOrderId(orderCustomer.getOrderId(), elecPositions.get(0).getElectricianId());
-			orderElectricianBeginPageVO=convert(orderCustomer, orderElectrician2);
+			//OrderElectrician orderElectrician2=findByOrderId(orderCustomer.getOrderId(), elecPositions.get(0).getElectricianId());
+			//orderElectricianBeginPageVO=convert(orderCustomer, orderElectrician2);
+			orderElectricianBeginPageVO=convertOrderCustomer2OrderElectricianBeginPageVO(orderCustomer, orderElectricianBeginPageVO);
+
 			orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
 			//orderElectricianBeginPageVO=convertDistance(orderElectricianBeginPageVO);
-			sendNotify(orderElectrician2, 0, "1");
+			//sendNotify(orderElectrician2, 0, "1");
+			//发送websocket消息
+			Map<String,String> mapString = new HashMap<String,String>();				
+			mapString.put("orderId", orderCustomer.getOrderId());			
+			mapString.put("content", "您有新的订单，请查看");
+			String jsonString = JsonUtils.toJson(mapString);
+			WebSocketServer.sendInfo(jsonString,elecPositions.get(0).getElectricianId());
 			
 		}else {//表明有多个电工
 			for (ElecPosition elecPosition1 : elecPositions) {
+				//计算出客户和电工之间的距离
 				distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPosition1.getLon()), String.valueOf(elecPosition1.getLat()), custPosition.getLon(), custPosition.getLat());
-				OrderElectrician orderElectrician2=findByOrderId(orderCustomer.getOrderId(), elecPositions.get(0).getElectricianId());
-				orderElectricianBeginPageVO=convert(orderCustomer, orderElectrician2);
+				//OrderElectrician orderElectrician2=findByOrderId(orderCustomer.getOrderId(), elecPositions.get(0).getElectricianId());
+				
+				//orderElectricianBeginPageVO=convert(orderCustomer, orderElectrician2);
+				orderElectricianBeginPageVO=convertOrderCustomer2OrderElectricianBeginPageVO(orderCustomer, orderElectricianBeginPageVO);
 				orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
 				
 				
-				sendNotify(orderElectrician2, 0, "1");
+				//orderId electricianId 3 1
+				//发送websocket消息
+				Map<String,String> mapString = new HashMap<String,String>();				
+				mapString.put("orderId", orderCustomer.getOrderId());			
+				mapString.put("content", "您有新的订单，请查看");
+				String jsonString = JsonUtils.toJson(mapString);
+				WebSocketServer.sendInfo(jsonString,elecPosition1.getElectricianId());
+				//sendNotify(orderElectrician2, 0, "1");
 				
 			}
 			
