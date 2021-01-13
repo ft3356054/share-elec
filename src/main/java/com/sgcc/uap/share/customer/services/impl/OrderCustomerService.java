@@ -670,7 +670,8 @@ public class OrderCustomerService implements IOrderCustomerService{
 				
 				//发送websocket消息
 				Map<String,String> mapString = new HashMap<String,String>();
-				mapString.put("orderId", orderElectrician.getOrderElectricianId());
+				//mapString.put("orderId", orderElectrician.getOrderElectricianId());
+				mapString.put("orderId", "");
 				mapString.put("content", baseEnums.getEnumsB());
 				String jsonString = JsonUtils.toJson(mapString);
 				WebSocketServer.sendInfo(jsonString,orderElectrician.getElectricianId());
