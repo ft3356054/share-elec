@@ -56,8 +56,8 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
     /** 
      * 属性SUB_COMPANY_ID
      */  
-    @ViewAttribute(name ="subCompanyId",caption="SUB_COMPANY_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String subCompanyId;    
+    @ViewAttribute(name ="companyId",caption="COMPANY_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String companyId;    
     /** 
      * 属性COMPANY_NAME
      */  
@@ -228,21 +228,16 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
     public void setElectricianLevel(String electricianLevel){
 		this.electricianLevel = electricianLevel;
 	} 
-    /**
-     * SUB_COMPANY_ID的get方法
-     * @return subCompanyId
-     */
-    public String getSubCompanyId(){
-        return subCompanyId;
-    }
-    /**
-     * SUB_COMPANY_ID的set方法
-     * @param subCompanyId
-     */
-    public void setSubCompanyId(String subCompanyId){
-		this.subCompanyId = subCompanyId;
-	} 
-    /**
+    
+    public String getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
+	}
+
+	/**
      * COMPANY_NAME的get方法
      * @return companyName
      */
@@ -411,7 +406,6 @@ public class ElectricianInfoVO extends ParentVO implements Serializable{
 				.append("ADDRESS_LONGITUDE"+":"+getAddressLongitude())
 				.append("ADDRESS_LATITUDE"+":"+getAddressLatitude())
 				.append("ELECTRICIAN_LEVEL"+":"+getElectricianLevel())
-				.append("SUB_COMPANY_ID"+":"+getSubCompanyId())
 				.append("COMPANY_NAME"+":"+getCompanyName())
 				.append("RATING_CERTIFICATE"+":"+getRatingCertificate())
 				.append("COMPANY_CONTRACT"+":"+getCompanyContract())

@@ -161,7 +161,7 @@ public class OrderComplaintService implements IOrderComplaintService{
 							map.put("complaintPicture", iconUrl);
 						}
 						
-						map.put("companyId", electricianInfo.getSubCompanyId());
+						map.put("companyId", electricianInfo.getCompanyId());
 						map.put("companyName", electricianInfo.getCompanyName());
 						map.put("complaintType", "0");
 						map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
