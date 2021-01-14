@@ -4,12 +4,9 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -26,17 +23,9 @@ public class BaseCity implements Serializable {
 	private static final long serialVersionUID = -7768637914227571159L;
 
     /** 
-     * ID
-     */
-	@Id
-	@GeneratedValue(generator = "idGenerator")
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")
-    @Column(name = "ID", nullable = false, length = 64)
-    private String id ;
-    
-    /** 
      * CITY_ID
      */
+	@Id
     @Column(name = "CITY_ID", nullable = true, length = 4)
     private String cityId ;
     
@@ -67,30 +56,6 @@ public class BaseCity implements Serializable {
 	public BaseCity(){
 	
 	}
-    /**
-     * @getId:ID的get方法
-     * @params
-     * @return id
-     * @date 2020-11-30 13:16:25
-     * @author 18511
-     */
-    public String getId(){
-        return this.id;
-    }
-    /**
-     * @setId:ID的set方法
-     * @param id
-     * @return
-     * @date 2020-11-30 13:16:25
-     * @author 18511
-     */
-    public void setId(String id){
-        if(id != null && id.trim().length() == 0){
-        	this.id = null;
-        }else{
-        	this.id = id;
-        }
-	} 
     /**
      * @getCityId:CITY_ID的get方法
      * @params
@@ -194,13 +159,6 @@ public class BaseCity implements Serializable {
 		
 		BaseCity other = (BaseCity) obj;
 		
-		if (id == null) {
-			if (other.id != null) {
-				return false;
-			}
-		} else if (!id.equals(other.id)) {
-			return false;
-		}
 		if (cityId == null) {
 			if (other.cityId != null) {
 				return false;
@@ -238,8 +196,7 @@ public class BaseCity implements Serializable {
      */
 	public String toString(){
 		return "BaseCity ["
-			+ ", id=" + id
-			+ ", cityId=" + cityId
+			+ ",cityId=" + cityId
 			+ ", provinceId=" + provinceId
 			+ ", cityName=" + cityName
 			+ ", remark=" + remark;

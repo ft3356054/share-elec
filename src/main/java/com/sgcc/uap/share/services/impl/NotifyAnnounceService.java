@@ -316,7 +316,7 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 					BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("2",  "1");
 					
 					//新增通知
-					String announceId = UuidUtil.getUuid32();
+					/*String announceId = UuidUtil.getUuid32();
 					
 					Map<String,Object> mapNotify =
 							MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), "1",orderId,baseEnums.getEnumsD());
@@ -324,14 +324,14 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 					
 					Map<String,Object> mapNotifyUser = 
 							MapUtil.notifyUserAdd(electricianId, announceId, 2, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsB());
-					notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+					notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);*/
 					
 					//发送websocket消息
 					Map<String,String> mapString = new HashMap<String,String>();
 					mapString.put("orderId", "");
 					mapString.put("content", baseEnums.getEnumsB());
 					String jsonString = JsonUtils.toJson(mapString);
-					WebSocketServer.sendInfo(jsonString,orderElectrician.getElectricianId());
+					WebSocketServer.sendInfo(jsonString,electricianId);
 					
 					stringRedisTemplate.opsForValue().set("hasten"+orderId, orderId, 5L, TimeUnit.MINUTES);
 				}
