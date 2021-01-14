@@ -45,7 +45,6 @@ public class ElectricianCompanyInfoTransfer {
 			electricianCompanyInfo.setQualiLevel(vo.getQualiLevel());
 			electricianCompanyInfo.setCertificateCode(vo.getCertificateCode());
 			electricianCompanyInfo.setRegiseterTime(vo.getRegiseterTime());
-			electricianCompanyInfo.setPCompanyId(vo.getPCompanyId());
 			electricianCompanyInfo.setRemark1(vo.getRemark1());
 			electricianCompanyInfo.setRemark2(vo.getRemark2());
 			electricianCompanyInfo.setRemark3(vo.getRemark3());
@@ -83,7 +82,6 @@ public class ElectricianCompanyInfoTransfer {
 		vo.setQualiLevel(po.getQualiLevel());
 		vo.setCertificateCode(po.getCertificateCode());
 		vo.setRegiseterTime(po.getRegiseterTime());
-		vo.setPCompanyId(po.getPCompanyId());
 		vo.setRemark1(po.getRemark1());
 		vo.setRemark2(po.getRemark2());
 		vo.setRemark3(po.getRemark3());

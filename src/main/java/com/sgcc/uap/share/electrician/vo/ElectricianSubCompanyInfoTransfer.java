@@ -1,7 +1,5 @@
 package com.sgcc.uap.share.electrician.vo;
 
-import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
-
 /**
  * <b>概述</b>：ElectricianSubCompanyInfoTransfer类<br>
  * TODO
@@ -11,17 +9,19 @@ import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
  *
  * @author 18511
  */
+public class ElectricianSubCompanyInfoTransfer {}
+/*
 public class ElectricianSubCompanyInfoTransfer {
 	
 	private ElectricianSubCompanyInfoTransfer(){}
 
-	/**
+	*//**
 	 * @toPO:vo转为po
 	 * @param vo vo对象
 	 * @return ElectricianSubCompanyInfo ElectricianSubCompanyInfo对象
 	 * @date 2020-12-18 11:51:06
 	 * @author 18511
-	 */
+	 *//*
 	public static ElectricianSubCompanyInfo toPO(ElectricianSubCompanyInfoVO vo) {
 		ElectricianSubCompanyInfo electricianSubCompanyInfo = new ElectricianSubCompanyInfo();
 		if(vo != null){
@@ -43,13 +43,13 @@ public class ElectricianSubCompanyInfoTransfer {
         }
 		return electricianSubCompanyInfo;
 	}
-	/**
+	*//**
 	 * @toVO:po转为vo
 	 * @param po po对象
 	 * @return ElectricianSubCompanyInfoVO ElectricianSubCompanyInfoVO对象
 	 * @date 2020-12-18 11:51:06
 	 * @author 18511
-	 */
+	 *//*
 	public static ElectricianSubCompanyInfoVO toVO(ElectricianSubCompanyInfo po) {
 		ElectricianSubCompanyInfoVO vo = new ElectricianSubCompanyInfoVO();
 		vo.setSubCompanyId(po.getSubCompanyId());
@@ -69,4 +69,4 @@ public class ElectricianSubCompanyInfoTransfer {
 		vo.setRemark3(po.getRemark3());
 		return vo;
 	}
-}
+}*/

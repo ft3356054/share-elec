@@ -150,12 +150,6 @@ public class ElectricianCompanyInfo implements Serializable {
     private Timestamp regiseterTime ;
     
     /** 
-     * P_COMPANY_ID
-     */
-    @Column(name = "P_COMPANY_ID", nullable = true, length = 64)
-    private String pCompanyId ;
-    
-    /** 
      * REMARK1
      */
     @Column(name = "REMARK1", nullable = true, length = 512)
@@ -185,6 +179,23 @@ public class ElectricianCompanyInfo implements Serializable {
     @Column(name = "REMARK5", nullable = true, length = 512)
     private String remark5 ;
     
+    /** 
+     * COMPANY_AREA_ID
+     */
+    @Column(name = "COMPANY_AREA_ID", nullable = true, length = 32)
+    private String companyAreaId ;
+    /** 
+     * BUSINESS_STATUS
+     */
+    @Column(name = "BUSINESS_STATUS", nullable = true, length = 2)
+    private String businessStatus ;
+    /** 
+     * BUSINESS_TYPE
+     */
+    @Column(name = "BUSINESS_TYPE", nullable = true, length = 2)
+    private String businessType ;
+    
+    
 	/**
 	  *虚拟主键
 	  */
@@ -194,7 +205,32 @@ public class ElectricianCompanyInfo implements Serializable {
 	public ElectricianCompanyInfo(){
 	
 	}
-    /**
+	
+    public String getCompanyAreaId() {
+		return companyAreaId;
+	}
+
+	public void setCompanyAreaId(String companyAreaId) {
+		this.companyAreaId = companyAreaId;
+	}
+
+	public String getBusinessStatus() {
+		return businessStatus;
+	}
+
+	public void setBusinessStatus(String businessStatus) {
+		this.businessStatus = businessStatus;
+	}
+
+	public String getBusinessType() {
+		return businessType;
+	}
+
+	public void setBusinessType(String businessType) {
+		this.businessType = businessType;
+	}
+
+	/**
      * @getCompanyId:COMPANY_ID的get方法
      * @params
      * @return companyId
@@ -599,26 +635,6 @@ public class ElectricianCompanyInfo implements Serializable {
 		this.regiseterTime = regiseterTime;
 	} 
     /**
-     * @getPCompanyId:P_COMPANY_ID的get方法
-     * @params
-     * @return pCompanyId
-     * @date 2020-12-18 11:51:00
-     * @author 18511
-     */
-    public String getPCompanyId(){
-        return this.pCompanyId;
-    }
-    /**
-     * @setPCompanyId:P_COMPANY_ID的set方法
-     * @param pCompanyId
-     * @return
-     * @date 2020-12-18 11:51:00
-     * @author 18511
-     */
-    public void setPCompanyId(String pCompanyId){
-		this.pCompanyId = pCompanyId;
-	} 
-    /**
      * @getRemark1:REMARK1的get方法
      * @params
      * @return remark1
@@ -881,13 +897,6 @@ public class ElectricianCompanyInfo implements Serializable {
 		} else if (!regiseterTime.equals(other.regiseterTime)) {
 			return false;
 		}
-		if (pCompanyId == null) {
-			if (other.pCompanyId != null) {
-				return false;
-			}
-		} else if (!pCompanyId.equals(other.pCompanyId)) {
-			return false;
-		}
 		if (remark1 == null) {
 			if (other.remark1 != null) {
 				return false;
@@ -952,7 +961,6 @@ public class ElectricianCompanyInfo implements Serializable {
 			+ ", qualiLevel=" + qualiLevel
 			+ ", certificateCode=" + certificateCode
 			+ ", regiseterTime=" + regiseterTime
-			+ ", pCompanyId=" + pCompanyId
 			+ ", remark1=" + remark1
 			+ ", remark2=" + remark2
 			+ ", remark3=" + remark3
