@@ -260,4 +260,13 @@ public class ElectricianCompanyInfoService implements IElectricianCompanyInfoSer
 		count = result.size();
 		return RestUtils.wrappQueryResult(result, count);
 	}
+	public ElectricianCompanyInfo findByCompanyId(String companyId) {
+		
+ElectricianCompanyInfo electricianCompanyInfo=electricianCompanyInfoRepository.findOne(companyId);
+		return electricianCompanyInfo;
+	}
+	public List<ElectricianCompanyInfo> findByCompanyAreaId(String areaId) {
+		List<ElectricianCompanyInfo> list=electricianCompanyInfoRepository.findByCompanyAreaId(areaId);
+		return list;
+	}
 }

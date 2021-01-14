@@ -4,8 +4,9 @@ package com.sgcc.uap.util;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
 import com.sgcc.uap.share.domain.ElectricianInfo;
-import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
+
 
 public class MapGetValueUtil {
 	
@@ -13,9 +14,9 @@ public class MapGetValueUtil {
 	 * 返回集合中的第一个值
 	 */
 	
-	public static ElectricianSubCompanyInfo getFirstOrNull(Map<Double, ElectricianSubCompanyInfo> map) {
-		ElectricianSubCompanyInfo obj = null;
-        for (Entry<Double, ElectricianSubCompanyInfo> entry : map.entrySet()) {
+	public static ElectricianCompanyInfo getFirstOrNull(Map<Double, ElectricianCompanyInfo> map) {
+		ElectricianCompanyInfo obj = null;
+        for (Entry<Double, ElectricianCompanyInfo> entry : map.entrySet()) {
             obj = entry.getValue();
             if (obj != null) {
                 break;

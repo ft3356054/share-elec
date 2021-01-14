@@ -55,8 +55,9 @@ import com.sgcc.uap.share.customer.vo.OrderCustomerVO;
 import com.sgcc.uap.share.domain.BaseOrderType;
 import com.sgcc.uap.share.domain.CustPosition;
 import com.sgcc.uap.share.domain.ElecPosition;
+import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
 import com.sgcc.uap.share.domain.ElectricianInfo;
-import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
+
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderCustomerHis;
 import com.sgcc.uap.share.domain.OrderElectrician;
@@ -65,6 +66,7 @@ import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPage;
 import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPageVO;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.share.electrician.services.impl.ElecPositionService;
+import com.sgcc.uap.share.electrician.services.impl.ElectricianCompanyInfoService;
 import com.sgcc.uap.share.electrician.services.impl.ElectricianInfoService;
 import com.sgcc.uap.share.electrician.services.impl.ElectricianSubCompanyInfoService;
 import com.sgcc.uap.share.electrician.services.impl.OrderElectricianHisService;
@@ -152,7 +154,7 @@ public class OrderElectricianController {
 	private BaseOrderTypeService baseOrderTypeService;
 	
 	@Autowired
-	private ElectricianSubCompanyInfoService electricianSubCompanyInfoService;
+	private ElectricianCompanyInfoService electricianCompanyInfoService;
 	
 	@Autowired
 	private OrderCustomerHisService orderCustomerHisService;
@@ -348,9 +350,9 @@ public class OrderElectricianController {
 			//2.1查询电工的信息是否在线
 			ElectricianInfo electricianInfo=electricianInfoService.findByElectricianId(electricianId);
 			//2.2.1查询电工公司是否在线
-			String subCompanyId=electricianInfo.getSubCompanyId();
-			ElectricianSubCompanyInfo electricianSubCompanyInfo=electricianSubCompanyInfoService.findBySubCompanyId(subCompanyId);
-			if (electricianSubCompanyInfo.getBusinessStatus().equals("1")) {//1 代表的是停业状态
+			String CompanyId=electricianInfo.getCompanyId();
+			ElectricianCompanyInfo electricianCompanyInfo=electricianCompanyInfoService.findByCompanyId(CompanyId);
+			if (electricianCompanyInfo.getBusinessStatus().equals("1")) {//1 代表的是停业状态
 				String msg="您所属公司已停业";
 				return WrappedResult.failedWrappedResult(msg);
 			}

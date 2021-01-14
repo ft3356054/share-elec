@@ -50,8 +50,9 @@ import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.BaseOrderType;
 import com.sgcc.uap.share.domain.CustPosition;
 import com.sgcc.uap.share.domain.ElecPosition;
+import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
 import com.sgcc.uap.share.domain.ElectricianInfo;
-import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
+
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPage;
@@ -132,7 +133,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 	private OrderCustomerService orderCustomerService;
 	
 	@Autowired
-	private ElectricianSubCompanyInfoService electricianSubCompanyInfoService;
+	private ElectricianCompanyInfoService electricianCompanyInfoService;
 	
 	@Autowired
 	private ElecPositionService elecPositionService;
@@ -858,13 +859,13 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		String areaId=custPosition.getAreaId();
 		
 		//2.根据客户区域ID查询此区域的子公司的集合
-		List<ElectricianSubCompanyInfo>  electricianSubCompanyInfoList=electricianSubCompanyInfoService.findByCompanyAreaId(areaId);
+		List<ElectricianCompanyInfo>  electricianCompanyInfoList=electricianCompanyInfoService.findByCompanyAreaId(areaId);
 		
-		ElectricianSubCompanyInfo electricianSubCompanyInfo=null;
-		if (electricianSubCompanyInfoList.size()>1) {//说明有多个电力子公司
+		ElectricianCompanyInfo ElectricianCompanyInfo=null;
+		if (electricianCompanyInfoList.size()>1) {//说明有多个电力子公司
 			
 			//判断哪个电力子公司距离最近			
-			Map<Double, ElectricianSubCompanyInfo> map = new TreeMap<Double, ElectricianSubCompanyInfo>(
+			Map<Double, ElectricianCompanyInfo> map = new TreeMap<Double, ElectricianCompanyInfo>(
 	                new Comparator<Double>() {
 	                    public int compare(Double obj1, Double obj2) {
 	                        // 降序排序
@@ -874,27 +875,27 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	
 			Double distanceDouble=null;	
 			
-			for (ElectricianSubCompanyInfo electricianSubCompanyInfo1 : electricianSubCompanyInfoList) {
+			for (ElectricianCompanyInfo ElectricianCompanyInfo1 : electricianCompanyInfoList) {
 				//如果电工子公司的状态是0，则代表营业中
-				if (electricianSubCompanyInfo1.getBusinessStatus().equals("0")) {
+				if (ElectricianCompanyInfo1.getBusinessStatus().equals("0")) {
 					//获取订单 的位置,即经纬度，进行对比
-					String electricianSubCompanyInfoLon=electricianSubCompanyInfo1.getAddressLongitude();
-					String electricianSubCompanyInfoLat=electricianSubCompanyInfo1.getAddressLatitude();
+					String ElectricianCompanyInfoLon=ElectricianCompanyInfo1.getAddressLongitude();
+					String ElectricianCompanyInfoLat=ElectricianCompanyInfo1.getAddressLatitude();
 					
 					
-					distanceDouble=PointUtil.getDistanceString(String.valueOf(custPosition.getLon()), String.valueOf(custPosition.getLat()), electricianSubCompanyInfoLon, electricianSubCompanyInfoLat);
+					distanceDouble=PointUtil.getDistanceString(String.valueOf(custPosition.getLon()), String.valueOf(custPosition.getLat()), ElectricianCompanyInfoLon, ElectricianCompanyInfoLat);
 					System.out.println("计算的距离是："+distanceDouble);
-					map.put(distanceDouble, electricianSubCompanyInfo1);
+					map.put(distanceDouble, ElectricianCompanyInfo1);
 				}
 					
 			}
-			electricianSubCompanyInfo=MapGetValueUtil.getFirstOrNull(map);			
+			ElectricianCompanyInfo=MapGetValueUtil.getFirstOrNull(map);			
 		}else {//说明有一个电力子公司
-			electricianSubCompanyInfo=electricianSubCompanyInfoList.get(0);
+			ElectricianCompanyInfo=electricianCompanyInfoList.get(0);
 		}		
 		ElectricianInfo electricianInfo=null;
 		//根据查询出来的电力子公司名字查询旗下所属的电工
-		String companyName=electricianSubCompanyInfo.getCompanyName();
+		String companyName=ElectricianCompanyInfo.getCompanyName();
 		
 		List<ElectricianInfo> electricianInfoList=electricianInfoService.findBycompanyName(companyName);
 		
@@ -1090,10 +1091,10 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			//查询电工的信息
 			ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
 			//查询电工所属电力公司的
-			ElectricianSubCompanyInfo electricianSubCompanyInfo=electricianSubCompanyInfoService.findBySubCompanyId(electricianInfo.getSubCompanyId());
+			ElectricianCompanyInfo electricianCompanyInfo=electricianCompanyInfoService.findByCompanyId(electricianInfo.getCompanyId());
 			
 			//如果电工的状态是1,位置状态是0，电力公司的状态是0营业中，则代表电工在线
-			if (electricianInfo.getElectricianStatus().equals("1") && elecPosition.getStatus().equals("0") && electricianSubCompanyInfo.equals("0")) {  
+			if (electricianInfo.getElectricianStatus().equals("1") && elecPosition.getStatus().equals("0") && electricianCompanyInfo.equals("0")) {  
 				if (Double.valueOf(elecPosition.getLon())>around[0] && Double.valueOf(elecPosition.getLon())<around[2] && Double.valueOf(elecPosition.getLat())>around[1] && Double.valueOf(elecPosition.getLat())<around[3]){
 					
 					//3.2获取到了范围内的可以接单的电工
@@ -1300,36 +1301,6 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	}
 	
 
-	/**
-	 * 发送流水
-	 * @param map
-	 * @param orderCustomer
-	 * @param oper 0增 1删 2改
-	 * @param getPeople 1客户 2电工 
-	 * @throws Exception
-	 */
-	public void sendOederFlow(OrderElectrician orderElectrician,int oper){
-		
-		try {
-			
-		
-		String status =(String)orderElectrician.getOrderElectricianStatus();
-		//1维修 2支付 3验收 4评价
-		
-		
-		
-		//获取Enum通知类
-				BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("1",  status);	
-				
-				//新增流水
-				Map<String,Object> mapOrderFlow = 
-						MapUtil.flowAdd(orderElectrician.getOrDERId(), 0,  Integer.parseInt(status), orderElectrician.getElectricianId(), TimeStamp.toString(new Date()), oper,  baseEnums.getEnumsA());
-				orderFlowService.saveOrderFlow(mapOrderFlow);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		
-	}
 	
 	/**
 	 * 用于将javabean转换成Map
@@ -1524,6 +1495,7 @@ public void saveorderCustomerPOJO(OrderCustomer orderCustomer) {
 	orderCustomerRepository.save(orderCustomer);
 	
 }
+
 
 }
 	

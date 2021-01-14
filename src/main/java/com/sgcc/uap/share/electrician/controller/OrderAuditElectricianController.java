@@ -259,7 +259,7 @@ public class OrderAuditElectricianController {
 				map.put("electricianName", electricianInfo.getElectricianName());
 				map.put("electricianPhonenumber", electricianInfo.getElectricianPhonenumber());
 							
-				map.put("subCompanyId",electricianInfo.getSubCompanyId());
+				//map.put("subCompanyId",electricianInfo.getSubCompanyId());
 				map.put("companyName",electricianInfo.getCompanyName() );
 				
 				
