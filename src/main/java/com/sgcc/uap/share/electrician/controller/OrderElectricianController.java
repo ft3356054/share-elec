@@ -817,11 +817,19 @@ public class OrderElectricianController {
 			QueryResultObject queryResult=orderCustomerService.getOrderCustomerByOrderId(orderId);
 			List<OrderCustomer> orderCustomersList=queryResult.getItems();
 			List<OrderElectricianBeginPageVO> OrderElectricianBeginPageVOList=new ArrayList<>();
-			
+			//获取一个客户订单
 			OrderCustomer orderCustomer=orderCustomersList.get(0);
 			OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
-			OrderElectrician orderElectrician=orderElectricianService.findByOrderId(orderId,electricianId);
-			orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+			//如果主订单的状态是11,则说明是电工退单，已经给了电工上门费，则现在是0
+			if (orderCustomer.getOrderStatus().equals("11")) {
+				String customerPrice = orderCustomer.getCustomerPrice();
+				customerPrice="";
+				OrderElectrician orderElectrician=orderElectricianService.findByOrderId(orderId,electricianId);
+				orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+			}else {
+				orderElectricianBeginPageVO=orderElectricianService.convertOrderCustomer2OrderElectricianBeginPageVO(orderCustomer, orderElectricianBeginPageVO);
+			}
+			
 			OrderElectricianBeginPageVOList.add(orderElectricianBeginPageVO);
 			queryResult.setItems(OrderElectricianBeginPageVOList);
 			
