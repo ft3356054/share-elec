@@ -32,7 +32,7 @@ public class ElectricianInfoTransfer {
 			electricianInfo.setAddressLongitude(vo.getAddressLongitude());
 			electricianInfo.setAddressLatitude(vo.getAddressLatitude());
 			electricianInfo.setElectricianLevel(vo.getElectricianLevel());
-			electricianInfo.setSubCompanyId(vo.getSubCompanyId());
+			electricianInfo.setCompanyId(vo.getCompanyId());
 			electricianInfo.setCompanyName(vo.getCompanyName());
 			electricianInfo.setRatingCertificate(vo.getRatingCertificate());
 			electricianInfo.setCompanyContract(vo.getCompanyContract());
@@ -63,7 +63,7 @@ public class ElectricianInfoTransfer {
 		vo.setAddressLongitude(po.getAddressLongitude());
 		vo.setAddressLatitude(po.getAddressLatitude());
 		vo.setElectricianLevel(po.getElectricianLevel());
-		vo.setSubCompanyId(po.getSubCompanyId());
+		vo.setCompanyId(po.getCompanyId());
 		vo.setCompanyName(po.getCompanyName());
 		vo.setRatingCertificate(po.getRatingCertificate());
 		vo.setCompanyContract(po.getCompanyContract());

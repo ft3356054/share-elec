@@ -71,10 +71,10 @@ public class ElectricianInfo implements Serializable {
     private String electricianLevel ;
     
     /** 
-     * SUB_COMPANY_ID
+     * COMPANY_ID
      */
-    @Column(name = "SUB_COMPANY_ID", nullable = true, length = 64)
-    private String subCompanyId ;
+    @Column(name = "COMPANY_ID", nullable = true, length = 64)
+    private String companyId ;
     
     /** 
      * COMPANY_NAME
@@ -295,37 +295,17 @@ public class ElectricianInfo implements Serializable {
     public void setElectricianLevel(String electricianLevel){
 		this.electricianLevel = electricianLevel;
 	} 
-    /**
-     * @getSubCompanyId:SUB_COMPANY_ID的get方法
-     * @params
-     * @return subCompanyId
-     * @date 2020-12-18 15:20:12
-     * @author 18511
-     */
-    public String getSubCompanyId(){
-        return this.subCompanyId;
-    }
-    /**
-     * @setSubCompanyId:SUB_COMPANY_ID的set方法
-     * @param subCompanyId
-     * @return
-     * @date 2020-12-18 15:20:12
-     * @author 18511
-     */
-    public void setSubCompanyId(String subCompanyId){
-		this.subCompanyId = subCompanyId;
-	} 
-    /**
-     * @getCompanyName:COMPANY_NAME的get方法
-     * @params
-     * @return companyName
-     * @date 2020-12-18 15:20:12
-     * @author 18511
-     */
+    
     public String getCompanyName(){
         return this.companyName;
     }
-    /**
+    public String getCompanyId() {
+		return companyId;
+	}
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
+	}
+	/**
      * @setCompanyName:COMPANY_NAME的set方法
      * @param companyName
      * @return
@@ -607,13 +587,6 @@ public class ElectricianInfo implements Serializable {
 		} else if (!electricianLevel.equals(other.electricianLevel)) {
 			return false;
 		}
-		if (subCompanyId == null) {
-			if (other.subCompanyId != null) {
-				return false;
-			}
-		} else if (!subCompanyId.equals(other.subCompanyId)) {
-			return false;
-		}
 		if (companyName == null) {
 			if (other.companyName != null) {
 				return false;
@@ -707,7 +680,6 @@ public class ElectricianInfo implements Serializable {
 			+ ", addressLongitude=" + addressLongitude
 			+ ", addressLatitude=" + addressLatitude
 			+ ", electricianLevel=" + electricianLevel
-			+ ", subCompanyId=" + subCompanyId
 			+ ", companyName=" + companyName
 			+ ", ratingCertificate=" + ratingCertificate
 			+ ", companyContract=" + companyContract
