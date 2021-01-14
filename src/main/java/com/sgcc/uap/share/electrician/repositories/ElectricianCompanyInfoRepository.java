@@ -29,7 +29,7 @@ public interface ElectricianCompanyInfoRepository extends JpaRepository<Electric
 			@Param("companyName")String companyName,@Param("companyLevel")String companyLevel,
 			@Param("regiseterTimeBegin")String regiseterTimeBegin,@Param("regiseterTimeEnd")String regiseterTimeEnd);
 
-	@Query(value="select * from Electrician_Company_Info where COMPANY_AREA_ID=?")
+	@Query(value="select * from Electrician_Company_Info where COMPANY_AREA_ID=?",nativeQuery = true)
 	List<ElectricianCompanyInfo> findByCompanyAreaId(String areaId);
 	
 }

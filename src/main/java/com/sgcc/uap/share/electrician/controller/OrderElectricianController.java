@@ -1271,7 +1271,6 @@ public class OrderElectricianController {
 			@RequestParam(value="electricianPhonenumber",required = false) String electricianPhonenumber,@RequestParam("electricianId") String electricianId){
 		try {
 			
-
 			//查询当前电工的信息
 			ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianId);
 			//用于存放返回的数据
@@ -1285,8 +1284,7 @@ public class OrderElectricianController {
 					//电工都是空闲状态
 					if (electricianInfo.getElectricianStatus().equals("1") && elecPosition2.getStatus().equals("0") && elecPosition.getAreaId().equals(elecPosition2.getAreaId())) {
 						list.add(electricianInfo);
-					}
-					
+					}					
 				}
 				return WrappedResult.successWrapedResult(list);
 			}else if (!electricianPhonenumber.isEmpty()) {
@@ -1298,16 +1296,13 @@ public class OrderElectricianController {
 					//电工都是空闲状态
 					if (!electricianInfo.getElectricianStatus().equals("1") && elecPosition2.getStatus().equals("0") && elecPosition.getAreaId().equals(elecPosition2.getAreaId())) {
 						list.add(electricianInfo);
-					}
-					
+					}					
 				}
 				return WrappedResult.successWrapedResult(list);
 				
 			}else {
 				return WrappedResult.failedWrappedResult("未找到电工");
-			}
-			
-			
+			}		
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			String errorMessage = "查询异常";
@@ -1315,10 +1310,16 @@ public class OrderElectricianController {
 				errorMessage = e.getMessage();
 			}
 			return WrappedResult.failedWrappedResult("查找电工出错");
+		}	
+	}
+	
+	@RequestMapping(value="removeElectrician",name="删除电工")
+	public WrappedResult removeElectrician(@RequestParam(value = "items", required = false) String items){
+		if(items != null && !items.isEmpty()){
+			Map<String,Object> map = JsonUtils.parseJSONstr2Map(items);
+			System.out.println(map.toString());
 		}
-		
-		
-		
+		return null;
 		
 	}
 	
