@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.electrician.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -572,7 +573,7 @@ public class OrderElectricianController {
 		String eleArea=elecPosition.getAreaId();
 		
 		//2获取此电工的经纬度范围
-		//电工默认接收订单范围是 15KM
+	
 		
 		
 	
@@ -1022,6 +1023,8 @@ public class OrderElectricianController {
 					 * 开始施工
 					 */
 					if(method.equals("开始施工")){//只能改状态就好
+						
+						/*
 						List<Map<String, String>> remark_str1=(List<Map<String, String>>) map.get("remark_str1");
 						String remark_str1sString="";
 						if (remark_str1.size()==1) {
@@ -1052,9 +1055,13 @@ public class OrderElectricianController {
 						}
 							
 						}
+						*/
+						
+						
 						
 						String str=(String) map.get("otherElectricianId");
 						String otherElectricianId="";
+						String remark_str1sString="";
 						//如果传送过来的有数据
 						//先将其它电工截取
 						
@@ -1062,14 +1069,37 @@ public class OrderElectricianController {
 							String temp=str.substring(1, str.length()-1);
 							System.out.println("temp=:"+temp);
 							String electricianId = (String) map.get("electricianId");
+							
+							//查询主电工的名字和电话
+							ElectricianInfo electricianInfo=electricianInfoService.findByElectricianId(electricianId);
+							String electricianName=electricianInfo.getElectricianName();
+							String telephone=electricianInfo.getElectricianPhonenumber();
+							remark_str1sString=electricianName+":"+telephone;
+							
+							
 							//给其它电工发送通知
 							String[] split = temp.split(",");
 							for (int i = 0; i < split.length; i++) {
 								//给新加入的电工创建未完成的订单
 								if (i>0) {
 									otherElectricianId=otherElectricianId+","+split[i];
+									
+									String electricianId1=split[i];
+									ElectricianInfo electricianInfo1 = electricianInfoService.findByElectricianId(electricianId1);
+									String electricianName1=electricianInfo1.getElectricianName();
+									String electricianPhonenumber1=electricianInfo1.getElectricianPhonenumber();
+									remark_str1sString=remark_str1sString+","+electricianName1+":"+electricianPhonenumber1;
+									
 								}else {
 									otherElectricianId=split[i];
+									//传送过来的单个电工ID，获取名字和电话号
+									
+									String electricianId1=split[i];
+									ElectricianInfo electricianInfo1 = electricianInfoService.findByElectricianId(electricianId1);
+									String electricianName1=electricianInfo1.getElectricianName();
+									String electricianPhonenumber1=electricianInfo1.getElectricianPhonenumber();
+									remark_str1sString=remark_str1sString+","+electricianName1+":"+electricianPhonenumber1;
+									
 								}
 								
 								//通过电工的ID给电工发送消息
@@ -1081,11 +1111,7 @@ public class OrderElectricianController {
 							otherElectricianId=electricianId+","+otherElectricianId;
 							System.out.println(otherElectricianId);
 							
-							//查询电工的名字
-							ElectricianInfo electricianInfo=electricianInfoService.findByElectricianId(electricianId);
-							String electricianName=electricianInfo.getElectricianName();
-							String telephone=electricianInfo.getElectricianPhonenumber();
-							remark_str1sString=electricianName+":"+telephone+","+remark_str1sString;
+							
 							
 						}
 						
@@ -1150,8 +1176,11 @@ public class OrderElectricianController {
 						orderElectricianMap.put("electricianId", map.get("electricianId"));
 						orderElectricianMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 						orderElectricianMap.put("finishTime", DateTimeUtil.formatDateTime(new Date()));
-						
-						
+						//2021.1.13电工发起验收后，电工就可以接单了
+							//1.需要电工的位置表状态是0   2.
+						ElecPosition elecPosition=elecPositionService.findByElectricianId(String.valueOf(map.get("electricianId")));
+						elecPosition.setStatus("0");
+						elecPositionService.save(elecPosition);
 						
 						OrderCustomer orderCustomer=orderElectricianService.saveOrderCustomerByOrderElectricianService(orderCustomerMap);
 						System.out.println("我执行完了保存操作");

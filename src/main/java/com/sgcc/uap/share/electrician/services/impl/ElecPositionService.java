@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -45,6 +46,7 @@ import com.sgcc.uap.utils.json.JsonUtils;
  * @author 18511
  */
 @Service
+@Transactional
 public class ElecPositionService implements IElecPositionService{
 	/** 
      * 注入elecPositionRepository
@@ -269,5 +271,18 @@ public class ElecPositionService implements IElecPositionService{
 		List<ElecPosition> list=elecPositionRepository.findByAreaId(areaId);
 		return list;
 	}
+/*
+ * 保存实体类
+ */
+	public void save(ElecPosition elecPosition) {
+		elecPositionRepository.save(elecPosition);
+		
+	}
+
+	public ElecPosition findByElectricianId(String electricianId) {
+		ElecPosition elecPosition=elecPositionRepository.findOne(electricianId);
+		return elecPosition;
+	}
+
 	
 }
