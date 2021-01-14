@@ -1313,13 +1313,20 @@ public class OrderElectricianController {
 		}	
 	}
 	
-	@RequestMapping(value="removeElectrician",name="删除电工")
-	public WrappedResult removeElectrician(@RequestParam(value = "items", required = false) String items){
-		if(items != null && !items.isEmpty()){
+	@RequestMapping(value="/removeElectrician",name="删除电工")
+	public WrappedResult removeElectrician(@RequestParam(value = "items") String items){
+		try {
 			Map<String,Object> map = JsonUtils.parseJSONstr2Map(items);
 			System.out.println(map.toString());
+			OrderElectrician orderElectrician=orderElectricianService.removeElectrician(map);
+		
+		return WrappedResult.successWrapedResult("删除成功");
+			
+		} catch (Exception e) {
+			
+			return WrappedResult.failedWrappedResult("删除失败");
 		}
-		return null;
+			
 		
 	}
 	

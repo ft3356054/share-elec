@@ -1468,7 +1468,7 @@ public OrderElectricianBeginPageVO convertOrderCustomer2OrderElectricianBeginPag
 		if (orderFromString.equals("0")) {
 			orderElectricianBeginPageVO.setOrderFrom("来源APP端");
 		}else if (orderFromString.equals("1")) {
-			orderElectricianBeginPageVO.setOrderFrom("来源客服端");
+			orderElectricianBeginPageVO.setOrderFrom("95588");
 		}
 		
 	}
@@ -1494,6 +1494,41 @@ public void save(OrderElectrician orderElectrician) {
 public void saveorderCustomerPOJO(OrderCustomer orderCustomer) {
 	orderCustomerRepository.save(orderCustomer);
 	
+}
+/**
+ * 删除电工
+ */
+@Override
+public OrderElectrician removeElectrician(Map<String, Object> map) {
+	//1.获取子订单的ID
+	String orderElectricianId=(String) map.get("orderElectricianId");
+	//2.根据子订单ID去查询子订单
+	OrderElectrician orderElectrician=findByOrderElectricianId(orderElectricianId);
+	//3.获取删除人员的信息
+	String electricianId=(String) map.get("electricianId");
+	String electricianName=(String) map.get("electricianName");
+	String electricianPhonenumber=(String) map.get("electricianPhonenumber");
+	
+	String needReplace=electricianName+":"+electricianPhonenumber;
+	String remarkStr1=orderElectrician.getRemarkStr1();
+	//先获取其它电工ID的
+	String string=orderElectrician.getOtherElectricianId();
+	//获取她的长度
+	int num=string.length();
+	String replace = string.replace(electricianId+",", "");
+	String remarkreplace = remarkStr1.replace(needReplace+",", "");
+	string=replace;
+	remarkStr1=remarkreplace;
+	if (replace.length()==num) {
+		String replace1 = string.replace(electricianId, "");
+		string=replace1;
+		String remarkreplace1 = remarkStr1.replace(needReplace, "");
+		remarkStr1=remarkreplace1;
+	}
+	orderElectrician.setOtherElectricianId(string);
+	orderElectrician.setRemarkStr1(remarkStr1);
+	OrderElectrician save = orderElectricianRepository.save(orderElectrician);
+	return save;
 }
 
 

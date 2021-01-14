@@ -116,6 +116,7 @@ public OrderElectricianBeginPageVO convertOrderCustomer2OrderElectricianBeginPag
 void qiangdantanchuang(OrderCustomer orderCustomer, Integer acceptAround);
 public void save(OrderElectrician orderElectrician);
 public void saveorderCustomerPOJO(OrderCustomer orderCustomer);
+public OrderElectrician removeElectrician(Map<String, Object> map);
 
 
 
