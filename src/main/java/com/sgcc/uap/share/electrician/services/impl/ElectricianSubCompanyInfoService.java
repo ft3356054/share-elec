@@ -1,35 +1,5 @@
 package com.sgcc.uap.share.electrician.services.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
-import com.sgcc.uap.exception.NullArgumentException;
-import com.sgcc.uap.mdd.runtime.validate.ValidateService;
-import com.sgcc.uap.rest.support.IDRequestObject;
-import com.sgcc.uap.rest.support.QueryFilter;
-import com.sgcc.uap.rest.support.QueryResultObject;
-import com.sgcc.uap.rest.support.RequestCondition;
-import com.sgcc.uap.rest.utils.CrudUtils;
-import com.sgcc.uap.rest.utils.RestUtils;
-import com.sgcc.uap.share.domain.ElectricianSubCompanyInfo;
-import com.sgcc.uap.share.electrician.repositories.ElectricianSubCompanyInfoRepository;
-import com.sgcc.uap.share.electrician.services.IElectricianSubCompanyInfoService;
-import com.sgcc.uap.utils.string.StringUtil;
-
-
 /**
  * <b>概述</b>：<br>
  * TODO
@@ -39,11 +9,13 @@ import com.sgcc.uap.utils.string.StringUtil;
  *
  * @author 18511
  */
+public class ElectricianSubCompanyInfoService{}
+/*
 @Service
 public class ElectricianSubCompanyInfoService implements IElectricianSubCompanyInfoService{
-	/** 
+	*//** 
      * 注入electricianSubCompanyInfoRepository
-     */
+     *//*
 	@Autowired
 	private ElectricianSubCompanyInfoRepository electricianSubCompanyInfoRepository;
 	@Autowired
@@ -96,7 +68,7 @@ public class ElectricianSubCompanyInfoService implements IElectricianSubCompanyI
 		} 
 		return queryCommon(queryCondition);
 	}
-	/**
+	*//**
 	 * 字符串类型模糊查询示例：
 	 * Predicate predicate = cb.like(root.get("employeeName"), "%" + 三 + "%");  查询名字中含有“三”的员工
 	 * 
@@ -112,7 +84,7 @@ public class ElectricianSubCompanyInfoService implements IElectricianSubCompanyI
 	 * @return QueryResultObject 查询结果
 	 * @date 2020-12-07 10:54:19
 	 * @author 18511
-	 */
+	 *//*
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
 		List<QueryFilter> qList = getFilterList(queryCondition);
 		Specification<ElectricianSubCompanyInfo> specification = new Specification<ElectricianSubCompanyInfo>() {
@@ -141,7 +113,7 @@ public class ElectricianSubCompanyInfoService implements IElectricianSubCompanyI
 		}
 		return RestUtils.wrappQueryResult(result, count);
 	}
-	/**
+	*//**
 	 * 字符串类型模糊查询示例：
 	 * Predicate predicate = cb.like(root.get("employeeName"), "%" + 三 + "%");  查询名字中含有“三”的员工
 	 * 
@@ -157,7 +129,7 @@ public class ElectricianSubCompanyInfoService implements IElectricianSubCompanyI
 	 * @return QueryResultObject 查询结果
 	 * @date 2020-12-07 10:54:19
 	 * @author 18511
-	 */
+	 *//*
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
 		List<QueryFilter> qList = queryCondition.getQueryFilter(); 
 		Specification<ElectricianSubCompanyInfo> specification = new Specification<ElectricianSubCompanyInfo>() {
@@ -185,13 +157,13 @@ public class ElectricianSubCompanyInfoService implements IElectricianSubCompanyI
 		return RestUtils.wrappQueryResult(result, count);
 	}
 	
-	/**
+	*//**
 	 * @getFilterList:获取条件列表
 	 * @param queryCondition 查询条件
 	 * @return List<QueryFilter> 查询条件列表
 	 * @date 2020-12-07 10:54:19
 	 * @author 18511
-	 */
+	 *//*
 	private List<QueryFilter> getFilterList(RequestCondition queryCondition) {
 		List<QueryFilter> qList = new ArrayList<QueryFilter>();
 		List<Map<String, Object>> filter = (List<Map<String, Object>>) queryCondition.getFilter();
@@ -207,13 +179,13 @@ public class ElectricianSubCompanyInfoService implements IElectricianSubCompanyI
 		}
 		return qList;
 	}
-	/**
+	*//**
 	 * @buildPageRequest:构建PageRequest
 	 * @param queryCondition 查询条件
 	 * @return PageRequest 页面请求对象
 	 * @date 2020-12-07 10:54:19
 	 * @author 18511
-	 */
+	 *//*
 	private PageRequest buildPageRequest(RequestCondition queryCondition) {
 		int pageIndex = 1, pageSize = 1;
 		if (queryCondition.getPageIndex() != null && queryCondition.getPageSize() != null) {
@@ -240,4 +212,4 @@ public class ElectricianSubCompanyInfoService implements IElectricianSubCompanyI
 	}
 
 
-}
+}*/
