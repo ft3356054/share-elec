@@ -834,7 +834,7 @@ public class OrderElectricianController {
 			}else{
 				OrderElectrician orderElectrician=orderElectricianService.findByOrderId(orderId,electricianId);
 				orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
-				orderElectricianBeginPageVO=orderElectricianService.convertOrderCustomer2OrderElectricianBeginPageVO(orderCustomer, orderElectricianBeginPageVO);
+				
 			}
 			
 			OrderElectricianBeginPageVOList.add(orderElectricianBeginPageVO);
