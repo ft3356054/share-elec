@@ -1,10 +1,8 @@
-package com.sgcc.uap.share.customer.services.impl;
+package com.sgcc.uap.share.services.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -16,11 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.mdd.runtime.validate.ValidateService;
 import com.sgcc.uap.rest.support.IDRequestObject;
@@ -29,10 +24,10 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
-import com.sgcc.uap.share.customer.repositories.CustPositionRepository;
-import com.sgcc.uap.share.customer.services.ICustPositionService;
-import com.sgcc.uap.share.domain.CustPosition;
-import com.sgcc.uap.utils.json.JsonUtils;
+import com.sgcc.uap.share.domain.AssessRecord;
+import com.sgcc.uap.share.repositories.AssessRecordRepository;
+import com.sgcc.uap.share.services.IAssessRecordService;
+import com.sgcc.uap.utils.string.StringUtil;
 
 
 /**
@@ -45,47 +40,20 @@ import com.sgcc.uap.utils.json.JsonUtils;
  * @author 18511
  */
 @Service
-public class CustPositionService implements ICustPositionService{
+public class AssessRecordService implements IAssessRecordService{
 	/** 
-     * 注入custPositionRepository
+     * 注入assessRecordRepository
      */
 	@Autowired
-	private CustPositionRepository custPositionRepository;
+	private AssessRecordRepository assessRecordRepository;
 	@Autowired
 	private ValidateService validateService;
-	@Autowired
-    private StringRedisTemplate stringRedisTemplate;
 	
 	@Override
-	public QueryResultObject getCustPositionByOrderId(String orderId) {
-		String json = stringRedisTemplate.opsForValue().get("cp"+orderId);
-		CustPosition custPosition = null;
-		if("".equals(json)||null==json){
-			custPosition = custPositionRepository.findOne(orderId);
-			String posiJson = JsonUtils.toJsonString(custPosition);
-			stringRedisTemplate.opsForValue().set("cp"+orderId, posiJson, 7L, TimeUnit.DAYS);
-		}else{
-			try {
-				custPosition = (CustPosition) JsonUtils.json2Object(json, CustPosition.class);
-			} catch (JsonParseException e) {
-				e.printStackTrace();
-			} catch (JsonMappingException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return RestUtils.wrappQueryResult(custPosition);
+	public QueryResultObject getAssessRecordByOrderId(String orderId) {
+		AssessRecord assessRecord = assessRecordRepository.findOne(orderId);
+		return RestUtils.wrappQueryResult(assessRecord);
 	}
-	
-	@Override
-	public List<CustPosition> getByAreaId(String areaId) {
-		List<CustPosition> custPositions = custPositionRepository.findByAreaId(areaId);
-		//stringRedisTemplate.opsForValue().set(areaId, custPositions, 1L, TimeUnit.HOURS);
-		//redisTemplate.opsForList().leftPush(areaId, custPositions);
-		return custPositions;
-	}
-	
 	@Override
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){
@@ -93,20 +61,21 @@ public class CustPositionService implements ICustPositionService{
 		}
 		String[] ids = idObject.getIds();
 		for (String id : ids){
-			custPositionRepository.delete(id);
+			assessRecordRepository.delete(id);
 		}
 	}
-	
 	@Override
-	public CustPosition saveCustPosition(Map<String,Object> map) throws Exception{
-		//目前应该没有修改的时候，只有新增
-		validateService.validateWithException(CustPosition.class,map);
-		CustPosition custPosition = new CustPosition();
-		CrudUtils.transMap2Bean(map, custPosition);
-		CustPosition result = custPositionRepository.save(custPosition);
-		String posiJson = JsonUtils.toJsonString(result);
-		stringRedisTemplate.opsForValue().set("cp"+result.getOrderId(), posiJson, 7L, TimeUnit.DAYS);
-		return result;
+	public AssessRecord saveAssessRecord(Map<String,Object> map) throws Exception{
+		validateService.validateWithException(AssessRecord.class,map);
+		AssessRecord assessRecord = new AssessRecord();
+		if (map.containsKey("orderId")) {
+			String orderId = (String) map.get("orderId");
+			assessRecord = assessRecordRepository.findOne(orderId);
+			CrudUtils.mapToObject(map, assessRecord,  "orderId");
+		}else{
+			CrudUtils.transMap2Bean(map, assessRecord);
+		}
+		return assessRecordRepository.save(assessRecord);
 	}
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
@@ -141,14 +110,14 @@ public class CustPositionService implements ICustPositionService{
 	 * @querySingle:主从表单页查询方法
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-21 09:31:09
+	 * @date 2021-01-15 10:09:45
 	 * @author 18511
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
 		List<QueryFilter> qList = getFilterList(queryCondition);
-		Specification<CustPosition> specification = new Specification<CustPosition>() {
+		Specification<AssessRecord> specification = new Specification<AssessRecord>() {
 			@Override
-			public Predicate toPredicate(Root<CustPosition> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<AssessRecord> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -163,12 +132,12 @@ public class CustPositionService implements ICustPositionService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<CustPosition> custPosition = custPositionRepository.findAll(specification,request);
-		List<CustPosition> result = new ArrayList<CustPosition>();
+		Page<AssessRecord> assessRecord = assessRecordRepository.findAll(specification,request);
+		List<AssessRecord> result = new ArrayList<AssessRecord>();
 		long count = 0;
 		if(null != qList && !qList.isEmpty()){
-			result = custPosition.getContent();
-			count = custPosition.getTotalElements();
+			result = assessRecord.getContent();
+			count = assessRecord.getTotalElements();
 		}
 		return RestUtils.wrappQueryResult(result, count);
 	}
@@ -186,14 +155,14 @@ public class CustPositionService implements ICustPositionService{
 	 * @queryCommon:查询方法(通用的)
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-21 09:31:09
+	 * @date 2021-01-15 10:09:45
 	 * @author 18511
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
 		List<QueryFilter> qList = queryCondition.getQueryFilter(); 
-		Specification<CustPosition> specification = new Specification<CustPosition>() {
+		Specification<AssessRecord> specification = new Specification<AssessRecord>() {
 			@Override
-			public Predicate toPredicate(Root<CustPosition> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<AssessRecord> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -208,11 +177,11 @@ public class CustPositionService implements ICustPositionService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<CustPosition> custPosition = custPositionRepository.findAll(specification,request);
-		List<CustPosition> result = new ArrayList<CustPosition>();
+		Page<AssessRecord> assessRecord = assessRecordRepository.findAll(specification,request);
+		List<AssessRecord> result = new ArrayList<AssessRecord>();
 		long count = 0;
-		result = custPosition.getContent();
-		count = custPosition.getTotalElements();
+		result = assessRecord.getContent();
+		count = assessRecord.getTotalElements();
 		return RestUtils.wrappQueryResult(result, count);
 	}
 	
@@ -220,7 +189,7 @@ public class CustPositionService implements ICustPositionService{
 	 * @getFilterList:获取条件列表
 	 * @param queryCondition 查询条件
 	 * @return List<QueryFilter> 查询条件列表
-	 * @date 2020-12-21 09:31:09
+	 * @date 2021-01-15 10:09:45
 	 * @author 18511
 	 */
 	private List<QueryFilter> getFilterList(RequestCondition queryCondition) {
@@ -242,7 +211,7 @@ public class CustPositionService implements ICustPositionService{
 	 * @buildPageRequest:构建PageRequest
 	 * @param queryCondition 查询条件
 	 * @return PageRequest 页面请求对象
-	 * @date 2020-12-21 09:31:09
+	 * @date 2021-01-15 10:09:45
 	 * @author 18511
 	 */
 	private PageRequest buildPageRequest(RequestCondition queryCondition) {
@@ -252,11 +221,6 @@ public class CustPositionService implements ICustPositionService{
 			pageSize = queryCondition.getPageSize();
 		}
 		return new PageRequest(pageIndex - 1, pageSize, null);
-	}
-
-	public CustPosition findByOrderId(String orderId) {
-		CustPosition custPosition=custPositionRepository.findByOrderId(orderId);
-		return custPosition;
 	}
 
 

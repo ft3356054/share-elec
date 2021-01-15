@@ -194,6 +194,16 @@ public class ElectricianCompanyInfo implements Serializable {
      */
     @Column(name = "BUSINESS_TYPE", nullable = true, length = 2)
     private String businessType ;
+    /** 
+     * BUSINESS_POINT
+     */
+    @Column(name = "BUSINESS_POINT", nullable = true, length = 2)
+    private String businessPoint ;
+    /** 
+     * SERVICE_CHARGE
+     */
+    @Column(name = "SERVICE_CHARGE", nullable = true, length = 2)
+    private String businessCharge ;
     
     
 	/**
@@ -206,7 +216,23 @@ public class ElectricianCompanyInfo implements Serializable {
 	
 	}
 	
-    public String getCompanyAreaId() {
+    public String getBusinessPoint() {
+		return businessPoint;
+	}
+
+	public void setBusinessPoint(String businessPoint) {
+		this.businessPoint = businessPoint;
+	}
+
+	public String getBusinessCharge() {
+		return businessCharge;
+	}
+
+	public void setBusinessCharge(String businessCharge) {
+		this.businessCharge = businessCharge;
+	}
+
+	public String getCompanyAreaId() {
 		return companyAreaId;
 	}
 
