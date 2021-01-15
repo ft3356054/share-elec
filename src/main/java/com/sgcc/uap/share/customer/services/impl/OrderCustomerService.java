@@ -34,7 +34,9 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.controller.WebSocketServer;
+import com.sgcc.uap.share.customer.bo.EvaluateTaskBo;
 import com.sgcc.uap.share.customer.bo.OrderCustomerBeginPage;
+import com.sgcc.uap.share.customer.repositories.EvaluateTaskRepository;
 import com.sgcc.uap.share.customer.repositories.GetOrderElectricianRepository;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerBeginPageRepository;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
@@ -42,6 +44,7 @@ import com.sgcc.uap.share.customer.services.IOrderCustomerService;
 import com.sgcc.uap.share.domain.BaseAreaPrice;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.BaseIdentityPrice;
+import com.sgcc.uap.share.domain.BaseSystemConfig;
 import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
@@ -49,6 +52,7 @@ import com.sgcc.uap.share.electrician.services.impl.ElecPositionService;
 import com.sgcc.uap.share.services.IBaseEnumsService;
 import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
 import com.sgcc.uap.share.services.impl.BaseIdentityPriceService;
+import com.sgcc.uap.share.services.impl.BaseSystemConfigService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
@@ -104,6 +108,10 @@ public class OrderCustomerService implements IOrderCustomerService{
 	private NotifyAnnounceUserService notifyAnnounceUserService;
 	@Autowired
 	private ElecPositionService elecPositionService;
+	@Autowired
+	private BaseSystemConfigService baseSystemConfigService;
+	@Autowired
+	private EvaluateTaskRepository evaluateTaskRepository;
 	
 	
 	@SuppressWarnings("rawtypes")
@@ -786,9 +794,107 @@ public class OrderCustomerService implements IOrderCustomerService{
 	
 	
 	
+	/*************** TASK ******************/
+	@Override
+	@Transactional
+	public boolean runElecEvaluateTask(){
+
+		try{
+			
+			BaseSystemConfig baseSystemConfig = baseSystemConfigService.getBaseSystemConfigByConfigType("3");
+			Integer days = Integer.parseInt(baseSystemConfig.getConfigValue());
+			Integer updateCount = 0;
+			String dateString = TimeStamp.toString(new Date());
+			//修改用户待评价   5星 状态8 15天
+			//updateCount = orderCustomerRepository.getNotEvaluate(5, "默认好评",  "默认好评", 8, days,dateString);
+			List<EvaluateTaskBo> list1 = evaluateTaskRepository.findNotEvaluateOrderIds(8, days);
+			List<String> orderIds8 = new ArrayList<String>();
+			if(null!=list1&&!"".equals(list1)&&list1.size()>0){
+				for(EvaluateTaskBo evaluateTaskBo : list1){
+					orderIds8.add(evaluateTaskBo.getOrderId());
+					//插入流水
+					Map<String,Object> mapOrderFlow =
+						MapUtil.flowAdd(evaluateTaskBo.getOrderId(), 2,  9, "SYSTEM", 
+								TimeStamp.toString(new Date()), 2,  "系统修改长时间未评价的订单");
+					orderFlowService.saveOrderFlow(mapOrderFlow);
+				}
+				//修改主订单
+				if(null!=orderIds8&&!"".equals(orderIds8)){
+					updateCount = orderCustomerRepository.updateNotEvaluate(5, "默认好评",  "默认好评", 9, orderIds8,dateString);
+					logger.info("EvaluateTask 修改待评价的主订单条数 = "+updateCount);
+				}
+			}
+			
+			//修改电工待评价   5星 状态8 15天
+			List<EvaluateTaskBo> elist1 = evaluateTaskRepository.findNotEvaluateOrderElectricianIds(8, 15);
+			List<String> eOrderIds8 = new ArrayList<String>();
+			if(null!=elist1&&!"".equals(elist1)&&elist1.size()>0){
+				for(EvaluateTaskBo evaluateTaskBo : elist1){
+					eOrderIds8.add(evaluateTaskBo.getOrderId());
+				}
+				//修改主订单
+				if(null!=eOrderIds8&&!"".equals(eOrderIds8)){
+					updateCount = getOrderElectricianRepository.updateNotEvaluateByElecOrderId(5, "默认好评", 9, eOrderIds8,dateString);
+					logger.info("EvaluateTask 修改待评价的子订单条数 = "+updateCount);
+				}
+			}
+			
+			
+			/*15天未验收，且没有投诉的订单，自动完结，并划转*/
+			List<String> orderIds25 = new ArrayList<String>();
+			List<String> beComplantOrderIds = new ArrayList<String>();
+			
+			//查询满足条件的orderid 和 投诉状态 
+			List<EvaluateTaskBo> list2 = evaluateTaskRepository.getNotPass(25, days);
+			if(null!=list2&&!"".equals(list2)&&list2.size()>0){
+				for(EvaluateTaskBo evaluateTaskBo : list2){
+					String complaintStatus = evaluateTaskBo.getComplaintStatus();
+					if("0".equals(complaintStatus)){
+						beComplantOrderIds.add(evaluateTaskBo.getOrderId());
+					}else{
+						orderIds25.add(evaluateTaskBo.getOrderId());
+					}
+				}
+				//集合去重
+				orderIds25.removeAll(beComplantOrderIds);
+				
+				//修改主订单 子订单 
+				if(null!=orderIds25&&!"".equals(orderIds25)){
+					updateCount = orderCustomerRepository.updateNotEvaluateAndFinishtime(5, "默认好评",  "默认好评", 9, orderIds25,dateString);
+					logger.info("EvaluateTask 修改待验收的主订单条数 = "+updateCount);
+					updateCount = getOrderElectricianRepository.updateNotEvaluateByOrderId(5, "默认好评", 9, orderIds25,dateString);
+					logger.info("EvaluateTask 修改待验收的子订单条数 = "+updateCount);
+					
+					for(String orderId : orderIds25){
+						//插入流水
+						Map<String,Object> mapOrderFlow =
+							MapUtil.flowAdd(orderId, 2,  9, "SYSTEM", 
+									TimeStamp.toString(new Date()), 2,  "系统修改长时间未验收的订单");
+						orderFlowService.saveOrderFlow(mapOrderFlow);
+						//费用划转
+						
+					}
+				}
+				
+			}
+			
+		} catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("runElecEvaluateTask error->" + e.getMessage());
+            return false;
+        }
+		return true;
+	}
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	/*************** TASK ******************/
 	
 	
 	

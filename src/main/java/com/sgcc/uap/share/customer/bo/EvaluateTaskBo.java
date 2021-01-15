@@ -1,7 +1,5 @@
 package com.sgcc.uap.share.customer.bo;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;

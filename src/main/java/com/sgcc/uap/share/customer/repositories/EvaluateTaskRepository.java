@@ -25,11 +25,26 @@ public interface EvaluateTaskRepository extends JpaRepository<EvaluateTaskBo,Str
 			+ " FROM order_customer t2 "
 			+ " LEFT JOIN order_complaint oc ON t2.ORDER_ID = oc.ORDER_ID  "
 			+ " WHERE t2.ORDER_STATUS=:orderStatus  "
-			+ " AND DATE_SUB(t2.UPDATE_TIME, INTERVAL :day DAY) >= CURDATE() "
+			+ " AND DATE_SUB(CURDATE(), INTERVAL :day DAY) >=   t2.UPDATE_TIME "
 			+ " GROUP BY t2.ORDER_ID,oc.COMPLAINT_STATUS "
 	,nativeQuery = true)
-	public List<EvaluateTaskBo> getNotPay(@Param("orderStatus")int orderStatus,@Param("day")int day);
+	public List<EvaluateTaskBo> getNotPass(@Param("orderStatus")int orderStatus,@Param("day")int day);
 
+	
+	@Query(value = "SELECT T3.ORDER_ID,0 AS COMPLAINT_STATUS FROM ( "
+			+ " SELECT t2.ORDER_ID FROM order_customer t2 WHERE t2.ORDER_STATUS=:orderStatus  "
+			+ " AND DATE_SUB(CURDATE(), INTERVAL :day DAY) >=   t2.UPDATE_TIME  "
+			+ " ) AS T3 "
+	,nativeQuery = true)
+	List<EvaluateTaskBo> findNotEvaluateOrderIds(@Param("orderStatus")int orderStatus,@Param("day")int day);
+	
+	@Query(value = "SELECT T3.ORDER_ID,0 AS COMPLAINT_STATUS FROM ( "
+			+ " SELECT t2.order_Electrician_Id AS ORDER_ID FROM order_electrician t2 WHERE t2.order_Electrician_Status=:orderStatus  "
+			+ " AND DATE_SUB(CURDATE(), INTERVAL :day DAY) >=   t2.UPDATE_TIME  "
+			+ " ) AS T3 "
+	,nativeQuery = true)
+	List<EvaluateTaskBo> findNotEvaluateOrderElectricianIds(@Param("orderStatus")int orderStatus,@Param("day")int day);
 
+	
 	
 }

@@ -53,7 +53,7 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 			+ " WHERE t1.ORDER_ID IN  "
 			+ " (SELECT T3.ORDER_ID FROM ( "
 			+ " SELECT t2.ORDER_ID FROM order_customer t2 WHERE t2.ORDER_STATUS=:orderStatus  "
-			+ " AND DATE_SUB(t2.UPDATE_TIME, INTERVAL :day DAY) >= CURDATE()  "
+			+ " AND DATE_SUB(CURDATE(), INTERVAL :day DAY) >=   t2.UPDATE_TIME  "
 			+ " ) AS T3) "
 	,nativeQuery = true)
 	Integer getNotEvaluate(@Param("customerGrade")int customerGrade,@Param("customerEvaluateTitle")String customerEvaluateTitle,
@@ -128,6 +128,25 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	public List<OrderCustomer> findOrderCustomerByOrderId(Collection<String> orderId);
 	
 	public int countByCustomerId(String customerId);
+	
+	@Modifying
+	@Query(value = "UPDATE order_customer t1 SET t1.CUSTOMER_GRADE =:customerGrade ,"
+			+ " t1.CUSTOMER_EVALUATE_TITLE=:customerEvaluateTitle,t1.CUSTOMER_EVALUATE=:customerEvaluate, "
+			+ " t1.ORDER_STATUS=:orderStatus,t1.UPDATE_TIME=:updateTime  "
+			+ " WHERE t1.ORDER_ID IN :orderIds "
+	,nativeQuery = true)
+	Integer updateNotEvaluate(@Param("customerGrade")int customerGrade,@Param("customerEvaluateTitle")String customerEvaluateTitle,
+			@Param("customerEvaluate")String customerEvaluate,@Param("orderStatus")int orderStatus,@Param("orderIds")Collection<String> orderIds,@Param("updateTime")String updateTime);
+	
+	@Modifying
+	@Query(value = "UPDATE order_customer t1 SET t1.CUSTOMER_GRADE =:customerGrade ,"
+			+ " t1.CUSTOMER_EVALUATE_TITLE=:customerEvaluateTitle,t1.CUSTOMER_EVALUATE=:customerEvaluate, "
+			+ " t1.ORDER_STATUS=:orderStatus,t1.UPDATE_TIME=:updateTime,t1.FINISH_TIME=:updateTime  "
+			+ " WHERE t1.ORDER_ID IN :orderIds "
+	,nativeQuery = true)
+	Integer updateNotEvaluateAndFinishtime(@Param("customerGrade")int customerGrade,@Param("customerEvaluateTitle")String customerEvaluateTitle,
+			@Param("customerEvaluate")String customerEvaluate,@Param("orderStatus")int orderStatus,@Param("orderIds")Collection<String> orderIds,@Param("updateTime")String updateTime);
+	
 	
 	
 	

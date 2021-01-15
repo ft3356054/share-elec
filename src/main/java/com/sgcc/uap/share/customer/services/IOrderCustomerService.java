@@ -104,5 +104,21 @@ public interface IOrderCustomerService {
 	 * @throws Exception
 	 */
 	public OrderCustomer payPrice(String orderId,String orderStatus) throws Exception;
+	
+	
+	
+	
+	/*************** TASK ******************/
+	//15天后。待评价、待验收的订单，自动完结
+	public boolean runElecEvaluateTask();
+	
+	
+	
+	
+	
+	
+	
+	/*************** TASK ******************/
+	
 
 }
