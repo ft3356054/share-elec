@@ -50,8 +50,8 @@ public class AssessRecordService implements IAssessRecordService{
 	private ValidateService validateService;
 	
 	@Override
-	public QueryResultObject getAssessRecordByOrderId(String orderId) {
-		AssessRecord assessRecord = assessRecordRepository.findOne(orderId);
+	public QueryResultObject getAssessRecordByAssessId(String assessId) {
+		AssessRecord assessRecord = assessRecordRepository.findOne(assessId);
 		return RestUtils.wrappQueryResult(assessRecord);
 	}
 	@Override
@@ -68,10 +68,10 @@ public class AssessRecordService implements IAssessRecordService{
 	public AssessRecord saveAssessRecord(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(AssessRecord.class,map);
 		AssessRecord assessRecord = new AssessRecord();
-		if (map.containsKey("orderId")) {
-			String orderId = (String) map.get("orderId");
-			assessRecord = assessRecordRepository.findOne(orderId);
-			CrudUtils.mapToObject(map, assessRecord,  "orderId");
+		if (map.containsKey("assessId")) {
+			String assessId = (String) map.get("assessId");
+			assessRecord = assessRecordRepository.findOne(assessId);
+			CrudUtils.mapToObject(map, assessRecord,  "assessId");
 		}else{
 			CrudUtils.transMap2Bean(map, assessRecord);
 		}
@@ -110,7 +110,7 @@ public class AssessRecordService implements IAssessRecordService{
 	 * @querySingle:主从表单页查询方法
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
@@ -155,7 +155,7 @@ public class AssessRecordService implements IAssessRecordService{
 	 * @queryCommon:查询方法(通用的)
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
@@ -189,7 +189,7 @@ public class AssessRecordService implements IAssessRecordService{
 	 * @getFilterList:获取条件列表
 	 * @param queryCondition 查询条件
 	 * @return List<QueryFilter> 查询条件列表
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	private List<QueryFilter> getFilterList(RequestCondition queryCondition) {
@@ -211,7 +211,7 @@ public class AssessRecordService implements IAssessRecordService{
 	 * @buildPageRequest:构建PageRequest
 	 * @param queryCondition 查询条件
 	 * @return PageRequest 页面请求对象
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	private PageRequest buildPageRequest(RequestCondition queryCondition) {

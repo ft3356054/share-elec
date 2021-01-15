@@ -20,15 +20,20 @@ public class AssessRecordVO extends ParentVO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
     /** 
-     * 属性订单ID
-     */  
-    @ViewAttribute(name ="orderId",caption="订单ID", editor=EditorType.TextEditor,nullable =false,readOnly=false, type=AttributeType.STRING)
-    private String orderId;    
-    /** 
      * 属性客户ID
      */  
-    @ViewAttribute(name ="assessId",caption="客户ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    @ViewAttribute(name ="assessId",caption="客户ID", editor=EditorType.TextEditor,nullable =false,readOnly=false, type=AttributeType.STRING)
     private String assessId;    
+    /** 
+     * 属性COMPANY_ID
+     */  
+    @ViewAttribute(name ="companyId",caption="COMPANY_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String companyId;    
+    /** 
+     * 属性订单ID
+     */  
+    @ViewAttribute(name ="orderId",caption="订单ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String orderId;    
     /** 
      * 属性订单投诉ID
      */  
@@ -94,27 +99,9 @@ public class AssessRecordVO extends ParentVO implements Serializable{
 	 /**
      * AssessRecordVO完整的构造函数
      */  
-    public AssessRecordVO(String orderId){
-        this.orderId = orderId;
+    public AssessRecordVO(String assessId){
+        this.assessId = assessId;
     }
-    /**
-     * 订单ID的get方法
-     * @return orderId
-     */
-    public String getOrderId(){
-        return orderId;
-    }
-    /**
-     * 订单ID的set方法
-     * @param orderId
-     */
-    public void setOrderId(String orderId){
-        if(orderId != null && orderId.trim().length() == 0){
-        	this.orderId = null;
-        }else{
-        	this.orderId = orderId;
-        }
-	} 
     /**
      * 客户ID的get方法
      * @return assessId
@@ -127,7 +114,39 @@ public class AssessRecordVO extends ParentVO implements Serializable{
      * @param assessId
      */
     public void setAssessId(String assessId){
-		this.assessId = assessId;
+        if(assessId != null && assessId.trim().length() == 0){
+        	this.assessId = null;
+        }else{
+        	this.assessId = assessId;
+        }
+	} 
+    /**
+     * COMPANY_ID的get方法
+     * @return companyId
+     */
+    public String getCompanyId(){
+        return companyId;
+    }
+    /**
+     * COMPANY_ID的set方法
+     * @param companyId
+     */
+    public void setCompanyId(String companyId){
+		this.companyId = companyId;
+	} 
+    /**
+     * 订单ID的get方法
+     * @return orderId
+     */
+    public String getOrderId(){
+        return orderId;
+    }
+    /**
+     * 订单ID的set方法
+     * @param orderId
+     */
+    public void setOrderId(String orderId){
+		this.orderId = orderId;
 	} 
     /**
      * 订单投诉ID的get方法
@@ -291,8 +310,9 @@ public class AssessRecordVO extends ParentVO implements Serializable{
 	public String toString(){
 
 		  return new StringBuffer()
-	  			.append("ORDER_ID"+":"+getOrderId())
-				.append("ASSESS_ID"+":"+getAssessId())
+	  			.append("ASSESS_ID"+":"+getAssessId())
+				.append("COMPANY_ID"+":"+getCompanyId())
+				.append("ORDER_ID"+":"+getOrderId())
 				.append("ORDER_COMPLAINT_ID"+":"+getOrderComplaintId())
 				.append("ASSESS_STATUS"+":"+getAssessStatus())
 				.append("ASSESS_REASON"+":"+getAssessReason())

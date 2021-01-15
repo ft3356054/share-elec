@@ -21,18 +21,18 @@ import com.sgcc.uap.share.domain.AssessRecord;
 public interface IAssessRecordService {
 
 	/**
-	 * @getAssessRecordByOrderId:根据主键 查询
+	 * @getAssessRecordByAssessId:根据主键 查询
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
-	public QueryResultObject getAssessRecordByOrderId(String orderId);
+	public QueryResultObject getAssessRecordByAssessId(String assessId);
 	/**
 	 * @remove:根据idObject删除
 	 * @param idObject 主键id
 	 * @return void
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	public void remove(IDRequestObject idObject);
@@ -40,7 +40,7 @@ public interface IAssessRecordService {
 	 * @save:保存或更新
 	 * @param map 保存或更新的数据
 	 * @return AssessRecord AssessRecord对象
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	public AssessRecord saveAssessRecord(Map<String,Object> map) throws Exception;
@@ -48,7 +48,7 @@ public interface IAssessRecordService {
 	 * @query:根据查询条件 查询
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);

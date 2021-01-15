@@ -19,14 +19,15 @@ public class AssessRecordTransfer {
 	 * @toPO:vo转为po
 	 * @param vo vo对象
 	 * @return AssessRecord AssessRecord对象
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	public static AssessRecord toPO(AssessRecordVO vo) {
 		AssessRecord assessRecord = new AssessRecord();
 		if(vo != null){
-			assessRecord.setOrderId(vo.getOrderId());
 			assessRecord.setAssessId(vo.getAssessId());
+			assessRecord.setCompanyId(vo.getCompanyId());
+			assessRecord.setOrderId(vo.getOrderId());
 			assessRecord.setOrderComplaintId(vo.getOrderComplaintId());
 			assessRecord.setAssessStatus(vo.getAssessStatus());
 			assessRecord.setAssessReason(vo.getAssessReason());
@@ -45,13 +46,14 @@ public class AssessRecordTransfer {
 	 * @toVO:po转为vo
 	 * @param po po对象
 	 * @return AssessRecordVO AssessRecordVO对象
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	public static AssessRecordVO toVO(AssessRecord po) {
 		AssessRecordVO vo = new AssessRecordVO();
-		vo.setOrderId(po.getOrderId());
 		vo.setAssessId(po.getAssessId());
+		vo.setCompanyId(po.getCompanyId());
+		vo.setOrderId(po.getOrderId());
 		vo.setOrderComplaintId(po.getOrderComplaintId());
 		vo.setAssessStatus(po.getAssessStatus());
 		vo.setAssessReason(po.getAssessReason());

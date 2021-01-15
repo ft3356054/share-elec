@@ -27,19 +27,25 @@ public class AssessRecord implements Serializable {
 	private static final long serialVersionUID = -7768637914227571159L;
 
     /** 
-     * 订单ID
+     * 客户ID
      */
 	@Id
 	@GeneratedValue(generator = "idGenerator")
 	@GenericGenerator(name = "idGenerator", strategy = "uuid")
-    @Column(name = "ORDER_ID", nullable = false, length = 64)
-    private String orderId ;
+    @Column(name = "ASSESS_ID", nullable = false, length = 64)
+    private String assessId ;
     
     /** 
-     * 客户ID
+     * COMPANY_ID
      */
-    @Column(name = "ASSESS_ID", nullable = true, length = 64)
-    private String assessId ;
+    @Column(name = "COMPANY_ID", nullable = true, length = 64)
+    private String companyId ;
+    
+    /** 
+     * 订单ID
+     */
+    @Column(name = "ORDER_ID", nullable = true, length = 64)
+    private String orderId ;
     
     /** 
      * 订单投诉ID
@@ -117,34 +123,10 @@ public class AssessRecord implements Serializable {
 	
 	}
     /**
-     * @getOrderId:订单ID的get方法
-     * @params
-     * @return orderId
-     * @date 2021-01-15 10:09:44
-     * @author 18511
-     */
-    public String getOrderId(){
-        return this.orderId;
-    }
-    /**
-     * @setOrderId:订单ID的set方法
-     * @param orderId
-     * @return
-     * @date 2021-01-15 10:09:44
-     * @author 18511
-     */
-    public void setOrderId(String orderId){
-        if(orderId != null && orderId.trim().length() == 0){
-        	this.orderId = null;
-        }else{
-        	this.orderId = orderId;
-        }
-	} 
-    /**
      * @getAssessId:客户ID的get方法
      * @params
      * @return assessId
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public String getAssessId(){
@@ -154,17 +136,61 @@ public class AssessRecord implements Serializable {
      * @setAssessId:客户ID的set方法
      * @param assessId
      * @return
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public void setAssessId(String assessId){
-		this.assessId = assessId;
+        if(assessId != null && assessId.trim().length() == 0){
+        	this.assessId = null;
+        }else{
+        	this.assessId = assessId;
+        }
+	} 
+    /**
+     * @getCompanyId:COMPANY_ID的get方法
+     * @params
+     * @return companyId
+     * @date 2021-01-15 11:35:09
+     * @author 18511
+     */
+    public String getCompanyId(){
+        return this.companyId;
+    }
+    /**
+     * @setCompanyId:COMPANY_ID的set方法
+     * @param companyId
+     * @return
+     * @date 2021-01-15 11:35:09
+     * @author 18511
+     */
+    public void setCompanyId(String companyId){
+		this.companyId = companyId;
+	} 
+    /**
+     * @getOrderId:订单ID的get方法
+     * @params
+     * @return orderId
+     * @date 2021-01-15 11:35:09
+     * @author 18511
+     */
+    public String getOrderId(){
+        return this.orderId;
+    }
+    /**
+     * @setOrderId:订单ID的set方法
+     * @param orderId
+     * @return
+     * @date 2021-01-15 11:35:09
+     * @author 18511
+     */
+    public void setOrderId(String orderId){
+		this.orderId = orderId;
 	} 
     /**
      * @getOrderComplaintId:订单投诉ID的get方法
      * @params
      * @return orderComplaintId
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public String getOrderComplaintId(){
@@ -174,7 +200,7 @@ public class AssessRecord implements Serializable {
      * @setOrderComplaintId:订单投诉ID的set方法
      * @param orderComplaintId
      * @return
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public void setOrderComplaintId(String orderComplaintId){
@@ -184,7 +210,7 @@ public class AssessRecord implements Serializable {
      * @getAssessStatus:客户电话的get方法
      * @params
      * @return assessStatus
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public String getAssessStatus(){
@@ -194,7 +220,7 @@ public class AssessRecord implements Serializable {
      * @setAssessStatus:客户电话的set方法
      * @param assessStatus
      * @return
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public void setAssessStatus(String assessStatus){
@@ -204,7 +230,7 @@ public class AssessRecord implements Serializable {
      * @getAssessReason:客户地址的get方法
      * @params
      * @return assessReason
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public String getAssessReason(){
@@ -214,7 +240,7 @@ public class AssessRecord implements Serializable {
      * @setAssessReason:客户地址的set方法
      * @param assessReason
      * @return
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public void setAssessReason(String assessReason){
@@ -224,7 +250,7 @@ public class AssessRecord implements Serializable {
      * @getCreateTime:创建时间的get方法
      * @params
      * @return createTime
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public Timestamp getCreateTime(){
@@ -234,7 +260,7 @@ public class AssessRecord implements Serializable {
      * @setCreateTime:创建时间的set方法
      * @param createTime
      * @return
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public void setCreateTime(Timestamp createTime){
@@ -244,7 +270,7 @@ public class AssessRecord implements Serializable {
      * @getUpdateTime:更新时间的get方法
      * @params
      * @return updateTime
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public Timestamp getUpdateTime(){
@@ -254,7 +280,7 @@ public class AssessRecord implements Serializable {
      * @setUpdateTime:更新时间的set方法
      * @param updateTime
      * @return
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public void setUpdateTime(Timestamp updateTime){
@@ -264,7 +290,7 @@ public class AssessRecord implements Serializable {
      * @getFinishTime:结束时间的get方法
      * @params
      * @return finishTime
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public Timestamp getFinishTime(){
@@ -274,7 +300,7 @@ public class AssessRecord implements Serializable {
      * @setFinishTime:结束时间的set方法
      * @param finishTime
      * @return
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public void setFinishTime(Timestamp finishTime){
@@ -284,7 +310,7 @@ public class AssessRecord implements Serializable {
      * @getAssessType:客户描述的get方法
      * @params
      * @return assessType
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public String getAssessType(){
@@ -294,7 +320,7 @@ public class AssessRecord implements Serializable {
      * @setAssessType:客户描述的set方法
      * @param assessType
      * @return
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public void setAssessType(String assessType){
@@ -304,7 +330,7 @@ public class AssessRecord implements Serializable {
      * @getAssessTypeValue:客户拍照的get方法
      * @params
      * @return assessTypeValue
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public String getAssessTypeValue(){
@@ -314,7 +340,7 @@ public class AssessRecord implements Serializable {
      * @setAssessTypeValue:客户拍照的set方法
      * @param assessTypeValue
      * @return
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public void setAssessTypeValue(String assessTypeValue){
@@ -324,7 +350,7 @@ public class AssessRecord implements Serializable {
      * @getServiceId:客户评分的get方法
      * @params
      * @return serviceId
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public String getServiceId(){
@@ -334,7 +360,7 @@ public class AssessRecord implements Serializable {
      * @setServiceId:客户评分的set方法
      * @param serviceId
      * @return
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public void setServiceId(String serviceId){
@@ -344,7 +370,7 @@ public class AssessRecord implements Serializable {
      * @getSolutionDesc:客户评价标题的get方法
      * @params
      * @return solutionDesc
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public String getSolutionDesc(){
@@ -354,7 +380,7 @@ public class AssessRecord implements Serializable {
      * @setSolutionDesc:客户评价标题的set方法
      * @param solutionDesc
      * @return
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public void setSolutionDesc(String solutionDesc){
@@ -364,7 +390,7 @@ public class AssessRecord implements Serializable {
      * @getRemark:客户评价的get方法
      * @params
      * @return remark
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public String getRemark(){
@@ -374,7 +400,7 @@ public class AssessRecord implements Serializable {
      * @setRemark:客户评价的set方法
      * @param remark
      * @return
-     * @date 2021-01-15 10:09:44
+     * @date 2021-01-15 11:35:09
      * @author 18511
      */
     public void setRemark(String remark){
@@ -403,18 +429,25 @@ public class AssessRecord implements Serializable {
 		
 		AssessRecord other = (AssessRecord) obj;
 		
-		if (orderId == null) {
-			if (other.orderId != null) {
-				return false;
-			}
-		} else if (!orderId.equals(other.orderId)) {
-			return false;
-		}
 		if (assessId == null) {
 			if (other.assessId != null) {
 				return false;
 			}
 		} else if (!assessId.equals(other.assessId)) {
+			return false;
+		}
+		if (companyId == null) {
+			if (other.companyId != null) {
+				return false;
+			}
+		} else if (!companyId.equals(other.companyId)) {
+			return false;
+		}
+		if (orderId == null) {
+			if (other.orderId != null) {
+				return false;
+			}
+		} else if (!orderId.equals(other.orderId)) {
 			return false;
 		}
 		if (orderComplaintId == null) {
@@ -503,8 +536,9 @@ public class AssessRecord implements Serializable {
      */
 	public String toString(){
 		return "AssessRecord ["
-			+ ", orderId=" + orderId
 			+ ", assessId=" + assessId
+			+ ", companyId=" + companyId
+			+ ", orderId=" + orderId
 			+ ", orderComplaintId=" + orderComplaintId
 			+ ", assessStatus=" + assessStatus
 			+ ", assessReason=" + assessReason

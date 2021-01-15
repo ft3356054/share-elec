@@ -64,16 +64,16 @@ public class AssessRecordController {
 	@Autowired
 	private IAssessRecordService assessRecordService;
 	/**
-	 * @getByOrderId:根据orderId查询
-	 * @param orderId
+	 * @getByAssessId:根据assessId查询
+	 * @param assessId
 	 * @return WrappedResult 查询结果
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/{orderId}")
-	public WrappedResult getByOrderId(@PathVariable String orderId) {
+	@RequestMapping(value = "/{assessId}")
+	public WrappedResult getByAssessId(@PathVariable String assessId) {
 		try {
-			QueryResultObject result = assessRecordService.getAssessRecordByOrderId(orderId);
+			QueryResultObject result = assessRecordService.getAssessRecordByAssessId(assessId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -89,7 +89,7 @@ public class AssessRecordController {
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
@@ -111,7 +111,7 @@ public class AssessRecordController {
 	 * @saveOrUpdate:保存或更新
 	 * @param params
 	 * @return WrappedResult 保存或更新的结果
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -149,7 +149,7 @@ public class AssessRecordController {
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	@RequestMapping("/")
@@ -171,7 +171,7 @@ public class AssessRecordController {
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -200,7 +200,7 @@ public class AssessRecordController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2021-01-15 10:09:45
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	@InitBinder
