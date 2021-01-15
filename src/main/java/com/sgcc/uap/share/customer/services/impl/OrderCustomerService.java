@@ -228,11 +228,13 @@ public class OrderCustomerService implements IOrderCustomerService{
 			String identityId = (String) map.get("identityId");
 			String provinceId = (String) map.get("provinceId");
 			String cityId = (String) map.get("cityId");
-			String areaId = "";
-			if(!"".equals(cityId)&&null!=cityId){
-				areaId = cityId;
-			}else{
-				areaId = provinceId;
+			String areaId = (String) map.get("areaId");
+			if("".equals(areaId)||null==areaId){
+				if(!"".equals(cityId)&&null!=cityId){
+					areaId = cityId;
+				}else if(!"".equals(provinceId)&&null!=provinceId){
+					areaId = provinceId;
+				}
 			}
 					
 			map.put("createAreaId", areaId);
@@ -540,11 +542,14 @@ public class OrderCustomerService implements IOrderCustomerService{
 						//插入电工流水
 						//sendNotify(map, orderCustomer , orderElectrician,2,"1");
 						
+						/*电工状态的修改由电工侧完成（发起支付时修改）
 						ElecPosition elecPosition = elecPositionService.getElecPositionByElectricianId(orderElectrician.getElectricianId());
 						Map<String,Object> elecPositionMap = new HashMap<String, Object>();
 						elecPositionMap.put("electricianId", elecPosition.getElectricianId());
 						elecPositionMap.put("status", "0");
-						elecPositionService.saveElecPosition(elecPositionMap);
+						elecPositionService.saveElecPosition(elecPositionMap);*/
+						
+						//费用划转
 						
 						String dateString = TimeStamp.toString(new Date());
 						map.put("updateTime", dateString);

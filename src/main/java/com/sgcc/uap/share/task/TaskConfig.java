@@ -21,6 +21,8 @@ public class TaskConfig {
     private AutoSendOrderTask autoSendOrderTask;
 	@Autowired
     private AutoReSendOrderTask autoReSendOrderTask;
+	@Autowired
+    private EvaluateTask evaluateTask;
 	
 	
 	/*@Scheduled(initialDelay = 1000*5 , fixedDelay = 1000*5)
@@ -43,5 +45,10 @@ public class TaskConfig {
 		autoReSendOrderTask.run();
 	}
 	*/
+	
+	@Scheduled(initialDelay = 1000*5 , fixedDelay = 1000*30)
+	public void evaluateTask() {
+		evaluateTask.run();
+	}
 	
 }

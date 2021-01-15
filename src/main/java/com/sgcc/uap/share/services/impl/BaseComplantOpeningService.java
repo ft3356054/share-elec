@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.services;
+package com.sgcc.uap.share.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +24,10 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
-import com.sgcc.uap.share.domain.BaseVoltage;
-import com.sgcc.uap.share.repositories.BaseVoltageRepository;
+import com.sgcc.uap.share.domain.BaseComplantOpening;
+import com.sgcc.uap.share.repositories.BaseComplantOpeningRepository;
+import com.sgcc.uap.share.services.IBaseComplantOpeningService;
+import com.sgcc.uap.utils.string.StringUtil;
 
 
 /**
@@ -38,27 +40,24 @@ import com.sgcc.uap.share.repositories.BaseVoltageRepository;
  * @author 18511
  */
 @Service
-public class BaseVoltageService implements IBaseVoltageService{
+public class BaseComplantOpeningService implements IBaseComplantOpeningService{
 	/** 
-     * 注入baseVoltageRepository
+     * 注入baseComplantOpeningRepository
      */
 	@Autowired
-	private BaseVoltageRepository baseVoltageRepository;
+	private BaseComplantOpeningRepository baseComplantOpeningRepository;
 	@Autowired
 	private ValidateService validateService;
 	
 	@Override
-	public QueryResultObject getBaseVoltageByVoltageId(String voltageId) {
-		BaseVoltage baseVoltage = baseVoltageRepository.findOne(voltageId);
-		return RestUtils.wrappQueryResult(baseVoltage);
+	public QueryResultObject getBaseComplantOpeningByOpeningId(String openingId) {
+		Long temp_openingId = -1L;
+		if(!StringUtil.isNullOrEmpty(openingId) && !"null".equals(openingId)){
+			temp_openingId = Long.parseLong(openingId);
+		}
+		BaseComplantOpening baseComplantOpening = baseComplantOpeningRepository.findOne(temp_openingId);	
+		return RestUtils.wrappQueryResult(baseComplantOpening);
 	}
-	
-	@Override
-	public QueryResultObject queryAll() {
-		List<BaseVoltage> list = baseVoltageRepository.findAll();
-		return RestUtils.wrappQueryResult(list);
-	}
-	
 	@Override
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){
@@ -66,21 +65,21 @@ public class BaseVoltageService implements IBaseVoltageService{
 		}
 		String[] ids = idObject.getIds();
 		for (String id : ids){
-			baseVoltageRepository.delete(id);
+			baseComplantOpeningRepository.delete(Long.valueOf(id));
 		}
 	}
 	@Override
-	public BaseVoltage saveBaseVoltage(Map<String,Object> map) throws Exception{
-		validateService.validateWithException(BaseVoltage.class,map);
-		BaseVoltage baseVoltage = new BaseVoltage();
-		if (map.containsKey("voltageId")) {
-			String voltageId = (String) map.get("voltageId");
-			baseVoltage = baseVoltageRepository.findOne(voltageId);
-			CrudUtils.mapToObject(map, baseVoltage,  "voltageId");
+	public BaseComplantOpening saveBaseComplantOpening(Map<String,Object> map) throws Exception{
+		validateService.validateWithException(BaseComplantOpening.class,map);
+		BaseComplantOpening baseComplantOpening = new BaseComplantOpening();
+		if (map.containsKey("openingId")) {
+			Long openingId = Long.parseLong(map.get("openingId").toString());
+			baseComplantOpening = baseComplantOpeningRepository.findOne(openingId);
+			CrudUtils.mapToObject(map, baseComplantOpening,  "openingId");
 		}else{
-			CrudUtils.transMap2Bean(map, baseVoltage);
+			CrudUtils.transMap2Bean(map, baseComplantOpening);
 		}
-		return baseVoltageRepository.save(baseVoltage);
+		return baseComplantOpeningRepository.save(baseComplantOpening);
 	}
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
@@ -115,14 +114,14 @@ public class BaseVoltageService implements IBaseVoltageService{
 	 * @querySingle:主从表单页查询方法
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-21 17:22:38
+	 * @date 2021-01-15 10:09:45
 	 * @author 18511
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
 		List<QueryFilter> qList = getFilterList(queryCondition);
-		Specification<BaseVoltage> specification = new Specification<BaseVoltage>() {
+		Specification<BaseComplantOpening> specification = new Specification<BaseComplantOpening>() {
 			@Override
-			public Predicate toPredicate(Root<BaseVoltage> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<BaseComplantOpening> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -137,12 +136,12 @@ public class BaseVoltageService implements IBaseVoltageService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<BaseVoltage> baseVoltage = baseVoltageRepository.findAll(specification,request);
-		List<BaseVoltage> result = new ArrayList<BaseVoltage>();
+		Page<BaseComplantOpening> baseComplantOpening = baseComplantOpeningRepository.findAll(specification,request);
+		List<BaseComplantOpening> result = new ArrayList<BaseComplantOpening>();
 		long count = 0;
 		if(null != qList && !qList.isEmpty()){
-			result = baseVoltage.getContent();
-			count = baseVoltage.getTotalElements();
+			result = baseComplantOpening.getContent();
+			count = baseComplantOpening.getTotalElements();
 		}
 		return RestUtils.wrappQueryResult(result, count);
 	}
@@ -160,14 +159,14 @@ public class BaseVoltageService implements IBaseVoltageService{
 	 * @queryCommon:查询方法(通用的)
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-12-21 17:22:38
+	 * @date 2021-01-15 10:09:45
 	 * @author 18511
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
 		List<QueryFilter> qList = queryCondition.getQueryFilter(); 
-		Specification<BaseVoltage> specification = new Specification<BaseVoltage>() {
+		Specification<BaseComplantOpening> specification = new Specification<BaseComplantOpening>() {
 			@Override
-			public Predicate toPredicate(Root<BaseVoltage> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<BaseComplantOpening> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -182,11 +181,11 @@ public class BaseVoltageService implements IBaseVoltageService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<BaseVoltage> baseVoltage = baseVoltageRepository.findAll(specification,request);
-		List<BaseVoltage> result = new ArrayList<BaseVoltage>();
+		Page<BaseComplantOpening> baseComplantOpening = baseComplantOpeningRepository.findAll(specification,request);
+		List<BaseComplantOpening> result = new ArrayList<BaseComplantOpening>();
 		long count = 0;
-		result = baseVoltage.getContent();
-		count = baseVoltage.getTotalElements();
+		result = baseComplantOpening.getContent();
+		count = baseComplantOpening.getTotalElements();
 		return RestUtils.wrappQueryResult(result, count);
 	}
 	
@@ -194,7 +193,7 @@ public class BaseVoltageService implements IBaseVoltageService{
 	 * @getFilterList:获取条件列表
 	 * @param queryCondition 查询条件
 	 * @return List<QueryFilter> 查询条件列表
-	 * @date 2020-12-21 17:22:38
+	 * @date 2021-01-15 10:09:45
 	 * @author 18511
 	 */
 	private List<QueryFilter> getFilterList(RequestCondition queryCondition) {
@@ -216,7 +215,7 @@ public class BaseVoltageService implements IBaseVoltageService{
 	 * @buildPageRequest:构建PageRequest
 	 * @param queryCondition 查询条件
 	 * @return PageRequest 页面请求对象
-	 * @date 2020-12-21 17:22:38
+	 * @date 2021-01-15 10:09:45
 	 * @author 18511
 	 */
 	private PageRequest buildPageRequest(RequestCondition queryCondition) {
