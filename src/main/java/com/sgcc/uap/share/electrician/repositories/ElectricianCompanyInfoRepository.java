@@ -31,5 +31,8 @@ public interface ElectricianCompanyInfoRepository extends JpaRepository<Electric
 
 	@Query(value="select * from Electrician_Company_Info where COMPANY_AREA_ID=?",nativeQuery = true)
 	List<ElectricianCompanyInfo> findByCompanyAreaId(String areaId);
+
+	@Query(value="SELECT * FROM Electrician_Company_Info WHERE company_Name like %:comcompanyName%",nativeQuery=true)
+	List<ElectricianCompanyInfo> queryCompany(@Param("comcompanyName")String comcompanyName);
 	
 }

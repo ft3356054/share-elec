@@ -269,4 +269,14 @@ ElectricianCompanyInfo electricianCompanyInfo=electricianCompanyInfoRepository.f
 		List<ElectricianCompanyInfo> list=electricianCompanyInfoRepository.findByCompanyAreaId(areaId);
 		return list;
 	}
+	@Override
+	public QueryResultObject queryCompany(String comcompanyName) {
+		List<ElectricianCompanyInfo> list = electricianCompanyInfoRepository.queryCompany(comcompanyName);
+		QueryResultObject resultObject=new QueryResultObject();
+		Long itemCount=(long) 0;
+		itemCount=(long) list.size();
+		resultObject.setItemCount(itemCount);
+		resultObject.setItems(list);
+		return resultObject;
+	}
 }

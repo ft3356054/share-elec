@@ -60,6 +60,7 @@ public interface IElectricianCompanyInfoService {
 	 * @author 18511
 	 */
 	public QueryResultObject queryMore(RequestCondition queryCondition);
+	public QueryResultObject queryCompany(String comcompanyName);
 
 
 }

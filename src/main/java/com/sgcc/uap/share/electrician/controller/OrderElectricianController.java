@@ -388,7 +388,7 @@ public class OrderElectricianController {
 				
 				
 				//orderElectricianService.sendNotify(orderElectrician, 0, "1");
-				orderElectricianService.sendNotify(orderCustomerNew, 0, "0");
+				orderElectricianService.sendNotify(orderCustomerNew,orderElectrician , 0, "0");
 				return WrappedResult.successWrapedResult(orderElectricianBeginPageVO);
 			
 		} catch (Exception e) {
@@ -1023,7 +1023,7 @@ public class OrderElectricianController {
 							
 							//给客户发送消息，让其支付维修费
 							//TODO
-							orderElectricianService.sendNotify(orderCustomer1,0,"1");
+							orderElectricianService.sendNotify(orderCustomer1,orderElectrician,0,"1");
 							
 							//订单来源是客服，则直接出示二维码
 						}else {
@@ -1222,7 +1222,7 @@ public class OrderElectricianController {
 						OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 						
 						result.setFormItems(orderElectrician);	
-						orderElectricianService.sendNotify(orderElectrician, 2, "1");
+						
 					}
 			}
 

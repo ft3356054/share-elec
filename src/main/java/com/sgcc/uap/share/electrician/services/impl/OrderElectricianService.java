@@ -735,7 +735,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * @param getPeople 1客户 2电工 
 	 */
 	
-	public void sendNotify(OrderCustomer orderCustomer,int oper,String getPeople){
+	public void sendNotify(OrderCustomer orderCustomer,OrderElectrician orderElectrician,int oper,String getPeople){
 		
 		//String orderElectricianStatus =(String)map.get("orderElectricianStatus");
 		String orderStatus =orderCustomer.getOrderStatus();
@@ -754,7 +754,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		
 		String orderId=orderCustomer.getOrderId();
-		String customerId=orderCustomer.getCustomerId();
+		String electricianId=orderElectrician.getElectricianId();
 		String EnumsA=baseEnums.getEnumsA();
 		
 		try {
@@ -765,7 +765,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			
 			//新增流水
 			Map<String,Object> mapOrderFlow = 
-					MapUtil.flowAdd(orderId, 1,  Integer.parseInt(orderStatus), customerId, TimeStamp.toString(new Date()), oper,EnumsA);
+					MapUtil.flowAdd(orderId, 1,  Integer.parseInt(orderStatus), electricianId, TimeStamp.toString(new Date()), oper,EnumsA);
 			orderFlowService.saveOrderFlow(mapOrderFlow);
 		}
 		
