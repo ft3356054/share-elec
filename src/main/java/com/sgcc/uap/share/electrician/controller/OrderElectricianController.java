@@ -1096,41 +1096,56 @@ public class OrderElectricianController {
 							
 							//给其它电工发送通知
 							String[] split = temp.split(",");
-							for (int i = 0; i < split.length; i++) {
-								//给新加入的电工创建未完成的订单
-								if (i>0) {
-									otherElectricianId=otherElectricianId+","+split[i];
+							
+							//如果有多个
+							if (split.length>1) {
+								for (int i = 0; i < split.length; i++) {
 									
-									String electricianId1=split[i];
-									ElectricianInfo electricianInfo1 = electricianInfoService.findByElectricianId(electricianId1);
-									String electricianName1=electricianInfo1.getElectricianName();
-									String electricianPhonenumber1=electricianInfo1.getElectricianPhonenumber();
-									remark_str1sString=remark_str1sString+","+electricianName1+":"+electricianPhonenumber1;
 									
-								}else {
-									otherElectricianId=split[i];
+										otherElectricianId=otherElectricianId+","+split[i];
+										
+										String electricianId1=split[i];
+										ElectricianInfo electricianInfo1 = electricianInfoService.findByElectricianId(electricianId1);
+										String electricianName1=electricianInfo1.getElectricianName();
+										String electricianPhonenumber1=electricianInfo1.getElectricianPhonenumber();
+										remark_str1sString=remark_str1sString+","+electricianName1+":"+electricianPhonenumber1;
+										//更改电工的状态，先查询电工位置状态表
+										ElecPosition elecPosition = elecPositionService.findByElectricianId(electricianId1);
+										elecPosition.setStatus("1");
+										elecPositionService.save(elecPosition);
+										//通过电工的ID给电工发送消息
+										WebSocketServer.sendInfo("您已有未完成的订单",split[i]);
+										
+										
+									}
+								
+							}
+							else {
+									otherElectricianId=split[0];
 									//传送过来的单个电工ID，获取名字和电话号
 									
-									String electricianId1=split[i];
+									String electricianId1=split[0];
 									ElectricianInfo electricianInfo1 = electricianInfoService.findByElectricianId(electricianId1);
 									String electricianName1=electricianInfo1.getElectricianName();
 									String electricianPhonenumber1=electricianInfo1.getElectricianPhonenumber();
 									remark_str1sString=remark_str1sString+","+electricianName1+":"+electricianPhonenumber1;
+									
+									//更改电工的状态，先查询电工位置状态表
+									ElecPosition elecPosition = elecPositionService.findByElectricianId(electricianId1);
+									elecPosition.setStatus("1");
+									elecPositionService.save(elecPosition);
+									
+									//通过电工的ID给电工发送消息
+									WebSocketServer.sendInfo("您已有未完成的订单",split[0]);
 									
 								}
 								
-								//通过电工的ID给电工发送消息
-								WebSocketServer.sendInfo("您已有未完成的订单",split[i]);
-								
-							}
-							
-							//otherElectricianId=electricianId+","+temp;
 							otherElectricianId=electricianId+","+otherElectricianId;
 							System.out.println(otherElectricianId);
-							
-							
-							
-						}
+								
+							}
+					
+						
 						
 						
 						//将map中的数据分别送到两个类中，在进行更新
