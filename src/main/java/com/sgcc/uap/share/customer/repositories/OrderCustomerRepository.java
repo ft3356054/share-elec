@@ -114,13 +114,13 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 	 * @param orderIds
 	 */
 	@Query(value = "SELECT CREATE_TIME FROM order_customer T   "
-			+ " WHERE T.ORDER_STATUS IN ('1','11') AND DATE_SUB(CURDATE(), INTERVAL :day MINUTE) >= T.CREATE_TIME  ",
+			+ " WHERE T.ORDER_STATUS IN ('1','11') AND DATE_SUB(NOW(), INTERVAL :day MINUTE) >= T.CREATE_TIME  ",
 			nativeQuery = true)
 	public List<OrderCustomer> findNotAcceptOrder(@Param("day")String day);
 	
 	
 	@Query(value="select * from order_customer o where ORDER_STATUS in ?1 "
-			+ " and DATE_SUB(CURDATE(), INTERVAL ?2 MINUTE) >= UPDATE_TIME  "
+			+ " and DATE_SUB(NOW(), INTERVAL ?2 MINUTE) >= UPDATE_TIME  "
 			,nativeQuery=true)
 	List<OrderCustomer> findByOrderStatus(Collection<String> orderStatus, String pastTime);
 	

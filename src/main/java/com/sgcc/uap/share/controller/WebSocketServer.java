@@ -55,12 +55,31 @@ public class WebSocketServer {
     @OnOpen
     public void onOpen(Session session, @PathParam("sid") String sid) {
         this.session = session;
-        // 加入set中
-        webSocketSet.add(this);
-        // 在线数加1
-        addOnlineCount();          
-        this.sid = sid;
-        //sendMessage("连接成功: " + sid);
+        
+        boolean flag = true;
+        if(webSocketSet.size()>0){
+        	for (WebSocketServer item : webSocketSet) {
+            	if(item.sid==sid){
+            		flag = false;
+            		break;
+            	}
+            	
+            }
+        }
+        
+        if(flag){
+        	// 加入set中
+            this.sid = sid;
+            webSocketSet.add(this);
+            // 在线数加1
+            addOnlineCount();
+        }
+        
+        /*if(webSocketSet.contains(this)){
+        	System.out.println(1234567890);
+        }*/
+        
+        logger.info("【websocket消息】连接成功:{}", sid);
         logger.info("【websocket消息】有新的连接, 总数:{}", webSocketSet.size());
     }
 

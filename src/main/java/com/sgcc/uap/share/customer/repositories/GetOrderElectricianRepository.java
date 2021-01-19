@@ -24,7 +24,7 @@ import com.sgcc.uap.share.domain.OrderElectrician;
 public interface GetOrderElectricianRepository extends JpaRepository<OrderElectrician,String>,JpaSpecificationExecutor<OrderElectrician> {
 
 	@Query(value="select * from order_electrician o where ORDER_ELECTRICIAN_STATUS =?1 "
-			+ " and DATE_SUB(CURDATE(), INTERVAL ?2 MINUTE) >= CREATE_TIME "
+			+ " and DATE_SUB(NOW(), INTERVAL ?2 MINUTE) >= CREATE_TIME "
 			,nativeQuery=true)
 	List<OrderElectrician> findByOrderElectricianStatus(String orderElectricianStatus, String pastTime);
 	

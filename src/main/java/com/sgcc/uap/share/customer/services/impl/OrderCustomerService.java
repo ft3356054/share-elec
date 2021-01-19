@@ -491,6 +491,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 					List<String> elecStatus = new ArrayList<String>();
 					elecStatus.add("0");
 					elecStatus.add("2");
+					elecStatus.add("20");
 					elecStatus.add("21");
 					if(sites.contains(orderElectrician.getOrderElectricianStatus())){
 						orderElectrician.setUpdateTime(nowDate);
@@ -686,7 +687,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 				Map<String,String> mapString = new HashMap<String,String>();
 				//mapString.put("orderId", orderElectrician.getOrderElectricianId());
 				mapString.put("orderId", "");
-				mapString.put("content", baseEnums.getEnumsB());
+				mapString.put("content", baseEnums.getEnumsC());
 				String jsonString = JsonUtils.toJson(mapString);
 				WebSocketServer.sendInfo(jsonString,orderElectrician.getElectricianId());
 			}
@@ -819,7 +820,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 					orderFlowService.saveOrderFlow(mapOrderFlow);
 				}
 				//修改主订单
-				if(null!=orderIds8&&!"".equals(orderIds8)){
+				if(null!=orderIds8&&!"".equals(orderIds8)&&orderIds8.size()>0){
 					updateCount = orderCustomerRepository.updateNotEvaluate(5, "默认好评",  "默认好评", 9, orderIds8,dateString);
 					logger.info("EvaluateTask 修改待评价的主订单条数 = "+updateCount);
 				}
@@ -833,7 +834,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 					eOrderIds8.add(evaluateTaskBo.getOrderId());
 				}
 				//修改主订单
-				if(null!=eOrderIds8&&!"".equals(eOrderIds8)){
+				if(null!=eOrderIds8&&!"".equals(eOrderIds8)&&eOrderIds8.size()>0){
 					updateCount = getOrderElectricianRepository.updateNotEvaluateByElecOrderId(5, "默认好评", 9, eOrderIds8,dateString);
 					logger.info("EvaluateTask 修改待评价的子订单条数 = "+updateCount);
 				}
@@ -859,7 +860,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 				orderIds25.removeAll(beComplantOrderIds);
 				
 				//修改主订单 子订单 
-				if(null!=orderIds25&&!"".equals(orderIds25)){
+				if(null!=orderIds25&&!"".equals(orderIds25)&&orderIds25.size()>0){
 					updateCount = orderCustomerRepository.updateNotEvaluateAndFinishtime(5, "默认好评",  "默认好评", 9, orderIds25,dateString);
 					logger.info("EvaluateTask 修改待验收的主订单条数 = "+updateCount);
 					updateCount = getOrderElectricianRepository.updateNotEvaluateByOrderId(5, "默认好评", 9, orderIds25,dateString);
