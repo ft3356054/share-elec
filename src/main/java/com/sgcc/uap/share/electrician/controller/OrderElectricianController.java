@@ -204,49 +204,6 @@ public class OrderElectricianController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
-	/**
-	 * @saveOrUpdate:保存或更新
-	 * @param params
-	 * @return WrappedResult 保存或更新的结果
-	 * @date 2020-11-26 14:32:47
-	 * @author 18511
-	 */
-	/*
-	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public WrappedResult saveOrUpdate(@RequestBody FormRequestObject<Map<String,Object>> params) {
-
-		try {
-			if(params == null){
-				throw new NullArgumentException("params");
-			}
-			QueryResultObject result = new QueryResultObject();
-			List<Map<String,Object>> items = params.getItems();
-			if(items != null && !items.isEmpty()){
-				for(Map<String,Object> map : items){
-					result.setFormItems(orderElectricianService.saveOrderElectrician(map));
-				}
-			}
-			logger.info("保存数据成功"); 
-			return WrappedResult.successWrapedResult(result);
-		} catch (ServiceValidatorBaseException e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "校验异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedValidateWrappedResult(errorMessage);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "保存异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
-	}
-	
-	
-	/*public WrappedResult saveOrUpdate(@RequestBody FormRequestObject<Map<String,Object>> params) {*/
 	
 	/**
 	 * @query:查询
@@ -327,6 +284,8 @@ public class OrderElectricianController {
 		binder.setDisallowedFields(DISALLOWED_PARAMS);
 	}
 	
+	
+	//********************************************************************************************************************************
 	/**
 	 * 抢单页面 点击抢单按钮，
 	 * 		1.需要接收前段页面传送过来的订单表，
@@ -340,7 +299,7 @@ public class OrderElectricianController {
 			@RequestParam(value="electricianId") String electricianId
 			) throws Exception{
 		
-		QueryResultObject resultObject=new QueryResultObject();
+		//QueryResultObject resultObject=new QueryResultObject();
 		try {
 
 			//1.查询出来客户表
@@ -387,7 +346,7 @@ public class OrderElectricianController {
 				OrderElectricianBeginPageVO orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
 				
 				
-				//orderElectricianService.sendNotify(orderElectrician, 0, "1");
+			
 				orderElectricianService.sendNotify(orderCustomerNew,orderElectrician , 0, "0");
 				return WrappedResult.successWrapedResult(orderElectricianBeginPageVO);
 			

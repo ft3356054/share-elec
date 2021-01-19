@@ -13,6 +13,7 @@ import javax.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -278,5 +279,19 @@ ElectricianCompanyInfo electricianCompanyInfo=electricianCompanyInfoRepository.f
 		resultObject.setItemCount(itemCount);
 		resultObject.setItems(list);
 		return resultObject;
+	}
+	@Override
+	public QueryResultObject selectCompany() {
+		int page=0;
+		int size=10;
+		Pageable pageable=new PageRequest(page, size);
+		Page<ElectricianCompanyInfo> electricianCompanyInfo = electricianCompanyInfoRepository.findAll(pageable);
+		List<ElectricianCompanyInfo> result = new ArrayList<ElectricianCompanyInfo>();
+		long count = 0;
+		result = electricianCompanyInfo.getContent();
+		count = electricianCompanyInfo.getTotalElements();
+		return RestUtils.wrappQueryResult(result, count);
+		
+	
 	}
 }

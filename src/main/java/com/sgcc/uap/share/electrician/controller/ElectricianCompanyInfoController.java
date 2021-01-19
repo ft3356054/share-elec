@@ -251,5 +251,27 @@ public class ElectricianCompanyInfoController {
 			}
 			return WrappedResult.failedWrappedResult(errorMessage);
 	}}
+	
+	
+	/**
+	 * 查找前10个电力公司
+	 */
+	@RequestMapping(value="/selectCompany",name="")
+	public WrappedResult selectCompany(){
+		try {
+		
+			QueryResultObject result=electricianCompanyInfoService.selectCompany();
+			return WrappedResult.successWrapedResult(result);
+		
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "异常处理";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		
+	}
+	}
 
 }

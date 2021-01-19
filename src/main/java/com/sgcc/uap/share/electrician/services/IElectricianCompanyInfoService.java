@@ -61,6 +61,7 @@ public interface IElectricianCompanyInfoService {
 	 */
 	public QueryResultObject queryMore(RequestCondition queryCondition);
 	public QueryResultObject queryCompany(String comcompanyName);
+	public QueryResultObject selectCompany();
 
 
 }
