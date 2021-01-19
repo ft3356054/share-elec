@@ -283,7 +283,7 @@ ElectricianCompanyInfo electricianCompanyInfo=electricianCompanyInfoRepository.f
 	@Override
 	public QueryResultObject selectCompany() {
 		int page=0;
-		int size=10;
+		int size=15;
 		Pageable pageable=new PageRequest(page, size);
 		Page<ElectricianCompanyInfo> electricianCompanyInfo = electricianCompanyInfoRepository.findAll(pageable);
 		List<ElectricianCompanyInfo> result = new ArrayList<ElectricianCompanyInfo>();

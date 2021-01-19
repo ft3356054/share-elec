@@ -1036,7 +1036,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		
 		
-		WebSocketServer.sendInfo("电工已接单",(String)orderCustomer2.getCustomerId());
+		
 		return saveOrderElectrician;
 		
 		} catch (Exception e) {

@@ -367,12 +367,15 @@ public class OrderElectricianController {
 			){
 		
 		try {
+			//2021.1.19
+//			String orderElectricianEtatus="2";
+//			OrderElectrician orderElectrician=orderElectricianService.findByOrDERIdAndOrderElectricianStatus(orderId, orderElectricianEtatus);
+//			orderElectrician.setOrderElectricianStatus("0");
+			//2021.1.19以下是当天做的更改，由于派单只是给传送的弹窗消息，所以需要再重新创建一个子订单
+			OrderElectrician saveNewOrderElectrician = orderElectricianService.saveNewOrderElectrician(orderId, electricianId);
 			
-			String orderElectricianEtatus="2";
-			OrderElectrician orderElectrician=orderElectricianService.findByOrDERIdAndOrderElectricianStatus(orderId, orderElectricianEtatus);
-			orderElectrician.setOrderElectricianStatus("0");
-		
-			orderElectricianService.save(orderElectrician);
+		//***************************************截止
+			orderElectricianService.save(saveNewOrderElectrician);
 			//查询主订单，变换状态为20
 			OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
 			orderCustomer.setOrderStatus("20");
@@ -1000,45 +1003,9 @@ public class OrderElectricianController {
 					 */
 					if(method.equals("开始施工")){//只能改状态就好
 						
-						/*
-						List<Map<String, String>> remark_str1=(List<Map<String, String>>) map.get("remark_str1");
-						String remark_str1sString="";
-						if (remark_str1.size()==1) {
-							
-							for (String key : remark_str1.get(0).keySet()) {
-						        Object value =  remark_str1.get(0).get(key);
-						        remark_str1sString=key+":"+value;
-						        System.out.println("Key = " + key + ", Value = " + value.toString());
-							}
-
-						}else if (remark_str1.size()>1) {
-							
-							for (int i = 0; i < remark_str1.size(); i++) {
-								for (String key : remark_str1.get(0).keySet()) {
-							        Object value =  remark_str1.get(0).get(key);
-							        if (i==0) {
-							        	remark_str1sString=key+":"+value;
-								
-									}else {
-										remark_str1sString=remark_str1sString+","+key+":"+value;
-									
-									}
-
-							        System.out.println("Key = " + key + ", Value = " + value.toString());
-								
-								
-							}
-						}
-							
-						}
-						*/
-						
-						
 						
 						String str=(String) map.get("otherElectricianId");
-						
-							
-						
+					
 						String otherElectricianId="";
 						String remark_str1sString="";
 						//如果传送过来的有数据
@@ -1107,6 +1074,15 @@ public class OrderElectricianController {
 								
 							}
 					
+						}else {
+							//放入当前电工ID
+							String electricianId = (String) map.get("electricianId");
+							otherElectricianId=electricianId;
+							
+							ElectricianInfo electricianInfo = electricianInfoService.findByElectricianId(electricianId);
+							String electricianName=electricianInfo.getElectricianName();
+							String telephone=electricianInfo.getElectricianPhonenumber();
+							 remark_str1sString=electricianName+":"+telephone;
 						}
 						
 						
