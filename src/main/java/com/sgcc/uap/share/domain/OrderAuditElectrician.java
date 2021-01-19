@@ -163,6 +163,18 @@ public class OrderAuditElectrician implements Serializable {
     @Column(name = "ORDER_STATUS", nullable = true, length = 2)
     private String orderStatus ;
     
+    /** 
+     * AREA_ID
+     */
+    @Column(name = "AREA_ID", nullable = true, length = 64)
+    private String areaId ;
+    
+    /** 
+     * ELECTRICIAN_ADDRESS
+     */
+    @Column(name = "ELECTRICIAN_ADDRESS", nullable = true, length = 512)
+    private String electricianAddress ;
+    
 	/**
 	  *虚拟主键
 	  */
@@ -172,7 +184,24 @@ public class OrderAuditElectrician implements Serializable {
 	public OrderAuditElectrician(){
 	
 	}
-    /**
+	
+    public String getAreaId() {
+		return areaId;
+	}
+
+	public void setAreaId(String areaId) {
+		this.areaId = areaId;
+	}
+
+	public String getElectricianAddress() {
+		return electricianAddress;
+	}
+
+	public void setElectricianAddress(String electricianAddress) {
+		this.electricianAddress = electricianAddress;
+	}
+
+	/**
      * @getOrderId:ORDER_ID的get方法
      * @params
      * @return orderId

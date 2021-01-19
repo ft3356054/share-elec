@@ -223,6 +223,18 @@ public class OrderCustomer implements Serializable {
     @Column(name = "CUSTOMER_DESCRIVE_TITLE", nullable = true, length = 64)
     private String customerDescriveTitle ;
     
+    /** 
+     * OLD_ORDER_ID 
+     */
+    @Column(name = "OLD_ORDER_ID", nullable = true, length = 64)
+    private String oldOrderId ;
+    
+    /** 
+     * NEED_PAY 
+     */
+    @Column(name = "NEED_PAY", nullable = true, length = 2)
+    private String needPay ;
+    
 	/**
 	  *虚拟主键
 	  */
@@ -244,6 +256,22 @@ public class OrderCustomer implements Serializable {
 
 	public void setRegisteredNumber(String registeredNumber) {
 		this.registeredNumber = registeredNumber;
+	}
+
+	public String getOldOrderId() {
+		return oldOrderId;
+	}
+
+	public void setOldOrderId(String oldOrderId) {
+		this.oldOrderId = oldOrderId;
+	}
+
+	public String getNeedPay() {
+		return needPay;
+	}
+
+	public void setNeedPay(String needPay) {
+		this.needPay = needPay;
 	}
 
 	public String getCustomerDescriveTitle() {

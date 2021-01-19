@@ -142,6 +142,17 @@ public class ElectricianInfo implements Serializable {
     @Column(name = "REMARK", nullable = true, length = 512)
     private String remark ;
     
+    /** 
+     * AREA_ID
+     */
+    @Column(name = "AREA_ID", nullable = true, length = 64)
+    private String areaId ;
+    /** 
+     * ELECTRICIAN_ADDRESS
+     */
+    @Column(name = "ELECTRICIAN_ADDRESS", nullable = true, length = 512)
+    private String electricianAddress ;
+    
 	/**
 	  *虚拟主键
 	  */
@@ -151,7 +162,24 @@ public class ElectricianInfo implements Serializable {
 	public ElectricianInfo(){
 	
 	}
-    /**
+	
+    public String getAreaId() {
+		return areaId;
+	}
+
+	public void setAreaId(String areaId) {
+		this.areaId = areaId;
+	}
+
+	public String getElectricianAddress() {
+		return electricianAddress;
+	}
+
+	public void setElectricianAddress(String electricianAddress) {
+		this.electricianAddress = electricianAddress;
+	}
+
+	/**
      * @getElectricianId:ELECTRICIAN_ID的get方法
      * @params
      * @return electricianId
