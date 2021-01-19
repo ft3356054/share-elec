@@ -1077,11 +1077,14 @@ public class OrderElectricianController {
 						
 						
 						String str=(String) map.get("otherElectricianId");
+						
+							
+						
 						String otherElectricianId="";
 						String remark_str1sString="";
 						//如果传送过来的有数据
 						//先将其它电工截取
-						
+						if (!str.isEmpty()) {
 						if (!str.isEmpty() && str.length()!=0) {
 							String temp=str.substring(1, str.length()-1);
 							System.out.println("temp=:"+temp);
@@ -1145,7 +1148,7 @@ public class OrderElectricianController {
 								
 							}
 					
-						
+						}
 						
 						
 						//将map中的数据分别送到两个类中，在进行更新
