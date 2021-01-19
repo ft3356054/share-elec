@@ -37,6 +37,7 @@ public interface ICustPositionService {
 	 * @author 18511
 	 */
 	public void remove(IDRequestObject idObject);
+	public void delete(String orderId);
 	/**
 	 * @save:保存或更新
 	 * @param map 保存或更新的数据
