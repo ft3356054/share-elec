@@ -101,7 +101,6 @@ public class ElecPositionService implements IElecPositionService{
 	@Override
 	public ElecPosition saveElecPosition(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(ElecPosition.class,map);
-		
 		ElecPosition elecPosition = null;
 		if (map.containsKey("electricianId")) {
 			String electricianId = (String) map.get("electricianId");
@@ -270,18 +269,6 @@ public class ElecPositionService implements IElecPositionService{
 	public List<ElecPosition> findByAreaId(String areaId) {
 		List<ElecPosition> list=elecPositionRepository.findByAreaId(areaId);
 		return list;
-	}
-/*
- * 保存实体类
- */
-	public void save(ElecPosition elecPosition) {
-		elecPositionRepository.save(elecPosition);
-		
-	}
-
-	public ElecPosition findByElectricianId(String electricianId) {
-		ElecPosition elecPosition=elecPositionRepository.findOne(electricianId);
-		return elecPosition;
 	}
 
 	

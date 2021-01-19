@@ -551,15 +551,51 @@ public class OrderCustomerService implements IOrderCustomerService{
 						//插入电工流水
 						//sendNotify(map, orderCustomer , orderElectrician,2,"1");
 						
-						/*电工状态的修改由电工侧完成（发起支付时修改）
+						/*电工状态的修改由电工侧完成（发起验收时修改）
 						ElecPosition elecPosition = elecPositionService.getElecPositionByElectricianId(orderElectrician.getElectricianId());
 						Map<String,Object> elecPositionMap = new HashMap<String, Object>();
 						elecPositionMap.put("electricianId", elecPosition.getElectricianId());
 						elecPositionMap.put("status", "0");
 						elecPositionService.saveElecPosition(elecPositionMap);*/
 						
-						//删除cust_position
-						custPositionService.delete(orderCustomer.getOrderId());
+						//如果是差评，需要插入到考核记录表
+						String customerGrade = orderCustomer.getCustomerGrade();
+						if("1".equals(customerGrade)||"2".equals(customerGrade)){
+							Map<String,Object> assessRecordMap = new HashMap<String,Object>();
+							//assessRecordMap.put("companyId", orderElectrician.get);
+						}
+						/*
+						return "AssessRecord ["
+			+ ", assessId=" + assessId
+			+ ", companyId=" + companyId
+			+ ", orderId=" + orderId
+			+ ", orderComplaintId=" + orderComplaintId
+			+ ", assessStatus=" + assessStatus
+			+ ", assessReason=" + assessReason
+			+ ", createTime=" + createTime
+			+ ", updateTime=" + updateTime
+			+ ", finishTime=" + finishTime
+			+ ", assessType=" + assessType
+			+ ", assessTypeValue=" + assessTypeValue
+			+ ", serviceId=" + serviceId
+			+ ", solutionDesc=" + solutionDesc
+			+ ", remark=" + remark;
+			ASSESS_ID	记录表ID
+			ORDER_ID	订单ID
+			ORDER_COMPLAINT_ID	订单投诉ID
+			COMPANY_ID	公司ID
+			ASSESS_STATUS	订单状态
+			ASSESS_REASON	考核依据
+			CREATE_TIME	创建时间
+			UPDATE_TIME	更新时间
+			FINISH_TIME	结束时间
+			ASSESS_TYPE	处理类型
+			ASSESS_TYPE_VALUE	处理类型参数
+			SERVICE_ID	处理人员ID
+			SOLUTION_DESC	处理人原因
+			REMARK	备注
+
+						 * */
 						
 						//费用划转
 						
@@ -745,6 +781,8 @@ public class OrderCustomerService implements IOrderCustomerService{
 					result = orderCustomerRepository.save(orderCustomer);
 					//插入流水
 					sendNotify(newMap, orderCustomer , null ,2,"0");
+					//删除cust_position
+					custPositionService.delete(orderId);
 					
 					//修改电工表状态
 					List<String> listStatus = new ArrayList<String>();
@@ -822,8 +860,8 @@ public class OrderCustomerService implements IOrderCustomerService{
 								TimeStamp.toString(new Date()), 2,  "系统修改长时间未评价的订单");
 					orderFlowService.saveOrderFlow(mapOrderFlow);
 					
-					//删除cust_position
-					custPositionService.delete(evaluateTaskBo.getOrderId());
+					//删除cust_position 改成支付后删除
+					//custPositionService.delete(evaluateTaskBo.getOrderId());
 				}
 				//修改主订单
 				if(null!=orderIds8&&!"".equals(orderIds8)&&orderIds8.size()>0){
@@ -878,9 +916,6 @@ public class OrderCustomerService implements IOrderCustomerService{
 							MapUtil.flowAdd(orderId, 2,  9, "SYSTEM", 
 									TimeStamp.toString(new Date()), 2,  "系统修改长时间未验收的订单");
 						orderFlowService.saveOrderFlow(mapOrderFlow);
-						
-						//删除cust_position
-						custPositionService.delete(orderId);
 						
 						//费用划转
 						
