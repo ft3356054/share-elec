@@ -855,7 +855,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		String orderId=orderCustomer.getOrderId();
 		
 		//1.获取客户的位置信息
-		CustPosition custPosition=custPositionService.findByOrderId(orderId);
+		CustPosition custPosition=custPositionService.getCustPositionByOrderId(orderId);
 		String areaId=custPosition.getAreaId();
 		
 		//2.根据客户区域ID查询此区域的子公司的集合
@@ -1069,7 +1069,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			
 		
 		//1.通过orderID查询客户的区域ID
-		CustPosition custPosition=custPositionService.findByOrderId(orderId);
+		CustPosition custPosition=custPositionService.getCustPositionByOrderId(orderId);
 		String areaId=custPosition.getAreaId();
 		
 		//2.根据查询出来的区域ID查询此区域内的全部电工
