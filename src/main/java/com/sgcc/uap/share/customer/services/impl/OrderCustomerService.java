@@ -50,6 +50,7 @@ import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.electrician.services.impl.ElecPositionService;
 import com.sgcc.uap.share.services.IBaseEnumsService;
+import com.sgcc.uap.share.services.impl.AssessRecordService;
 import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
 import com.sgcc.uap.share.services.impl.BaseIdentityPriceService;
 import com.sgcc.uap.share.services.impl.BaseSystemConfigService;
@@ -112,6 +113,9 @@ public class OrderCustomerService implements IOrderCustomerService{
 	private BaseSystemConfigService baseSystemConfigService;
 	@Autowired
 	private EvaluateTaskRepository evaluateTaskRepository;
+	@Autowired
+	private AssessRecordService assessRecordService;
+	
 	
 	
 	@SuppressWarnings("rawtypes")
@@ -562,40 +566,14 @@ public class OrderCustomerService implements IOrderCustomerService{
 						String customerGrade = orderCustomer.getCustomerGrade();
 						if("1".equals(customerGrade)||"2".equals(customerGrade)){
 							Map<String,Object> assessRecordMap = new HashMap<String,Object>();
-							//assessRecordMap.put("companyId", orderElectrician.get);
+							assessRecordMap.put("companyId", orderElectrician.getRemarkStr2());
+							assessRecordMap.put("orderId", orderElectrician.getOrDERId());
+							//assessRecordMap.put("orderComplaintId", orderElectrician.get);
+							assessRecordMap.put("assessStatus", "0");
+							assessRecordMap.put("assessReason", "1");
+							assessRecordMap.put("createTime", nowDate);
+							assessRecordService.saveAssessRecord(assessRecordMap);
 						}
-						/*
-						return "AssessRecord ["
-			+ ", assessId=" + assessId
-			+ ", companyId=" + companyId
-			+ ", orderId=" + orderId
-			+ ", orderComplaintId=" + orderComplaintId
-			+ ", assessStatus=" + assessStatus
-			+ ", assessReason=" + assessReason
-			+ ", createTime=" + createTime
-			+ ", updateTime=" + updateTime
-			+ ", finishTime=" + finishTime
-			+ ", assessType=" + assessType
-			+ ", assessTypeValue=" + assessTypeValue
-			+ ", serviceId=" + serviceId
-			+ ", solutionDesc=" + solutionDesc
-			+ ", remark=" + remark;
-			ASSESS_ID	记录表ID
-			ORDER_ID	订单ID
-			ORDER_COMPLAINT_ID	订单投诉ID
-			COMPANY_ID	公司ID
-			ASSESS_STATUS	订单状态
-			ASSESS_REASON	考核依据
-			CREATE_TIME	创建时间
-			UPDATE_TIME	更新时间
-			FINISH_TIME	结束时间
-			ASSESS_TYPE	处理类型
-			ASSESS_TYPE_VALUE	处理类型参数
-			SERVICE_ID	处理人员ID
-			SOLUTION_DESC	处理人原因
-			REMARK	备注
-
-						 * */
 						
 						//费用划转
 						

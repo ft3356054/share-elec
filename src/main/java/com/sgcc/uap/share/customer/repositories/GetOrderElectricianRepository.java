@@ -32,8 +32,17 @@ public interface GetOrderElectricianRepository extends JpaRepository<OrderElectr
 	//通过orderId 和状态查询
 	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_STATUS in :orderElectricianStatus",nativeQuery = true)
 	public OrderElectrician findByOrderIdAndOrderElectricianStatusIn(String orDERId,Collection<String> orderElectricianStatus);
-	
-	@Query(value= " select * from order_electrician where ORDER_ID=:orderId and ORDER_ELECTRICIAN_STATUS not in :orderElectricianStatus",nativeQuery = true)
+
+	//顺便查询出公司id
+	@Query(value= " select oe.ORDER_ELECTRICIAN_ID,oe.ORDER_ID,oe.ELECTRICIAN_ID,oe.ELECTRICIAN_NAME,oe.ELECTRICIAN_PHONENUMBER, "
+			+ " oe.ELECTRICIAN_ADDRESS,oe.OTHER_ELECTRICIAN_ID,oe.ORDER_TYPE_ID,oe.ELECTRICIAN_PRICE,oe.ORDER_ELECTRICIAN_TYPE, "
+			+ " oe.ORDER_ELECTRICIAN_STATUS,oe.PAY_STATUS,oe.CREATE_TIME,oe.BEGIN_TIME,oe.UPDATE_TIME,oe.FINISH_TIME,oe.ELECTRICIAN_DESCRIVE, "
+			+ " oe.ELECTRICIAN_DESCRIVE_ICON,oe.CONSTRUCTION_CONTENT,oe.ELECTRICIAN_GRADE,oe.ELECTRICIAN_EVALUATE,oe.ELECTRICIAN_EVALUATE_ICON, "
+			+ " oe.CHARGEBACK_REASON,oe.ORDER_CONTRACT,oe.INSPECTION_REPORT,oe.REMARK_STR1,ei.COMPANY_ID as REMARK_STR2,oe.REMARK_STR3,oe.REMARK_NUM1,oe.REMARK_NUM2 "
+			+ " from order_electrician oe "
+			+ " LEFT JOIN electrician_info ei ON oe.ELECTRICIAN_ID ON ei.ELECTRICIAN_ID "
+			+ " where oe.ORDER_ID=:orderId and oe.ORDER_ELECTRICIAN_STATUS not in :orderElectricianStatus"
+			,nativeQuery = true)
 	public OrderElectrician findByOrderIdAndOrderElectricianStatusNotIn(@Param("orderId")String orderId,@Param("orderElectricianStatus")Collection<String> orderElectricianType);
 	
 	@Modifying

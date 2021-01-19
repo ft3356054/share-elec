@@ -40,8 +40,7 @@ import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.electrician.repositories.ElectricianInfoRepository;
 import com.sgcc.uap.share.services.IBaseEnumsService;
-import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
-import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
+import com.sgcc.uap.share.services.impl.AssessRecordService;
 import com.sgcc.uap.util.DateTimeUtil;
 import com.sgcc.uap.util.FileUtil;
 import com.sgcc.uap.util.MapUtil;
@@ -76,9 +75,7 @@ public class OrderComplaintService implements IOrderComplaintService{
 	@Autowired
     private IBaseEnumsService baseEnumsService;
 	@Autowired
-	private NotifyAnnounceService notifyAnnounceService;
-	@Autowired
-	private NotifyAnnounceUserService notifyAnnounceUserService;
+	private AssessRecordService assessRecordService;
 	@Autowired
 	private OrderFlowService orderFlowService;
 	@Autowired
@@ -186,6 +183,19 @@ public class OrderComplaintService implements IOrderComplaintService{
 						Map<String,Object> mapOrderFlow = 
 								MapUtil.flowAdd(orderCustomer.getOrderId(), 0, Integer.parseInt(orderCustomer.getOrderStatus()), (String)map.get("customerId"), TimeStamp.toString(new Date()), 0,  baseEnums.getEnumsA());
 						orderFlowService.saveOrderFlow(mapOrderFlow);
+						
+						//如果是投诉，需要插入到考核记录表
+						String customerGrade = orderCustomer.getCustomerGrade();
+						if("1".equals(customerGrade)||"2".equals(customerGrade)){
+							Map<String,Object> assessRecordMap = new HashMap<String,Object>();
+							assessRecordMap.put("companyId", orderElectrician.getRemarkStr2());
+							assessRecordMap.put("orderId", orderElectrician.getOrDERId());
+							assessRecordMap.put("orderComplaintId", getNewOrderId);
+							assessRecordMap.put("assessStatus", "0");
+							assessRecordMap.put("assessReason", "0");
+							assessRecordMap.put("createTime", DateTimeUtil.formatDateTime(new Date()));
+							assessRecordService.saveAssessRecord(assessRecordMap);
+						}
 						
 						//新增通知
 						/*String announceId = UuidUtil.getUuid32();
