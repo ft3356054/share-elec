@@ -27,7 +27,7 @@ public interface ICustPositionService {
 	 * @date 2020-12-21 09:31:09
 	 * @author 18511
 	 */
-	public QueryResultObject getCustPositionByOrderId(String orderId);
+	public CustPosition getCustPositionByOrderId(String orderId);
 	public List<CustPosition> getByAreaId(String areaId);
 	/**
 	 * @remove:根据idObject删除

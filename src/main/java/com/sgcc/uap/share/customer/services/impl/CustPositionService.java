@@ -57,7 +57,7 @@ public class CustPositionService implements ICustPositionService{
     private StringRedisTemplate stringRedisTemplate;
 	
 	@Override
-	public QueryResultObject getCustPositionByOrderId(String orderId) {
+	public CustPosition getCustPositionByOrderId(String orderId) {
 		String json = stringRedisTemplate.opsForValue().get("cp"+orderId);
 		CustPosition custPosition = null;
 		if("".equals(json)||null==json){
@@ -75,7 +75,7 @@ public class CustPositionService implements ICustPositionService{
 				e.printStackTrace();
 			}
 		}
-		return RestUtils.wrappQueryResult(custPosition);
+		return custPosition;
 	}
 	
 	@Override

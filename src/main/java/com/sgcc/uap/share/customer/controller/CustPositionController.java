@@ -74,7 +74,7 @@ public class CustPositionController {
 	@RequestMapping(value = "/{orderId}")
 	public WrappedResult getByOrderId(@PathVariable String orderId) {
 		try {
-			QueryResultObject result = custPositionService.getCustPositionByOrderId(orderId);
+			CustPosition result = custPositionService.getCustPositionByOrderId(orderId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
