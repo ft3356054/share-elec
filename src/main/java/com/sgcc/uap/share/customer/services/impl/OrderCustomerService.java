@@ -558,6 +558,9 @@ public class OrderCustomerService implements IOrderCustomerService{
 						elecPositionMap.put("status", "0");
 						elecPositionService.saveElecPosition(elecPositionMap);*/
 						
+						//删除cust_position
+						custPositionService.delete(orderCustomer.getOrderId());
+						
 						//费用划转
 						
 						String dateString = TimeStamp.toString(new Date());
@@ -818,6 +821,9 @@ public class OrderCustomerService implements IOrderCustomerService{
 						MapUtil.flowAdd(evaluateTaskBo.getOrderId(), 2,  9, "SYSTEM", 
 								TimeStamp.toString(new Date()), 2,  "系统修改长时间未评价的订单");
 					orderFlowService.saveOrderFlow(mapOrderFlow);
+					
+					//删除cust_position
+					custPositionService.delete(evaluateTaskBo.getOrderId());
 				}
 				//修改主订单
 				if(null!=orderIds8&&!"".equals(orderIds8)&&orderIds8.size()>0){
@@ -872,6 +878,10 @@ public class OrderCustomerService implements IOrderCustomerService{
 							MapUtil.flowAdd(orderId, 2,  9, "SYSTEM", 
 									TimeStamp.toString(new Date()), 2,  "系统修改长时间未验收的订单");
 						orderFlowService.saveOrderFlow(mapOrderFlow);
+						
+						//删除cust_position
+						custPositionService.delete(orderId);
+						
 						//费用划转
 						
 					}

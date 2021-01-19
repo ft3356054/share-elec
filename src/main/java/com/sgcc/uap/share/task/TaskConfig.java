@@ -33,13 +33,13 @@ public class TaskConfig {
 	}
 	
 	//20分钟没有被抢到的订单，会自动派给电工
-	@Scheduled(initialDelay = 1000*10 , fixedDelay = 1000*6)
+	@Scheduled(initialDelay = 1000*10 , fixedDelay = 1000*30)
 	public void autoSendOrderTask() {
 		autoSendOrderTask.run();
 	}
 	
 	//系统派发给电工的订单，若电工在指定时间内未接单。系统将重新派单给其他电工
-	@Scheduled(initialDelay = 1000*15 , fixedDelay = 1000*10)
+	@Scheduled(initialDelay = 1000*15 , fixedDelay = 1000*30)
 	public void autoReSendOrderTask() {
 		autoReSendOrderTask.run();
 	}

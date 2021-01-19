@@ -96,6 +96,11 @@ public class CustPositionService implements ICustPositionService{
 			custPositionRepository.delete(id);
 		}
 	}
+	@Override
+	public void delete(String orderId) {
+		stringRedisTemplate.delete("cp"+orderId);
+		custPositionRepository.delete(orderId);
+	}
 	
 	@Override
 	public CustPosition saveCustPosition(Map<String,Object> map) throws Exception{
@@ -254,10 +259,10 @@ public class CustPositionService implements ICustPositionService{
 		return new PageRequest(pageIndex - 1, pageSize, null);
 	}
 
-	public CustPosition findByOrderId(String orderId) {
+	/*public CustPosition findByOrderId(String orderId) {
 		CustPosition custPosition=custPositionRepository.findByOrderId(orderId);
 		return custPosition;
-	}
+	}*/
 
 
 }
