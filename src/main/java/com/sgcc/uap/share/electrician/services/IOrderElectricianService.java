@@ -70,10 +70,10 @@ public List<OrderElectrician> findByElectricianEvaluateIsNullAndOrderElectrician
 public List<OrderElectrician> findByElectricianIdAndOrderElectricianStatusEqualsOrderByCreateTime(String electricianId,String orderElectricianType);
 
 public List<OrderElectrician> findByElectricianId(String electricianId);
-//public QueryResultObject queryMore(RequestCondition requestCondition);
+
 QueryResultObject queryMore(RequestCondition queryCondition, String electricianId);
 public QueryResultObject queryWaitToDo(RequestCondition requestCondition, String electricianId);
-public OrderElectrician saveOrderElectrician2(Map<String, Object> map,String electricianId) throws Exception ;
+
 public OrderElectrician findByOrDERIdAndOrderElectricianStatus(String orderId,String orderElectricianEtatus);
 
 public QueryResultObject queryAllDoing(String electricianId);
@@ -93,7 +93,7 @@ public OrderElectrician findByElectricianIdAndOrderId( String orderId,String ele
 public QueryResultObject queryAllHaveEsc(String electricianId);
 OrderElectrician saveOrderElectrician(Map<String, Object> map) throws Exception;
 
-public OrderElectrician saveNewOrderElectrician(String orderId, String electricianId) throws Exception;
+public OrderElectrician saveNewOrderElectrician(String orderId, String electricianId,String orderElectricianStatus) throws Exception;
 
 OrderElectrician saveNewNullOrderElectrician(String orderId) throws Exception;
 public void esc(String orderElectricianId, String orderElectricianStatus);
@@ -109,14 +109,14 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer, OrderEle
 public void sendNotify(OrderElectrician orderElectrician, int i, String string);
 public void sendNotify(OrderCustomer orderCustomer,OrderElectrician orderElectrician, int i, String string);
 public List<OrderElectrician> queryByOrderIdOrderByCreatetime(String orderId);
-public void testSpec();
+
 public OrderElectricianBeginPageVO convertDistance(OrderElectricianBeginPageVO orderElectricianBeginPageVO);
 public OrderElectricianBeginPageVO convertOrderCustomer2OrderElectricianBeginPageVO(OrderCustomer orderCustomer,
 		OrderElectricianBeginPageVO orderElectricianBeginPageVO);
 void qiangdantanchuang(OrderCustomer orderCustomer, Integer acceptAround);
 public void save(OrderElectrician orderElectrician);
 public void saveorderCustomerPOJO(OrderCustomer orderCustomer);
-public OrderElectrician removeElectrician(Map<String, Object> map);
+
 
 
 

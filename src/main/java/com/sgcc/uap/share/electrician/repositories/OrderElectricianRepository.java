@@ -58,7 +58,8 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	OrderElectrician findByOrDERIdAndOrderElectricianStatus(@Param("orderId")String orderId,@Param("orderElectricianEtatus")String orderElectricianEtatus);
 
 	
-	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_STATUS != 9 and ORDER_ELECTRICIAN_STATUS != 5 and ORDER_ELECTRICIAN_STATUS != 4 and ORDER_ELECTRICIAN_STATUS != 1",nativeQuery=true)
+	//@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_STATUS != 9 and ORDER_ELECTRICIAN_STATUS != 5 and ORDER_ELECTRICIAN_STATUS != 4 and ORDER_ELECTRICIAN_STATUS != 1",nativeQuery=true)
+	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_STATUS != 9 and ORDER_ELECTRICIAN_STATUS ont in ('1','4','5','8')",nativeQuery=true)
 	List<OrderElectrician> queryAllDoing(String electricianId);
 
 	/**
