@@ -1174,7 +1174,7 @@ public class OrderElectricianController {
 						//2021.1.20
 						//先查询订单的状态，如果状态是3，则继续预约功能
 						OrderElectrician orderElectricianOld = orderElectricianService.findByElectricianIdAndOrderId(orderId, electricianId);
-						if (orderElectricianOld.getOrderElectricianStatus().equals("31")) {
+						if (!orderElectricianOld.getOrderElectricianStatus().equals("31")) {
 							return WrappedResult.failedWrappedResult("订单的状态不对");
 						}
 						
@@ -1207,7 +1207,7 @@ public class OrderElectricianController {
 						//2021.1.20
 						//先查询订单的状态，如果状态是0，则继续预约功能
 						OrderElectrician orderElectricianOld = orderElectricianService.findByElectricianIdAndOrderId(orderId, electricianId);
-						if (orderElectricianOld.getOrderElectricianStatus().equals("22")) {
+						if (!orderElectricianOld.getOrderElectricianStatus().equals("22")) {
 							return WrappedResult.failedWrappedResult("订单的状态有问题");
 						}
 						//将map中的数据分别送到两个类中，在进行更新
@@ -1262,7 +1262,7 @@ public class OrderElectricianController {
 						//2021.1.20
 						//先查询订单的状态，如果状态是9，
 						OrderElectrician orderElectricianOld = orderElectricianService.findByElectricianIdAndOrderId(orderId, electricianId);
-						if (orderElectricianOld.getOrderElectricianStatus().equals("8")) {
+						if (!orderElectricianOld.getOrderElectricianStatus().equals("8")) {
 							
 						}
 						
