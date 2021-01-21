@@ -306,6 +306,7 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 				System.out.println("5分钟内重复催单");
 			}else{
 				ArrayList<String> orderElectricianStatus = new ArrayList<String>();
+				orderElectricianStatus.add("1");
 				orderElectricianStatus.add("4");
 				orderElectricianStatus.add("5");
 				OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderId, orderElectricianStatus);

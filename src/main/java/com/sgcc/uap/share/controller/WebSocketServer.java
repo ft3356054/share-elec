@@ -59,7 +59,7 @@ public class WebSocketServer {
         boolean flag = true;
         if(webSocketSet.size()>0){
         	for (WebSocketServer item : webSocketSet) {
-            	if(item.sid==sid){
+            	if(item.sid==sid||sid.equals(item.sid)){
             		flag = false;
             		break;
             	}

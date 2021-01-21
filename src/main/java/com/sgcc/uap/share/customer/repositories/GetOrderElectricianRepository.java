@@ -40,7 +40,7 @@ public interface GetOrderElectricianRepository extends JpaRepository<OrderElectr
 			+ " oe.ELECTRICIAN_DESCRIVE_ICON,oe.CONSTRUCTION_CONTENT,oe.ELECTRICIAN_GRADE,oe.ELECTRICIAN_EVALUATE,oe.ELECTRICIAN_EVALUATE_ICON, "
 			+ " oe.CHARGEBACK_REASON,oe.ORDER_CONTRACT,oe.INSPECTION_REPORT,oe.REMARK_STR1,ei.COMPANY_ID as REMARK_STR2,oe.REMARK_STR3,oe.REMARK_NUM1,oe.REMARK_NUM2 "
 			+ " from order_electrician oe "
-			+ " LEFT JOIN electrician_info ei ON oe.ELECTRICIAN_ID ON ei.ELECTRICIAN_ID "
+			+ " LEFT JOIN electrician_info ei ON oe.ELECTRICIAN_ID = ei.ELECTRICIAN_ID "
 			+ " where oe.ORDER_ID=:orderId and oe.ORDER_ELECTRICIAN_STATUS not in :orderElectricianStatus"
 			,nativeQuery = true)
 	public OrderElectrician findByOrderIdAndOrderElectricianStatusNotIn(@Param("orderId")String orderId,@Param("orderElectricianStatus")Collection<String> orderElectricianType);
