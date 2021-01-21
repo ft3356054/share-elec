@@ -1040,7 +1040,7 @@ public class OrderElectricianController {
 						//2021.1.20
 						//先查询订单的状态，如果状态是0，则继续预约功能
 						OrderElectrician orderElectricianOld = orderElectricianService.findByElectricianIdAndOrderId(orderId, electricianId);
-						if (!orderElectricianOld.getOrderElectricianStatus().equals("23")) {
+						if (!orderElectricianOld.getOrderElectricianStatus().equals("3")) {
 							return WrappedResult.failedWrappedResult("订单的状态不对");
 						}
 						String str=(String) map.get("otherElectricianId");
