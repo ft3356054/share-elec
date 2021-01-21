@@ -1,7 +1,6 @@
 package com.sgcc.uap.share.customer.vo;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 
 import com.sgcc.uap.rest.annotation.attribute.AttributeType;
@@ -25,6 +24,11 @@ public class OrderPayVO extends ParentVO implements Serializable{
     @ViewAttribute(name ="payId",caption="PAY_ID", editor=EditorType.TextEditor,nullable =false,readOnly=false, type=AttributeType.STRING)
     private String payId;    
     /** 
+     * 属性ORDER_ID
+     */  
+    @ViewAttribute(name ="orderId",caption="ORDER_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String orderId;    
+    /** 
      * 属性PAY_TYPE
      */  
     @ViewAttribute(name ="payType",caption="PAY_TYPE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
@@ -35,6 +39,41 @@ public class OrderPayVO extends ParentVO implements Serializable{
     @ViewAttribute(name ="payUser",caption="PAY_USER", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String payUser;    
     /** 
+     * 属性PAY_USRE_NAME
+     */  
+    @ViewAttribute(name ="payUsreName",caption="PAY_USRE_NAME", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String payUsreName;    
+    /** 
+     * 属性ELECTRICIAN_ID
+     */  
+    @ViewAttribute(name ="electricianId",caption="ELECTRICIAN_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String electricianId;    
+    /** 
+     * 属性ELECTRICIAN_NAME
+     */  
+    @ViewAttribute(name ="electricianName",caption="ELECTRICIAN_NAME", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String electricianName;    
+    /** 
+     * 属性COMPANY_ID
+     */  
+    @ViewAttribute(name ="companyId",caption="COMPANY_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String companyId;    
+    /** 
+     * 属性COMPANY_NAME
+     */  
+    @ViewAttribute(name ="companyName",caption="COMPANY_NAME", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String companyName;    
+    /** 
+     * 属性INSURANCE_COMPANY_ID
+     */  
+    @ViewAttribute(name ="insuranceCompanyId",caption="INSURANCE_COMPANY_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String insuranceCompanyId;    
+    /** 
+     * 属性INSURANCE_COMPANY_NAME
+     */  
+    @ViewAttribute(name ="insuranceCompanyName",caption="INSURANCE_COMPANY_NAME", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String insuranceCompanyName;    
+    /** 
      * 属性PRICE
      */  
     @ViewAttribute(name ="price",caption="PRICE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
@@ -43,7 +82,7 @@ public class OrderPayVO extends ParentVO implements Serializable{
      * 属性PAY_TIME
      */  
     @ViewAttribute(name ="payTime",caption="PAY_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp payTime;    
+    private String payTime;    
     /** 
      * 属性PAY_STATUS
      */  
@@ -54,11 +93,6 @@ public class OrderPayVO extends ParentVO implements Serializable{
      */  
     @ViewAttribute(name ="remark",caption="REMARK", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String remark;    
-    /** 
-     * 属性ORDER_ID
-     */  
-    @ViewAttribute(name ="orDERId",caption="ORDER_ID", editor=EditorType.ComboEditor,nullable =false,readOnly=false, type=AttributeType.STRING)
-    private String orDERId;    
     /**
      * OrderPayVO构造函数
      */
@@ -91,6 +125,20 @@ public class OrderPayVO extends ParentVO implements Serializable{
         }
 	} 
     /**
+     * ORDER_ID的get方法
+     * @return orderId
+     */
+    public String getOrderId(){
+        return orderId;
+    }
+    /**
+     * ORDER_ID的set方法
+     * @param orderId
+     */
+    public void setOrderId(String orderId){
+		this.orderId = orderId;
+	} 
+    /**
      * PAY_TYPE的get方法
      * @return payType
      */
@@ -119,6 +167,104 @@ public class OrderPayVO extends ParentVO implements Serializable{
 		this.payUser = payUser;
 	} 
     /**
+     * PAY_USRE_NAME的get方法
+     * @return payUsreName
+     */
+    public String getPayUsreName(){
+        return payUsreName;
+    }
+    /**
+     * PAY_USRE_NAME的set方法
+     * @param payUsreName
+     */
+    public void setPayUsreName(String payUsreName){
+		this.payUsreName = payUsreName;
+	} 
+    /**
+     * ELECTRICIAN_ID的get方法
+     * @return electricianId
+     */
+    public String getElectricianId(){
+        return electricianId;
+    }
+    /**
+     * ELECTRICIAN_ID的set方法
+     * @param electricianId
+     */
+    public void setElectricianId(String electricianId){
+		this.electricianId = electricianId;
+	} 
+    /**
+     * ELECTRICIAN_NAME的get方法
+     * @return electricianName
+     */
+    public String getElectricianName(){
+        return electricianName;
+    }
+    /**
+     * ELECTRICIAN_NAME的set方法
+     * @param electricianName
+     */
+    public void setElectricianName(String electricianName){
+		this.electricianName = electricianName;
+	} 
+    /**
+     * COMPANY_ID的get方法
+     * @return companyId
+     */
+    public String getCompanyId(){
+        return companyId;
+    }
+    /**
+     * COMPANY_ID的set方法
+     * @param companyId
+     */
+    public void setCompanyId(String companyId){
+		this.companyId = companyId;
+	} 
+    /**
+     * COMPANY_NAME的get方法
+     * @return companyName
+     */
+    public String getCompanyName(){
+        return companyName;
+    }
+    /**
+     * COMPANY_NAME的set方法
+     * @param companyName
+     */
+    public void setCompanyName(String companyName){
+		this.companyName = companyName;
+	} 
+    /**
+     * INSURANCE_COMPANY_ID的get方法
+     * @return insuranceCompanyId
+     */
+    public String getInsuranceCompanyId(){
+        return insuranceCompanyId;
+    }
+    /**
+     * INSURANCE_COMPANY_ID的set方法
+     * @param insuranceCompanyId
+     */
+    public void setInsuranceCompanyId(String insuranceCompanyId){
+		this.insuranceCompanyId = insuranceCompanyId;
+	} 
+    /**
+     * INSURANCE_COMPANY_NAME的get方法
+     * @return insuranceCompanyName
+     */
+    public String getInsuranceCompanyName(){
+        return insuranceCompanyName;
+    }
+    /**
+     * INSURANCE_COMPANY_NAME的set方法
+     * @param insuranceCompanyName
+     */
+    public void setInsuranceCompanyName(String insuranceCompanyName){
+		this.insuranceCompanyName = insuranceCompanyName;
+	} 
+    /**
      * PRICE的get方法
      * @return price
      */
@@ -136,14 +282,14 @@ public class OrderPayVO extends ParentVO implements Serializable{
      * PAY_TIME的get方法
      * @return payTime
      */
-    public Timestamp getPayTime(){
+    public String getPayTime(){
         return payTime;
     }
     /**
      * PAY_TIME的set方法
      * @param payTime
      */
-    public void setPayTime(Timestamp payTime){
+    public void setPayTime(String payTime){
 		this.payTime = payTime;
 	} 
     /**
@@ -174,20 +320,6 @@ public class OrderPayVO extends ParentVO implements Serializable{
     public void setRemark(String remark){
 		this.remark = remark;
 	} 
-    /**
-     * ORDER_ID的get方法
-     * @return orDERId
-     */
-    public String getOrDERId(){
-        return orDERId;
-    }
-    /**
-     * ORDER_ID的set方法
-     * @param orDERId
-     */
-    public void setOrDERId(String orDERId){
-		this.orDERId = orDERId;
-	} 
 
     /**
      * toString方法
@@ -197,13 +329,20 @@ public class OrderPayVO extends ParentVO implements Serializable{
 
 		  return new StringBuffer()
 	  			.append("PAY_ID"+":"+getPayId())
+				.append("ORDER_ID"+":"+getOrderId())
 				.append("PAY_TYPE"+":"+getPayType())
 				.append("PAY_USER"+":"+getPayUser())
+				.append("PAY_USRE_NAME"+":"+getPayUsreName())
+				.append("ELECTRICIAN_ID"+":"+getElectricianId())
+				.append("ELECTRICIAN_NAME"+":"+getElectricianName())
+				.append("COMPANY_ID"+":"+getCompanyId())
+				.append("COMPANY_NAME"+":"+getCompanyName())
+				.append("INSURANCE_COMPANY_ID"+":"+getInsuranceCompanyId())
+				.append("INSURANCE_COMPANY_NAME"+":"+getInsuranceCompanyName())
 				.append("PRICE"+":"+getPrice())
 				.append("PAY_TIME"+":"+getPayTime())
 				.append("PAY_STATUS"+":"+getPayStatus())
 				.append("REMARK"+":"+getRemark())
-				.append("ORDER_ID"+":"+getOrDERId())
 		        .toString(); 
 			
     } 

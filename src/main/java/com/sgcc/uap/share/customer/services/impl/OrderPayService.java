@@ -27,7 +27,6 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.customer.repositories.OrderPayRepository;
 import com.sgcc.uap.share.customer.services.IOrderPayService;
 import com.sgcc.uap.share.domain.OrderPay;
-import com.sgcc.uap.utils.string.StringUtil;
 
 
 /**
@@ -110,7 +109,7 @@ public class OrderPayService implements IOrderPayService{
 	 * @querySingle:主从表单页查询方法
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2021-01-21 15:04:55
 	 * @author 18511
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
@@ -155,7 +154,7 @@ public class OrderPayService implements IOrderPayService{
 	 * @queryCommon:查询方法(通用的)
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2021-01-21 15:04:55
 	 * @author 18511
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
@@ -189,7 +188,7 @@ public class OrderPayService implements IOrderPayService{
 	 * @getFilterList:获取条件列表
 	 * @param queryCondition 查询条件
 	 * @return List<QueryFilter> 查询条件列表
-	 * @date 2020-11-26 14:32:47
+	 * @date 2021-01-21 15:04:55
 	 * @author 18511
 	 */
 	private List<QueryFilter> getFilterList(RequestCondition queryCondition) {
@@ -211,7 +210,7 @@ public class OrderPayService implements IOrderPayService{
 	 * @buildPageRequest:构建PageRequest
 	 * @param queryCondition 查询条件
 	 * @return PageRequest 页面请求对象
-	 * @date 2020-11-26 14:32:47
+	 * @date 2021-01-21 15:04:55
 	 * @author 18511
 	 */
 	private PageRequest buildPageRequest(RequestCondition queryCondition) {

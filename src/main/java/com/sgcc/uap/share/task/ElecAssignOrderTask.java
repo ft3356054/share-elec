@@ -36,7 +36,7 @@ public class ElecAssignOrderTask {
 				+ " ,date =" + new Date( System.currentTimeMillis()));
 		
 		
-		//从队列中获取用户刚下单的订单
+		//从队列中获取没有人接单的订单
 		OrderCustomer orderCustomer = null;
 		orderCustomer = (OrderCustomer) redisTemplate.opsForList().leftPop("assignCustomerOrder");
 		logger.info("获取并删除 orderCustomer = "+ orderCustomer);

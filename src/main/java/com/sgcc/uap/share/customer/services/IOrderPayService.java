@@ -24,7 +24,7 @@ public interface IOrderPayService {
 	 * @getOrderPayByPayId:根据主键 查询
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2021-01-21 15:04:55
 	 * @author 18511
 	 */
 	public QueryResultObject getOrderPayByPayId(String payId);
@@ -32,7 +32,7 @@ public interface IOrderPayService {
 	 * @remove:根据idObject删除
 	 * @param idObject 主键id
 	 * @return void
-	 * @date 2020-11-26 14:32:47
+	 * @date 2021-01-21 15:04:55
 	 * @author 18511
 	 */
 	public void remove(IDRequestObject idObject);
@@ -40,7 +40,7 @@ public interface IOrderPayService {
 	 * @save:保存或更新
 	 * @param map 保存或更新的数据
 	 * @return OrderPay OrderPay对象
-	 * @date 2020-11-26 14:32:47
+	 * @date 2021-01-21 15:04:55
 	 * @author 18511
 	 */
 	public OrderPay saveOrderPay(Map<String,Object> map) throws Exception;
@@ -48,7 +48,7 @@ public interface IOrderPayService {
 	 * @query:根据查询条件 查询
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2021-01-21 15:04:55
 	 * @author 18511
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);
