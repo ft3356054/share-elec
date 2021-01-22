@@ -259,6 +259,10 @@ public class ElectricianInfoService implements IElectricianInfoService{
 		ElectricianInfo electricianInfo =electricianInfoRepository.findOne(electricianId);
 		return electricianInfo;
 	}
+	public List<ElectricianInfo> findByCompanyId(String companyId) {
+		List<ElectricianInfo> findByCompanyId = electricianInfoRepository.findByCompanyId(companyId);
+		return findByCompanyId;
+	}
 
 
 }

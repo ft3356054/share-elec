@@ -263,12 +263,36 @@ public class OrderElectricianHisService implements IOrderElectricianHisService{
 		count=list.size();
 		return RestUtils.wrappQueryResult(list,count);
 	}
+	
+	public QueryResultObject queryAll(RequestCondition requestCondition) {
+		String filter = (String) requestCondition.getFilter();
+		String[] split = filter.split("=");
+		String electricianId=split[1];
+		int page=requestCondition.getPageIndex()-1;
+		int size=requestCondition.getPageSize();
+		
+	
+		List<OrderElectricianBeginPage> result= electricainQueryOrderRepository.queryAll(electricianId);
+		List<OrderElectricianBeginPageVO> list=new ArrayList<>();
+		for (OrderElectricianBeginPage orderElectricianBeginPage : result) {
+			OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+			orderElectricianBeginPageVO=orderElectricianService.orderElectricianBeginPage2VO(orderElectricianBeginPage);
+			
+			list.add(orderElectricianBeginPageVO);
+		
+	}
+		long count=0;
+		count=list.size();
+		return RestUtils.wrappQueryResult(list,count);
+	}
+	
 	public QueryResultObject queryAllHaveEsc(String electricianId) {
 		List<OrderElectricianHis> result=orderElectricianHisRepository.queryAllHaveEsc(electricianId);
 		long count=0;
 		count=result.size();
 		return RestUtils.wrappQueryResult(result,count);
 	}
+	
 
 
 }

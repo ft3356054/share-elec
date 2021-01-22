@@ -214,26 +214,12 @@ public class OrderElectricianController {
 	 */
 	@RequestMapping("/")
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
-		try {
-			QueryResultObject queryResult = orderElectricianService.query(requestCondition);
-			List<OrderElectricianBeginPageVO> orderElectricianBeginPageVOs=new ArrayList<>();
-			List<OrderElectrician> orderElectricians=queryResult.getItems();
-			for (OrderElectrician orderElectrician : orderElectricians) {
-				OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
-				OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderElectrician.getOrDERId());
-				
-				orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
-				//子订单状态是2，表明是派单，还未接受
-				if (orderElectrician.getOrderElectricianStatus().equals("2")) { 
-					String distance=orderElectricianService.jisuanjuli(orderCustomer, orderElectrician);
-					orderElectricianBeginPageVO.setDistance(distance);
-				}
-				orderElectricianBeginPageVOs.add(orderElectricianBeginPageVO);
-			}
-			queryResult.setItems(orderElectricianBeginPageVOs);
-			logger.info("查询数据成功"); 
+		try {			
 			
+			QueryResultObject queryResult = orderElectricianHisService.queryAll(requestCondition);
 			return WrappedResult.successWrapedResult(queryResult);
+		
+			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			String errorMessage = "查询异常";
@@ -346,9 +332,10 @@ public class OrderElectricianController {
 				OrderElectricianBeginPageVO orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
 				
 				
-			
+				//电工抢单成功后给客户发送
 				orderElectricianService.sendNotify(orderCustomerNew,orderElectrician , 0, "0");
 				return WrappedResult.successWrapedResult(orderElectricianBeginPageVO);
+				
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -538,9 +525,6 @@ public class OrderElectricianController {
 		
 		//2获取此电工的经纬度范围
 	
-		
-		
-	
 		double[] around=PointUtil.getAround(Double.valueOf(elecPosition.getLon()), Double.valueOf(elecPosition.getLat()), 15*10000);
 		
 		//地理经纬度在范围内的客户集合
@@ -607,7 +591,7 @@ public class OrderElectricianController {
 						OrderElectrician orderElectrician=orderElectricianList.get(0);
 						orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
 					}else {
-						//BeanUtils.copyProperties(orderCustomer, orderElectricianBeginPageVO);
+						
 						orderElectricianBeginPageVO=orderElectricianService.convertOrderCustomer2OrderElectricianBeginPageVO(orderCustomer, orderElectricianBeginPageVO);
 					}
 					orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
@@ -1017,7 +1001,7 @@ public class OrderElectricianController {
 							
 							//给客户发送消息，让其支付维修费
 							//TODO
-							orderElectricianService.sendNotify(orderCustomer1,orderElectrician,0,"1");
+							orderElectricianService.sendNotify(orderCustomer1,orderElectrician,2,"1");
 							
 							//订单来源是客服，则直接出示二维码
 						}}else {
@@ -1033,7 +1017,7 @@ public class OrderElectricianController {
 					/**
 					 * 开始施工
 					 */
-					if(method.equals("开始施工")){//状态是从23--->31
+					if(method.equals("开始施工")){//状态是从3--->31
 						
 						String orderId=(String) map.get("orderId");
 						String electricianId=(String) map.get("electricianId");
@@ -1051,9 +1035,6 @@ public class OrderElectricianController {
 						//先将其它电工截取
 						
 						if (!str.isEmpty() && str.length()!=0) {
-							//String temp=str.substring(1, str.length()-1);
-							//System.out.println("temp=:"+temp);
-							//String electricianId = (String) map.get("electricianId");
 							
 							//查询主电工的名字和电话
 							ElectricianInfo electricianInfo=electricianInfoService.findByElectricianId(electricianId);
@@ -1063,7 +1044,9 @@ public class OrderElectricianController {
 							
 							
 							//给其它电工发送通知
-							String[] split = str.split(",");
+							String replace = str.replace("{", "");
+							String replace2 = replace.replace("}", "");
+							String[] split = replace2.split(",");
 							
 							//如果有多个
 							if (split.length>1) {
@@ -1207,7 +1190,7 @@ public class OrderElectricianController {
 						//2021.1.20
 						//先查询订单的状态，如果状态是0，则继续预约功能
 						OrderElectrician orderElectricianOld = orderElectricianService.findByElectricianIdAndOrderId(orderId, electricianId);
-						if (!orderElectricianOld.getOrderElectricianStatus().equals("22")) {
+						if (!orderElectricianOld.getOrderElectricianStatus().equals("24")) {
 							return WrappedResult.failedWrappedResult("订单的状态有问题");
 						}
 						//将map中的数据分别送到两个类中，在进行更新
@@ -1384,6 +1367,24 @@ public class OrderElectricianController {
 			}
 			return WrappedResult.failedWrappedResult("查找电工出错");
 		}	
+	}
+	
+	@RequestMapping(value="queryAllElectrician/{electricianId}",name="查询所有的电工")
+	public WrappedResult queryAllElectrician(@PathVariable(value="electricianId") String electricianId ){
+		try {
+			
+			QueryResultObject queryResult=orderElectricianService.queryAllElectrician(electricianId);
+			
+			return WrappedResult.successWrapedResult(queryResult);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult("当前电工公司没有其它电工");
+		}
 	}
 	
 	//***************************************************************************************

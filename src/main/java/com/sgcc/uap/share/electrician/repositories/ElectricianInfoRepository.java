@@ -36,6 +36,8 @@ public interface ElectricianInfoRepository extends JpaRepository<ElectricianInfo
 
 	//@Query(value="select * from electrician_info where ELECTRICIAN_PHONENUMBER = %electricianPhonenumber%",nativeQuery=true)
 	List<ElectricianInfo> findByElectricianPhonenumberLike(@Param("electricianPhonenumber")String electricianPhonenumber);
+	@Query(value="select * from electrician_info where COMPANY_ID =:companyId and ELECTRICIAN_STATUS=1",nativeQuery=true)
+	List<ElectricianInfo> findByCompanyId(@Param("companyId")String companyId);
 
 	
 

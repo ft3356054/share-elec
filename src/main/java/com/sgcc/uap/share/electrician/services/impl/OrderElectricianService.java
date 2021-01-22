@@ -537,7 +537,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	
 		String orderElectricianStatus =orderElectrician.getOrderElectricianStatus();
 		//1维修 2支付 3验收 4评价
-		String notifyType ="1";
+		/*String notifyType ="1";
 		if("23".equals(orderElectricianStatus)){
 			notifyType ="2";
 		}else if("8".equals(orderElectricianStatus)){
@@ -545,7 +545,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		}else if("9".equals(orderElectricianStatus)){
 			notifyType ="4";
 		}
-		
+		*/
 		//获取Enum通知类
 		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus(getPeople,  orderElectricianStatus);	
 		
@@ -572,10 +572,10 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		//电工已接单，并确认预约时间,不需要插入消息，只需要流水就行
 		List<String> flowstatusList=new ArrayList<>();
-		flowstatusList.add("21");
-		flowstatusList.add("22");
-		flowstatusList.add("26");
-		if (!flowstatusList.contains(orderElectrician.getOrderElectricianStatus())) {
+		//flowstatusList.add("4");
+		
+		
+		/*if (flowstatusList.contains(orderElectrician.getOrderElectricianStatus())) {
 			Map<String,Object> mapNotify =
 					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", EnumsB, baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
 							notifyType,orderElectrician.getOrDERId(),"");
@@ -605,12 +605,15 @@ public QueryResultObject queryAllDoing(String electricianId) {
 				String jsonString = JsonUtils.toJson(mapString);
 				WebSocketServer.sendInfo(jsonString,orderElectrician.getElectricianId());
 		}
+		*/
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 		
 
 	}
+	
+	
 	
 	
 	/**
@@ -661,8 +664,8 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		statusList.add("0"); //0 接单成功【待预约】
 		statusList.add("5"); //23 等待支付维修费【待支付】--> 3
 		statusList.add("23"); //5 电工退回（无法完成）【已完成】
-		statusList.add("25"); //维修完成【待验收】
-		if (statusList.contains(orderStatus)) {
+		//statusList.add("25"); //维修完成【待验收】
+		if (statusList.contains(orderElectrician.getOrderElectricianStatus())) {
 			
 			//新增通知
 			String announceId = UuidUtil.getUuid32();
@@ -1332,6 +1335,27 @@ public void save(OrderElectrician orderElectrician) {
 public void saveorderCustomerPOJO(OrderCustomer orderCustomer) {
 	orderCustomerRepository.save(orderCustomer);
 	
+}
+@Override
+public QueryResultObject queryAllElectrician(String electricianId) {
+	//根据电工ID查询出公司ID
+	ElectricianInfo electricianInfo = electricianInfoService.findByElectricianId(electricianId);
+	String companyId=electricianInfo.getCompanyId();
+	
+	//根据公司ID去查询其旗下的所有电工，状态是身上没有订单(电工位置表的状态是0)
+	List<ElectricianInfo> electricianInfos=electricianInfoService.findByCompanyId(companyId);
+	//用于放最终可展示的电工信息集合
+	List<ElectricianInfo> electricianInfolList=new ArrayList<>();
+	for (ElectricianInfo electricianInfo2 : electricianInfos) {
+		ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianInfo2.getElectricianId());
+		if (elecPosition.getStatus().equals("0")) {//0表明电工身上没有订单
+			electricianInfolList.add(electricianInfo2);
+		}
+	}
+	long count = 0;
+	count = electricianInfolList.size();
+	
+	return RestUtils.wrappQueryResult(electricianInfolList, count);
 }
 
 
