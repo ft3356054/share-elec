@@ -1299,7 +1299,9 @@ public class OrderElectricianController {
 		}				
 	}	
 	/**
-	 * 
+	 * tagType=1  表示在全部订单  
+	 * tagType=3  表示在已完成订单
+	 * tagType=2  表示在进行中订单
 	 * @param requestCondition
 	 * @return
 	 */
@@ -1309,7 +1311,8 @@ public class OrderElectricianController {
 			Map<String, String> map = MapUtil.getParam(requestCondition);
 			String electricianId = map.get("electricianId");
 			String searchContent = map.get("searchContent");
-			QueryResultObject queryResult = orderElectricianService.searchBox(electricianId,searchContent);
+			String tagType = map.get("tagType");
+			QueryResultObject queryResult = orderElectricianService.searchBox(electricianId,searchContent,tagType);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {

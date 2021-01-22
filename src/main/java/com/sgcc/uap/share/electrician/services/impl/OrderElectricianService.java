@@ -57,6 +57,7 @@ import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPage;
 import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPageVO;
+import com.sgcc.uap.share.electrician.repositories.ElectricainQueryOrderRepository;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.share.repositories.OrderCustomerMoreVORepository;
@@ -138,6 +139,9 @@ public class OrderElectricianService implements IOrderElectricianService{
 	
 	@Autowired
 	private OrderCustomerMoreVORepository orderCustomerMoreVORepository;
+	
+	@Autowired
+	private ElectricainQueryOrderRepository electricainQueryOrderRepository;
 	 
 	@Override
 	public QueryResultObject getOrderElectricianByOrderElectricianId(String orderElectricianId) {
@@ -1144,16 +1148,58 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		return orderElectrician;
 	}
 	@Override
-	public QueryResultObject searchBox(String electricianId, String searchContent) {
-		//如果搜索字段包含10kv或220v
-		List<OrderCustomerMoreVO> OrderCustomerMoreVOs=new ArrayList<>();
-		if (searchContent.contains("10kv") || searchContent.contains("220v")) {
-			OrderCustomerMoreVOs=orderCustomerMoreVORepository.searchVOLTAGE(electricianId, searchContent);
-			}else {
-				OrderCustomerMoreVOs=orderCustomerMoreVORepository.searchDescrive(electricianId,searchContent);
+	public QueryResultObject searchBox(String electricianId, String searchContent,String tagType) {
+		List<OrderElectrician> orderCustomers = null;
+		List<String> tagTypes = new ArrayList<String>();
+		
+		List<OrderElectricianBeginPageVO> list=new ArrayList<>();
+		if("1".equals(tagType)){//1表示进行中
+			
+			List<OrderElectrician> result=orderElectricianRepository.queryAllDoing(electricianId);
+			//List<OrderElectricianBeginPageVO> list=new ArrayList<>();
+			for (OrderElectrician orderElectrician : result) {
+				OrderElectricianBeginPageVO orderElectricianBeginPageVO= new OrderElectricianBeginPageVO();
+				String orderId=orderElectrician.getOrDERId();
+				OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
+				if (orderCustomer.getCustomerDescriveTitle().contains(searchContent)) {
+					orderElectricianBeginPageVO =convert(orderCustomer, orderElectrician);
+					list.add(orderElectricianBeginPageVO);
+				}
+				
+			}
+			
+		}else if("2".equals(tagType)){//1表示已完成
+			List<OrderElectricianBeginPage> result= electricainQueryOrderRepository.findqQueryAllHaveDone(electricianId);
+			//List<OrderElectricianBeginPageVO> list=new ArrayList<>();
+			for (OrderElectricianBeginPage orderElectricianBeginPage : result) {
+				if (orderElectricianBeginPage.getCustomerDescriveTitle().contains(searchContent)) {
+					OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+					orderElectricianBeginPageVO=orderElectricianBeginPage2VO(orderElectricianBeginPage);
+					
+					list.add(orderElectricianBeginPageVO);
+				}
+					
+				}
+
+			
+					}else{
+			List<OrderElectricianBeginPage> result= electricainQueryOrderRepository.queryAll(electricianId);
+			//List<OrderElectricianBeginPageVO> list=new ArrayList<>();
+			for (OrderElectricianBeginPage orderElectricianBeginPage : result) {
+				if (orderElectricianBeginPage.getCustomerDescriveTitle().contains(searchContent)) {
+				OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+				orderElectricianBeginPageVO=orderElectricianBeginPage2VO(orderElectricianBeginPage);
+				
+				list.add(orderElectricianBeginPageVO);
+				}
+			
+		}
 		}
 		
-		return RestUtils.wrappQueryResult(OrderCustomerMoreVOs);
+	long count=0;
+	count=list.size();
+	return RestUtils.wrappQueryResult(list,count);
+
 	}
 	
 	
@@ -1264,8 +1310,13 @@ public List<OrderElectrician> findqQueryAllHaveDone(String electricianId) {
 }
 
 public  OrderElectricianBeginPageVO orderElectricianBeginPage2VO(OrderElectricianBeginPage orderElectricianBeginPage){
+	//根据子订单ID查询子订单
+	OrderElectrician orderElectrician = findByOrderElectricianId(orderElectricianBeginPage.getOrderElectricianId());
+	
 	OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
 	BeanUtils.copyProperties(orderElectricianBeginPage, orderElectricianBeginPageVO);
+	//将子订单的状态放入
+	orderElectricianBeginPageVO.setOrderElectricianStatus(orderElectrician.getOrderElectricianStatus());
 	
 	if (!orderElectricianBeginPageVO.getOrderTypeId().isEmpty()) {
 		String orderTypeId=orderElectricianBeginPageVO.getOrderTypeId();

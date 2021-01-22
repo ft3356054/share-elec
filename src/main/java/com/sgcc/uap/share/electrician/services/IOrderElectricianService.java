@@ -97,7 +97,7 @@ public OrderElectrician saveNewOrderElectrician(String orderId, String electrici
 
 OrderElectrician saveNewNullOrderElectrician(String orderId) throws Exception;
 public void esc(String orderElectricianId, String orderElectricianStatus);
-public QueryResultObject searchBox(String electricianId, String searchContent);
+public QueryResultObject searchBox(String electricianId, String searchContent,String tagType);
 void paidanchaxun(OrderCustomer orderCustomer);
 
 public String jisuanjuli(OrderCustomer orderCustomer, OrderElectrician orderElectrician);
