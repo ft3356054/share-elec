@@ -938,7 +938,7 @@ public class OrderElectricianController {
 					
 				}
 				
-				if(method.equals("abc")){   
+				if(method.equals("abc")){   //电工退单
 					//客户订单将状态改变成：11   电工订单将订单状态改变成：5
 					
 					//将map中的数据分别送到两个类中，在进行更新
@@ -946,6 +946,13 @@ public class OrderElectricianController {
 					orderCustomerMap.put("orderStatus", map.get("orderStatus"));
 					orderCustomerMap.put("orderId", map.get("orderId"));
 					orderCustomerMap.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
+					
+					//将电工的状态变成空闲
+					String electricianId=(String) map.get("electricianId");
+					ElecPosition elecPosition = elecPositionService.getElecPositionByElectricianId(electricianId);
+					elecPosition.setStatus("0");
+					Map<String, Object> eleMap=orderElectricianService.pojo2Map(elecPosition);
+					elecPositionService.saveElecPosition(eleMap);
 					
 					//电工订单需要更新的信息
 					orderElectricianMap.put("orderId", map.get("orderId"));
@@ -958,7 +965,9 @@ public class OrderElectricianController {
 					System.out.println("我执行完了保存操作");
 					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 					OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
+					orderElectricianService.sendNotify(orderElectrician, 2, "1");
 					result.setFormItems(orderCustomerVO);
+					
 			
 				}
 				if(method.equals("上传合同")){//状态应该从26---->23电工上传合同（报价）
@@ -1065,6 +1074,7 @@ public class OrderElectricianController {
 										elecPosition.setStatus("1");
 										Map<String, Object> map2= orderElectricianService.pojo2Map(elecPosition);
 										elecPositionService.saveElecPosition(map2);
+										orderElectricianService.sendNotice("31",orderId,split[i],0,"1");
 										//通过电工的ID给电工发送消息
 										WebSocketServer.sendInfo("您已有未完成的订单",split[i]);
 									}else {
@@ -1081,6 +1091,7 @@ public class OrderElectricianController {
 										elecPosition.setStatus("1");
 										Map<String, Object> map2= orderElectricianService.pojo2Map(elecPosition);
 										elecPositionService.saveElecPosition(map2);
+										orderElectricianService.sendNotice("31",orderId,split[i],0,"1");
 										//通过电工的ID给电工发送消息
 										WebSocketServer.sendInfo("您已有未完成的订单",split[i]);
 										
@@ -1104,13 +1115,13 @@ public class OrderElectricianController {
 									elecPosition.setStatus("1");
 									Map<String, Object> map2= orderElectricianService.pojo2Map(elecPosition);
 									elecPositionService.saveElecPosition(map2);
-									
+									orderElectricianService.sendNotice("31",orderId,split[0],0,"1");
 									//通过电工的ID给电工发送消息
 									WebSocketServer.sendInfo("您已有未完成的订单",split[0]);
 									
 								}
 								
-							//otherElectricianId=electricianId+","+otherElectricianId;
+							
 							System.out.println(otherElectricianId);
 								
 							

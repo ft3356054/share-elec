@@ -683,7 +683,12 @@ public QueryResultObject queryAllDoing(String electricianId) {
 					MapUtil.notifyUserAdd(orderCustomer.getCustomerId(), announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 
-		//发送websocket消息
+			
+			//25状态是验收申请
+			if (orderElectrician.getOrderElectricianStatus().equals("25")) {
+				baseEnums.setEnumsA(baseEnums.getEnumsC());
+			}
+			//发送websocket消息
 				Map<String,String> mapString = new HashMap<String,String>();
 			
 				mapString.put("orderId", "");
@@ -1407,6 +1412,55 @@ public QueryResultObject queryAllElectrician(String electricianId) {
 	count = electricianInfolList.size();
 	
 	return RestUtils.wrappQueryResult(electricianInfolList, count);
+}
+
+
+/**
+ * 
+ * @param orderElectrician
+ *@param oper 0增 1删 2改
+	 * @param getPeople 1客户 2电工 
+	 * electricianId要发送给谁
+ */
+		public void sendNotice(String orderElectricianStatus,String orderId,String electricianId,int oper,String getPeople){
+			
+			String orderStatus =orderElectricianStatus;
+			//1维修 2支付 3验收 4评价
+			String notifyType ="1";
+			if("23".equals(orderStatus)){
+				notifyType ="2";
+			}else if("8".equals(orderStatus)){
+				notifyType ="3";
+			}else if("9".equals(orderStatus)){
+				notifyType ="4";
+			}
+			
+			//获取Enum通知类
+			BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus(getPeople,  orderStatus);	
+			
+			
+			//String orderId=orderElectrician.getOrDERId();
+			//String electricianId=orderElectrician.getElectricianId();
+			//String EnumsA=baseEnums.getEnumsA();
+				
+			try {
+				
+			
+				//新增通知
+				String announceId = UuidUtil.getUuid32();
+				
+				Map<String,Object> mapNotify =
+						MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), "您已有未完成的订单", TimeStamp.toString(new Date()), 
+								notifyType,orderId,"");
+				notifyAnnounceService.saveNotifyAnnounce(mapNotify);
+				
+				Map<String,Object> mapNotifyUser = 
+						MapUtil.notifyUserAdd(electricianId, announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+				notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
+
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 }
 
 
