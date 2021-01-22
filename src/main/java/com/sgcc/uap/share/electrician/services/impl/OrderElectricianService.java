@@ -813,7 +813,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 				//查询电工的位置中的状态
 				ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianInfo2.getElectricianId());
 				List<OrderElectrician> electricians=findByElectricianId(electricianInfo2.getElectricianId());
-				String temp=null;
+				String temp="";
 				for (OrderElectrician orderElectrician : electricians) {
 					temp=orderElectrician.getOrDERId();
 				}
@@ -831,7 +831,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			}
 			int num=0;
 			electricianInfo=getFirstElectricianInfo(map);
-		
+			flag=true;
 			
 		}else {
 			electricianInfo=electricianInfoList.get(0);
