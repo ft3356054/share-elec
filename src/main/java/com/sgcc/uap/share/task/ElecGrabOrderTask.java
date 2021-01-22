@@ -9,8 +9,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import com.sgcc.uap.share.domain.BaseSystemConfig;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
+import com.sgcc.uap.share.services.IBaseSystemConfigService;
 
 
 /*
@@ -25,6 +27,7 @@ public class ElecGrabOrderTask {
 	private final static Logger logger = (Logger) LoggerFactory.getLogger(ElecGrabOrderTask.class);
 	
 	IOrderElectricianService orderElectricianService = (IOrderElectricianService) ApplicationContextUtil.getBean("orderElectricianService");
+	IBaseSystemConfigService baseSystemConfigService = (IBaseSystemConfigService) ApplicationContextUtil.getBean("baseSystemConfigService");
 	@SuppressWarnings("rawtypes")
 	@Autowired
     private RedisTemplate redisTemplate;
@@ -43,7 +46,8 @@ public class ElecGrabOrderTask {
 		
 		//调用抢单弹框方法
 		if(null!=orderCustomer){
-			orderElectricianService.qiangdantanchuang(orderCustomer,15);
+			BaseSystemConfig baseSystemConfig = baseSystemConfigService.getBaseSystemConfigByConfigType("1");
+			orderElectricianService.qiangdantanchuang(orderCustomer,Integer.parseInt(baseSystemConfig.getConfigValue()));
 		}
 			
 	}

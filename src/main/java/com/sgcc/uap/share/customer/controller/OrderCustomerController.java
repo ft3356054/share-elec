@@ -406,11 +406,13 @@ public class OrderCustomerController {
 	@RequestMapping("/searchBox")
 	public WrappedResult searchBox(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
+			Integer pageIndex = requestCondition.getPageIndex()-1;
+			Integer pageSize = requestCondition.getPageSize();
 			Map<String, String> map = MapUtil.getParam(requestCondition);
 			String customerId = map.get("customerId");
 			String searchContent = map.get("searchContent");
 			String tagType = map.get("tagType");
-			QueryResultObject queryResult = orderCustomerService.searchBox(customerId,tagType,searchContent);
+			QueryResultObject queryResult = orderCustomerService.searchBox(customerId,tagType,searchContent,pageIndex,pageSize);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
