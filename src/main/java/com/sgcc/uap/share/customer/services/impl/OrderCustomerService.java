@@ -715,7 +715,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	public QueryResultObject searchBox(String customerId,String tagType,String searchContent) {
 		List<OrderCustomer> orderCustomers = null;
 		List<String> tagTypes = new ArrayList<String>();
-		tagTypes.add("4");
+		//tagTypes.add("4"); 只在全部展示
 		tagTypes.add("8");
 		tagTypes.add("9");
 		

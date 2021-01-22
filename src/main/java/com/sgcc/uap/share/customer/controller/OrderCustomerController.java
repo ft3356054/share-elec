@@ -398,7 +398,7 @@ public class OrderCustomerController {
 	
 	/**
 	 * @query:查询
-	 * @param requestCondition
+	 * @param tagType 0全部 1进行中 2已完成
 	 * @return WrappedResult 查询结果
 	 * @date 2020-11-26 14:32:47
 	 * @author 18511
