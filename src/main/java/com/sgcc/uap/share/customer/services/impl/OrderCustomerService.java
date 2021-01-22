@@ -716,7 +716,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	}
 	
 	@Override
-	public QueryResultObject searchBox(String customerId,String tagType,String searchContent) {
+	public QueryResultObject searchBox(String customerId,String tagType,String searchContent,Integer pageIndex,Integer pageSize) {
 		List<OrderCustomer> orderCustomers = null;
 		List<String> tagTypes = new ArrayList<String>();
 		//tagTypes.add("4"); 只在全部展示
@@ -724,11 +724,12 @@ public class OrderCustomerService implements IOrderCustomerService{
 		tagTypes.add("9");
 		
 		if("1".equals(tagType)){
-			orderCustomers = orderCustomerRepository.searchBoxNotIn(customerId,tagTypes,searchContent);
+			//只查现表
+			orderCustomers = orderCustomerRepository.searchBoxNotIn(customerId,tagTypes,searchContent,pageIndex,pageSize);
 		}else if("2".equals(tagType)){
-			orderCustomers = orderCustomerRepository.searchBoxIn(customerId,tagTypes,searchContent);
+			orderCustomers = orderCustomerRepository.searchBoxIn(customerId,tagTypes,searchContent,pageIndex,pageSize);
 		}else{
-			orderCustomers = orderCustomerRepository.searchBox(customerId,searchContent);
+			orderCustomers = orderCustomerRepository.searchBox(customerId,searchContent,pageIndex,pageSize);
 		}
 		
 		return RestUtils.wrappQueryResult(orderCustomers);
