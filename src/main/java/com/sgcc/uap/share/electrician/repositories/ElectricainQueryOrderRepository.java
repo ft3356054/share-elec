@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.sgcc.uap.share.customer.bo.OrderCustomerBeginPage;
 import com.sgcc.uap.share.domain.OrderCustomer;
+import com.sgcc.uap.share.domain.OrderElectricianHis;
 import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPage;
 
 public interface ElectricainQueryOrderRepository extends JpaRepository<OrderElectricianBeginPage,String>,JpaSpecificationExecutor<OrderCustomer> {
@@ -60,7 +61,8 @@ public interface ElectricainQueryOrderRepository extends JpaRepository<OrderElec
 	
 	
 	
-	@Query(value="SELECT c.ADDRESS_LATITUDE,c.ADDRESS_LONGITUDE,c.APPOINTMENT_TIME,c.CREATE_TIME,c.CUSTOMER_ADDRESS,c.CUSTOMER_DESCRIVE,c.CUSTOMER_DESCRIVE_ICON, "
+	@Query(value="select * from ("
+			+ "SELECT c.ADDRESS_LATITUDE,c.ADDRESS_LONGITUDE,c.APPOINTMENT_TIME,c.CREATE_TIME,c.CUSTOMER_ADDRESS,c.CUSTOMER_DESCRIVE,c.CUSTOMER_DESCRIVE_ICON, "
 			+ " c.CUSTOMER_EVALUATE,c.CUSTOMER_EVALUATE_PHOTO,c.CUSTOMER_EVALUATE_TITLE,c.CUSTOMER_GRADE,c.CUSTOMER_ID,c.CUSTOMER_NAME,c.CUSTOMER_PHONENUMBER,"
 			+ " c.CUSTOMER_PRICE,c.FINISH_TIME,c.IDENTITY_ID,c.ORDER_COMPLAINT_ID,c.ORDER_ID,c.ORDER_STATUS,c.ORDER_TYPE_ID,c.PAY_STATUS,c.REMARK_NUM1,"
 			+ " c.REMARK_NUM2,c.REMARK_STR1,c.REMARK_STR2,c.REMARK_STR3,c.UPDATE_TIME,c.VOLTAGE,c.ORDER_FROM,c.CREATE_AREA_ID,c.REGISTERED_NUMBER,c.CUSTOMER_DESCRIVE_TITLE, "
@@ -99,8 +101,12 @@ public interface ElectricainQueryOrderRepository extends JpaRepository<OrderElec
 			+"FROM order_customer_his  ch "
 			+"LEFT JOIN order_electrician_his eh "
 				+"ON ch.ORDER_ID = eh.ORDER_ID "
-					+"WHERE eh.ELECTRICIAN_ID = :electricianId  "
+					+"WHERE eh.ELECTRICIAN_ID = :electricianId )limit :page,:size "
 			,nativeQuery=true)
-	List<OrderElectricianBeginPage> queryAll(@Param("electricianId")String electricianId);
+	List<OrderElectricianBeginPage> queryAll(@Param("electricianId")String electricianId,@Param("page")int page,@Param("size")int size);
 
+
+
+
+	
 }

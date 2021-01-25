@@ -44,6 +44,7 @@ import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.bo.OrderCustomerMoreVO;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.impl.CustPositionService;
+import com.sgcc.uap.share.customer.services.impl.OrderCustomerHisService;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.customer.services.impl.OrderFlowService;
 import com.sgcc.uap.share.domain.BaseEnums;
@@ -54,10 +55,13 @@ import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
 import com.sgcc.uap.share.domain.ElectricianInfo;
 
 import com.sgcc.uap.share.domain.OrderCustomer;
+import com.sgcc.uap.share.domain.OrderCustomerHis;
 import com.sgcc.uap.share.domain.OrderElectrician;
+import com.sgcc.uap.share.domain.OrderElectricianHis;
 import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPage;
 import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPageVO;
 import com.sgcc.uap.share.electrician.repositories.ElectricainQueryOrderRepository;
+import com.sgcc.uap.share.electrician.repositories.OrderElectricianHisRepository;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.share.repositories.OrderCustomerMoreVORepository;
@@ -103,6 +107,8 @@ public class OrderElectricianService implements IOrderElectricianService{
 	private ElectricianInfoService electricianInfoService;
 	
 	@Autowired
+	private OrderCustomerHisService orderCustomerHisService;
+	@Autowired
 	private OrderFlowService orderFlowService;
 	
 	@Autowired
@@ -138,11 +144,16 @@ public class OrderElectricianService implements IOrderElectricianService{
 	private ElecPositionService elecPositionService;
 	
 	@Autowired
+	private OrderElectricianHisRepository orderElectricianHisRepository;
+	
+	@Autowired
 	private OrderCustomerMoreVORepository orderCustomerMoreVORepository;
 	
 	@Autowired
 	private ElectricainQueryOrderRepository electricainQueryOrderRepository;
 	 
+	@Autowired
+	private OrderElectricianService orderElectricianService;
 	@Override
 	public QueryResultObject getOrderElectricianByOrderElectricianId(String orderElectricianId) {
 		OrderElectrician orderElectrician = orderElectricianRepository.findOne(orderElectricianId);
@@ -1153,7 +1164,8 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		return orderElectrician;
 	}
 	@Override
-	public QueryResultObject searchBox(String electricianId, String searchContent,String tagType) {
+	public QueryResultObject searchBox(Integer pageIndex, Integer pageSize, String electricianId, String searchContent,
+			String tagType) {
 		List<OrderElectrician> orderCustomers = null;
 		List<String> tagTypes = new ArrayList<String>();
 		
@@ -1161,7 +1173,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		if("1".equals(tagType)){//1表示进行中
 			
 			List<OrderElectrician> result=orderElectricianRepository.queryAllDoing(electricianId);
-			//List<OrderElectricianBeginPageVO> list=new ArrayList<>();
+			
 			for (OrderElectrician orderElectrician : result) {
 				OrderElectricianBeginPageVO orderElectricianBeginPageVO= new OrderElectricianBeginPageVO();
 				String orderId=orderElectrician.getOrDERId();
@@ -1174,31 +1186,41 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			}
 			
 		}else if("2".equals(tagType)){//1表示已完成
-			List<OrderElectricianBeginPage> result= electricainQueryOrderRepository.findqQueryAllHaveDone(electricianId);
+			List<OrderElectricianHis> result= orderElectricianHisRepository.findqQueryAllHaveDone(electricianId,pageIndex,pageSize);
 			//List<OrderElectricianBeginPageVO> list=new ArrayList<>();
-			for (OrderElectricianBeginPage orderElectricianBeginPage : result) {
-				if (orderElectricianBeginPage.getCustomerDescriveTitle().contains(searchContent)) {
-					OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
-					orderElectricianBeginPageVO=orderElectricianBeginPage2VO(orderElectricianBeginPage);
-					
-					list.add(orderElectricianBeginPageVO);
+			for (OrderElectricianHis orderElectricianHis : result) {
+				//通过ID查询所有的主订单
+				OrderCustomer orderCustomer = orderCustomerService.findByOrderId(orderElectricianHis.getOrderId());
+				if (orderCustomer==null) {
+					OrderCustomerHis customerHis = orderCustomerHisService.findByOrderId(orderElectricianHis.getOrderId());
+					BeanUtils.copyProperties(orderElectricianHis, orderCustomer);
 				}
-					
-				}
-
+				OrderElectrician orderElectrician=new OrderElectrician();
+				BeanUtils.copyProperties(orderElectricianHis, orderElectrician);
+				OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+				orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+				list.add(orderElectricianBeginPageVO);
+			}
 			
 					}else{
-			List<OrderElectricianBeginPage> result= electricainQueryOrderRepository.queryAll(electricianId);
-			//List<OrderElectricianBeginPageVO> list=new ArrayList<>();
-			for (OrderElectricianBeginPage orderElectricianBeginPage : result) {
-				if (orderElectricianBeginPage.getCustomerDescriveTitle().contains(searchContent)) {
-				OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
-				orderElectricianBeginPageVO=orderElectricianBeginPage2VO(orderElectricianBeginPage);
-				
-				list.add(orderElectricianBeginPageVO);
-				}
+						//默认显示10个数据
+						List<OrderElectricianHis> result= orderElectricianHisRepository.queryAll(electricianId,pageIndex,pageSize);
+						//List<OrderElectricianBeginPageVO> list=new ArrayList<>();
+						for (OrderElectricianHis orderElectricianHis : result) {
+							//通过ID查询所有的主订单
+							OrderCustomer orderCustomer = orderCustomerService.findByOrderId(orderElectricianHis.getOrderId());
+							if (orderCustomer==null) {
+								OrderCustomerHis customerHis = orderCustomerHisService.findByOrderId(orderElectricianHis.getOrderId());
+								BeanUtils.copyProperties(orderElectricianHis, orderCustomer);
+							}
+							OrderElectrician orderElectrician=new OrderElectrician();
+							BeanUtils.copyProperties(orderElectricianHis, orderElectrician);
+							OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+							orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+							list.add(orderElectricianBeginPageVO);
+						}
 			
-		}
+		
 		}
 		
 	long count=0;

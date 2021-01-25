@@ -1323,7 +1323,9 @@ public class OrderElectricianController {
 			String electricianId = map.get("electricianId");
 			String searchContent = map.get("searchContent");
 			String tagType = map.get("tagType");
-			QueryResultObject queryResult = orderElectricianService.searchBox(electricianId,searchContent,tagType);
+			Integer pageIndex=Integer.parseInt(map.get("pageIndex"))-1;
+			Integer pageSize=Integer.parseInt(map.get("pageSize"));
+			QueryResultObject queryResult = orderElectricianService.searchBox(pageIndex,pageSize,electricianId,searchContent,tagType);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {

@@ -27,7 +27,9 @@ import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.customer.bo.OrderCustomerBeginPage;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerHisService;
+import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.domain.OrderCustomer;
+import com.sgcc.uap.share.domain.OrderCustomerHis;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.domain.OrderElectricianHis;
 import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPage;
@@ -69,6 +71,9 @@ public class OrderElectricianHisService implements IOrderElectricianHisService{
 	
 	@Autowired
 	private ElectricainQueryOrderRepository electricainQueryOrderRepository;
+	
+	@Autowired
+	private OrderCustomerService orderCustomerService;
 	
 	
 	
@@ -250,15 +255,22 @@ public class OrderElectricianHisService implements IOrderElectricianHisService{
 	 */
 	public QueryResultObject  findqQueryAllHaveDone(int pageIndex,int pageSize,String electricianId) {
 		
-		List<OrderElectricianBeginPage> result= electricainQueryOrderRepository.findqQueryAllHaveDone(electricianId);
+		
+		List<OrderElectricianHis> result= orderElectricianHisRepository.findqQueryAllHaveDone(electricianId,pageIndex,pageSize);
 		List<OrderElectricianBeginPageVO> list=new ArrayList<>();
-		for (OrderElectricianBeginPage orderElectricianBeginPage : result) {
+		for (OrderElectricianHis orderElectricianHis : result) {
+			//通过ID查询所有的主订单
+			OrderCustomer orderCustomer = orderCustomerService.findByOrderId(orderElectricianHis.getOrderId());
+			if (orderCustomer==null) {
+				OrderCustomerHis customerHis = orderCustomerHisService.findByOrderId(orderElectricianHis.getOrderId());
+				BeanUtils.copyProperties(orderElectricianHis, orderCustomer);
+			}
+			OrderElectrician orderElectrician=new OrderElectrician();
+			BeanUtils.copyProperties(orderElectricianHis, orderElectrician);
 			OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
-			orderElectricianBeginPageVO=orderElectricianService.orderElectricianBeginPage2VO(orderElectricianBeginPage);
-			
+			orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
 			list.add(orderElectricianBeginPageVO);
 		}
-		
 		long count=0;
 		count=list.size();
 		return RestUtils.wrappQueryResult(list,count);
@@ -272,15 +284,21 @@ public class OrderElectricianHisService implements IOrderElectricianHisService{
 		int size=requestCondition.getPageSize();
 		
 	
-		List<OrderElectricianBeginPage> result= electricainQueryOrderRepository.queryAll(electricianId);
+		List<OrderElectricianHis> result= orderElectricianHisRepository.queryAll(electricianId,page,size);
 		List<OrderElectricianBeginPageVO> list=new ArrayList<>();
-		for (OrderElectricianBeginPage orderElectricianBeginPage : result) {
+		for (OrderElectricianHis orderElectricianHis : result) {
+			//通过ID查询所有的主订单
+			OrderCustomer orderCustomer = orderCustomerService.findByOrderId(orderElectricianHis.getOrderId());
+			if (orderCustomer==null) {
+				OrderCustomerHis customerHis = orderCustomerHisService.findByOrderId(orderElectricianHis.getOrderId());
+				BeanUtils.copyProperties(orderElectricianHis, orderCustomer);
+			}
+			OrderElectrician orderElectrician=new OrderElectrician();
+			BeanUtils.copyProperties(orderElectricianHis, orderElectrician);
 			OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
-			orderElectricianBeginPageVO=orderElectricianService.orderElectricianBeginPage2VO(orderElectricianBeginPage);
-			
+			orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
 			list.add(orderElectricianBeginPageVO);
-		
-	}
+		}
 		long count=0;
 		count=list.size();
 		return RestUtils.wrappQueryResult(list,count);

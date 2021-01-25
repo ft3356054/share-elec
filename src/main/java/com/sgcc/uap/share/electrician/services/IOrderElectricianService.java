@@ -97,7 +97,7 @@ public OrderElectrician saveNewOrderElectrician(String orderId, String electrici
 
 OrderElectrician saveNewNullOrderElectrician(String orderId) throws Exception;
 public void esc(String orderElectricianId, String orderElectricianStatus);
-public QueryResultObject searchBox(String electricianId, String searchContent,String tagType);
+
 void paidanchaxun(OrderCustomer orderCustomer);
 
 public String jisuanjuli(OrderCustomer orderCustomer, OrderElectrician orderElectrician);
@@ -118,6 +118,8 @@ public void save(OrderElectrician orderElectrician);
 public void saveorderCustomerPOJO(OrderCustomer orderCustomer);
 public QueryResultObject queryAllElectrician(String electricianId);
 public void sendNotice(String string, String orderId, String string2, int i, String string3);
+public QueryResultObject searchBox(Integer pageIndex, Integer pageSize, String electricianId, String searchContent,
+		String tagType);
 
 
 
