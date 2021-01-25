@@ -718,6 +718,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 	@Override
 	public QueryResultObject searchBox(String customerId,String tagType,String searchContent,Integer pageIndex,Integer pageSize) {
 		List<OrderCustomer> orderCustomers = null;
+		int count = 0;
 		List<String> tagTypes = new ArrayList<String>();
 		tagTypes.add("8");
 		tagTypes.add("9");
@@ -732,7 +733,19 @@ public class OrderCustomerService implements IOrderCustomerService{
 			orderCustomers = orderCustomerRepository.searchBox(customerId,searchContent,pageIndex,pageSize);
 		}
 		
-		return RestUtils.wrappQueryResult(orderCustomers);
+		if(orderCustomers!=null&&orderCustomers.size()>0){
+			if("1".equals(tagType)){
+				tagTypes.add("4"); 
+				count = orderCustomerRepository.searchBoxNotInCount(customerId,tagTypes,searchContent);
+			}else if("2".equals(tagType)){
+				count = orderCustomerRepository.searchBoxInCount(customerId,tagTypes,searchContent);
+			}else{
+				count = orderCustomerRepository.searchBoxCount(customerId,searchContent);
+			}
+			
+		}
+		
+		return RestUtils.wrappQueryResult(orderCustomers,count);
 	}
 	
 	@Override
