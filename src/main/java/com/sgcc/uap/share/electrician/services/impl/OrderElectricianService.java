@@ -81,7 +81,7 @@ import com.sgcc.uap.util.TimeStamp;
 import com.sgcc.uap.util.UuidUtil;
 import com.sgcc.uap.utils.json.JsonUtils;
 
-
+@Transactional
 @Service
 public class OrderElectricianService implements IOrderElectricianService{
 	/** 
@@ -679,7 +679,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		statusList.add("0"); //0 接单成功【待预约】
 		statusList.add("5"); //23 等待支付维修费【待支付】--> 3
 		statusList.add("23"); //5 电工退回（无法完成）【已完成】
-		//statusList.add("25"); //维修完成【待验收】
+		statusList.add("25"); //维修完成【待验收】
 		if (statusList.contains(orderElectrician.getOrderElectricianStatus())) {
 			
 			//新增通知
@@ -748,28 +748,17 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	@Override
 	public void paidanchaxun(OrderCustomer orderCustomer){
 		
-		//根据客户orderId获取其地区ID
-		//根据地区ID查询所属地区的电力子公司
-		//然后再查询电力子公司下距离最近的电工
-		//将 查询查询出来的信息放入到websocket
-		
 		//有没有找到电工
-		boolean flag = false;
-		
-		try {
-	
-		String orderId=orderCustomer.getOrderId();
-		
+		boolean flag = false;		
+		try {	
+		String orderId=orderCustomer.getOrderId();		
 		//1.获取客户的位置信息
 		CustPosition custPosition=custPositionService.getCustPositionByOrderId(orderId);
-		String areaId=custPosition.getAreaId();
-		
+		String areaId=custPosition.getAreaId();		
 		//2.根据客户区域ID查询此区域的子公司的集合
-		List<ElectricianCompanyInfo>  electricianCompanyInfoList=electricianCompanyInfoService.findByCompanyAreaId(areaId);
-		
+		List<ElectricianCompanyInfo>  electricianCompanyInfoList=electricianCompanyInfoService.findByCompanyAreaId(areaId);		
 		ElectricianCompanyInfo ElectricianCompanyInfo=null;
-		if (electricianCompanyInfoList.size()>1) {//说明有多个电力子公司
-			
+		if (electricianCompanyInfoList.size()>1) {//说明有多个电力子公司			
 			//判断哪个电力子公司距离最近			
 			Map<Double, ElectricianCompanyInfo> map = new TreeMap<Double, ElectricianCompanyInfo>(
 	                new Comparator<Double>() {
@@ -777,23 +766,18 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	                        // 降序排序
 	                        return obj1.compareTo(obj2);
 	                    }
-	                });
-	
-			Double distanceDouble=null;	
-			
+	                });	
+			Double distanceDouble=null;				
 			for (ElectricianCompanyInfo ElectricianCompanyInfo1 : electricianCompanyInfoList) {
 				//如果电工子公司的状态是0，则代表营业中
 				if (ElectricianCompanyInfo1.getBusinessStatus().equals("0")) {
 					//获取订单 的位置,即经纬度，进行对比
 					String ElectricianCompanyInfoLon=ElectricianCompanyInfo1.getAddressLongitude();
-					String ElectricianCompanyInfoLat=ElectricianCompanyInfo1.getAddressLatitude();
-					
-					
+					String ElectricianCompanyInfoLat=ElectricianCompanyInfo1.getAddressLatitude();										
 					distanceDouble=PointUtil.getDistanceString(String.valueOf(custPosition.getLon()), String.valueOf(custPosition.getLat()), ElectricianCompanyInfoLon, ElectricianCompanyInfoLat);
 					System.out.println("计算的距离是："+distanceDouble);
 					map.put(distanceDouble, ElectricianCompanyInfo1);
-				}
-					
+				}					
 			}
 			ElectricianCompanyInfo=MapGetValueUtil.getFirstOrNull(map);			
 		}else {//说明有一个电力子公司
@@ -801,28 +785,28 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		}		
 		ElectricianInfo electricianInfo=null;
 		//根据查询出来的电力子公司名字查询旗下所属的电工
-		String companyName=ElectricianCompanyInfo.getCompanyName();
-		
-		List<ElectricianInfo> electricianInfoList=electricianInfoService.findBycompanyName(companyName);
-		
+		String companyName=ElectricianCompanyInfo.getCompanyName();		
+		List<ElectricianInfo> electricianInfoList=electricianInfoService.findBycompanyName(companyName);		
 		Map<Double, ElectricianInfo> map = new TreeMap<Double, ElectricianInfo>(
 	            new Comparator<Double>() {
 	                public int compare(Double obj1, Double obj2) {
 	                    // 降序排序
 	                    return obj1.compareTo(obj2);
 	                }
-	            });
-		
+	            });		
 		Double distanceDouble=null;
 		List<Double> distanceList=new ArrayList<>();
 		OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
-		List<OrderElectricianBeginPageVO> orderElectricianBeginPageVOs=new ArrayList<>();
-		
+		List<OrderElectricianBeginPageVO> orderElectricianBeginPageVOs=new ArrayList<>();		
 		if (electricianInfoList.size()>1) {
 			for (ElectricianInfo electricianInfo2 : electricianInfoList) {
 				//1.电工信息中的状态是1，  2.电工的位置状态是0   3.电工的名下没有这个订单
 				//查询电工的位置中的状态
 				ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianInfo2.getElectricianId());
+				//2021.1.25如果查询出来电工的位置信息为空，则跳过本次循环
+				if (elecPosition==null) {
+					continue;
+				}
 				List<OrderElectrician> electricians=findByElectricianId(electricianInfo2.getElectricianId());
 				String temp="";
 				for (OrderElectrician orderElectrician : electricians) {
@@ -830,22 +814,20 @@ public QueryResultObject queryAllDoing(String electricianId) {
 				}
 				if (electricianInfo2.getElectricianStatus().equals("1") && elecPosition.getStatus().equals("0") && temp.isEmpty()) {
 					//获取订单 的位置,即经纬度，进行对比
-					String electricianInfoLon=electricianInfo2.getAddressLongitude();
-					String electricianInfoLat=electricianInfo2.getAddressLatitude();
+					String electricianInfoLon=elecPosition.getLon();
+					String electricianInfoLat=elecPosition.getLat();
 
 					distanceDouble=PointUtil.getDistanceString(String.valueOf(custPosition.getLon()), String.valueOf(custPosition.getLat()), electricianInfoLon, electricianInfoLat);
 					System.out.println("计算的距离是："+distanceDouble);
-					map.put(distanceDouble, electricianInfo2);
-					
-				}
-			
+					map.put(distanceDouble, electricianInfo2);					
+				}			
 			}
 			int num=0;
 			electricianInfo=getFirstElectricianInfo(map);
-			flag=true;
-			
+			flag=true;			
 		}else {
 			electricianInfo=electricianInfoList.get(0);
+			ElecPosition elecPosition2 = elecPositionService.getElecPositionByElectricianId(electricianInfo.getElectricianId());
 			//1.电工信息中的状态是1，  2.电工的位置状态是0   3.电工的名下没有这个订单
 			ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianInfo.getElectricianId());
 			List<OrderElectrician> electricians=findByElectricianId(electricianInfo.getElectricianId());
@@ -853,44 +835,34 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			for (OrderElectrician orderElectrician : electricians) {
 				if (orderElectrician.getOrDERId().equals(orderId)) {
 					temp=orderElectrician.getOrDERId();
-				}
-				
+				}				
 			}
 			if (electricianInfo.getElectricianStatus().equals("1") && elecPosition.getStatus().equals("0") && temp.isEmpty()) {
 				//获取订单 的位置,即经纬度，进行对比
-				String electricianInfoLon=electricianInfo.getAddressLongitude();
-				String electricianInfoLat=electricianInfo.getAddressLatitude();
-
+				String electricianInfoLon=elecPosition2.getLon();
+				String electricianInfoLat=elecPosition2.getLat();
 				distanceDouble=PointUtil.getDistanceString(String.valueOf(custPosition.getLon()), String.valueOf(custPosition.getLat()), electricianInfoLon, electricianInfoLat);
 				System.out.println("计算的距离是："+distanceDouble);
 				orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
 				flag=true;
-			}
-						
-		}
-		
+			}						
+		}		
 		if(flag){
 			String electricianId=electricianInfo.getElectricianId();
-			OrderElectrician orderElectrician=saveNewOrderElectrician(orderId,electricianId,"2");
-			
+			OrderElectrician orderElectrician=saveNewOrderElectrician(orderId,electricianId,"2");			
 			//改变主订单客户订单的状态是20
 			orderCustomer.setOrderStatus("20");
 			Map<String, Object> nesMap=new HashMap<>();
 			nesMap=CrudUtils.objectToMap(orderCustomer);
-			saveOrderCustomerByOrderElectricianService(nesMap);
-			
+			saveOrderCustomerByOrderElectricianService(nesMap);			
 			sendNotify(orderElectrician,0,"1");
 		}else{
 			//待提供方法
 			
 		}
-				
-		
-
 	} catch (Exception e) {
 		logger.error(e.getMessage(), e);
-		String errorMessage = "查询异常";
-		
+		String errorMessage = "查询异常";		
 	}	
 	}
 	
@@ -974,98 +946,70 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		//1.通过orderID查询客户的区域ID
 		//2.根据查询出来的区域ID查询此区域内的全部电工
 		//3.创建子订单，向集合的电工发布消息
-		String orderId=orderCustomer.getOrderId();
-		
+		String orderId=orderCustomer.getOrderId();		
 		try {
-
 		//1.通过orderID查询客户的区域ID
 		CustPosition custPosition=custPositionService.getCustPositionByOrderId(orderId);
-		String areaId=custPosition.getAreaId();
-		
+		String areaId=custPosition.getAreaId();		
 		//2.根据查询出来的区域ID查询此区域内的全部电工
-		List<ElecPosition> elecPositionList=elecPositionService.getByAreaId(areaId);
-		
+		List<ElecPosition> elecPositionList=elecPositionService.getByAreaId(areaId);		
 		//此集合用于存放在线状态的电工
-		List<ElecPosition> elecPositions=new ArrayList<ElecPosition>();
-		
-		
-		//根据客户的区域ID得到电工的区域范围
-		
-		double[] around=PointUtil.getAround(Double.valueOf(custPosition.getLon()), Double.valueOf(custPosition.getLat()), acceptAround*1000);
-		
+		List<ElecPosition> elecPositions=new ArrayList<ElecPosition>();	
+		//根据客户的区域ID得到电工的区域范围		
+		double[] around=PointUtil.getAround(Double.valueOf(custPosition.getLon()), Double.valueOf(custPosition.getLat()), acceptAround*1000);		
 		//3.循环查询电工状态，留下 【 范围内】  【 在线状态】    的电工
 		for (ElecPosition elecPosition : elecPositionList) {
 			//3.1 根据电工的ID查询电工信息
-			String electricianId=elecPosition.getElectricianId();
-			
+			String electricianId=elecPosition.getElectricianId();			
 			//查询电工的信息
 			ElectricianInfo electricianInfo=electricianInfoService.findInfo(electricianId);
+			//查询电工有没接过此订单
+			OrderElectrician orderElectrician = findByElectricianIdAndOrderId(orderId, electricianId);
 			//查询电工所属电力公司的
 			ElectricianCompanyInfo electricianCompanyInfo=electricianCompanyInfoService.findByCompanyId(electricianInfo.getCompanyId());
-			//[115.0712165150607, 37.09295205558449, 119.6887834849393, 40.68704794441551]
-			//如果电工的状态是1,位置状态是0，电力公司的状态是0营业中，则代表电工在线
-			if (electricianInfo.getElectricianStatus().equals("1") && elecPosition.getStatus().equals("0") && electricianCompanyInfo.getBusinessStatus().equals("0")) {  
-				if (Double.valueOf(elecPosition.getLon())>around[0] && Double.valueOf(elecPosition.getLon())<around[2] && Double.valueOf(elecPosition.getLat())>around[1] && Double.valueOf(elecPosition.getLat())<around[3]){
-					
+			//如果电工的状态是1,位置状态是0，电力公司的状态是0营业中，则代表电工在线,当前电工没有接过此订单
+			if (electricianInfo.getElectricianStatus().equals("1") && elecPosition.getStatus().equals("0") && electricianCompanyInfo.getBusinessStatus().equals("0") && orderElectrician==null) {  
+				if (Double.valueOf(elecPosition.getLon())>around[0] && Double.valueOf(elecPosition.getLon())<around[2] && Double.valueOf(elecPosition.getLat())>around[1] && Double.valueOf(elecPosition.getLat())<around[3]){					
 					//3.2获取到了范围内的可以接单的电工
-						elecPositions.add(elecPosition);   
-					
+						elecPositions.add(elecPosition);   					
 			}
 		}
-		}
-		
-		//4.创建一个电工子订单，然后将子订单po转化成VO	
-			
-			
-			OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
-	
-			Double distanceDouble=null;
-			
-		if (elecPositions.size()==0) {
-			
+		}		
+		//4.创建一个电工子订单，然后将子订单po转化成VO							
+			OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();	
+			Double distanceDouble=null;			
+		if (elecPositions.size()==0) {			
 		}else if (elecPositions.size()==1) {
 			//获取电工与客户之间的距离
-			distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPositions.get(0).getLon()), String.valueOf(elecPositions.get(0).getLat()), custPosition.getLon(), custPosition.getLat());
-			
+			distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPositions.get(0).getLon()), String.valueOf(elecPositions.get(0).getLat()), custPosition.getLon(), custPosition.getLat());			
 			orderElectricianBeginPageVO=convertOrderCustomer2OrderElectricianBeginPageVO(orderCustomer, orderElectricianBeginPageVO);
-			orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
-			
+			orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));			
 			//发送websocket消息
 			Map<String,String> mapString = new HashMap<String,String>();				
 			mapString.put("orderId", orderCustomer.getOrderId());			
 			mapString.put("content", "您有新的订单，请查看");
 			String jsonString = JsonUtils.toJson(mapString);
-			WebSocketServer.sendInfo(jsonString,elecPositions.get(0).getElectricianId());
-			
+			WebSocketServer.sendInfo(jsonString,elecPositions.get(0).getElectricianId());			
 		}else {//表明有多个电工
 			for (ElecPosition elecPosition1 : elecPositions) {
 				//计算出客户和电工之间的距离
 				distanceDouble=PointUtil.getDistanceString(String.valueOf(elecPosition1.getLon()), String.valueOf(elecPosition1.getLat()), custPosition.getLon(), custPosition.getLat());
 				orderElectricianBeginPageVO=convertOrderCustomer2OrderElectricianBeginPageVO(orderCustomer, orderElectricianBeginPageVO);
-				orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
-				
-				//orderId electricianId 3 1
+				orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));				
 				//发送websocket消息
 				Map<String,String> mapString = new HashMap<String,String>();				
 				mapString.put("orderId", orderCustomer.getOrderId());			
 				mapString.put("content", "您有新的订单，请查看");
 				String jsonString = JsonUtils.toJson(mapString);
-				WebSocketServer.sendInfo(jsonString,elecPosition1.getElectricianId());
-				//sendNotify(orderElectrician2, 0, "1");
-				
+				WebSocketServer.sendInfo(jsonString,elecPosition1.getElectricianId());				
+			}							
 			}
-			
-				
-			}
-		System.out.println("我执行完了");
-		
+		System.out.println("我执行完了");		
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			String errorMessage = "查询异常";			
 		}
-	}
-	
-
+	}	
 	public static ElectricianInfo getFirstElectricianInfo(Map<Double, ElectricianInfo> map) {
 		ElectricianInfo obj = null;
 	    for (Entry<Double, ElectricianInfo> entry : map.entrySet()) {
@@ -1075,9 +1019,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	        }
 	    }
 	    return  obj;
-	}
-	
-	
+	}	
 	
 	/**
 	 * 创建一个没有电工信息的电工子订单
@@ -1160,7 +1102,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 	}
 	private OrderElectrician findByOrderElectricianId(String orderElectricianId) {
-		OrderElectrician orderElectrician=orderElectricianRepository.findByOrderElectricianId(orderElectricianId);
+		OrderElectrician orderElectrician=(OrderElectrician) orderElectricianRepository.findByOrderElectricianId(orderElectricianId);
 		return orderElectrician;
 	}
 	@Override

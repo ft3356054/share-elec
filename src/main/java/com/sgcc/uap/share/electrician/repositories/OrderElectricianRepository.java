@@ -119,7 +119,7 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 	@Transactional
 	public void deleteNowTable(@Param("orderIds")Collection<String> orderIds);
 
-	OrderElectrician findByOrderElectricianId(String orderElectricianId);
+	
 
 	
 	@Query(value="select * from order_electrician where ELECTRICIAN_ID=? and ORDER_ELECTRICIAN_TYPE = 4 or ORDER_ELECTRICIAN_TYPE=9 "
@@ -129,6 +129,14 @@ public interface OrderElectricianRepository extends JpaRepository<OrderElectrici
 
 	@Query(value="select * from order_electrician where ORDER_ID = ? Order by FINISH_TIME desc",nativeQuery=true)
 	List<OrderElectrician> queryByOrderIdOrderByCreatetime(String orderId);
+
+
+	/**
+	 * 
+	 * @param orderElectricianId
+	 * @return
+	 */
+	OrderElectrician findByOrderElectricianId(String orderElectricianId);
 
 	
 	

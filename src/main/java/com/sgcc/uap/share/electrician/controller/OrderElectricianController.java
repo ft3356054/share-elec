@@ -1238,6 +1238,13 @@ public class OrderElectricianController {
 								Map<String, Object> map3= orderElectricianService.pojo2Map(elecPosition1);
 								elecPositionService.saveElecPosition(map3);
 							}
+							
+						}else {
+							//将单个的电工状态置成1
+							ElecPosition elecPosition1=elecPositionService.getElecPositionByElectricianId(otherElectricianId);
+							elecPosition1.setStatus("0");
+							Map<String, Object> map3= orderElectricianService.pojo2Map(elecPosition1);
+							elecPositionService.saveElecPosition(map3);
 						}
 						
 						OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
