@@ -640,7 +640,7 @@ public class OrderElectricianController {
 		
 		
 		try {
-			
+			pageIndex=pageIndex-1;
 		QueryResultObject queryResult=orderElectricianHisService.findqQueryAllHaveDone(pageIndex,pageSize,electricianId);
 		
 		
@@ -785,7 +785,7 @@ public class OrderElectricianController {
 			
 			OrderElectricianBeginPageVOList.add(orderElectricianBeginPageVO);
 			queryResult.setItems(OrderElectricianBeginPageVOList);
-			
+			queryResult.setItemCount(orderCustomersList.size());
 			System.out.println("我查询成功了");
 			return WrappedResult.successWrapedResult(queryResult);
 			
@@ -1326,13 +1326,8 @@ public class OrderElectricianController {
 	@RequestMapping(value="/searchBox",name="搜索")
 	public WrappedResult searchBox(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			Map<String, String> map = MapUtil.getParam(requestCondition);
-			String electricianId = map.get("electricianId");
-			String searchContent = map.get("searchContent");
-			String tagType = map.get("tagType");
-			Integer pageIndex=Integer.parseInt(map.get("pageIndex"))-1;
-			Integer pageSize=Integer.parseInt(map.get("pageSize"));
-			QueryResultObject queryResult = orderElectricianService.searchBox(pageIndex,pageSize,electricianId,searchContent,tagType);
+			
+			QueryResultObject queryResult = orderElectricianService.searchBox(requestCondition);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {

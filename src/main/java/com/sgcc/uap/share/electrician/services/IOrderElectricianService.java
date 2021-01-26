@@ -118,8 +118,7 @@ public void save(OrderElectrician orderElectrician);
 public void saveorderCustomerPOJO(OrderCustomer orderCustomer);
 public QueryResultObject queryAllElectrician(String electricianId);
 public void sendNotice(String string, String orderId, String string2, int i, String string3);
-public QueryResultObject searchBox(Integer pageIndex, Integer pageSize, String electricianId, String searchContent,
-		String tagType);
+public QueryResultObject searchBox(RequestCondition requestCondition);
 
 
 

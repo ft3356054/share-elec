@@ -552,7 +552,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	
 		String orderElectricianStatus =orderElectrician.getOrderElectricianStatus();
 		//1维修 2支付 3验收 4评价
-		/*String notifyType ="1";
+		String notifyType ="1";
 		if("23".equals(orderElectricianStatus)){
 			notifyType ="2";
 		}else if("8".equals(orderElectricianStatus)){
@@ -560,7 +560,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		}else if("9".equals(orderElectricianStatus)){
 			notifyType ="4";
 		}
-		*/
+		
 		//获取Enum通知类
 		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus(getPeople,  orderElectricianStatus);	
 		
@@ -587,10 +587,10 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		//电工已接单，并确认预约时间,不需要插入消息，只需要流水就行
 		List<String> flowstatusList=new ArrayList<>();
-		//flowstatusList.add("4");
+		flowstatusList.add("2");
 		
 		
-		/*if (flowstatusList.contains(orderElectrician.getOrderElectricianStatus())) {
+		if (flowstatusList.contains(orderElectrician.getOrderElectricianStatus())) {
 			Map<String,Object> mapNotify =
 					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", EnumsB, baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
 							notifyType,orderElectrician.getOrDERId(),"");
@@ -620,7 +620,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 				String jsonString = JsonUtils.toJson(mapString);
 				WebSocketServer.sendInfo(jsonString,orderElectrician.getElectricianId());
 		}
-		*/
+		
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -1108,8 +1108,16 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		return orderElectrician;
 	}
 	@Override
-	public QueryResultObject searchBox(Integer pageIndex, Integer pageSize, String electricianId, String searchContent,
-			String tagType) {
+	public QueryResultObject searchBox(RequestCondition requestCondition) {
+		
+		Map<String, String> map = MapUtil.getParam(requestCondition);
+		String electricianId = map.get("electricianId");
+		String searchContent = map.get("searchContent");
+		String tagType = map.get("tagType");
+		Integer pageIndex=requestCondition.getPageIndex()-1;
+		
+		Integer pageSize=requestCondition.getPageSize();
+		
 		List<OrderElectrician> orderCustomers = null;
 		List<String> tagTypes = new ArrayList<String>();
 		
@@ -1122,16 +1130,20 @@ public QueryResultObject queryAllDoing(String electricianId) {
 				OrderElectricianBeginPageVO orderElectricianBeginPageVO= new OrderElectricianBeginPageVO();
 				String orderId=orderElectrician.getOrDERId();
 				OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
-				if (orderCustomer.getCustomerDescriveTitle().contains(searchContent)) {
+				if (searchContent==null) {//搜索字段是空，则返回全部
 					orderElectricianBeginPageVO =convert(orderCustomer, orderElectrician);
 					list.add(orderElectricianBeginPageVO);
-				}
-				
-			}
-			
+				}else {//搜索字段不是空，则返回包含搜索字段的结果
+					if (orderCustomer.getCustomerDescriveTitle().contains(searchContent)) {//主订单中包含搜索字段
+						orderElectricianBeginPageVO =convert(orderCustomer, orderElectrician);
+						list.add(orderElectricianBeginPageVO);
+					}else {
+						continue;
+					}
+				}							
+			}			
 		}else if("2".equals(tagType)){//1表示已完成
-			List<OrderElectricianHis> result= orderElectricianHisRepository.findqQueryAllHaveDone(electricianId,pageIndex,pageSize);
-			//List<OrderElectricianBeginPageVO> list=new ArrayList<>();
+			List<OrderElectricianHis> result= orderElectricianHisRepository.findqQueryAllHaveDone(electricianId,pageIndex,pageSize);			
 			for (OrderElectricianHis orderElectricianHis : result) {
 				//通过ID查询所有的主订单
 				OrderCustomer orderCustomer = orderCustomerService.findByOrderId(orderElectricianHis.getOrderId());
@@ -1139,34 +1151,51 @@ public QueryResultObject queryAllDoing(String electricianId) {
 					OrderCustomerHis customerHis = orderCustomerHisService.findByOrderId(orderElectricianHis.getOrderId());
 					BeanUtils.copyProperties(orderElectricianHis, orderCustomer);
 				}
-				OrderElectrician orderElectrician=new OrderElectrician();
-				BeanUtils.copyProperties(orderElectricianHis, orderElectrician);
-				OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
-				orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
-				list.add(orderElectricianBeginPageVO);
-			}
-			
+				if (searchContent==null) {
+					OrderElectrician orderElectrician=new OrderElectrician();
+					BeanUtils.copyProperties(orderElectricianHis, orderElectrician);
+					OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+					orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+					list.add(orderElectricianBeginPageVO);
+				}else {
+					if (orderCustomer.getCustomerDescriveTitle().contains(searchContent)) {
+						OrderElectrician orderElectrician=new OrderElectrician();
+						BeanUtils.copyProperties(orderElectricianHis, orderElectrician);
+						OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+						orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+						list.add(orderElectricianBeginPageVO);
+					}else {
+						continue;
+					}	
+				}								
+			}			
 					}else{
-						//默认显示10个数据
+						
 						List<OrderElectricianHis> result= orderElectricianHisRepository.queryAll(electricianId,pageIndex,pageSize);
-						//List<OrderElectricianBeginPageVO> list=new ArrayList<>();
 						for (OrderElectricianHis orderElectricianHis : result) {
 							//通过ID查询所有的主订单
 							OrderCustomer orderCustomer = orderCustomerService.findByOrderId(orderElectricianHis.getOrderId());
 							if (orderCustomer==null) {
 								OrderCustomerHis customerHis = orderCustomerHisService.findByOrderId(orderElectricianHis.getOrderId());
-								BeanUtils.copyProperties(orderElectricianHis, orderCustomer);
+								BeanUtils.copyProperties(customerHis, orderCustomer);
 							}
-							OrderElectrician orderElectrician=new OrderElectrician();
-							BeanUtils.copyProperties(orderElectricianHis, orderElectrician);
-							OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
-							orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
-							list.add(orderElectricianBeginPageVO);
-						}
-			
-		
-		}
-		
+							if (searchContent==null) {
+								OrderElectrician orderElectrician=new OrderElectrician();
+								BeanUtils.copyProperties(orderElectricianHis, orderElectrician);
+								OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+								orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+								list.add(orderElectricianBeginPageVO);
+							}else {
+								if (orderCustomer.getCustomerDescriveTitle().contains(searchContent)) {
+									OrderElectrician orderElectrician=new OrderElectrician();
+									BeanUtils.copyProperties(orderElectricianHis, orderElectrician);
+									OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+									orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+									list.add(orderElectricianBeginPageVO);
+								}	
+							}							
+						}					
+		}		
 	long count=0;
 	count=list.size();
 	return RestUtils.wrappQueryResult(list,count);
