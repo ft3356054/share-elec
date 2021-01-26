@@ -552,7 +552,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	
 		String orderElectricianStatus =orderElectrician.getOrderElectricianStatus();
 		//1维修 2支付 3验收 4评价
-		/*String notifyType ="1";
+		String notifyType ="1";
 		if("23".equals(orderElectricianStatus)){
 			notifyType ="2";
 		}else if("8".equals(orderElectricianStatus)){
@@ -560,7 +560,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		}else if("9".equals(orderElectricianStatus)){
 			notifyType ="4";
 		}
-		*/
+		
 		//获取Enum通知类
 		BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus(getPeople,  orderElectricianStatus);	
 		
@@ -587,10 +587,10 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		//电工已接单，并确认预约时间,不需要插入消息，只需要流水就行
 		List<String> flowstatusList=new ArrayList<>();
-		//flowstatusList.add("4");
+		flowstatusList.add("2");
 		
 		
-		/*if (flowstatusList.contains(orderElectrician.getOrderElectricianStatus())) {
+		if (flowstatusList.contains(orderElectrician.getOrderElectricianStatus())) {
 			Map<String,Object> mapNotify =
 					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", EnumsB, baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
 							notifyType,orderElectrician.getOrDERId(),"");
@@ -620,7 +620,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 				String jsonString = JsonUtils.toJson(mapString);
 				WebSocketServer.sendInfo(jsonString,orderElectrician.getElectricianId());
 		}
-		*/
+		
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -810,7 +810,9 @@ public QueryResultObject queryAllDoing(String electricianId) {
 				List<OrderElectrician> electricians=findByElectricianId(electricianInfo2.getElectricianId());
 				String temp="";
 				for (OrderElectrician orderElectrician : electricians) {
-					temp=orderElectrician.getOrDERId();
+					if (orderElectrician.getOrDERId().equals(orderId)) {
+						temp=orderElectrician.getOrDERId();
+					}				
 				}
 				if (electricianInfo2.getElectricianStatus().equals("1") && elecPosition.getStatus().equals("0") && temp.isEmpty()) {
 					//获取订单 的位置,即经纬度，进行对比

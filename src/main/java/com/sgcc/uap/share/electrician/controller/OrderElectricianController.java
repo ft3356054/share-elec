@@ -640,7 +640,7 @@ public class OrderElectricianController {
 		
 		
 		try {
-			
+			pageIndex=pageIndex-1;
 		QueryResultObject queryResult=orderElectricianHisService.findqQueryAllHaveDone(pageIndex,pageSize,electricianId);
 		
 		
@@ -785,7 +785,7 @@ public class OrderElectricianController {
 			
 			OrderElectricianBeginPageVOList.add(orderElectricianBeginPageVO);
 			queryResult.setItems(OrderElectricianBeginPageVOList);
-			
+			queryResult.setItemCount(orderCustomersList.size());
 			System.out.println("我查询成功了");
 			return WrappedResult.successWrapedResult(queryResult);
 			
