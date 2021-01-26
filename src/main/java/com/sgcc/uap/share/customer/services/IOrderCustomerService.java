@@ -55,6 +55,14 @@ public interface IOrderCustomerService {
 	public List<OrderCustomer> findByOrderStatus(List<String> orderStatus, String pastTime);
 	
 	/**
+	 * 通过 订单状态 批量获取订单
+	 * @param OrderElectricianStatus
+	 * @param pastTime
+	 * @return
+	 */
+	public List<OrderCustomer> findByOrderStatus(List<String> orderStatus, Integer pastTimeBegin, Integer pastTimeEnd);
+	
+	/**
 	 * 搜索页面模糊查询
 	 * @param 
 	 * @return

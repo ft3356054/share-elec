@@ -154,6 +154,12 @@ public interface OrderCustomerRepository extends JpaRepository<OrderCustomer,Str
 			,nativeQuery=true)
 	List<OrderCustomer> findByOrderStatus(Collection<String> orderStatus, String pastTime);
 	
+	@Query(value="select * from order_customer o where ORDER_STATUS in ?1 "
+			+ " and (DATE_SUB(NOW(), INTERVAL ?2 MINUTE) >= UPDATE_TIME and DATE_SUB(NOW(), INTERVAL ?3 MINUTE) <= UPDATE_TIME)  "
+			,nativeQuery=true)
+	List<OrderCustomer> findByOrderStatusAndPasttime(Collection<String> orderStatus, Integer pastTimeBegin, Integer pastTimeEnd);
+	
+	
 	
 	public List<OrderCustomer> findOrderCustomerByOrderId(Collection<String> orderId);
 	

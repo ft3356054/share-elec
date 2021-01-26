@@ -810,7 +810,9 @@ public QueryResultObject queryAllDoing(String electricianId) {
 				List<OrderElectrician> electricians=findByElectricianId(electricianInfo2.getElectricianId());
 				String temp="";
 				for (OrderElectrician orderElectrician : electricians) {
-					temp=orderElectrician.getOrDERId();
+					if (orderElectrician.getOrDERId().equals(orderId)) {
+						temp=orderElectrician.getOrDERId();
+					}				
 				}
 				if (electricianInfo2.getElectricianStatus().equals("1") && elecPosition.getStatus().equals("0") && temp.isEmpty()) {
 					//获取订单 的位置,即经纬度，进行对比

@@ -45,7 +45,7 @@ public class MapUtil {
 	 * @param title
 	 * @param content
 	 * @param createTime
-	 * @param notifyType 1维修 2支付 3验收 4评价
+	 * @param notifyType 1维修 2支付 3验收 4评价 5系统
 	 * @param orderId 
 	 * @param remark
 	 * @return
@@ -66,6 +66,13 @@ public class MapUtil {
 	
 	/**
 	 * 新增通知USER
+	 * @param announceUserId 通知接收人id
+	 * @param announceId 通知id
+	 * @param recipientType 接收用户类型 0全部  1客户  2电工  3电工厂商 似乎没有用
+	 * @param state 阅读状态  0未阅读 1已阅读 
+	 * @param createTime 创建时间
+	 * @param remark
+	 * @return
 	 */
 	public static Map<String,Object> notifyUserAdd(String announceUserId,String announceId,int recipientType,
 			int state,String createTime,String remark){

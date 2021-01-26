@@ -65,7 +65,7 @@ public class AutoReSendOrderTask {
 					ElecPosition elecPosition = elecPositionService.getElecPositionByElectricianId(orderElectrician.getElectricianId());
 					Map<String,Object> map = new HashMap<String, Object>();
 					map.put("electricianId", elecPosition.getElectricianId());
-					map.put("status", elecPosition.getStatus());
+					map.put("status", "0");
 					try {
 						elecPositionService.saveElecPosition(map);
 					} catch (Exception e) {

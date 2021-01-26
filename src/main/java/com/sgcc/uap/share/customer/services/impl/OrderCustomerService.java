@@ -755,6 +755,12 @@ public class OrderCustomerService implements IOrderCustomerService{
 	}
 	
 	@Override
+	public List<OrderCustomer> findByOrderStatus(List<String> orderStatus, Integer pastTimeBegin, Integer pastTimeEnd){
+		List<OrderCustomer> list = orderCustomerRepository.findByOrderStatusAndPasttime(orderStatus,pastTimeBegin,pastTimeEnd);
+		return list;
+	}
+	
+	@Override
 	@Transactional
 	public OrderCustomer payPrice(String orderId,String orderStatus) throws Exception{
 		logger.info("OrderCustomerService payPrice = " +orderId + "," +orderStatus); 

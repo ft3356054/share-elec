@@ -198,8 +198,31 @@ public class TimeStamp {
 		return ts; 
 	}
 	
+	/**
+	 * 求时间差 分钟
+	 * @param big
+	 * @param small
+	 * @return
+	 */
+	public static int minCha(String time1,String time2){
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		int minute = 0;
+		try {
+			Date date1 = df.parse(time1);
+			Date date2 = df.parse(time2);
+			long big = date1.getTime();  
+		    long small = date2.getTime();  
+		    minute = (int) ((big - small) / (1000 * 60 ));  
+		    System.out.println("两个时间之间的分钟差为：" + minute);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return minute;
+	}
+	
 	public static void main(String[] args) {
-		System.out.println(TimeStamp.getTimestamp(new Date()));
+		minCha("2021-01-25 18:19:47", "2021-01-25 16:19:46");
 	}
 }
 
