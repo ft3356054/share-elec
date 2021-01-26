@@ -1326,14 +1326,8 @@ public class OrderElectricianController {
 	@RequestMapping(value="/searchBox",name="搜索")
 	public WrappedResult searchBox(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			Map<String, String> map = MapUtil.getParam(requestCondition);
-			String electricianId = map.get("electricianId");
-			String searchContent = map.get("searchContent");
-			String tagType = map.get("tagType");
-			Integer pageIndex=requestCondition.getPageIndex()-1;
 			
-			Integer pageSize=requestCondition.getPageSize();
-			QueryResultObject queryResult = orderElectricianService.searchBox(pageIndex,pageSize,electricianId,searchContent,tagType);
+			QueryResultObject queryResult = orderElectricianService.searchBox(requestCondition);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
