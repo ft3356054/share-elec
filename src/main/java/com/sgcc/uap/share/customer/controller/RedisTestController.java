@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,8 @@ public class RedisTestController {
 
     @Autowired
     OrderCustomerService orderCustomerService;
-    
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private RedisTemplate redisTemplate;
     
@@ -119,5 +121,13 @@ public class RedisTestController {
 		redisTestController.aesAddMethod(content, keyseed);
 		redisTestController.md5AddMethod(content);
 	}
+    
+    
+    //测试redis的delete方法
+    //http://localhost:8083/llbTest/redisStringDelete/20201222091414840565
+    @RequestMapping(value = "/redisStringDelete/{orderId}")
+	public void delete(@PathVariable String orderId) {
+		stringRedisTemplate.delete("cp"+orderId);
+    }
    
 }

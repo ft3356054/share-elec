@@ -54,12 +54,12 @@ public class ElecGrabOrderTask {
 		//从队列中获取用户刚下单的订单
 		OrderCustomer orderCustomer2 = null;
 		orderCustomer2 = (OrderCustomer) redisTemplate.opsForList().leftPop("new2CustomerOrder");
-		logger.info("获取并删除 orderCustomer 2 = "+ orderCustomer);
+		logger.info("获取并删除 orderCustomer 2 = "+ orderCustomer2);
 		
 		//调用抢单弹框方法
 		if(null!=orderCustomer2){
 			BaseSystemConfig baseSystemConfig2 = baseSystemConfigService.getBaseSystemConfigByConfigType("10");
-			orderElectricianService.qiangdantanchuang(orderCustomer,Integer.parseInt(baseSystemConfig2.getConfigValue()));
+			orderElectricianService.qiangdantanchuang(orderCustomer2,Integer.parseInt(baseSystemConfig2.getConfigValue()));
 		}
 			
 	}

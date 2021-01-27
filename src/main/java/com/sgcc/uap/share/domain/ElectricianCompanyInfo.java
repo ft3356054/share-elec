@@ -203,7 +203,22 @@ public class ElectricianCompanyInfo implements Serializable {
      */
     @Column(name = "SERVICE_CHARGE", nullable = true, length = 2)
     private String businessCharge ;
+    /** 
+     * COMPANY_EMAIL
+     */
+    @Column(name = "COMPANY_EMAIL", nullable = true, length = 128)
+    private String companyEmail ;
+    /** 
+     * CREATE_TIME
+     */
+    @Column(name = "CREATE_TIME", nullable = true, length = 19)
+    private String createTime ;
     
+    /** 
+     * UPDATE_TIME
+     */
+    @Column(name = "UPDATE_TIME", nullable = true, length = 19)
+    private String updateTime ;
     
 	/**
 	  *虚拟主键
@@ -215,7 +230,31 @@ public class ElectricianCompanyInfo implements Serializable {
 	
 	}
 	
-    public String getBusinessPoint() {
+    public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public String getCompanyEmail() {
+		return companyEmail;
+	}
+
+	public void setCompanyEmail(String companyEmail) {
+		this.companyEmail = companyEmail;
+	}
+
+	public String getBusinessPoint() {
 		return businessPoint;
 	}
 

@@ -62,8 +62,10 @@ public class CustPositionService implements ICustPositionService{
 		CustPosition custPosition = null;
 		if("".equals(json)||null==json){
 			custPosition = custPositionRepository.findOne(orderId);
-			String posiJson = JsonUtils.toJsonString(custPosition);
-			stringRedisTemplate.opsForValue().set("cp"+orderId, posiJson, 7L, TimeUnit.DAYS);
+			if(null!=custPosition){
+				String posiJson = JsonUtils.toJsonString(custPosition);
+				stringRedisTemplate.opsForValue().set("cp"+orderId, posiJson, 7L, TimeUnit.DAYS);
+			}
 		}else{
 			try {
 				custPosition = (CustPosition) JsonUtils.json2Object(json, CustPosition.class);

@@ -258,6 +258,10 @@ public class OrderCustomerService implements IOrderCustomerService{
 			map.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
 			map.put("orderId", getNewOrderId);
 			map.put("orderFrom", "0");
+			if("".equals((String) map.get("appointmentTime"))){
+				map.put("appointmentTime", null);
+			}
+			
 			CrudUtils.transMap2Bean(map, orderCustomer);
 			result = orderCustomerRepository.save(orderCustomer);
 			
