@@ -1,7 +1,6 @@
 package com.sgcc.uap.share.domain;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -105,13 +104,13 @@ public class ElectricianCompanyInfo implements Serializable {
      * ON_BUSINESS_BEGIN
      */
     @Column(name = "ON_BUSINESS_BEGIN", nullable = true, length = 19)
-    private Timestamp onBusinessBegin ;
+    private String onBusinessBegin ;
     
     /** 
      * ON_BUSINESS_END
      */
     @Column(name = "ON_BUSINESS_END", nullable = true, length = 19)
-    private Timestamp onBusinessEnd ;
+    private String onBusinessEnd ;
     
     /** 
      * BUSINESS_COPE
@@ -147,7 +146,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * REGISETER_TIME
      */
     @Column(name = "REGISETER_TIME", nullable = true, length = 19)
-    private Timestamp regiseterTime ;
+    private String regiseterTime ;
     
     /** 
      * REMARK1
@@ -507,7 +506,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @date 2020-12-18 11:51:00
      * @author 18511
      */
-    public Timestamp getOnBusinessBegin(){
+    public String getOnBusinessBegin(){
         return this.onBusinessBegin;
     }
     /**
@@ -517,7 +516,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @date 2020-12-18 11:51:00
      * @author 18511
      */
-    public void setOnBusinessBegin(Timestamp onBusinessBegin){
+    public void setOnBusinessBegin(String onBusinessBegin){
 		this.onBusinessBegin = onBusinessBegin;
 	} 
     /**
@@ -527,7 +526,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @date 2020-12-18 11:51:00
      * @author 18511
      */
-    public Timestamp getOnBusinessEnd(){
+    public String getOnBusinessEnd(){
         return this.onBusinessEnd;
     }
     /**
@@ -537,7 +536,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @date 2020-12-18 11:51:00
      * @author 18511
      */
-    public void setOnBusinessEnd(Timestamp onBusinessEnd){
+    public void setOnBusinessEnd(String onBusinessEnd){
 		this.onBusinessEnd = onBusinessEnd;
 	} 
     /**
@@ -647,7 +646,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @date 2020-12-18 11:51:00
      * @author 18511
      */
-    public Timestamp getRegiseterTime(){
+    public String getRegiseterTime(){
         return this.regiseterTime;
     }
     /**
@@ -657,7 +656,7 @@ public class ElectricianCompanyInfo implements Serializable {
      * @date 2020-12-18 11:51:00
      * @author 18511
      */
-    public void setRegiseterTime(Timestamp regiseterTime){
+    public void setRegiseterTime(String regiseterTime){
 		this.regiseterTime = regiseterTime;
 	} 
     /**

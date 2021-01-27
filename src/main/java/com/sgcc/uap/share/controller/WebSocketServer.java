@@ -141,6 +141,7 @@ public class WebSocketServer {
                 item.sendMessage(message);
             } else if (item.sid.equals(uid)) {
                 item.sendMessage(message);
+                logger.info("【websocket消息   给单个用户发消息   ***************************************************】 message="+ message + ",uid=" +uid);
             }
         }
     }

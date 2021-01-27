@@ -1,7 +1,6 @@
 package com.sgcc.uap.share.electrician.vo;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 
 import com.sgcc.uap.rest.annotation.attribute.AttributeType;
@@ -83,12 +82,12 @@ public class ElectricianCompanyInfoVO extends ParentVO implements Serializable{
      * 属性ON_BUSINESS_BEGIN
      */  
     @ViewAttribute(name ="onBusinessBegin",caption="ON_BUSINESS_BEGIN", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp onBusinessBegin;    
+    private String onBusinessBegin;    
     /** 
      * 属性ON_BUSINESS_END
      */  
     @ViewAttribute(name ="onBusinessEnd",caption="ON_BUSINESS_END", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp onBusinessEnd;    
+    private String onBusinessEnd;    
     /** 
      * 属性BUSINESS_COPE
      */  
@@ -118,7 +117,7 @@ public class ElectricianCompanyInfoVO extends ParentVO implements Serializable{
      * 属性REGISETER_TIME
      */  
     @ViewAttribute(name ="regiseterTime",caption="REGISETER_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp regiseterTime;    
+    private String regiseterTime;    
     /** 
      * 属性P_COMPANY_ID
      */  
@@ -338,28 +337,28 @@ public class ElectricianCompanyInfoVO extends ParentVO implements Serializable{
      * ON_BUSINESS_BEGIN的get方法
      * @return onBusinessBegin
      */
-    public Timestamp getOnBusinessBegin(){
+    public String getOnBusinessBegin(){
         return onBusinessBegin;
     }
     /**
      * ON_BUSINESS_BEGIN的set方法
      * @param onBusinessBegin
      */
-    public void setOnBusinessBegin(Timestamp onBusinessBegin){
+    public void setOnBusinessBegin(String onBusinessBegin){
 		this.onBusinessBegin = onBusinessBegin;
 	} 
     /**
      * ON_BUSINESS_END的get方法
      * @return onBusinessEnd
      */
-    public Timestamp getOnBusinessEnd(){
+    public String getOnBusinessEnd(){
         return onBusinessEnd;
     }
     /**
      * ON_BUSINESS_END的set方法
      * @param onBusinessEnd
      */
-    public void setOnBusinessEnd(Timestamp onBusinessEnd){
+    public void setOnBusinessEnd(String onBusinessEnd){
 		this.onBusinessEnd = onBusinessEnd;
 	} 
     /**
@@ -436,14 +435,14 @@ public class ElectricianCompanyInfoVO extends ParentVO implements Serializable{
      * REGISETER_TIME的get方法
      * @return regiseterTime
      */
-    public Timestamp getRegiseterTime(){
+    public String getRegiseterTime(){
         return regiseterTime;
     }
     /**
      * REGISETER_TIME的set方法
      * @param regiseterTime
      */
-    public void setRegiseterTime(Timestamp regiseterTime){
+    public void setRegiseterTime(String regiseterTime){
 		this.regiseterTime = regiseterTime;
 	} 
     /**
