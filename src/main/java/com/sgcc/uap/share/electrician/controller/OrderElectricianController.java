@@ -965,7 +965,8 @@ public class OrderElectricianController {
 					System.out.println("我执行完了保存操作");
 					OrderElectrician orderElectrician=orderElectricianService.saveOrderElectrician(orderElectricianMap,file);
 					OrderElectricianBeginPageVO orderCustomerVO=orderElectricianService.convert(orderCustomer,orderElectrician);
-					orderElectricianService.sendNotify(orderElectrician, 2, "1");
+					
+					orderElectricianService.sendNotify(orderCustomer, orderElectrician, 2, "1");
 					result.setFormItems(orderCustomerVO);
 					
 			
@@ -1075,8 +1076,7 @@ public class OrderElectricianController {
 										Map<String, Object> map2= orderElectricianService.pojo2Map(elecPosition);
 										elecPositionService.saveElecPosition(map2);
 										orderElectricianService.sendNotice("31",orderId,split[i],0,"1");
-										//通过电工的ID给电工发送消息
-										WebSocketServer.sendInfo("您已有未完成的订单",split[i]);
+										
 									}else {
 
 										otherElectricianId=split[i]+",";
@@ -1093,7 +1093,7 @@ public class OrderElectricianController {
 										elecPositionService.saveElecPosition(map2);
 										orderElectricianService.sendNotice("31",orderId,split[i],0,"1");
 										//通过电工的ID给电工发送消息
-										WebSocketServer.sendInfo("您已有未完成的订单",split[i]);
+										//WebSocketServer.sendInfo("您已有未完成的订单",split[i]);
 										
 									}
 									}

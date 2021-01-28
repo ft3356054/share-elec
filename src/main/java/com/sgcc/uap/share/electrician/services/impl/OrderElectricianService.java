@@ -642,6 +642,9 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		
 		String orderStatus =orderCustomer.getOrderStatus();
+		if (orderElectrician.getOrderElectricianStatus().equals("5")) {
+			orderStatus="5";
+		}
 		//1维修 2支付 3验收 4评价
 		String notifyType ="1";
 		if("23".equals(orderStatus)){
@@ -677,8 +680,8 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		
 		List<String> statusList = new ArrayList<String>();
 		statusList.add("0"); //0 接单成功【待预约】
-		statusList.add("5"); //23 等待支付维修费【待支付】--> 3
-		statusList.add("23"); //5 电工退回（无法完成）【已完成】
+		statusList.add("5"); // 5 电工退回（无法完成）【已完成】
+		statusList.add("23"); //23 等待支付维修费【待支付】--> 3
 		statusList.add("25"); //维修完成【待验收】
 		if (statusList.contains(orderElectrician.getOrderElectricianStatus())) {
 			
@@ -849,7 +852,7 @@ public QueryResultObject queryAllDoing(String electricianId) {
 				flag=true;
 			}						
 		}		
-		if(flag){
+		if(flag && electricianInfo!=null){
 			String electricianId=electricianInfo.getElectricianId();
 			OrderElectrician orderElectrician=saveNewOrderElectrician(orderId,electricianId,"2");			
 			//改变主订单客户订单的状态是20
@@ -1274,13 +1277,13 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer,OrderElec
 	//子订单ID
 	orderCustomerVO.setOrderElectricianId(orderElectrician.getOrderElectricianId());
 	//如果订单类型不为null.则返回描述性信息
-	if (!orderCustomerVO.getOrderTypeId().isEmpty()) {
+	if (orderCustomerVO.getOrderTypeId()!=null) {
 		String orderTypeId=orderCustomerVO.getOrderTypeId();
 		
 		BaseOrderType baseOrderType=baseOrderTypeService.findByOrderTypeId(orderTypeId);
 		orderCustomerVO.setOrderTypeId(baseOrderType.getOrderTypeName());
 		
-	}if (!orderCustomer.getOrderFrom().isEmpty()) {
+	}if (orderCustomer.getOrderFrom()!=null) {
 		String orderFromString=orderCustomer.getOrderFrom();
 		if (orderFromString.equals("0")) {
 			orderCustomerVO.setOrderFrom("来源APP端");
@@ -1453,6 +1456,11 @@ public QueryResultObject queryAllElectrician(String electricianId) {
 						MapUtil.notifyUserAdd(electricianId, announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
 				notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 
+				//通过电工的ID给电工发送消息
+				if (orderElectricianStatus.equals("31")) {
+					WebSocketServer.sendInfo(baseEnums.getEnumsC(),electricianId);
+				}
+				
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
