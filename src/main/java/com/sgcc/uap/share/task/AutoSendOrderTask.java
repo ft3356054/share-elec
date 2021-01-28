@@ -83,6 +83,9 @@ public class AutoSendOrderTask{
 						BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("2",  "4");	
 						
 						try {
+							//修改主订单
+							orderCustomerService.saveOrderCustomer(map, null);
+							
 							//新增流水
 							Map<String,Object> mapOrderFlow = null;
 							mapOrderFlow = MapUtil.flowAdd(orderCustomer.getOrderId(), 0,  4, "SYSTEM", dateString, 2,  baseEnums.getEnumsA());
