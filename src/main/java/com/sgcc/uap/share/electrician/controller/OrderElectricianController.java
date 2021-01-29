@@ -501,17 +501,22 @@ public class OrderElectricianController {
 				List<OrderElectricianBeginPageVO> returBeginPageVOs=new ArrayList<>();
 				Double distanceDouble=null;
 				int i=0;
+				List<String> strings=new ArrayList<>();
+				strings.add("1");
+				strings.add("11");
+				strings.add("20");
 				for (OrderCustomer orderCustomer : orderCustomers) {
 					//2021.1.29
-					String orderId=orderCustomer.getOrderId();
-					CustPosition custPosition = custPositionService.getCustPositionByOrderId(orderId);
-					String custLoString=custPosition.getLon();
-					String custLat=custPosition.getLat();
-					
 					OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
-					
-						distanceDouble=PointUtil.getDistanceString(custLoString, custLat, elecPosition.getLon(), elecPosition.getLat());
-						orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble)+"KM");
+					if (strings.contains(orderCustomer.getOrderId())) {
+						String orderId=orderCustomer.getOrderId();
+						CustPosition custPosition = custPositionService.getCustPositionByOrderId(orderId);
+						String custLoString=custPosition.getLon();
+						String custLat=custPosition.getLat();	
+							distanceDouble=PointUtil.getDistanceString(custLoString, custLat, elecPosition.getLon(), elecPosition.getLat());
+							orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble)+"KM");
+					}
+											
 						orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, list.get(i));
 						returBeginPageVOs.add(orderElectricianBeginPageVO);
 					
