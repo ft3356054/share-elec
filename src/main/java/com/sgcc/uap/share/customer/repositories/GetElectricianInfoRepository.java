@@ -3,7 +3,7 @@ package com.sgcc.uap.share.customer.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import com.sgcc.uap.share.domain.OrderElectrician;
+import com.sgcc.uap.share.domain.ElectricianInfo;
 
 
 /**
@@ -15,7 +15,7 @@ import com.sgcc.uap.share.domain.OrderElectrician;
  *	
  * @author 18511
  */
-public interface GetElectricianInfoRepository extends JpaRepository<OrderElectrician,String>,JpaSpecificationExecutor<OrderElectrician> {
+public interface GetElectricianInfoRepository extends JpaRepository<ElectricianInfo,String>,JpaSpecificationExecutor<ElectricianInfo> {
 	
 	public Integer countByElectricianId(String electricianId);
 	

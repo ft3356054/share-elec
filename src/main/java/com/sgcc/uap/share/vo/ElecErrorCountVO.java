@@ -27,13 +27,13 @@ public class ElecErrorCountVO extends ParentVO implements Serializable{
     /** 
      * 属性EVALUATE_COUNT
      */  
-    @ViewAttribute(name ="evaluateCount",caption="EVALUATE_COUNT", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String evaluateCount;    
+    @ViewAttribute(name ="evaluateCount",caption="EVALUATE_COUNT", editor=EditorType.NumberEditor,nullable =true,readOnly=false, type=AttributeType.INTEGER)
+    private Integer evaluateCount;    
     /** 
      * 属性COMPLAINT_COUNT
      */  
-    @ViewAttribute(name ="complaintCount",caption="COMPLAINT_COUNT", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String complaintCount;    
+    @ViewAttribute(name ="complaintCount",caption="COMPLAINT_COUNT", editor=EditorType.NumberEditor,nullable =true,readOnly=false, type=AttributeType.INTEGER)
+    private Integer complaintCount;    
     /** 
      * 属性ERROR_FLAG
      */  
@@ -42,13 +42,13 @@ public class ElecErrorCountVO extends ParentVO implements Serializable{
     /** 
      * 属性FORBID_DAY
      */  
-    @ViewAttribute(name ="forbidDay",caption="FORBID_DAY", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String forbidDay;    
+    @ViewAttribute(name ="forbidDay",caption="FORBID_DAY", editor=EditorType.NumberEditor,nullable =true,readOnly=false, type=AttributeType.INTEGER)
+    private Integer forbidDay;    
     /** 
-     * 属性CREATE_TIME
+     * 属性BEGIN_TIME
      */  
-    @ViewAttribute(name ="createTime",caption="CREATE_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp createTime;    
+    @ViewAttribute(name ="beginTime",caption="BEGIN_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
+    private Timestamp beginTime;    
     /**
      * ElecErrorCountVO构造函数
      */
@@ -84,28 +84,28 @@ public class ElecErrorCountVO extends ParentVO implements Serializable{
      * EVALUATE_COUNT的get方法
      * @return evaluateCount
      */
-    public String getEvaluateCount(){
+    public Integer getEvaluateCount(){
         return evaluateCount;
     }
     /**
      * EVALUATE_COUNT的set方法
      * @param evaluateCount
      */
-    public void setEvaluateCount(String evaluateCount){
+    public void setEvaluateCount(Integer evaluateCount){
 		this.evaluateCount = evaluateCount;
 	} 
     /**
      * COMPLAINT_COUNT的get方法
      * @return complaintCount
      */
-    public String getComplaintCount(){
+    public Integer getComplaintCount(){
         return complaintCount;
     }
     /**
      * COMPLAINT_COUNT的set方法
      * @param complaintCount
      */
-    public void setComplaintCount(String complaintCount){
+    public void setComplaintCount(Integer complaintCount){
 		this.complaintCount = complaintCount;
 	} 
     /**
@@ -126,29 +126,29 @@ public class ElecErrorCountVO extends ParentVO implements Serializable{
      * FORBID_DAY的get方法
      * @return forbidDay
      */
-    public String getForbidDay(){
+    public Integer getForbidDay(){
         return forbidDay;
     }
     /**
      * FORBID_DAY的set方法
      * @param forbidDay
      */
-    public void setForbidDay(String forbidDay){
+    public void setForbidDay(Integer forbidDay){
 		this.forbidDay = forbidDay;
 	} 
     /**
-     * CREATE_TIME的get方法
-     * @return createTime
+     * BEGIN_TIME的get方法
+     * @return beginTime
      */
-    public Timestamp getCreateTime(){
-        return createTime;
+    public Timestamp getBeginTime(){
+        return beginTime;
     }
     /**
-     * CREATE_TIME的set方法
-     * @param createTime
+     * BEGIN_TIME的set方法
+     * @param beginTime
      */
-    public void setCreateTime(Timestamp createTime){
-		this.createTime = createTime;
+    public void setBeginTime(Timestamp beginTime){
+		this.beginTime = beginTime;
 	} 
 
     /**
@@ -163,7 +163,7 @@ public class ElecErrorCountVO extends ParentVO implements Serializable{
 				.append("COMPLAINT_COUNT"+":"+getComplaintCount())
 				.append("ERROR_FLAG"+":"+getErrorFlag())
 				.append("FORBID_DAY"+":"+getForbidDay())
-				.append("CREATE_TIME"+":"+getCreateTime())
+				.append("BEGIN_TIME"+":"+getBeginTime())
 		        .toString(); 
 			
     } 

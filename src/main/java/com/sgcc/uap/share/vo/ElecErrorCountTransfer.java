@@ -19,7 +19,7 @@ public class ElecErrorCountTransfer {
 	 * @toPO:vo转为po
 	 * @param vo vo对象
 	 * @return ElecErrorCount ElecErrorCount对象
-	 * @date 2021-01-26 17:55:54
+	 * @date 2021-01-29 10:17:13
 	 * @author 18511
 	 */
 	public static ElecErrorCount toPO(ElecErrorCountVO vo) {
@@ -30,7 +30,7 @@ public class ElecErrorCountTransfer {
 			elecErrorCount.setComplaintCount(vo.getComplaintCount());
 			elecErrorCount.setErrorFlag(vo.getErrorFlag());
 			elecErrorCount.setForbidDay(vo.getForbidDay());
-			elecErrorCount.setCreateTime(vo.getCreateTime());
+			elecErrorCount.setBeginTime(vo.getBeginTime());
         }
 		return elecErrorCount;
 	}
@@ -38,7 +38,7 @@ public class ElecErrorCountTransfer {
 	 * @toVO:po转为vo
 	 * @param po po对象
 	 * @return ElecErrorCountVO ElecErrorCountVO对象
-	 * @date 2021-01-26 17:55:54
+	 * @date 2021-01-29 10:17:13
 	 * @author 18511
 	 */
 	public static ElecErrorCountVO toVO(ElecErrorCount po) {
@@ -48,7 +48,7 @@ public class ElecErrorCountTransfer {
 		vo.setComplaintCount(po.getComplaintCount());
 		vo.setErrorFlag(po.getErrorFlag());
 		vo.setForbidDay(po.getForbidDay());
-		vo.setCreateTime(po.getCreateTime());
+		vo.setBeginTime(po.getBeginTime());
 		return vo;
 	}
 }

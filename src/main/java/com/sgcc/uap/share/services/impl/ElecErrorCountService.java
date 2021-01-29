@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.services.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,10 +25,11 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.customer.services.IGetElectricianInfoService;
 import com.sgcc.uap.share.domain.ElecErrorCount;
+import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.repositories.ElecErrorCountRepository;
 import com.sgcc.uap.share.services.IElecErrorCountService;
-import com.sgcc.uap.utils.string.StringUtil;
 
 
 /**
@@ -48,6 +50,8 @@ public class ElecErrorCountService implements IElecErrorCountService{
 	private ElecErrorCountRepository elecErrorCountRepository;
 	@Autowired
 	private ValidateService validateService;
+	@Autowired
+	private IGetElectricianInfoService getElectricianInfoService;
 	
 	@Override
 	public QueryResultObject getElecErrorCountByElectricianId(String electricianId) {
@@ -64,6 +68,14 @@ public class ElecErrorCountService implements IElecErrorCountService{
 			elecErrorCountRepository.delete(id);
 		}
 	}
+	
+	/*
+	按用户对电工维修服务评价情况进行以下配置：
+	获2星及以下评价三次暂停抢单：7天（自用户提交评价之日起）
+	获2星及以下评价五次暂停抢单：15天（自用户提交评价之日起）
+	获2星及以下评价五次以上取消资格
+	获用户投诉且情况属实的暂停抢单：15天（自情况核实之日起）
+	 * */
 	@Override
 	public ElecErrorCount saveElecErrorCount(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(ElecErrorCount.class,map);
@@ -71,10 +83,44 @@ public class ElecErrorCountService implements IElecErrorCountService{
 		if (map.containsKey("electricianId")) {
 			String electricianId = (String) map.get("electricianId");
 			elecErrorCount = elecErrorCountRepository.findOne(electricianId);
-			CrudUtils.mapToObject(map, elecErrorCount,  "electricianId");
+			
+			if(null==elecErrorCount||"".equals(elecErrorCount)){
+				//新增
+				if(!map.containsKey("evaluateCount")){
+					map.put("evaluateCount", "0");
+				}
+				if(!map.containsKey("complaintCount")){
+					map.put("complaintCount", "0");
+				}else{
+					//被投诉，修改电工状态
+					ElectricianInfo electricianInfo = getElectricianInfoService.getElectricianInfoByElectricianId(electricianId);
+					//电工自己更改的状态 0休息中 1工作中 4系统惩罚停止接单 5注销
+					if("4".equals(electricianInfo.getElectricianStatus())||"5".equals(electricianInfo.getElectricianStatus())){
+						
+					}else{
+						Map<String,Object> electricianInfoMap = new HashMap<String, Object>();
+						electricianInfoMap.put("electricianId", electricianId);
+						electricianInfoMap.put("electricianStatus", "4");
+						getElectricianInfoService.saveElectricianInfo(electricianInfoMap);
+					}
+				}
+				CrudUtils.transMap2Bean(map, elecErrorCount);
+				return elecErrorCountRepository.save(elecErrorCount);
+			}else{
+				//修改
+				if(map.containsKey("evaluateCount")){
+					int evaluateCount =  elecErrorCount.getEvaluateCount()+1;
+					map.put("evaluateCount", evaluateCount);
+				}else{
+					int complaintCount =  elecErrorCount.getComplaintCount()+1;
+					map.put("complaintCount", complaintCount);
+				}
+				CrudUtils.mapToObject(map, elecErrorCount,  "electricianId");
+			}
 		}else{
-			CrudUtils.transMap2Bean(map, elecErrorCount);
+			throw new Exception("类型electricianId不能为空值");
 		}
+		
 		return elecErrorCountRepository.save(elecErrorCount);
 	}
 	@Override
@@ -110,7 +156,7 @@ public class ElecErrorCountService implements IElecErrorCountService{
 	 * @querySingle:主从表单页查询方法
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2021-01-26 17:55:54
+	 * @date 2021-01-29 10:17:13
 	 * @author 18511
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
@@ -155,7 +201,7 @@ public class ElecErrorCountService implements IElecErrorCountService{
 	 * @queryCommon:查询方法(通用的)
 	 * @param queryCondition 查询条件
 	 * @return QueryResultObject 查询结果
-	 * @date 2021-01-26 17:55:54
+	 * @date 2021-01-29 10:17:13
 	 * @author 18511
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
@@ -189,7 +235,7 @@ public class ElecErrorCountService implements IElecErrorCountService{
 	 * @getFilterList:获取条件列表
 	 * @param queryCondition 查询条件
 	 * @return List<QueryFilter> 查询条件列表
-	 * @date 2021-01-26 17:55:54
+	 * @date 2021-01-29 10:17:13
 	 * @author 18511
 	 */
 	private List<QueryFilter> getFilterList(RequestCondition queryCondition) {
@@ -211,7 +257,7 @@ public class ElecErrorCountService implements IElecErrorCountService{
 	 * @buildPageRequest:构建PageRequest
 	 * @param queryCondition 查询条件
 	 * @return PageRequest 页面请求对象
-	 * @date 2021-01-26 17:55:54
+	 * @date 2021-01-29 10:17:13
 	 * @author 18511
 	 */
 	private PageRequest buildPageRequest(RequestCondition queryCondition) {

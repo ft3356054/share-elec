@@ -50,6 +50,7 @@ import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.electrician.services.impl.ElecPositionService;
 import com.sgcc.uap.share.services.IBaseEnumsService;
+import com.sgcc.uap.share.services.IElecErrorCountService;
 import com.sgcc.uap.share.services.impl.AssessRecordService;
 import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
 import com.sgcc.uap.share.services.impl.BaseIdentityPriceService;
@@ -115,6 +116,8 @@ public class OrderCustomerService implements IOrderCustomerService{
 	private EvaluateTaskRepository evaluateTaskRepository;
 	@Autowired
 	private AssessRecordService assessRecordService;
+	@Autowired
+	private IElecErrorCountService elecErrorCountService;
 	
 	
 	
@@ -174,17 +177,11 @@ public class OrderCustomerService implements IOrderCustomerService{
 			if("0".equals(tagType)){
 				custStatus.add("0");
 				custStatus.add("23");
-				custStatus.add("25");
-				custStatus.add("8");
 			}else if("1".equals(tagType)){
-				custStatus.add("0");
-				custStatus.add("23");
-			}else if("2".equals(tagType)){
 				custStatus.add("25");
-			}else if("3".equals(tagType)){
+			}else if("2".equals(tagType)){
 				custStatus.add("8");
 			}
-			
 			
 			elecStatus.add("1");
 			elecStatus.add("4");
@@ -583,7 +580,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 						elecPositionMap.put("status", "0");
 						elecPositionService.saveElecPosition(elecPositionMap);*/
 						
-						//如果是差评，需要插入到考核记录表
+						//如果是差评，需要插入到考核记录表、电工差评投诉计数表
 						String customerGrade = orderCustomer.getCustomerGrade();
 						if("1".equals(customerGrade)||"2".equals(customerGrade)){
 							Map<String,Object> assessRecordMap = new HashMap<String,Object>();
@@ -594,6 +591,11 @@ public class OrderCustomerService implements IOrderCustomerService{
 							assessRecordMap.put("assessReason", "1");
 							assessRecordMap.put("createTime", nowDate);
 							assessRecordService.saveAssessRecord(assessRecordMap);
+							
+							Map<String,Object> elecErrorCountMap = new HashMap<String,Object>();
+							elecErrorCountMap.put("electricianId", orderElectrician.getElectricianId());
+							elecErrorCountMap.put("evaluateCount", "1");
+							elecErrorCountService.saveElecErrorCount(elecErrorCountMap);
 						}
 						
 						//费用划转
