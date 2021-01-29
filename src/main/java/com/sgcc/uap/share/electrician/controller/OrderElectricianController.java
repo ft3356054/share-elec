@@ -412,7 +412,7 @@ public class OrderElectricianController {
 	
 	@RequestMapping(value="/queryMore",name="待办")
 	public WrappedResult queryMore(@QueryRequestParam("params") RequestCondition requestCondition,@RequestParam("electricianId")String electricianId) {
-		Random r=new Random();
+		
 		
 		try {
 			//1.先查询当前电工的电工订单，查询条件是根据当前电工的Id,查询订单状态不是9的订单
@@ -440,9 +440,15 @@ public class OrderElectricianController {
 			Double distanceDouble=null;
 			int i=0;
 			for (OrderCustomer orderCustomer : orderCustomers) {
+				//2021.1.29
+				String orderId=orderCustomer.getOrderId();
+				CustPosition custPosition = custPositionService.getCustPositionByOrderId(orderId);
+				String custLoString=custPosition.getLon();
+				String custLat=custPosition.getLat();
+				
 				OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
 				
-					distanceDouble=PointUtil.getDistanceString(String.valueOf(orderCustomer.getAddressLongitude()), String.valueOf(orderCustomer.getAddressLatitude()), elecPosition.getLon(), elecPosition.getLat());
+					distanceDouble=PointUtil.getDistanceString(custLoString, custLat, elecPosition.getLon(), elecPosition.getLat());
 					orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble)+"KM");
 					orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, list.get(i));
 					returBeginPageVOs.add(orderElectricianBeginPageVO);
@@ -465,34 +471,81 @@ public class OrderElectricianController {
 	
 	
 	@RequestMapping("/queryWaitToDo")
-	public WrappedResult queryWaitToDo(@QueryRequestParam("params") RequestCondition requestCondition,@RequestParam("electricianId")String electricianId) {
+	public WrappedResult queryWaitToDo(@QueryRequestParam("params") RequestCondition requestCondition,@RequestParam("electricianId")String electricianId,
+			@RequestParam("tagtips")String tagtips) {
 			
 		try {
-			
-			
-			QueryResultObject queryResult = orderElectricianService.queryWaitToDo(requestCondition,electricianId);
-			List<OrderElectrician>orderElectricians=queryResult.getItems();
-			
-			String orderTypeId=null;
-			List<OrderCustomerVO> orderCustomerVOs=new ArrayList<>();
-			for (OrderElectrician orderElectrician : orderElectricians) {
-				OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
-				String orderId=orderElectrician.getOrDERId();
-				OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
-				orderTypeId=orderCustomer.getOrderTypeId();
-				 BaseOrderType baseOrderType=baseOrderTypeService.findByOrderTypeId(orderTypeId);
-				 BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
-				 String distance=orderElectricianService.jisuanjuli(orderCustomer,orderElectrician);
+			QueryResultObject queryResult=null;
+			if (tagtips.equals("0")) {//用于查询待办页面
+				//1.先查询当前电工的电工订单，查询条件是根据当前电工的Id,查询订单状态不是9的订单
+				//1.1查询电工所有待办订单
+				 queryResult = orderElectricianService.queryMore(requestCondition,electricianId);
+				
+				//1.2查询出来的电工订单，如果订单状态是2(系统派单)，则随机生成公里数
+				
+				
+				List<OrderElectricianBeginPageVO> orderElectricianBeginPageVOList=new ArrayList<>();
+				
+				
+				List<OrderElectrician> list=queryResult.getItems();
+				List<OrderCustomer> orderCustomers=new ArrayList<>();
+				for (OrderElectrician orderElectrician : list) {
+					OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+					String orderId=orderElectrician.getOrDERId();
+					OrderCustomer orderCustomer=orderCustomerService.findOrderId(orderId);
+					orderCustomers.add(orderCustomer);
+				}
+				
 				 
-				 orderCustomerVO.setOrderTypeId(baseOrderType.getOrderTypeName());
-				 orderCustomerVO.setDistance(distance);
-				 orderCustomerVOs.add(orderCustomerVO);
+				ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(electricianId);
+				List<OrderElectricianBeginPageVO> returBeginPageVOs=new ArrayList<>();
+				Double distanceDouble=null;
+				int i=0;
+				for (OrderCustomer orderCustomer : orderCustomers) {
+					//2021.1.29
+					String orderId=orderCustomer.getOrderId();
+					CustPosition custPosition = custPositionService.getCustPositionByOrderId(orderId);
+					String custLoString=custPosition.getLon();
+					String custLat=custPosition.getLat();
+					
+					OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
+					
+						distanceDouble=PointUtil.getDistanceString(custLoString, custLat, elecPosition.getLon(), elecPosition.getLat());
+						orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble)+"KM");
+						orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, list.get(i));
+						returBeginPageVOs.add(orderElectricianBeginPageVO);
+					
+				}						
+				queryResult.setItems(returBeginPageVOs);
+							
+				
+				
+			}else if (tagtips.equals("1")) {
+			
+				 queryResult = orderElectricianService.queryWaitToDo(requestCondition,electricianId);
+				List<OrderElectrician>orderElectricians=queryResult.getItems();
+				
+				String orderTypeId=null;
+				List<OrderCustomerVO> orderCustomerVOs=new ArrayList<>();
+				for (OrderElectrician orderElectrician : orderElectricians) {
+					OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
+					String orderId=orderElectrician.getOrDERId();
+					OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
+					orderTypeId=orderCustomer.getOrderTypeId();
+					 BaseOrderType baseOrderType=baseOrderTypeService.findByOrderTypeId(orderTypeId);
+					 BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
+					 String distance=orderElectricianService.jisuanjuli(orderCustomer,orderElectrician);
+					 
+					 orderCustomerVO.setOrderTypeId(baseOrderType.getOrderTypeName());
+					 orderCustomerVO.setDistance(distance);
+					 orderCustomerVOs.add(orderCustomerVO);
+				}
+				queryResult.setItems(orderCustomerVOs);
+				
 			}
-			queryResult.setItems(orderCustomerVOs);
-			
-			
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
+	
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			String errorMessage = "查询异常";

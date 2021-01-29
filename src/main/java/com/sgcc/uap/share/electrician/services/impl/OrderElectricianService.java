@@ -1213,11 +1213,15 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * @return
 	 */
 	public String jisuanjuli(OrderCustomer orderCustomer,OrderElectrician orderElectrician){
+		String orderId=orderCustomer.getOrderId();
+		CustPosition custPosition = custPositionService.getCustPositionByOrderId(orderId);
+		String custLoString=custPosition.getLon();
+		String custLat=custPosition.getLat();
 		ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(orderElectrician.getElectricianId());
 		String lon=elecPosition.getLon();
 		String electricianInfoLat=elecPosition.getLat();
 		
-		double distanceDouble = PointUtil.getDistanceString(String.valueOf(lon), String.valueOf(electricianInfoLat), orderCustomer.getAddressLongitude(), orderCustomer.getAddressLatitude());
+		double distanceDouble = PointUtil.getDistanceString(String.valueOf(lon), String.valueOf(electricianInfoLat), custLoString, custLat);
 		System.out.println("计算的距离是："+distanceDouble);
 		String distanceString=String.valueOf(distanceDouble)+"KM";
 		
@@ -1264,12 +1268,12 @@ public OrderElectricianBeginPageVO convert(OrderCustomer orderCustomer,OrderElec
 	orderCustomerVO.setElectricianDescrive(orderElectrician.getElectricianDescrive());
 	orderCustomerVO.setChargeback_reason(orderElectrician.getChargebackReason());
 	orderCustomerVO.setChargebackReason(orderElectrician.getChargebackReason());
-	orderCustomerVO.setOrderElectricianId(orderElectrician.getElectricianId());
+	//orderCustomerVO.setOrderElectricianId(orderElectrician.getElectricianId());
 	orderCustomerVO.setElectricianPrice(orderElectrician.getElectricianPrice());
 	orderCustomerVO.setOrderContract(orderElectrician.getOrderContract());
 	orderCustomerVO.setOrderElectricianStatus(orderElectrician.getOrderElectricianStatus());
 	orderCustomerVO.setConstructionContent(orderElectrician.getConstructionContent());
-	orderCustomerVO.setOtherElectricianId(orderElectrician.getOrderElectricianId());
+	orderCustomerVO.setOtherElectricianId(orderElectrician.getOtherElectricianId());
 	orderCustomerVO.setRemarkStr1(orderElectrician.getRemarkStr1());
 	orderCustomerVO.setElectricianEvaluateIcon(orderElectrician.getElectricianEvaluateIcon());
 	orderCustomerVO.setOrderContract(orderElectrician.getOrderContract());
