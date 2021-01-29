@@ -159,19 +159,32 @@ public class OrderCustomerService implements IOrderCustomerService{
 		
 		Integer pageIndex = queryCondition.getPageIndex()-1;
 		Integer pageSize = queryCondition.getPageSize();
-		QueryFilter queryFilter = queryCondition.getQueryFilter().get(0); 
-		String customerId = (String) queryFilter.getValue();
+		
+		Map<String, String> map = MapUtil.getParam(queryCondition);
+		String customerId = map.get("customerId");
+		//0全部(待支付、待验收、待评价) 1待支付 2待验收 3待评价
+		String tagType = map.get("tagType");
 		
 		/*
 		 0、23 待支付
-			24 待验收
+			25 待验收
 			8 待评价
 		 * */
 		if("beginPage".equals(pageType)){
-			custStatus.add("0");
-			custStatus.add("23");
-			custStatus.add("25");
-			custStatus.add("8");
+			if("0".equals(tagType)){
+				custStatus.add("0");
+				custStatus.add("23");
+				custStatus.add("25");
+				custStatus.add("8");
+			}else if("1".equals(tagType)){
+				custStatus.add("0");
+				custStatus.add("23");
+			}else if("2".equals(tagType)){
+				custStatus.add("25");
+			}else if("3".equals(tagType)){
+				custStatus.add("8");
+			}
+			
 			
 			elecStatus.add("1");
 			elecStatus.add("4");
