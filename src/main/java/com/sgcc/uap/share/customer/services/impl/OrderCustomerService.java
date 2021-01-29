@@ -1,6 +1,5 @@
 package com.sgcc.uap.share.customer.services.impl;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,7 +40,6 @@ import com.sgcc.uap.share.customer.repositories.GetOrderElectricianRepository;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerBeginPageRepository;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.IOrderCustomerService;
-import com.sgcc.uap.share.domain.BaseAreaPrice;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.BaseIdentityPrice;
 import com.sgcc.uap.share.domain.BaseSystemConfig;
@@ -58,7 +56,6 @@ import com.sgcc.uap.share.services.impl.BaseSystemConfigService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
-import com.sgcc.uap.util.DecimalUtil;
 import com.sgcc.uap.util.FileUtil;
 import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.SorterUtil;
@@ -472,13 +469,13 @@ public class OrderCustomerService implements IOrderCustomerService{
 		String identityPrice = baseIdentityPrice.getIdentityPrice();
 		
 		//获取省份价格
-		List<BaseAreaPrice> list = baseAreaPriceService.getBaseAreaPriceByProvinceId(provinceId);
+		/*List<BaseAreaPrice> list = baseAreaPriceService.getBaseAreaPriceByProvinceId(provinceId);
 		String areaPrice = list.get(0).getPrice();
 		
 		BigDecimal identityPriceBD=new BigDecimal(identityPrice);
 		BigDecimal areaPriceBD=new BigDecimal(areaPrice);
-		String resultBD = DecimalUtil.add(identityPriceBD,areaPriceBD).toString();
-		
+		String resultBD = DecimalUtil.add(identityPriceBD,areaPriceBD).toString();*/
+		String resultBD = identityPrice;
 		return resultBD;
 	}
 	
