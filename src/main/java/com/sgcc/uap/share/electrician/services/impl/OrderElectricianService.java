@@ -385,7 +385,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 		Map<String, String> map = MapUtil.getParam(queryCondition);
 		
 		List<OrderElectrician> result = orderElectricianRepository.queryWaitToDo(pageIndex,pageSize,
-				electricianId,map.get("orderElectricianStatus"));
+				electricianId);
 		long count = 0;
 		count = result.size();
 		return RestUtils.wrappQueryResult(result, count);
