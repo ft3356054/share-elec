@@ -385,7 +385,7 @@ public class OrderElectricianService implements IOrderElectricianService{
 		Map<String, String> map = MapUtil.getParam(queryCondition);
 		
 		List<OrderElectrician> result = orderElectricianRepository.queryWaitToDo(pageIndex,pageSize,
-				electricianId,map.get("orderElectricianStatus"));
+				electricianId);
 		long count = 0;
 		count = result.size();
 		return RestUtils.wrappQueryResult(result, count);
@@ -1213,21 +1213,28 @@ public QueryResultObject queryAllDoing(String electricianId) {
 	 * @return
 	 */
 	public String jisuanjuli(OrderCustomer orderCustomer,OrderElectrician orderElectrician){
-		String orderId=orderCustomer.getOrderId();
-		CustPosition custPosition = custPositionService.getCustPositionByOrderId(orderId);
-		String custLoString=custPosition.getLon();
-		String custLat=custPosition.getLat();
+		List<String> strings=new ArrayList<>();
+		strings.add("1");
+		strings.add("11");
+		strings.add("20");
+		//获取电工经纬度
 		ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(orderElectrician.getElectricianId());
 		String lon=elecPosition.getLon();
 		String electricianInfoLat=elecPosition.getLat();
-		
-		double distanceDouble = PointUtil.getDistanceString(String.valueOf(lon), String.valueOf(electricianInfoLat), custLoString, custLat);
-		System.out.println("计算的距离是："+distanceDouble);
-		String distanceString=String.valueOf(distanceDouble)+"KM";
-		
+	
+		String distanceString=null;
+		if (strings.contains(orderCustomer.getOrderId())) {
+			String orderId=orderCustomer.getOrderId();
+			CustPosition custPosition = custPositionService.getCustPositionByOrderId(orderId);
+			String custLoString=custPosition.getLon();
+			String custLat=custPosition.getLat();
+			double distanceDouble = PointUtil.getDistanceString(String.valueOf(lon), String.valueOf(electricianInfoLat), custLoString, custLat);
+			System.out.println("计算的距离是："+distanceDouble);
+			 distanceString=String.valueOf(distanceDouble)+"KM";
+		}
+	
 		return distanceString;
 	}
-	
 
 	
 	/**

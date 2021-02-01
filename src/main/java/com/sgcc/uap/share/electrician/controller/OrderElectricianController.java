@@ -501,17 +501,22 @@ public class OrderElectricianController {
 				List<OrderElectricianBeginPageVO> returBeginPageVOs=new ArrayList<>();
 				Double distanceDouble=null;
 				int i=0;
+				List<String> strings=new ArrayList<>();
+				strings.add("1");
+				strings.add("11");
+				strings.add("20");
 				for (OrderCustomer orderCustomer : orderCustomers) {
 					//2021.1.29
-					String orderId=orderCustomer.getOrderId();
-					CustPosition custPosition = custPositionService.getCustPositionByOrderId(orderId);
-					String custLoString=custPosition.getLon();
-					String custLat=custPosition.getLat();
-					
 					OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
-					
-						distanceDouble=PointUtil.getDistanceString(custLoString, custLat, elecPosition.getLon(), elecPosition.getLat());
-						orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble)+"KM");
+					if (strings.contains(orderCustomer.getOrderId())) {
+						String orderId=orderCustomer.getOrderId();
+						CustPosition custPosition = custPositionService.getCustPositionByOrderId(orderId);
+						String custLoString=custPosition.getLon();
+						String custLat=custPosition.getLat();	
+							distanceDouble=PointUtil.getDistanceString(custLoString, custLat, elecPosition.getLon(), elecPosition.getLat());
+							orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
+					}
+											
 						orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, list.get(i));
 						returBeginPageVOs.add(orderElectricianBeginPageVO);
 					
@@ -526,21 +531,21 @@ public class OrderElectricianController {
 				List<OrderElectrician>orderElectricians=queryResult.getItems();
 				
 				String orderTypeId=null;
-				List<OrderCustomerVO> orderCustomerVOs=new ArrayList<>();
+				List<OrderElectricianBeginPageVO> orderElectricianBeginPageVOs=new ArrayList<>();
 				for (OrderElectrician orderElectrician : orderElectricians) {
-					OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
+					OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
 					String orderId=orderElectrician.getOrDERId();
 					OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
 					orderTypeId=orderCustomer.getOrderTypeId();
 					 BaseOrderType baseOrderType=baseOrderTypeService.findByOrderTypeId(orderTypeId);
-					 BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
-					 String distance=orderElectricianService.jisuanjuli(orderCustomer,orderElectrician);
-					 
-					 orderCustomerVO.setOrderTypeId(baseOrderType.getOrderTypeName());
-					 orderCustomerVO.setDistance(distance);
-					 orderCustomerVOs.add(orderCustomerVO);
+					
+					 //String distance=orderElectricianService.jisuanjuli(orderCustomer,orderElectrician);
+					 orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+					 orderElectricianBeginPageVO.setOrderTypeId(baseOrderType.getOrderTypeName());
+					// orderElectricianBeginPageVO.setDistance(distance);
+					 orderElectricianBeginPageVOs.add(orderElectricianBeginPageVO);
 				}
-				queryResult.setItems(orderCustomerVOs);
+				queryResult.setItems(orderElectricianBeginPageVOs);
 				
 			}
 			logger.info("查询数据成功"); 
