@@ -1,8 +1,6 @@
 package com.sgcc.uap.share.vo;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-
 
 import com.sgcc.uap.rest.annotation.attribute.AttributeType;
 import com.sgcc.uap.rest.annotation.attribute.EditorType;
@@ -48,7 +46,7 @@ public class ElecErrorCountVO extends ParentVO implements Serializable{
      * 属性BEGIN_TIME
      */  
     @ViewAttribute(name ="beginTime",caption="BEGIN_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp beginTime;    
+    private String beginTime;    
     /**
      * ElecErrorCountVO构造函数
      */
@@ -140,14 +138,14 @@ public class ElecErrorCountVO extends ParentVO implements Serializable{
      * BEGIN_TIME的get方法
      * @return beginTime
      */
-    public Timestamp getBeginTime(){
+    public String getBeginTime(){
         return beginTime;
     }
     /**
      * BEGIN_TIME的set方法
      * @param beginTime
      */
-    public void setBeginTime(Timestamp beginTime){
+    public void setBeginTime(String beginTime){
 		this.beginTime = beginTime;
 	} 
 

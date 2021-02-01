@@ -1,7 +1,12 @@
 package com.sgcc.uap.share.customer.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.sgcc.uap.share.domain.ElectricianInfo;
 
@@ -19,5 +24,10 @@ public interface GetElectricianInfoRepository extends JpaRepository<ElectricianI
 	
 	public Integer countByElectricianId(String electricianId);
 	
+	@Modifying
+	@Query(value = "UPDATE Electrician_Info t SET t.ELECTRICIAN_STATUS ='4' "
+			+ " WHERE t.ELECTRICIAN_STATUS != '5' and ELECTRICIAN_ID in :electricianInfoIds "
+	,nativeQuery = true)
+	Integer updateElectricianInfo(@Param("electricianInfoIds")List<String> electricianInfoIds);
 	
 }

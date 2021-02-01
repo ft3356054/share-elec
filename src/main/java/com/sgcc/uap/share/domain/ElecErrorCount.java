@@ -1,7 +1,6 @@
 package com.sgcc.uap.share.domain;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -60,7 +59,7 @@ public class ElecErrorCount implements Serializable {
      * BEGIN_TIME
      */
     @Column(name = "BEGIN_TIME", nullable = true, length = 19)
-    private Timestamp beginTime ;
+    private String beginTime ;
     
 	/**
 	  *虚拟主键
@@ -182,7 +181,7 @@ public class ElecErrorCount implements Serializable {
      * @date 2021-01-29 10:17:13
      * @author 18511
      */
-    public Timestamp getBeginTime(){
+    public String getBeginTime(){
         return this.beginTime;
     }
     /**
@@ -192,7 +191,7 @@ public class ElecErrorCount implements Serializable {
      * @date 2021-01-29 10:17:13
      * @author 18511
      */
-    public void setBeginTime(Timestamp beginTime){
+    public void setBeginTime(String beginTime){
 		this.beginTime = beginTime;
 	} 
 	public String getMxVirtualId() {

@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.customer.services.impl;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,5 +53,10 @@ public class GetElectricianInfoService implements IGetElectricianInfoService{
 			CrudUtils.transMap2Bean(map, electricianInfo);
 		}
 		return getElectricianInfoRepository.save(electricianInfo);
+	}
+	
+	@Override
+	public Integer updateElectricianInfo(List<String> electricianInfoIds) throws Exception{
+		return getElectricianInfoRepository.updateElectricianInfo(electricianInfoIds);
 	}
 }

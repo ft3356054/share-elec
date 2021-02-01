@@ -27,7 +27,7 @@ public class TaskConfig {
     private EvaluateTask evaluateTask;
 	
 	
-	
+	/*
 	//电工抢单弹框
 	@Scheduled(initialDelay = 1000*5 , fixedDelay = 1000*5)
 	public void elecGrabOrderTask() {
@@ -57,6 +57,7 @@ public class TaskConfig {
 	public void elecAssignOrderTask() {
 		elecAssignOrderTask.start();
 	}
+	*/
 	
 	/*
 	//自动评价

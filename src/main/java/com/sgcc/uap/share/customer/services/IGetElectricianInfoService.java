@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.customer.services;
 
+import java.util.List;
 import java.util.Map;
 
 import com.sgcc.uap.share.domain.ElectricianInfo;
@@ -40,5 +41,14 @@ public interface IGetElectricianInfoService {
 	 * @author 18511
 	 */
 	public ElectricianInfo saveElectricianInfo(Map<String,Object> map) throws Exception;
+	
+	/**
+	 * @save:保存或更新
+	 * @param map 保存或更新的数据
+	 * @return ElectricianInfo ElectricianInfo对象
+	 * @date 2020-12-07 11:01:01
+	 * @author 18511
+	 */
+	public Integer updateElectricianInfo(List<String> electricianInfoIds) throws Exception;
 
 }

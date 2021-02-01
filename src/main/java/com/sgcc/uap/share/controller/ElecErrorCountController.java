@@ -1,5 +1,6 @@
 package com.sgcc.uap.share.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +68,7 @@ public class ElecErrorCountController {
 	 * @getByElectricianId:根据electricianId查询
 	 * @param electricianId
 	 * @return WrappedResult 查询结果
-	 * @date 2021-01-29 10:17:13
+	 * @date 2021-01-29 10:15:44
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/{electricianId}")
@@ -89,7 +90,7 @@ public class ElecErrorCountController {
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2021-01-29 10:17:13
+	 * @date 2021-01-29 10:15:44
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
@@ -111,7 +112,7 @@ public class ElecErrorCountController {
 	 * @saveOrUpdate:保存或更新
 	 * @param params
 	 * @return WrappedResult 保存或更新的结果
-	 * @date 2021-01-29 10:17:13
+	 * @date 2021-01-29 10:15:44
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -145,11 +146,49 @@ public class ElecErrorCountController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
+	/**
+	 * 测试用   公司被惩罚，修改所有旗下电工的状态
+	 */
+	@RequestMapping(value = "/saveElecErrorCountByCompany", method = RequestMethod.POST)
+	public WrappedResult saveElecErrorCountByCompany(@RequestBody FormRequestObject<Map<String,Object>> params) {
+		try {
+			List<String> electricianIdList = new ArrayList<String>();
+			if(params == null){
+				throw new NullArgumentException("params");
+			}
+			QueryResultObject result = new QueryResultObject();
+			List<Map<String,Object>> items = params.getItems();
+			if(items != null && !items.isEmpty()){
+				for(Map<String,Object> map : items){
+					electricianIdList.add((String) map.get("electricianId"));
+				}
+				elecErrorCountService.saveElecErrorCountByCompany(electricianIdList);
+			}
+			logger.info("保存数据成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (ServiceValidatorBaseException e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "校验异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedValidateWrappedResult(errorMessage);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "保存异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
 	/**
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2021-01-29 10:17:13
+	 * @date 2021-01-29 10:15:44
 	 * @author 18511
 	 */
 	@RequestMapping("/")
@@ -171,7 +210,7 @@ public class ElecErrorCountController {
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2021-01-29 10:17:13
+	 * @date 2021-01-29 10:15:44
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -200,7 +239,7 @@ public class ElecErrorCountController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2021-01-29 10:17:13
+	 * @date 2021-01-29 10:15:44
 	 * @author 18511
 	 */
 	@InitBinder

@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.services.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,7 @@ import com.sgcc.uap.share.domain.ElecErrorCount;
 import com.sgcc.uap.share.domain.ElectricianInfo;
 import com.sgcc.uap.share.repositories.ElecErrorCountRepository;
 import com.sgcc.uap.share.services.IElecErrorCountService;
+import com.sgcc.uap.util.TimeStamp;
 
 
 /**
@@ -77,6 +80,7 @@ public class ElecErrorCountService implements IElecErrorCountService{
 	获用户投诉且情况属实的暂停抢单：15天（自情况核实之日起）
 	 * */
 	@Override
+	@Transactional
 	public ElecErrorCount saveElecErrorCount(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(ElecErrorCount.class,map);
 		ElecErrorCount elecErrorCount = new ElecErrorCount();
@@ -84,45 +88,215 @@ public class ElecErrorCountService implements IElecErrorCountService{
 			String electricianId = (String) map.get("electricianId");
 			elecErrorCount = elecErrorCountRepository.findOne(electricianId);
 			
+			if(!map.containsKey("evaluateCount")){
+				map.put("evaluateCount", "0");
+			}
+			if(!map.containsKey("complaintCount")){
+				map.put("complaintCount", "0");
+			}
+			
 			if(null==elecErrorCount||"".equals(elecErrorCount)){
 				//新增
-				if(!map.containsKey("evaluateCount")){
-					map.put("evaluateCount", "0");
-				}
-				if(!map.containsKey("complaintCount")){
-					map.put("complaintCount", "0");
+				map.put("errorFlag", "0");
+				
+				String complaintCount = (String) map.get("complaintCount");
+				if("0".equals(complaintCount)){
+					map.remove("forbidDay");
+					CrudUtils.transMap2Bean(map, elecErrorCount);
 				}else{
-					//被投诉，修改电工状态
-					ElectricianInfo electricianInfo = getElectricianInfoService.getElectricianInfoByElectricianId(electricianId);
-					//电工自己更改的状态 0休息中 1工作中 4系统惩罚停止接单 5注销
-					if("4".equals(electricianInfo.getElectricianStatus())||"5".equals(electricianInfo.getElectricianStatus())){
-						
-					}else{
-						Map<String,Object> electricianInfoMap = new HashMap<String, Object>();
-						electricianInfoMap.put("electricianId", electricianId);
-						electricianInfoMap.put("electricianStatus", "4");
-						getElectricianInfoService.saveElectricianInfo(electricianInfoMap);
-					}
+					map.put("errorFlag", "1");
+					Map<String,Object> updateMap = updateElecErrorAndInfo(map, elecErrorCount,true);
+					elecErrorCount = new ElecErrorCount();
+					CrudUtils.transMap2Bean(updateMap, elecErrorCount);
 				}
-				CrudUtils.transMap2Bean(map, elecErrorCount);
-				return elecErrorCountRepository.save(elecErrorCount);
+				
 			}else{
 				//修改
-				if(map.containsKey("evaluateCount")){
-					int evaluateCount =  elecErrorCount.getEvaluateCount()+1;
-					map.put("evaluateCount", evaluateCount);
-				}else{
-					int complaintCount =  elecErrorCount.getComplaintCount()+1;
-					map.put("complaintCount", complaintCount);
+				String evaluateCount = (String) map.get("evaluateCount");
+				boolean flag = false; //默认是记录投诉
+				if(!"0".equals(evaluateCount)){
+					flag = true; //记录差评
 				}
-				CrudUtils.mapToObject(map, elecErrorCount,  "electricianId");
+				
+				if(flag){
+					if(!"0".equals(elecErrorCount.getEvaluateCount())){
+						int newEvaluateCount =  elecErrorCount.getEvaluateCount()+1;
+						map.put("evaluateCount", newEvaluateCount);
+						map.put("complaintCount", elecErrorCount.getComplaintCount());
+						Map<String,Object> updateMap = updateElecErrorAndInfo(map, elecErrorCount,false);
+						CrudUtils.mapToObject(updateMap, elecErrorCount,  "electricianId");
+					}
+				}else{
+					if(!"0".equals(elecErrorCount.getComplaintCount())){
+						int complaintCount =  elecErrorCount.getComplaintCount()+1;
+						map.put("complaintCount", complaintCount);
+						map.put("evaluateCount", elecErrorCount.getEvaluateCount());
+						map.put("errorFlag", "1");
+						Map<String,Object> updateMap = updateElecErrorAndInfo(map, elecErrorCount,true);
+						CrudUtils.mapToObject(updateMap, elecErrorCount,  "electricianId");
+					}
+				}
 			}
 		}else{
 			throw new Exception("类型electricianId不能为空值");
 		}
 		
+		
+		
 		return elecErrorCountRepository.save(elecErrorCount);
 	}
+	
+	
+	/*
+	公司被惩罚，修改所有旗下电工的状态
+	 * */
+	@Override
+	@Transactional
+	public void saveElecErrorCountByCompany(List<String> electricianIdList) throws Exception{
+		//按id查询现有表
+		List<ElecErrorCount> elecErrorCountList = elecErrorCountRepository.findElecErrorCountByElectricianIdIn(electricianIdList);
+		String nowTime = TimeStamp.toString(new Date());
+		if(elecErrorCountList.size()>0){
+			//记录被停止接单的电工id
+			List<String> electricianIdListInDb1 = new ArrayList<>();
+			//记录未被停止接单的电工id
+			List<String> electricianIdListInDb2 = new ArrayList<>();
+			for(ElecErrorCount elecErrorCount:elecErrorCountList){
+				if("1".equals(elecErrorCount.getErrorFlag())){
+					electricianIdListInDb1.add(elecErrorCount.getElectricianId());
+				}else if("0".equals(elecErrorCount.getErrorFlag())){
+					electricianIdListInDb2.add(elecErrorCount.getElectricianId());
+				}
+				if(electricianIdList.contains(elecErrorCount.getElectricianId())){
+					electricianIdList.remove(elecErrorCount.getElectricianId());
+				}
+			}
+			//批量修改
+			if(electricianIdListInDb1.size()>0){
+				elecErrorCountRepository.updateElecErrorCounts1(electricianIdListInDb1,7);
+			}
+			if(electricianIdListInDb2.size()>0){
+				elecErrorCountRepository.updateElecErrorCounts2(electricianIdListInDb2,7,nowTime);
+			}
+			
+			
+			//批量新增
+			for(String electricianId:electricianIdList){
+				ElecErrorCount elecErrorCount = new ElecErrorCount();
+				elecErrorCount.setElectricianId(electricianId);
+				elecErrorCount.setBeginTime(nowTime);
+				elecErrorCount.setComplaintCount(0);
+				elecErrorCount.setEvaluateCount(0);
+				elecErrorCount.setErrorFlag("1");
+				elecErrorCount.setForbidDay(7);
+				elecErrorCountRepository.save(elecErrorCount);
+			}
+			
+		}else{
+			for(String electricianId:electricianIdList){
+				ElecErrorCount elecErrorCount = new ElecErrorCount();
+				elecErrorCount.setElectricianId(electricianId);
+				elecErrorCount.setBeginTime(nowTime);
+				elecErrorCount.setComplaintCount(0);
+				elecErrorCount.setEvaluateCount(0);
+				elecErrorCount.setErrorFlag("1");
+				elecErrorCount.setForbidDay(7);
+				elecErrorCountRepository.save(elecErrorCount);
+			}
+		}
+		
+		getElectricianInfoService.updateElectricianInfo(electricianIdList);
+		
+	}
+	
+	
+	//被投诉，修改电工状态 true-complaintCount false-evaluateCount
+	private Map<String,Object> updateElecErrorAndInfo(Map<String,Object> map,ElecErrorCount elecErrorCount,boolean typeFlag) throws Exception{
+		String electricianId = (String) map.get("electricianId");
+		ElectricianInfo electricianInfo = getElectricianInfoService.getElectricianInfoByElectricianId(electricianId);
+		
+		if(typeFlag){
+			//电工自己更改的状态 0休息中 1工作中 4系统惩罚停止接单 5注销
+			if("5".equals(electricianInfo.getElectricianStatus())){
+				System.out.println("电工已注销");
+			}else if("4".equals(electricianInfo.getElectricianStatus())){
+				String forbidDay =  (String) map.get("forbidDay");
+				if(null==elecErrorCount||"".equals(elecErrorCount)){
+					map.put("forbidDay", forbidDay);
+				}else
+					map.put("forbidDay", elecErrorCount.getForbidDay()+ Integer.parseInt(forbidDay));
+			}else{
+				Map<String,Object> electricianInfoMap = new HashMap<String, Object>();
+				electricianInfoMap.put("electricianId", electricianId);
+				electricianInfoMap.put("electricianStatus", "4");
+				getElectricianInfoService.saveElectricianInfo(electricianInfoMap);
+				
+				String forbidDay =  (String) map.get("forbidDay");
+				map.put("forbidDay", forbidDay);
+				map.put("beginTime", TimeStamp.toString(new Date()));
+			}
+		}else{
+			//判断当前被差评的次数
+			Integer evaluateCount =  (Integer) map.get("evaluateCount");
+			Map<String,Object> electricianInfoMap = new HashMap<String, Object>();
+			electricianInfoMap.put("electricianId", electricianId);
+			
+			if(evaluateCount>5){
+				//取消资格
+				if("5".equals(electricianInfo.getElectricianStatus())){
+					System.out.println("电工已注销");
+				}else{
+					electricianInfoMap.put("electricianStatus", "5");
+					getElectricianInfoService.saveElectricianInfo(electricianInfoMap);
+					
+					map.put("beginTime", TimeStamp.toString(new Date()));
+				}
+			}else if(evaluateCount==5){
+				//停止接单+15天
+				if("5".equals(electricianInfo.getElectricianStatus())){
+					System.out.println("电工已注销");
+				}else if("4".equals(electricianInfo.getElectricianStatus())){
+					map.put("errorFlag", "1");
+					String forbidDay =  (String) map.get("forbidDay");
+					map.put("forbidDay", elecErrorCount.getForbidDay()+ Integer.parseInt(forbidDay));
+				}else{
+					electricianInfoMap.put("electricianStatus", "4");
+					getElectricianInfoService.saveElectricianInfo(electricianInfoMap);
+					
+					map.put("errorFlag", "1");
+					String forbidDay =  (String) map.get("forbidDay");
+					map.put("forbidDay", elecErrorCount.getForbidDay()+ Integer.parseInt(forbidDay));
+					map.put("beginTime", TimeStamp.toString(new Date()));
+				}
+			}else if(evaluateCount==3){
+				//停止接单+7天
+				if("5".equals(electricianInfo.getElectricianStatus())){
+					System.out.println("电工已注销");
+				}else if("4".equals(electricianInfo.getElectricianStatus())){
+					map.put("errorFlag", "1");
+					String forbidDay =  (String) map.get("forbidDay");
+					map.put("forbidDay", elecErrorCount.getForbidDay()+ Integer.parseInt(forbidDay));
+				}else{
+					electricianInfoMap.put("electricianStatus", "4");
+					getElectricianInfoService.saveElectricianInfo(electricianInfoMap);
+					
+					map.put("errorFlag", "1");
+					String forbidDay =  (String) map.get("forbidDay");
+					map.put("forbidDay", elecErrorCount.getForbidDay()+ Integer.parseInt(forbidDay));
+					map.put("beginTime", TimeStamp.toString(new Date()));
+				}
+			}
+		}
+		String errorFlag = (String) map.get("errorFlag");
+		if("0".equals(errorFlag)||null==errorFlag){
+			//删除 暂停天数
+			map.remove("forbidDay");
+		}
+		return map;
+	}
+	
+	
+	
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
 		if(queryCondition == null){
