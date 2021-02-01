@@ -1217,24 +1217,24 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		strings.add("1");
 		strings.add("11");
 		strings.add("20");
-		String orderId=orderCustomer.getOrderId();
-		CustPosition custPosition = custPositionService.getCustPositionByOrderId(orderId);
-		String custLoString=custPosition.getLon();
-		String custLat=custPosition.getLat();
+		//获取电工经纬度
 		ElecPosition elecPosition=elecPositionService.getElecPositionByElectricianId(orderElectrician.getElectricianId());
 		String lon=elecPosition.getLon();
 		String electricianInfoLat=elecPosition.getLat();
+	
 		String distanceString=null;
 		if (strings.contains(orderCustomer.getOrderId())) {
+			String orderId=orderCustomer.getOrderId();
+			CustPosition custPosition = custPositionService.getCustPositionByOrderId(orderId);
+			String custLoString=custPosition.getLon();
+			String custLat=custPosition.getLat();
 			double distanceDouble = PointUtil.getDistanceString(String.valueOf(lon), String.valueOf(electricianInfoLat), custLoString, custLat);
 			System.out.println("计算的距离是："+distanceDouble);
 			 distanceString=String.valueOf(distanceDouble)+"KM";
 		}
-		
-		
+	
 		return distanceString;
 	}
-	
 
 	
 	/**

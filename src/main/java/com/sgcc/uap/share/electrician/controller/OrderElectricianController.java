@@ -514,7 +514,7 @@ public class OrderElectricianController {
 						String custLoString=custPosition.getLon();
 						String custLat=custPosition.getLat();	
 							distanceDouble=PointUtil.getDistanceString(custLoString, custLat, elecPosition.getLon(), elecPosition.getLat());
-							orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble)+"KM");
+							orderElectricianBeginPageVO.setDistance(String.valueOf(distanceDouble));
 					}
 											
 						orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, list.get(i));
@@ -531,21 +531,21 @@ public class OrderElectricianController {
 				List<OrderElectrician>orderElectricians=queryResult.getItems();
 				
 				String orderTypeId=null;
-				List<OrderCustomerVO> orderCustomerVOs=new ArrayList<>();
+				List<OrderElectricianBeginPageVO> orderElectricianBeginPageVOs=new ArrayList<>();
 				for (OrderElectrician orderElectrician : orderElectricians) {
-					OrderCustomerVO orderCustomerVO=new OrderCustomerVO();
+					OrderElectricianBeginPageVO orderElectricianBeginPageVO=new OrderElectricianBeginPageVO();
 					String orderId=orderElectrician.getOrDERId();
 					OrderCustomer orderCustomer=orderCustomerService.findByOrderId(orderId);
 					orderTypeId=orderCustomer.getOrderTypeId();
 					 BaseOrderType baseOrderType=baseOrderTypeService.findByOrderTypeId(orderTypeId);
-					 BeanUtils.copyProperties(orderCustomer, orderCustomerVO);
-					 String distance=orderElectricianService.jisuanjuli(orderCustomer,orderElectrician);
-					 
-					 orderCustomerVO.setOrderTypeId(baseOrderType.getOrderTypeName());
-					 orderCustomerVO.setDistance(distance);
-					 orderCustomerVOs.add(orderCustomerVO);
+					
+					 //String distance=orderElectricianService.jisuanjuli(orderCustomer,orderElectrician);
+					 orderElectricianBeginPageVO=orderElectricianService.convert(orderCustomer, orderElectrician);
+					 orderElectricianBeginPageVO.setOrderTypeId(baseOrderType.getOrderTypeName());
+					// orderElectricianBeginPageVO.setDistance(distance);
+					 orderElectricianBeginPageVOs.add(orderElectricianBeginPageVO);
 				}
-				queryResult.setItems(orderCustomerVOs);
+				queryResult.setItems(orderElectricianBeginPageVOs);
 				
 			}
 			logger.info("查询数据成功"); 
