@@ -592,6 +592,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 							Map<String,Object> elecErrorCountMap = new HashMap<String,Object>();
 							elecErrorCountMap.put("electricianId", orderElectrician.getElectricianId());
 							elecErrorCountMap.put("evaluateCount", "1");
+							elecErrorCountMap.put("complaintCount", "1");
 							elecErrorCountMap.put("forbidDay", "7");
 							elecErrorCountService.saveElecErrorCount(elecErrorCountMap);
 						}
