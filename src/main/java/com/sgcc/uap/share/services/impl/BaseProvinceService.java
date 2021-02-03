@@ -50,6 +50,12 @@ public class BaseProvinceService implements IBaseProvinceService{
 	private ValidateService validateService;
 	
 	@Override
+	public QueryResultObject queryAll() {
+		List<BaseProvince> list = baseProvinceRepository.findAllByOrderByProvinceId();
+		return RestUtils.wrappQueryResult(list);
+	}
+	
+	@Override
 	public QueryResultObject getBaseProvinceByProvinceId(String provinceId) {
 		BaseProvince baseProvince = baseProvinceRepository.findOne(provinceId);
 		return RestUtils.wrappQueryResult(baseProvince);

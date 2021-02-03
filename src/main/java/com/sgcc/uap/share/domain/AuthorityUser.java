@@ -5,12 +5,9 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -30,8 +27,8 @@ public class AuthorityUser implements Serializable {
      * ID
      */
 	@Id
-	@GeneratedValue(generator = "idGenerator")
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")
+	/*@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "uuid")*/
     @Column(name = "ID", nullable = false, length = 64)
     private String id ;
     
@@ -42,10 +39,10 @@ public class AuthorityUser implements Serializable {
     private String userAccount ;
     
     /** 
-     * PASSWORD
+     * USER_PSW
      */
-    @Column(name = "PASSWORD", nullable = true, length = 64)
-    private String _password ;
+    @Column(name = "USER_PSW", nullable = true, length = 64)
+    private String userPsw ;
     
     /** 
      * OPEN_ID
@@ -168,7 +165,7 @@ public class AuthorityUser implements Serializable {
      * @getId:ID的get方法
      * @params
      * @return id
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getId(){
@@ -178,7 +175,7 @@ public class AuthorityUser implements Serializable {
      * @setId:ID的set方法
      * @param id
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setId(String id){
@@ -192,7 +189,7 @@ public class AuthorityUser implements Serializable {
      * @getUserAccount:USER_ACCOUNT的get方法
      * @params
      * @return userAccount
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getUserAccount(){
@@ -202,37 +199,37 @@ public class AuthorityUser implements Serializable {
      * @setUserAccount:USER_ACCOUNT的set方法
      * @param userAccount
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setUserAccount(String userAccount){
 		this.userAccount = userAccount;
 	} 
     /**
-     * @get_password:PASSWORD的get方法
+     * @getUserPsw:USER_PSW的get方法
      * @params
-     * @return _password
-     * @date 2021-02-02 11:49:33
+     * @return userPsw
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
-    public String get_password(){
-        return this._password;
+    public String getUserPsw(){
+        return this.userPsw;
     }
     /**
-     * @set_password:PASSWORD的set方法
-     * @param _password
+     * @setUserPsw:USER_PSW的set方法
+     * @param userPsw
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
-    public void set_password(String _password){
-		this._password = _password;
+    public void setUserPsw(String userPsw){
+		this.userPsw = userPsw;
 	} 
     /**
      * @getOpenId:OPEN_ID的get方法
      * @params
      * @return openId
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getOpenId(){
@@ -242,7 +239,7 @@ public class AuthorityUser implements Serializable {
      * @setOpenId:OPEN_ID的set方法
      * @param openId
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setOpenId(String openId){
@@ -252,7 +249,7 @@ public class AuthorityUser implements Serializable {
      * @getUserName:USER_NAME的get方法
      * @params
      * @return userName
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getUserName(){
@@ -262,7 +259,7 @@ public class AuthorityUser implements Serializable {
      * @setUserName:USER_NAME的set方法
      * @param userName
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setUserName(String userName){
@@ -272,7 +269,7 @@ public class AuthorityUser implements Serializable {
      * @getUserDesc:USER_DESC的get方法
      * @params
      * @return userDesc
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getUserDesc(){
@@ -282,7 +279,7 @@ public class AuthorityUser implements Serializable {
      * @setUserDesc:USER_DESC的set方法
      * @param userDesc
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setUserDesc(String userDesc){
@@ -292,7 +289,7 @@ public class AuthorityUser implements Serializable {
      * @get_status:STATUS的get方法
      * @params
      * @return _status
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String get_status(){
@@ -302,7 +299,7 @@ public class AuthorityUser implements Serializable {
      * @set_status:STATUS的set方法
      * @param _status
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void set_status(String _status){
@@ -312,7 +309,7 @@ public class AuthorityUser implements Serializable {
      * @getUserType:USER_TYPE的get方法
      * @params
      * @return userType
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getUserType(){
@@ -322,7 +319,7 @@ public class AuthorityUser implements Serializable {
      * @setUserType:USER_TYPE的set方法
      * @param userType
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setUserType(String userType){
@@ -332,7 +329,7 @@ public class AuthorityUser implements Serializable {
      * @getCompanyId:COMPANY_ID的get方法
      * @params
      * @return companyId
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getCompanyId(){
@@ -342,7 +339,7 @@ public class AuthorityUser implements Serializable {
      * @setCompanyId:COMPANY_ID的set方法
      * @param companyId
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setCompanyId(String companyId){
@@ -352,7 +349,7 @@ public class AuthorityUser implements Serializable {
      * @getPhonenumber:PHONENUMBER的get方法
      * @params
      * @return phonenumber
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getPhonenumber(){
@@ -362,7 +359,7 @@ public class AuthorityUser implements Serializable {
      * @setPhonenumber:PHONENUMBER的set方法
      * @param phonenumber
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setPhonenumber(String phonenumber){
@@ -372,7 +369,7 @@ public class AuthorityUser implements Serializable {
      * @getEmail:EMAIL的get方法
      * @params
      * @return email
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getEmail(){
@@ -382,7 +379,7 @@ public class AuthorityUser implements Serializable {
      * @setEmail:EMAIL的set方法
      * @param email
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setEmail(String email){
@@ -392,7 +389,7 @@ public class AuthorityUser implements Serializable {
      * @getAddress:ADDRESS的get方法
      * @params
      * @return address
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getAddress(){
@@ -402,7 +399,7 @@ public class AuthorityUser implements Serializable {
      * @setAddress:ADDRESS的set方法
      * @param address
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setAddress(String address){
@@ -412,7 +409,7 @@ public class AuthorityUser implements Serializable {
      * @getIdCardNum:ID_CARD_NUM的get方法
      * @params
      * @return idCardNum
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getIdCardNum(){
@@ -422,7 +419,7 @@ public class AuthorityUser implements Serializable {
      * @setIdCardNum:ID_CARD_NUM的set方法
      * @param idCardNum
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setIdCardNum(String idCardNum){
@@ -432,7 +429,7 @@ public class AuthorityUser implements Serializable {
      * @getIdCardFirst:ID_CARD_FIRST的get方法
      * @params
      * @return idCardFirst
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getIdCardFirst(){
@@ -442,7 +439,7 @@ public class AuthorityUser implements Serializable {
      * @setIdCardFirst:ID_CARD_FIRST的set方法
      * @param idCardFirst
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setIdCardFirst(String idCardFirst){
@@ -452,7 +449,7 @@ public class AuthorityUser implements Serializable {
      * @getIdCardSecond:ID_CARD_SECOND的get方法
      * @params
      * @return idCardSecond
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getIdCardSecond(){
@@ -462,7 +459,7 @@ public class AuthorityUser implements Serializable {
      * @setIdCardSecond:ID_CARD_SECOND的set方法
      * @param idCardSecond
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setIdCardSecond(String idCardSecond){
@@ -472,7 +469,7 @@ public class AuthorityUser implements Serializable {
      * @getCertificate:CERTIFICATE的get方法
      * @params
      * @return certificate
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getCertificate(){
@@ -482,7 +479,7 @@ public class AuthorityUser implements Serializable {
      * @setCertificate:CERTIFICATE的set方法
      * @param certificate
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setCertificate(String certificate){
@@ -492,7 +489,7 @@ public class AuthorityUser implements Serializable {
      * @getCreateTime:CREATE_TIME的get方法
      * @params
      * @return createTime
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public Timestamp getCreateTime(){
@@ -502,7 +499,7 @@ public class AuthorityUser implements Serializable {
      * @setCreateTime:CREATE_TIME的set方法
      * @param createTime
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setCreateTime(Timestamp createTime){
@@ -512,7 +509,7 @@ public class AuthorityUser implements Serializable {
      * @getUpdateTime:UPDATE_TIME的get方法
      * @params
      * @return updateTime
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public Timestamp getUpdateTime(){
@@ -522,7 +519,7 @@ public class AuthorityUser implements Serializable {
      * @setUpdateTime:UPDATE_TIME的set方法
      * @param updateTime
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setUpdateTime(Timestamp updateTime){
@@ -532,7 +529,7 @@ public class AuthorityUser implements Serializable {
      * @getFinishTime:FINISH_TIME的get方法
      * @params
      * @return finishTime
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public Timestamp getFinishTime(){
@@ -542,7 +539,7 @@ public class AuthorityUser implements Serializable {
      * @setFinishTime:FINISH_TIME的set方法
      * @param finishTime
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setFinishTime(Timestamp finishTime){
@@ -552,7 +549,7 @@ public class AuthorityUser implements Serializable {
      * @getUserIcon:USER_ICON的get方法
      * @params
      * @return userIcon
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getUserIcon(){
@@ -562,7 +559,7 @@ public class AuthorityUser implements Serializable {
      * @setUserIcon:USER_ICON的set方法
      * @param userIcon
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setUserIcon(String userIcon){
@@ -572,7 +569,7 @@ public class AuthorityUser implements Serializable {
      * @getRemark:REMARK的get方法
      * @params
      * @return remark
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public String getRemark(){
@@ -582,7 +579,7 @@ public class AuthorityUser implements Serializable {
      * @setRemark:REMARK的set方法
      * @param remark
      * @return
-     * @date 2021-02-02 11:49:33
+     * @date 2021-02-03 10:53:02
      * @author 18511
      */
     public void setRemark(String remark){
@@ -625,11 +622,11 @@ public class AuthorityUser implements Serializable {
 		} else if (!userAccount.equals(other.userAccount)) {
 			return false;
 		}
-		if (_password == null) {
-			if (other._password != null) {
+		if (userPsw == null) {
+			if (other.userPsw != null) {
 				return false;
 			}
-		} else if (!_password.equals(other._password)) {
+		} else if (!userPsw.equals(other.userPsw)) {
 			return false;
 		}
 		if (openId == null) {
@@ -769,7 +766,7 @@ public class AuthorityUser implements Serializable {
 		return "AuthorityUser ["
 			+ ", id=" + id
 			+ ", userAccount=" + userAccount
-			+ ", _password=" + _password
+			+ ", userPsw=" + userPsw
 			+ ", openId=" + openId
 			+ ", userName=" + userName
 			+ ", userDesc=" + userDesc

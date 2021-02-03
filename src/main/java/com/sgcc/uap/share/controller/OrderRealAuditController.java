@@ -1,8 +1,12 @@
 package com.sgcc.uap.share.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +18,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.util.WebUtils;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.rest.annotation.ColumnRequestParam;
 import com.sgcc.uap.rest.annotation.QueryRequestParam;
 import com.sgcc.uap.rest.annotation.attribute.ViewAttributeData;
-import com.sgcc.uap.rest.support.FormRequestObject;
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
@@ -30,6 +37,7 @@ import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.services.IOrderRealAuditService;
 import com.sgcc.uap.share.vo.OrderRealAuditVO;
+import com.sgcc.uap.util.JsonUtils;
 
 
 /**
@@ -115,18 +123,28 @@ public class OrderRealAuditController {
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public WrappedResult saveOrUpdate(@RequestBody FormRequestObject<Map<String,Object>> params) {
+	public WrappedResult saveOrUpdate(
+		@RequestParam(value = "items", required = false) String items
+		,HttpServletRequest request
+		) throws IOException {
 		try {
-			if(params == null){
-				throw new NullArgumentException("params");
-			}
+			MultipartFile idCardFirst = null;
+			MultipartFile idCardSecond = null;
+	        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+	        if (isMultipart){ 
+	            MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
+	            idCardFirst = multipartRequest.getFile("idCardFirst");
+	            idCardSecond = multipartRequest.getFile("idCardSecond");
+	        }
+			
+			
 			QueryResultObject result = new QueryResultObject();
-			List<Map<String,Object>> items = params.getItems();
+			
 			if(items != null && !items.isEmpty()){
-				for(Map<String,Object> map : items){
-					result.setFormItems(orderRealAuditService.saveOrderRealAudit(map));
-				}
+				Map<String,Object> map = JsonUtils.parseJSONstr2Map(items); 
+				result.setFormItems(orderRealAuditService.saveOrderRealAudit(map,idCardFirst,idCardSecond));
 			}
+			
 			logger.info("保存数据成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (ServiceValidatorBaseException e) {

@@ -30,10 +30,10 @@ public class AuthorityUserVO extends ParentVO implements Serializable{
     @ViewAttribute(name ="userAccount",caption="USER_ACCOUNT", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String userAccount;    
     /** 
-     * 属性PASSWORD
+     * 属性USER_PSW
      */  
-    @ViewAttribute(name ="_password",caption="PASSWORD", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String _password;    
+    @ViewAttribute(name ="userPsw",caption="USER_PSW", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
+    private String userPsw;    
     /** 
      * 属性OPEN_ID
      */  
@@ -170,18 +170,18 @@ public class AuthorityUserVO extends ParentVO implements Serializable{
 		this.userAccount = userAccount;
 	} 
     /**
-     * PASSWORD的get方法
-     * @return _password
+     * USER_PSW的get方法
+     * @return userPsw
      */
-    public String get_password(){
-        return _password;
+    public String getUserPsw(){
+        return userPsw;
     }
     /**
-     * PASSWORD的set方法
-     * @param _password
+     * USER_PSW的set方法
+     * @param userPsw
      */
-    public void set_password(String _password){
-		this._password = _password;
+    public void setUserPsw(String userPsw){
+		this.userPsw = userPsw;
 	} 
     /**
      * OPEN_ID的get方法
@@ -445,7 +445,7 @@ public class AuthorityUserVO extends ParentVO implements Serializable{
 		  return new StringBuffer()
 	  			.append("ID"+":"+getId())
 				.append("USER_ACCOUNT"+":"+getUserAccount())
-				.append("PASSWORD"+":"+get_password())
+				.append("USER_PSW"+":"+getUserPsw())
 				.append("OPEN_ID"+":"+getOpenId())
 				.append("USER_NAME"+":"+getUserName())
 				.append("USER_DESC"+":"+getUserDesc())

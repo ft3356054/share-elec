@@ -19,7 +19,7 @@ public class AuthorityUserTransfer {
 	 * @toPO:vo转为po
 	 * @param vo vo对象
 	 * @return AuthorityUser AuthorityUser对象
-	 * @date 2021-02-02 11:49:33
+	 * @date 2021-02-03 10:53:04
 	 * @author 18511
 	 */
 	public static AuthorityUser toPO(AuthorityUserVO vo) {
@@ -27,7 +27,7 @@ public class AuthorityUserTransfer {
 		if(vo != null){
 			authorityUser.setId(vo.getId());
 			authorityUser.setUserAccount(vo.getUserAccount());
-			authorityUser.set_password(vo.get_password());
+			authorityUser.setUserPsw(vo.getUserPsw());
 			authorityUser.setOpenId(vo.getOpenId());
 			authorityUser.setUserName(vo.getUserName());
 			authorityUser.setUserDesc(vo.getUserDesc());
@@ -53,14 +53,14 @@ public class AuthorityUserTransfer {
 	 * @toVO:po转为vo
 	 * @param po po对象
 	 * @return AuthorityUserVO AuthorityUserVO对象
-	 * @date 2021-02-02 11:49:33
+	 * @date 2021-02-03 10:53:04
 	 * @author 18511
 	 */
 	public static AuthorityUserVO toVO(AuthorityUser po) {
 		AuthorityUserVO vo = new AuthorityUserVO();
 		vo.setId(po.getId());
 		vo.setUserAccount(po.getUserAccount());
-		vo.set_password(po.get_password());
+		vo.setUserPsw(po.getUserPsw());
 		vo.setOpenId(po.getOpenId());
 		vo.setUserName(po.getUserName());
 		vo.setUserDesc(po.getUserDesc());

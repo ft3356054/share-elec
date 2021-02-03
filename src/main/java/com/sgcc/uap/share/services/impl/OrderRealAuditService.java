@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.services.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.mdd.runtime.validate.ValidateService;
@@ -27,7 +29,8 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.domain.OrderRealAudit;
 import com.sgcc.uap.share.repositories.OrderRealAuditRepository;
 import com.sgcc.uap.share.services.IOrderRealAuditService;
-import com.sgcc.uap.utils.string.StringUtil;
+import com.sgcc.uap.util.DateTimeUtil;
+import com.sgcc.uap.util.FileUtil;
 
 
 /**
@@ -65,7 +68,8 @@ public class OrderRealAuditService implements IOrderRealAuditService{
 		}
 	}
 	@Override
-	public OrderRealAudit saveOrderRealAudit(Map<String,Object> map) throws Exception{
+	public OrderRealAudit saveOrderRealAudit(Map<String,Object> map,
+			MultipartFile idCardFirst,MultipartFile idCardSecond) throws Exception{
 		validateService.validateWithException(OrderRealAudit.class,map);
 		OrderRealAudit orderRealAudit = new OrderRealAudit();
 		if (map.containsKey("orderId")) {
@@ -73,6 +77,15 @@ public class OrderRealAuditService implements IOrderRealAuditService{
 			orderRealAudit = orderRealAuditRepository.findOne(orderId);
 			CrudUtils.mapToObject(map, orderRealAudit,  "orderId");
 		}else{
+			String userId = (String) map.get("userId");
+			//上传图片
+			if (null!=idCardFirst&&!"".equals(idCardFirst)&&null!=idCardSecond&&!"".equals(idCardSecond)) {
+				map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
+				String idCardFirstUrl = FileUtil.uploadFile(idCardFirst, userId,"AUTHORITY_USER","idCardFirst");
+				map.put("idCardFirst", idCardFirstUrl);
+				String idCardSecondUrl = FileUtil.uploadFile(idCardSecond, userId,"AUTHORITY_USER","idCardSecond");
+				map.put("idCardSecond", idCardSecondUrl);
+			}
 			CrudUtils.transMap2Bean(map, orderRealAudit);
 		}
 		return orderRealAuditRepository.save(orderRealAudit);

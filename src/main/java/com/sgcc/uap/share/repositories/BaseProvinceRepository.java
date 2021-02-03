@@ -1,5 +1,7 @@
 package com.sgcc.uap.share.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -17,5 +19,5 @@ import com.sgcc.uap.share.domain.BaseProvince;
  */
 public interface BaseProvinceRepository extends JpaRepository<BaseProvince,String>,JpaSpecificationExecutor<BaseProvince> {
 
-	
+	public List<BaseProvince> findAllByOrderByProvinceId();
 }

@@ -89,7 +89,7 @@ public class UuidUtil {
 		//System.out.println(UuidUtil.getUuid36());
 		//System.out.println(UuidUtil.getUuid32());
 		for(int i =0;i<10 ;i++)
-		System.out.println(UuidUtil.getIntUuid32());
+		System.out.println(randomIntegerString(6));
 		
 	}
 	

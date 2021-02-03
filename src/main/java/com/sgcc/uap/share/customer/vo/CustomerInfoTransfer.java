@@ -28,8 +28,6 @@ public class CustomerInfoTransfer {
 			customerInfo.setCustomerId(vo.getCustomerId());
 			customerInfo.setCustomerName(vo.getCustomerName());
 			customerInfo.setCustomerPhonenumber(vo.getCustomerPhonenumber());
-			customerInfo.setAddressLongitude(vo.getAddressLongitude());
-			customerInfo.setAddressLatitude(vo.getAddressLatitude());
 			customerInfo.setIdentityId(vo.getIdentityId());
 			customerInfo.setCustomerScore(vo.getCustomerScore());
 			customerInfo.setRemark(vo.getRemark());
@@ -52,8 +50,6 @@ public class CustomerInfoTransfer {
 		vo.setCustomerId(po.getCustomerId());
 		vo.setCustomerName(po.getCustomerName());
 		vo.setCustomerPhonenumber(po.getCustomerPhonenumber());
-		vo.setAddressLongitude(po.getAddressLongitude());
-		vo.setAddressLatitude(po.getAddressLatitude());
 		vo.setIdentityId(po.getIdentityId());
 		vo.setCustomerScore(po.getCustomerScore());
 		vo.setRemark(po.getRemark());

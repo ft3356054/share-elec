@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.services.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.sgcc.uap.exception.NullArgumentException;
@@ -24,10 +26,12 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.customer.services.ICustomerInfoService;
 import com.sgcc.uap.share.domain.AuthorityUser;
 import com.sgcc.uap.share.repositories.AuthorityUserRepository;
 import com.sgcc.uap.share.services.IAuthorityUserService;
-import com.sgcc.uap.utils.string.StringUtil;
+import com.sgcc.uap.util.Md5Util;
+import com.sgcc.uap.util.UuidUtil;
 
 
 /**
@@ -48,12 +52,23 @@ public class AuthorityUserService implements IAuthorityUserService{
 	private AuthorityUserRepository authorityUserRepository;
 	@Autowired
 	private ValidateService validateService;
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
+	@Autowired
+	private ICustomerInfoService customerInfoService;
 	
 	@Override
 	public QueryResultObject getAuthorityUserById(String id) {
 		AuthorityUser authorityUser = authorityUserRepository.findOne(id);
 		return RestUtils.wrappQueryResult(authorityUser);
 	}
+	
+	@Override
+	public AuthorityUser queryAuthorityUser(String userAccount, String userPsw) {
+		AuthorityUser authorityUser = authorityUserRepository.findByUserAccountAndUserPsw(userAccount,userPsw);
+		return authorityUser;
+	}
+	
 	@Override
 	public void remove(IDRequestObject idObject) {
 		if(idObject == null){
@@ -73,7 +88,34 @@ public class AuthorityUserService implements IAuthorityUserService{
 			authorityUser = authorityUserRepository.findOne(id);
 			CrudUtils.mapToObject(map, authorityUser,  "id");
 		}else{
-			CrudUtils.transMap2Bean(map, authorityUser);
+			String phonenumber = (String) map.get("phonenumber");
+			String authCode = (String) map.get("authCode");
+			String redisAuthCode = stringRedisTemplate.opsForValue().get("phonenum"+phonenumber);
+			
+			if(authCode.equals(redisAuthCode)){
+				String getNewId = UuidUtil.getIntUuid32();
+				map.put("id", getNewId);
+				map.put("userAccount", phonenumber);
+				String _password = (String) map.get("userPsw");
+				//密码加密
+				String password = Md5Util.string2MD5(_password);
+				map.put("userPsw", password);
+				CrudUtils.transMap2Bean(map, authorityUser);
+				
+				Map<String, Object> customerInfoMap = new HashMap<String, Object>();
+				customerInfoMap.put("customerId", getNewId);
+				customerInfoMap.put("customerPhonenumber", phonenumber);
+				customerInfoMap.put("provinceId", null);
+				customerInfoMap.put("cityId", null);
+				customerInfoMap.put("areaId", null);
+				customerInfoMap.put("realNameAuth", "1");
+				
+				customerInfoService.saveCustomerInfo(customerInfoMap);
+				
+			}else{
+				throw new Exception("验证码错误或验证码已过期");
+			}
+			
 		}
 		return authorityUserRepository.save(authorityUser);
 	}
@@ -222,6 +264,7 @@ public class AuthorityUserService implements IAuthorityUserService{
 		}
 		return new PageRequest(pageIndex - 1, pageSize, null);
 	}
+	
 
 
 }

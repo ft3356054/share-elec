@@ -115,21 +115,18 @@ public class CustomerInfoService implements ICustomerInfoService{
 	}
 	
 	@Override
+	@Transactional
 	public CustomerInfo saveCustomerInfo(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(CustomerInfo.class,map);
-		CustomerInfo customerInfo = null;
-		if (map.containsKey("customerId")) {
-			String customerId = (String) map.get("customerId");
-			customerInfo = customerInfoRepository.findOne(customerId);
-			if(null!=customerInfo){
-				CrudUtils.mapToObject(map, customerInfo,  "customerId");
-			}else{
-				customerInfo = new CustomerInfo();
-				CrudUtils.transMap2Bean(map, customerInfo);
-			}
-		}else{
+		
+		String customerId = (String) map.get("customerId");
+		CustomerInfo customerInfo = customerInfoRepository.findOne(customerId);
+		
+		if(null==customerInfo||"".equals(customerInfo)){
 			customerInfo = new CustomerInfo();
 			CrudUtils.transMap2Bean(map, customerInfo);
+		}else{
+			CrudUtils.mapToObject(map, customerInfo,  "customerId");
 		}
 		return customerInfoRepository.save(customerInfo);
 	}

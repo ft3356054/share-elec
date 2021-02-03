@@ -2,6 +2,7 @@ package com.sgcc.uap.share.services;
 
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
@@ -43,7 +44,7 @@ public interface IOrderRealAuditService {
 	 * @date 2021-02-02 11:49:33
 	 * @author 18511
 	 */
-	public OrderRealAudit saveOrderRealAudit(Map<String,Object> map) throws Exception;
+	public OrderRealAudit saveOrderRealAudit(Map<String,Object> map,MultipartFile idCardFirst,MultipartFile idCardSecond) throws Exception;
 	/**
 	 * @query:根据查询条件 查询
 	 * @param queryCondition 查询条件

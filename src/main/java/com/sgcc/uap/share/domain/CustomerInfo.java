@@ -4,12 +4,9 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -29,8 +26,8 @@ public class CustomerInfo implements Serializable {
      * CUSTOMER_ID
      */
 	@Id
-	@GeneratedValue(generator = "idGenerator")
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")
+	/*@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "uuid")*/
     @Column(name = "CUSTOMER_ID", nullable = false, length = 64)
     private String customerId ;
     
@@ -47,16 +44,22 @@ public class CustomerInfo implements Serializable {
     private String customerPhonenumber ;
     
     /** 
-     * ADDRESS_LONGITUDE
+     * PROVINCE_ID
      */
-    @Column(name = "ADDRESS_LONGITUDE", nullable = true, length = 32)
-    private String addressLongitude ;
+    @Column(name = "PROVINCE_ID", nullable = true, length = 8)
+    private int provinceId ;
     
     /** 
-     * ADDRESS_LATITUDE
+     * CITY_ID
      */
-    @Column(name = "ADDRESS_LATITUDE", nullable = true, length = 32)
-    private String addressLatitude ;
+    @Column(name = "CITY_ID", nullable = true, length = 8)
+    private int cityId ;
+    
+    /** 
+     * AREA_ID
+     */
+    @Column(name = "AREA_ID", nullable = true, length = 8)
+    private int areaId ;
     
     /** 
      * IDENTITY_ID
@@ -179,46 +182,25 @@ public class CustomerInfo implements Serializable {
     public void setCustomerPhonenumber(String customerPhonenumber){
 		this.customerPhonenumber = customerPhonenumber;
 	} 
-    /**
-     * @getAddressLongitude:ADDRESS_LONGITUDE的get方法
-     * @params
-     * @return addressLongitude
-     * @date 2020-12-17 17:42:20
-     * @author 18511
-     */
-    public String getAddressLongitude(){
-        return this.addressLongitude;
-    }
-    /**
-     * @setAddressLongitude:ADDRESS_LONGITUDE的set方法
-     * @param addressLongitude
-     * @return
-     * @date 2020-12-17 17:42:20
-     * @author 18511
-     */
-    public void setAddressLongitude(String addressLongitude){
-		this.addressLongitude = addressLongitude;
-	} 
-    /**
-     * @getAddressLatitude:ADDRESS_LATITUDE的get方法
-     * @params
-     * @return addressLatitude
-     * @date 2020-12-17 17:42:20
-     * @author 18511
-     */
-    public String getAddressLatitude(){
-        return this.addressLatitude;
-    }
-    /**
-     * @setAddressLatitude:ADDRESS_LATITUDE的set方法
-     * @param addressLatitude
-     * @return
-     * @date 2020-12-17 17:42:20
-     * @author 18511
-     */
-    public void setAddressLatitude(String addressLatitude){
-		this.addressLatitude = addressLatitude;
-	} 
+    
+    public int getProvinceId() {
+		return provinceId;
+	}
+	public void setProvinceId(int provinceId) {
+		this.provinceId = provinceId;
+	}
+	public int getCityId() {
+		return cityId;
+	}
+	public void setCityId(int cityId) {
+		this.cityId = cityId;
+	}
+	public int getAreaId() {
+		return areaId;
+	}
+	public void setAreaId(int areaId) {
+		this.areaId = areaId;
+	}
     /**
      * @getIdentityId:IDENTITY_ID的get方法
      * @params
@@ -409,20 +391,6 @@ public class CustomerInfo implements Serializable {
 		} else if (!customerPhonenumber.equals(other.customerPhonenumber)) {
 			return false;
 		}
-		if (addressLongitude == null) {
-			if (other.addressLongitude != null) {
-				return false;
-			}
-		} else if (!addressLongitude.equals(other.addressLongitude)) {
-			return false;
-		}
-		if (addressLatitude == null) {
-			if (other.addressLatitude != null) {
-				return false;
-			}
-		} else if (!addressLatitude.equals(other.addressLatitude)) {
-			return false;
-		}
 		if (identityId == null) {
 			if (other.identityId != null) {
 				return false;
@@ -484,8 +452,6 @@ public class CustomerInfo implements Serializable {
 			+ ", customerId=" + customerId
 			+ ", customerName=" + customerName
 			+ ", customerPhonenumber=" + customerPhonenumber
-			+ ", addressLongitude=" + addressLongitude
-			+ ", addressLatitude=" + addressLatitude
 			+ ", identityId=" + identityId
 			+ ", customerScore=" + customerScore
 			+ ", remark=" + remark

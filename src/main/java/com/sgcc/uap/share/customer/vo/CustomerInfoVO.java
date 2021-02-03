@@ -34,16 +34,6 @@ public class CustomerInfoVO extends ParentVO implements Serializable{
     @ViewAttribute(name ="customerPhonenumber",caption="CUSTOMER_PHONENUMBER", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
     private String customerPhonenumber;    
     /** 
-     * 属性ADDRESS_LONGITUDE
-     */  
-    @ViewAttribute(name ="addressLongitude",caption="ADDRESS_LONGITUDE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String addressLongitude;    
-    /** 
-     * 属性ADDRESS_LATITUDE
-     */  
-    @ViewAttribute(name ="addressLatitude",caption="ADDRESS_LATITUDE", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
-    private String addressLatitude;    
-    /** 
      * 属性IDENTITY_ID
      */  
     @ViewAttribute(name ="identityId",caption="IDENTITY_ID", editor=EditorType.TextEditor,nullable =true,readOnly=false, type=AttributeType.STRING)
@@ -136,34 +126,6 @@ public class CustomerInfoVO extends ParentVO implements Serializable{
      */
     public void setCustomerPhonenumber(String customerPhonenumber){
 		this.customerPhonenumber = customerPhonenumber;
-	} 
-    /**
-     * ADDRESS_LONGITUDE的get方法
-     * @return addressLongitude
-     */
-    public String getAddressLongitude(){
-        return addressLongitude;
-    }
-    /**
-     * ADDRESS_LONGITUDE的set方法
-     * @param addressLongitude
-     */
-    public void setAddressLongitude(String addressLongitude){
-		this.addressLongitude = addressLongitude;
-	} 
-    /**
-     * ADDRESS_LATITUDE的get方法
-     * @return addressLatitude
-     */
-    public String getAddressLatitude(){
-        return addressLatitude;
-    }
-    /**
-     * ADDRESS_LATITUDE的set方法
-     * @param addressLatitude
-     */
-    public void setAddressLatitude(String addressLatitude){
-		this.addressLatitude = addressLatitude;
 	} 
     /**
      * IDENTITY_ID的get方法
@@ -264,29 +226,6 @@ public class CustomerInfoVO extends ParentVO implements Serializable{
 		this.registeredNumber = registeredNumber;
 	} 
 
-    /**
-     * toString方法
-     * @return String
-     */
-	public String toString(){
-
-		  return new StringBuffer()
-	  			.append("CUSTOMER_ID"+":"+getCustomerId())
-				.append("CUSTOMER_NAME"+":"+getCustomerName())
-				.append("CUSTOMER_PHONENUMBER"+":"+getCustomerPhonenumber())
-				.append("ADDRESS_LONGITUDE"+":"+getAddressLongitude())
-				.append("ADDRESS_LATITUDE"+":"+getAddressLatitude())
-				.append("IDENTITY_ID"+":"+getIdentityId())
-				.append("CUSTOMER_SCORE"+":"+getCustomerScore())
-				.append("REMARK"+":"+getRemark())
-				.append("CUSTOMER_ADDRESS"+":"+getCustomerAddress())
-				.append("HEAD_ICON"+":"+getHeadIcon())
-				.append("REAL_NAME_AUTH"+":"+getRealNameAuth())
-				.append("REGISTERED_NUMBER"+":"+getRegisteredNumber())
-		        .toString(); 
-			
-    } 
-   
 
 
 }

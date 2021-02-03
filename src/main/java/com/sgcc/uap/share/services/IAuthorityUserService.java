@@ -52,6 +52,15 @@ public interface IAuthorityUserService {
 	 * @author 18511
 	 */
 	public QueryResultObject query(RequestCondition queryCondition);
+	
+	
+	/**
+	 * 登录
+	 * @param userAccount
+	 * @param _password
+	 * @return
+	 */
+	public AuthorityUser queryAuthorityUser(String userAccount,String _password);
 
 
 

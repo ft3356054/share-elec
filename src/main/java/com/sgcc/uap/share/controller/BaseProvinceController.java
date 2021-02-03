@@ -63,6 +63,24 @@ public class BaseProvinceController {
      */
 	@Autowired
 	private IBaseProvinceService baseProvinceService;
+	
+	
+	@RequestMapping("/queryAll/")
+	public WrappedResult queryAll() {
+		try {
+			QueryResultObject queryResult = baseProvinceService.queryAll();
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
 	/**
 	 * @getByProvinceId:根据provinceId查询
 	 * @param provinceId

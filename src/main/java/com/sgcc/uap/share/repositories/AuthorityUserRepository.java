@@ -17,5 +17,6 @@ import com.sgcc.uap.share.domain.AuthorityUser;
  */
 public interface AuthorityUserRepository extends JpaRepository<AuthorityUser,String>,JpaSpecificationExecutor<AuthorityUser> {
 
+	public AuthorityUser findByUserAccountAndUserPsw(String userAccount, String userPsw);
 	
 }
