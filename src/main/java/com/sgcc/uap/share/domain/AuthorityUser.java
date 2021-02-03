@@ -1,7 +1,6 @@
 package com.sgcc.uap.share.domain;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -126,19 +125,19 @@ public class AuthorityUser implements Serializable {
      * CREATE_TIME
      */
     @Column(name = "CREATE_TIME", nullable = true, length = 19)
-    private Timestamp createTime ;
+    private String createTime ;
     
     /** 
      * UPDATE_TIME
      */
     @Column(name = "UPDATE_TIME", nullable = true, length = 19)
-    private Timestamp updateTime ;
+    private String updateTime ;
     
     /** 
      * FINISH_TIME
      */
     @Column(name = "FINISH_TIME", nullable = true, length = 19)
-    private Timestamp finishTime ;
+    private String finishTime ;
     
     /** 
      * USER_ICON
@@ -492,7 +491,7 @@ public class AuthorityUser implements Serializable {
      * @date 2021-02-03 10:53:02
      * @author 18511
      */
-    public Timestamp getCreateTime(){
+    public String getCreateTime(){
         return this.createTime;
     }
     /**
@@ -502,7 +501,7 @@ public class AuthorityUser implements Serializable {
      * @date 2021-02-03 10:53:02
      * @author 18511
      */
-    public void setCreateTime(Timestamp createTime){
+    public void setCreateTime(String createTime){
 		this.createTime = createTime;
 	} 
     /**
@@ -512,7 +511,7 @@ public class AuthorityUser implements Serializable {
      * @date 2021-02-03 10:53:02
      * @author 18511
      */
-    public Timestamp getUpdateTime(){
+    public String getUpdateTime(){
         return this.updateTime;
     }
     /**
@@ -522,7 +521,7 @@ public class AuthorityUser implements Serializable {
      * @date 2021-02-03 10:53:02
      * @author 18511
      */
-    public void setUpdateTime(Timestamp updateTime){
+    public void setUpdateTime(String updateTime){
 		this.updateTime = updateTime;
 	} 
     /**
@@ -532,7 +531,7 @@ public class AuthorityUser implements Serializable {
      * @date 2021-02-03 10:53:02
      * @author 18511
      */
-    public Timestamp getFinishTime(){
+    public String getFinishTime(){
         return this.finishTime;
     }
     /**
@@ -542,7 +541,7 @@ public class AuthorityUser implements Serializable {
      * @date 2021-02-03 10:53:02
      * @author 18511
      */
-    public void setFinishTime(Timestamp finishTime){
+    public void setFinishTime(String finishTime){
 		this.finishTime = finishTime;
 	} 
     /**

@@ -19,4 +19,5 @@ public interface AuthorityUserRepository extends JpaRepository<AuthorityUser,Str
 
 	public AuthorityUser findByUserAccountAndUserPsw(String userAccount, String userPsw);
 	
+	public AuthorityUser findByUserAccount(String userAccount);
 }

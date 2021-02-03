@@ -1,8 +1,6 @@
 package com.sgcc.uap.share.vo;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-
 
 import com.sgcc.uap.rest.annotation.attribute.AttributeType;
 import com.sgcc.uap.rest.annotation.attribute.EditorType;
@@ -103,17 +101,17 @@ public class AuthorityUserVO extends ParentVO implements Serializable{
      * 属性CREATE_TIME
      */  
     @ViewAttribute(name ="createTime",caption="CREATE_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp createTime;    
+    private String createTime;    
     /** 
      * 属性UPDATE_TIME
      */  
     @ViewAttribute(name ="updateTime",caption="UPDATE_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp updateTime;    
+    private String updateTime;    
     /** 
      * 属性FINISH_TIME
      */  
     @ViewAttribute(name ="finishTime",caption="FINISH_TIME", editor=EditorType.DateTimeEditor,nullable =true,readOnly=false, type=AttributeType.TIMESTAMP)
-    private Timestamp finishTime;    
+    private String finishTime;    
     /** 
      * 属性USER_ICON
      */  
@@ -369,42 +367,42 @@ public class AuthorityUserVO extends ParentVO implements Serializable{
      * CREATE_TIME的get方法
      * @return createTime
      */
-    public Timestamp getCreateTime(){
+    public String getCreateTime(){
         return createTime;
     }
     /**
      * CREATE_TIME的set方法
      * @param createTime
      */
-    public void setCreateTime(Timestamp createTime){
+    public void setCreateTime(String createTime){
 		this.createTime = createTime;
 	} 
     /**
      * UPDATE_TIME的get方法
      * @return updateTime
      */
-    public Timestamp getUpdateTime(){
+    public String getUpdateTime(){
         return updateTime;
     }
     /**
      * UPDATE_TIME的set方法
      * @param updateTime
      */
-    public void setUpdateTime(Timestamp updateTime){
+    public void setUpdateTime(String updateTime){
 		this.updateTime = updateTime;
 	} 
     /**
      * FINISH_TIME的get方法
      * @return finishTime
      */
-    public Timestamp getFinishTime(){
+    public String getFinishTime(){
         return finishTime;
     }
     /**
      * FINISH_TIME的set方法
      * @param finishTime
      */
-    public void setFinishTime(Timestamp finishTime){
+    public void setFinishTime(String finishTime){
 		this.finishTime = finishTime;
 	} 
     /**

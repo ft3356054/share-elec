@@ -73,6 +73,40 @@ public class LoginController {
 	private StringRedisTemplate stringRedisTemplate;
 	
 	
+	@RequestMapping(value = "/authCodeVerify", method = RequestMethod.POST)
+	public WrappedResult authCodeVerify(@RequestBody FormRequestObject<Map<String,Object>> params) {
+		try {
+			if(params == null){
+				throw new NullArgumentException("params");
+			}
+			QueryResultObject result = new QueryResultObject();
+			List<Map<String,Object>> items = params.getItems();
+			if(items != null && !items.isEmpty()){
+				Map<String,Object> map = items.get(0);
+				String userAccount = (String) map.get("phonenumber");
+				String authCode = (String) map.get("authCode");
+				
+				String redisAuthCode = stringRedisTemplate.opsForValue().get("phonenum"+userAccount);
+				
+				if(authCode.equals(redisAuthCode)){
+					return WrappedResult.successWrapedResult(result);
+				}else{
+					throw new Exception("验证码错误或验证码已过期");
+				}
+			}else{
+				throw new Exception("发送参数错误");
+			}
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public WrappedResult userLogin(@RequestBody FormRequestObject<Map<String,Object>> params) {	
 		try {

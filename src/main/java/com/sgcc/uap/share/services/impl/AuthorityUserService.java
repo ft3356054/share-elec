@@ -1,6 +1,7 @@
 package com.sgcc.uap.share.services.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import com.sgcc.uap.share.customer.services.ICustomerInfoService;
 import com.sgcc.uap.share.domain.AuthorityUser;
 import com.sgcc.uap.share.repositories.AuthorityUserRepository;
 import com.sgcc.uap.share.services.IAuthorityUserService;
+import com.sgcc.uap.util.DateTimeUtil;
 import com.sgcc.uap.util.Md5Util;
 import com.sgcc.uap.util.UuidUtil;
 
@@ -79,46 +81,53 @@ public class AuthorityUserService implements IAuthorityUserService{
 			authorityUserRepository.delete(id);
 		}
 	}
+	
 	@Override
 	public AuthorityUser saveAuthorityUser(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(AuthorityUser.class,map);
 		AuthorityUser authorityUser = new AuthorityUser();
-		if (map.containsKey("id")) {
-			String id = (String) map.get("id");
-			authorityUser = authorityUserRepository.findOne(id);
-			CrudUtils.mapToObject(map, authorityUser,  "id");
-		}else{
-			String phonenumber = (String) map.get("phonenumber");
-			String authCode = (String) map.get("authCode");
-			String redisAuthCode = stringRedisTemplate.opsForValue().get("phonenum"+phonenumber);
-			
-			if(authCode.equals(redisAuthCode)){
+		
+		String userAccount = (String) map.get("phonenumber");
+		String authCode = (String) map.get("authCode");
+		
+		String redisAuthCode = stringRedisTemplate.opsForValue().get("phonenum"+userAccount);
+		
+		if(authCode.equals(redisAuthCode)){
+			authorityUser = authorityUserRepository.findByUserAccount(userAccount);
+			if(null==authorityUser){
+				authorityUser = new AuthorityUser();
 				String getNewId = UuidUtil.getIntUuid32();
 				map.put("id", getNewId);
-				map.put("userAccount", phonenumber);
+				map.put("userAccount", userAccount);
 				String _password = (String) map.get("userPsw");
 				//密码加密
 				String password = Md5Util.string2MD5(_password);
 				map.put("userPsw", password);
+				map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
 				CrudUtils.transMap2Bean(map, authorityUser);
 				
 				Map<String, Object> customerInfoMap = new HashMap<String, Object>();
 				customerInfoMap.put("customerId", getNewId);
-				customerInfoMap.put("customerPhonenumber", phonenumber);
+				customerInfoMap.put("customerPhonenumber", userAccount);
 				customerInfoMap.put("provinceId", null);
 				customerInfoMap.put("cityId", null);
 				customerInfoMap.put("areaId", null);
 				customerInfoMap.put("realNameAuth", "1");
-				
 				customerInfoService.saveCustomerInfo(customerInfoMap);
-				
 			}else{
-				throw new Exception("验证码错误或验证码已过期");
+				String _password = (String) map.get("userPsw");
+				//密码加密
+				String password = Md5Util.string2MD5(_password);
+				map.put("userPsw", password);
+				map.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
+				CrudUtils.mapToObject(map, authorityUser,  "id");
 			}
-			
+		}else{
+			throw new Exception("验证码错误或验证码已过期");
 		}
 		return authorityUserRepository.save(authorityUser);
 	}
+	
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
 		if(queryCondition == null){

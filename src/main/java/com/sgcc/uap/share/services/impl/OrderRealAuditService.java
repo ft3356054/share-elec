@@ -2,6 +2,7 @@ package com.sgcc.uap.share.services.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.share.customer.services.ICustomerInfoService;
 import com.sgcc.uap.share.domain.OrderRealAudit;
 import com.sgcc.uap.share.repositories.OrderRealAuditRepository;
 import com.sgcc.uap.share.services.IOrderRealAuditService;
@@ -51,6 +53,8 @@ public class OrderRealAuditService implements IOrderRealAuditService{
 	private OrderRealAuditRepository orderRealAuditRepository;
 	@Autowired
 	private ValidateService validateService;
+	@Autowired
+	private ICustomerInfoService customerInfoService;
 	
 	@Override
 	public QueryResultObject getOrderRealAuditByOrderId(String orderId) {
@@ -86,6 +90,12 @@ public class OrderRealAuditService implements IOrderRealAuditService{
 				String idCardSecondUrl = FileUtil.uploadFile(idCardSecond, userId,"AUTHORITY_USER","idCardSecond");
 				map.put("idCardSecond", idCardSecondUrl);
 			}
+			//修改客户表实名认证状态
+			Map<String,Object> customerInfoMap = new HashMap<String,Object>();
+			customerInfoMap.put("customerId", userId);
+			customerInfoMap.put("realNameAuth", "2");
+			customerInfoService.saveCustomerInfo(customerInfoMap);
+			
 			CrudUtils.transMap2Bean(map, orderRealAudit);
 		}
 		return orderRealAuditRepository.save(orderRealAudit);
