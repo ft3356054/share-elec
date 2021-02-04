@@ -41,7 +41,6 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.controller.WebSocketServer;
-import com.sgcc.uap.share.customer.bo.OrderCustomerMoreVO;
 import com.sgcc.uap.share.customer.repositories.OrderCustomerRepository;
 import com.sgcc.uap.share.customer.services.impl.CustPositionService;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerHisService;
@@ -53,7 +52,6 @@ import com.sgcc.uap.share.domain.CustPosition;
 import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
 import com.sgcc.uap.share.domain.ElectricianInfo;
-
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderCustomerHis;
 import com.sgcc.uap.share.domain.OrderElectrician;
@@ -593,11 +591,11 @@ public QueryResultObject queryAllDoing(String electricianId) {
 		if (flowstatusList.contains(orderElectrician.getOrderElectricianStatus())) {
 			Map<String,Object> mapNotify =
 					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", EnumsB, baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
-							notifyType,orderElectrician.getOrDERId(),"");
+							notifyType,"");
 			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 			
 			Map<String,Object> mapNotifyUser = 
-					MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+					MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD(),orderElectrician.getOrDERId());
 			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 			
 		}
@@ -690,11 +688,11 @@ public QueryResultObject queryAllDoing(String electricianId) {
 			
 			Map<String,Object> mapNotify =
 					MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
-							notifyType,orderCustomer.getOrderId(),"");
+							notifyType,"");
 			notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 			
 			Map<String,Object> mapNotifyUser = 
-					MapUtil.notifyUserAdd(orderCustomer.getCustomerId(), announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+					MapUtil.notifyUserAdd(orderCustomer.getCustomerId(), announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD(),orderCustomer.getOrderId());
 			notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 
 			
@@ -1460,11 +1458,11 @@ public QueryResultObject queryAllElectrician(String electricianId) {
 				
 				Map<String,Object> mapNotify =
 						MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), "您已有未完成的订单", TimeStamp.toString(new Date()), 
-								notifyType,orderId,"");
+								notifyType,"");
 				notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 				
 				Map<String,Object> mapNotifyUser = 
-						MapUtil.notifyUserAdd(electricianId, announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+						MapUtil.notifyUserAdd(electricianId, announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD(),orderId);
 				notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 
 				//通过电工的ID给电工发送消息

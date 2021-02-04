@@ -46,12 +46,11 @@ public class MapUtil {
 	 * @param content
 	 * @param createTime
 	 * @param notifyType 1维修 2支付 3验收 4评价 5系统
-	 * @param orderId 
 	 * @param remark
 	 * @return
 	 */
 	public static Map<String,Object> notifyAdd(String announceId,String serderId,String title,String content,
-			String createTime,String notifyType,String orderId,String remark){
+			String createTime,String notifyType,String remark){
 		Map<String,Object> mapNotify = new HashMap<String,Object>();
 		mapNotify.put("announceId",announceId);
 		mapNotify.put("serderId", serderId);
@@ -59,7 +58,7 @@ public class MapUtil {
 		mapNotify.put("content", content);
 		mapNotify.put("createTime", createTime);
 		mapNotify.put("notifyType", notifyType);
-		mapNotify.put("orderId", orderId);
+		//mapNotify.put("orderId", orderId);
 		mapNotify.put("remark", remark);
 		return mapNotify;
 	}
@@ -72,16 +71,18 @@ public class MapUtil {
 	 * @param state 阅读状态  0未阅读 1已阅读 
 	 * @param createTime 创建时间
 	 * @param remark
+	 * @param orderId 
 	 * @return
 	 */
 	public static Map<String,Object> notifyUserAdd(String announceUserId,String announceId,int recipientType,
-			int state,String createTime,String remark){
+			int state,String createTime,String remark,String orderId){
 		Map<String,Object> mapNotifyUser = new HashMap<String,Object>();
 		mapNotifyUser.put("announceUserId", announceUserId);
 		mapNotifyUser.put("announceId", announceId);
 		mapNotifyUser.put("recipientType", recipientType);
 		mapNotifyUser.put("state", state);
 		mapNotifyUser.put("createTime", createTime);
+		mapNotifyUser.put("orderId", orderId);
 		//mapNotifyUser.put("readTime", "");
 		mapNotifyUser.put("remark", remark);
 		return mapNotifyUser;

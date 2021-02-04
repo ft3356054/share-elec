@@ -715,11 +715,11 @@ public class OrderCustomerService implements IOrderCustomerService{
 				
 				Map<String,Object> mapNotify =
 						MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), 
-								notifyType,orderElectrician.getOrDERId(),"");
+								notifyType,"");
 				notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 				
 				Map<String,Object> mapNotifyUser = 
-						MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+						MapUtil.notifyUserAdd(orderElectrician.getElectricianId(), announceId, Integer.parseInt(getPeople), 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD(),orderElectrician.getOrDERId());
 				notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 				
 				//发送websocket消息

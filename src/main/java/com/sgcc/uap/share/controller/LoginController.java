@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cloopen.rest.sdk.BodyType;
 import com.cloopen.rest.sdk.CCPRestSmsSDK;
-import com.sgcc.uap.constant.CookieConstant;
-import com.sgcc.uap.constant.RedisConstant;
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.rest.support.FormRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
@@ -38,6 +36,8 @@ import com.sgcc.uap.share.domain.CustomerInfo;
 import com.sgcc.uap.share.domain.LoginBackInfo;
 import com.sgcc.uap.share.electrician.services.IElecPositionService;
 import com.sgcc.uap.share.services.IAuthorityUserService;
+import com.sgcc.uap.sys.constant.CookieConstant;
+import com.sgcc.uap.sys.constant.RedisConstant;
 import com.sgcc.uap.util.CookieUtil;
 import com.sgcc.uap.util.Md5Util;
 import com.sgcc.uap.util.UuidUtil;

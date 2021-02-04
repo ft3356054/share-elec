@@ -96,11 +96,11 @@ public class AutoSendOrderTask{
 							String announceId = UuidUtil.getUuid32();
 							Map<String,Object> mapNotify =
 									MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(),dateString, 
-											"5",orderCustomer.getOrderId(),"");
+											"5","");
 							notifyAnnounceService.saveNotifyAnnounce(mapNotify);
 							
 							Map<String,Object> mapNotifyUser = 
-									MapUtil.notifyUserAdd(orderCustomer.getCustomerId(), announceId, 1, 0, dateString, baseEnums.getEnumsD());
+									MapUtil.notifyUserAdd(orderCustomer.getCustomerId(), announceId, 1, 0, dateString, baseEnums.getEnumsD(),orderCustomer.getOrderId());
 							notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 							
 							//发送websocket消息

@@ -1,4 +1,4 @@
-package com.sgcc.uap.encrypt;
+package com.sgcc.uap.sys.encrypt;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

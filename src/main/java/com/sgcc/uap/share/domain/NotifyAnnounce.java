@@ -62,12 +62,6 @@ public class NotifyAnnounce implements Serializable {
     private String notifyType ;
     
     /** 
-     * ORDER_ID
-     */
-    @Column(name = "ORDER_ID", nullable = true, length = 64)
-    private String orderId ;
-    
-    /** 
      * REMARK
      */
     @Column(name = "REMARK", nullable = true, length = 512)
@@ -207,26 +201,6 @@ public class NotifyAnnounce implements Serializable {
 		this.notifyType = notifyType;
 	} 
     /**
-     * @getOrderId:ORDER_ID的get方法
-     * @params
-     * @return orderId
-     * @date 2020-12-15 09:47:12
-     * @author 18511
-     */
-    public String getOrderId(){
-        return this.orderId;
-    }
-    /**
-     * @setOrderId:ORDER_ID的set方法
-     * @param orderId
-     * @return
-     * @date 2020-12-15 09:47:12
-     * @author 18511
-     */
-    public void setOrderId(String orderId){
-		this.orderId = orderId;
-	} 
-    /**
      * @getRemark:REMARK的get方法
      * @params
      * @return remark
@@ -311,20 +285,6 @@ public class NotifyAnnounce implements Serializable {
 		} else if (!notifyType.equals(other.notifyType)) {
 			return false;
 		}
-		if (orderId == null) {
-			if (other.orderId != null) {
-				return false;
-			}
-		} else if (!orderId.equals(other.orderId)) {
-			return false;
-		}
-		if (remark == null) {
-			if (other.remark != null) {
-				return false;
-			}
-		} else if (!remark.equals(other.remark)) {
-			return false;
-		}
 		return true;
 	}
     
@@ -340,7 +300,6 @@ public class NotifyAnnounce implements Serializable {
 			+ ", content=" + content
 			+ ", createTime=" + createTime
 			+ ", notifyType=" + notifyType
-			+ ", orderId=" + orderId
 			+ ", remark=" + remark;
 	}
    

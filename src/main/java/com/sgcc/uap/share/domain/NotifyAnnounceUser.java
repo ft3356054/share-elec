@@ -75,7 +75,11 @@ public class NotifyAnnounceUser implements Serializable {
      */
     @Column(name = "REMARK", nullable = true, length = 512)
     private String remark ;
-    
+    /** 
+     * ORDER_ID
+     */
+    @Column(name = "ORDER_ID", nullable = true, length = 64)
+    private String orderId ;
 	/**
 	  *虚拟主键
 	  */
@@ -85,7 +89,16 @@ public class NotifyAnnounceUser implements Serializable {
 	public NotifyAnnounceUser(){
 	
 	}
-    /**
+	
+    public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+
+	/**
      * @getId:ID的get方法
      * @params
      * @return id

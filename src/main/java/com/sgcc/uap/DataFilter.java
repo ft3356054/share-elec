@@ -13,8 +13,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.sgcc.uap.encrypt.WrapperedRequest;
-import com.sgcc.uap.encrypt.WrapperedResponse;
+import com.sgcc.uap.sys.encrypt.WrapperedRequest;
+import com.sgcc.uap.sys.encrypt.WrapperedResponse;
 
 //@Component
 //@WebFilter(urlPatterns = { "/*" }, filterName = "DataFilter")

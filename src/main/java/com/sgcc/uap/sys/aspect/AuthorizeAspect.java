@@ -1,4 +1,4 @@
-package com.sgcc.uap.aspect;
+package com.sgcc.uap.sys.aspect;
 
 
 import javax.servlet.http.Cookie;
@@ -16,10 +16,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cloopen.rest.sdk.utils.StringUtils;
-import com.sgcc.uap.constant.CookieConstant;
-import com.sgcc.uap.constant.RedisConstant;
-import com.sgcc.uap.exception.ExceptionEnum;
-import com.sgcc.uap.exception.ReturnException;
+import com.sgcc.uap.sys.constant.CookieConstant;
+import com.sgcc.uap.sys.constant.RedisConstant;
+import com.sgcc.uap.sys.exception.ExceptionEnum;
+import com.sgcc.uap.sys.exception.ReturnException;
 import com.sgcc.uap.util.CookieUtil;
 
 

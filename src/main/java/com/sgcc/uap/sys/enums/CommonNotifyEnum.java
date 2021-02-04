@@ -1,14 +1,13 @@
-package com.sgcc.uap.share.enums;
+package com.sgcc.uap.sys.enums;
 
 
 /*
+用于获取基础通知消息
 @Author: llb
-@Date : 2020/12/04 
-格式为： OrderFlow-remark&Notify-title&Notify-connect&Notify-remark
 */
-public enum  CustomerEnum {
+public enum  CommonNotifyEnum {
 
-    CREATE(0, "新增orderCustomer订单&待付勘察费&您已下单，请支付勘察费&新增客户待付款通知"),
+    CUSTOMER_PAY_SUBSCRIPTION(0,""),
 
     PAY_SERVICE_FEE(1, "等待接单（用户已支付上门费）&下单成功&已下单，等待电工接单&客户已付勘察费"),
     ;
@@ -17,7 +16,7 @@ public enum  CustomerEnum {
 
     private String message;
 
-    CustomerEnum(Integer code, String message) {
+    CommonNotifyEnum(Integer code, String message) {
         this.code = code;
         this.message = message;
     }

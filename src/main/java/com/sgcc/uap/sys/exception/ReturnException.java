@@ -1,4 +1,4 @@
-package com.sgcc.uap.exception;
+package com.sgcc.uap.sys.exception;
 
 /*
 @Author: llb

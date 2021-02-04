@@ -363,13 +363,13 @@ public class NotifyAnnounceService implements INotifyAnnounceService{
 					String announceId = UuidUtil.getUuid32();
 					
 					Map<String,Object> mapNotify =
-							MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), "1",orderId,baseEnums.getEnumsD());
+							MapUtil.notifyAdd(announceId, "SYSTEM_ADMIN", baseEnums.getEnumsB(), baseEnums.getEnumsC(), TimeStamp.toString(new Date()), "1",baseEnums.getEnumsD());
 					
 					saveNotifyAnnounce(mapNotify);
 					
 					
 					Map<String,Object> mapNotifyUser = 
-							MapUtil.notifyUserAdd(electricianId, announceId, 2, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD());
+							MapUtil.notifyUserAdd(electricianId, announceId, 2, 0, TimeStamp.toString(new Date()), baseEnums.getEnumsD(),orderId);
 					notifyAnnounceUserService.saveNotifyAnnounceUser(mapNotifyUser);
 					
 				}

@@ -1,4 +1,4 @@
-package com.sgcc.uap.constant;
+package com.sgcc.uap.sys.constant;
 
 /**
  * redis常量
