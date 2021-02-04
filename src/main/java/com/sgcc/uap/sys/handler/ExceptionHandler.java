@@ -2,12 +2,9 @@ package com.sgcc.uap.sys.handler;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.sgcc.uap.sys.exception.ReturnException;
-
-@ControllerAdvice
+//@ControllerAdvice
 public class ExceptionHandler {
 
     @Autowired
@@ -16,7 +13,7 @@ public class ExceptionHandler {
     //拦截登录异常
     //response.sendRedirect("http://127.0.0.1:8080/customer");
     //@ExceptionHandler(value = AuthorizeException.class)
-    @org.springframework.web.bind.annotation.ExceptionHandler(value = ReturnException.class)
+    //@org.springframework.web.bind.annotation.ExceptionHandler(value = ReturnException.class)
     public ModelAndView handlerAuthorizeException() {
     	System.out.println("**********************************拦截登录异常***************************************************");
         //concat只能接字符串。

@@ -16,6 +16,7 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
 import com.sgcc.uap.share.domain.OrderCustomer;
+import com.sgcc.uap.sys.enums.CommonNotifyEnum;
 import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.Md5Util;
 import com.sgcc.uap.utils.security.AESUtil;
@@ -115,11 +116,14 @@ public class RedisTestController {
     }
     
     public static void main(String[] args) throws Exception {
-    	String content = "{\"successful\":true,\"resultValue\":{\"itemCount\":0,\"items\":[{\"announceId\":\"089b56b5535042d5ab63898b7a97f1d7\",\"serderId\":\"ADMIN\",\"title\":\"待付勘察费\",\"content\":\"您已下单，请支付勘察费\",\"createTime\":1607998870000,\"notifyType\":\"2\",\"orderId\":\"2020121510205980fe3bd8444e4a0299ec131eefdf8d2e\",\"remark\":\"\",\"mxVirtualId\":null}],\"dicts\":[]},\"resultHint\":\"\",\"errorPage\":\"\",\"type\":\"\"}";
+    	/*String content = "{\"successful\":true,\"resultValue\":{\"itemCount\":0,\"items\":[{\"announceId\":\"089b56b5535042d5ab63898b7a97f1d7\",\"serderId\":\"ADMIN\",\"title\":\"待付勘察费\",\"content\":\"您已下单，请支付勘察费\",\"createTime\":1607998870000,\"notifyType\":\"2\",\"orderId\":\"2020121510205980fe3bd8444e4a0299ec131eefdf8d2e\",\"remark\":\"\",\"mxVirtualId\":null}],\"dicts\":[]},\"resultHint\":\"\",\"errorPage\":\"\",\"type\":\"\"}";
 		String keyseed = "321";
 		RedisTestController redisTestController = new RedisTestController();
 		redisTestController.aesAddMethod(content, keyseed);
-		redisTestController.md5AddMethod(content);
+		redisTestController.md5AddMethod(content);*/
+    	int a = CommonNotifyEnum.CUSTOMER_PAY_SUBSCRIPTION.getCode();
+    	String b = CommonNotifyEnum.CUSTOMER_PAY_SUBSCRIPTION.getMessage();
+    	System.out.println(a+";"+b);
 	}
     
     

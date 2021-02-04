@@ -7,7 +7,7 @@ package com.sgcc.uap.sys.enums;
 */
 public enum  CommonNotifyEnum {
 
-    CUSTOMER_PAY_SUBSCRIPTION(0,""),
+    CUSTOMER_PAY_SUBSCRIPTION(0,"8dc4014457e04fb484e039d69d8948aa"),
 
     PAY_SERVICE_FEE(1, "等待接单（用户已支付上门费）&下单成功&已下单，等待电工接单&客户已付勘察费"),
     ;
@@ -36,6 +36,5 @@ public enum  CommonNotifyEnum {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-    
     
 }
