@@ -44,6 +44,8 @@ public enum  ExceptionEnum {
     LOGIN_FAIL(25, "登录失败, 登录信息不正确"),
 
     LOGOUT_SUCCESS(26, "登出成功"),
+    
+    COOKIE_TIME_OUT(27, "登录过期，请重新登录"),
     ;
 
     private Integer code;

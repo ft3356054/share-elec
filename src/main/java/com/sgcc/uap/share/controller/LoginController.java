@@ -1,9 +1,10 @@
-package com.sgcc.uap.share.customer.controller;
+package com.sgcc.uap.share.controller;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cloopen.rest.sdk.BodyType;
 import com.cloopen.rest.sdk.CCPRestSmsSDK;
+import com.sgcc.uap.constant.CookieConstant;
+import com.sgcc.uap.constant.RedisConstant;
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.rest.support.FormRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
@@ -34,6 +38,7 @@ import com.sgcc.uap.share.domain.CustomerInfo;
 import com.sgcc.uap.share.domain.LoginBackInfo;
 import com.sgcc.uap.share.electrician.services.IElecPositionService;
 import com.sgcc.uap.share.services.IAuthorityUserService;
+import com.sgcc.uap.util.CookieUtil;
 import com.sgcc.uap.util.Md5Util;
 import com.sgcc.uap.util.UuidUtil;
 
@@ -71,6 +76,9 @@ public class LoginController {
 	
 	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
+	@SuppressWarnings("rawtypes")
+	@Autowired
+	private RedisTemplate redisTemplate;
 	
 	
 	@RequestMapping(value = "/authCodeVerify", method = RequestMethod.POST)
@@ -108,7 +116,7 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public WrappedResult userLogin(@RequestBody FormRequestObject<Map<String,Object>> params) {	
+	public WrappedResult userLogin(HttpServletResponse response,@RequestBody FormRequestObject<Map<String,Object>> params) {	
 		try {
 			if(params == null){
 				throw new NullArgumentException("params");
@@ -144,6 +152,15 @@ public class LoginController {
 						//response.sendRedirect("http://127.0.0.1:8080/customer");
 					}
 					result = RestUtils.wrappQueryResult(loginBackInfo);
+					
+					//设置token至redis
+			        String token = UUID.randomUUID().toString();
+			        Integer expire = RedisConstant.EXPIRE;
+
+			        redisTemplate.opsForValue().set(String.format(RedisConstant.TOKEN_PREFIX, token), userAccount, expire, TimeUnit.SECONDS);
+
+			        //设置token至cookie
+			        CookieUtil.set(response, CookieConstant.TOKEN, token, expire);
 					logger.info("登录跳转成功"); 
 				}
 			}
