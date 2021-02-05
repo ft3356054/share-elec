@@ -138,7 +138,7 @@ public class LoginController {
 					boolean isElec = getElectricianInfoService.getElectricianInfoNumberByElectricianId(authorityUser.getId());
 					
 					LoginBackInfo loginBackInfo = new LoginBackInfo();
-					loginBackInfo.setUserId(userAccount);
+					loginBackInfo.setUserId(authorityUser.getId());
 					
 					if(isElec){
 						//跳转到电工首页 录入电工位置信息
