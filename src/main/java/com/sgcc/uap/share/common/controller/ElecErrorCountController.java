@@ -1,5 +1,6 @@
-package com.sgcc.uap.share.controller;
+package com.sgcc.uap.share.common.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +29,8 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.services.IBaseVoltageService;
-import com.sgcc.uap.share.vo.BaseVoltageVO;
+import com.sgcc.uap.share.services.IElecErrorCountService;
+import com.sgcc.uap.share.vo.ElecErrorCountVO;
 
 
 /**
@@ -43,12 +44,12 @@ import com.sgcc.uap.share.vo.BaseVoltageVO;
  */
 @RestController
 @Transactional
-@RequestMapping("/baseVoltage")
-public class BaseVoltageController {
+@RequestMapping("/elecErrorCount")
+public class ElecErrorCountController {
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseVoltageController.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(ElecErrorCountController.class);
 	/**
 	 * 方法绑定属性中不允许的参数
 	 */
@@ -59,21 +60,21 @@ public class BaseVoltageController {
 	@Value("${uapmicServer.dev}")
 	private boolean isDev;
 	/** 
-     * BaseVoltage服务
+     * ElecErrorCount服务
      */
 	@Autowired
-	private IBaseVoltageService baseVoltageService;
+	private IElecErrorCountService elecErrorCountService;
 	/**
-	 * @getByVoltageId:根据voltageId查询
-	 * @param voltageId
+	 * @getByElectricianId:根据electricianId查询
+	 * @param electricianId
 	 * @return WrappedResult 查询结果
-	 * @date 2020-12-21 17:22:38
+	 * @date 2021-01-29 10:15:44
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/{voltageId}")
-	public WrappedResult getByVoltageId(@PathVariable String voltageId) {
+	@RequestMapping(value = "/{electricianId}")
+	public WrappedResult getByElectricianId(@PathVariable String electricianId) {
 		try {
-			QueryResultObject result = baseVoltageService.getBaseVoltageByVoltageId(voltageId);
+			QueryResultObject result = elecErrorCountService.getElecErrorCountByElectricianId(electricianId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -85,34 +86,17 @@ public class BaseVoltageController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
-	
-	@RequestMapping("/queryAll/")
-	public WrappedResult queryAll() {
-		try {
-			QueryResultObject queryResult = baseVoltageService.queryAll();
-			logger.info("查询数据成功"); 
-			return WrappedResult.successWrapedResult(queryResult);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "查询异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
-	}
-	
 	/**
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2020-12-21 17:22:38
+	 * @date 2021-01-29 10:15:44
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public WrappedResult deleteByIds(@RequestBody IDRequestObject idObject) {
 		try {
-			baseVoltageService.remove(idObject);
+			elecErrorCountService.remove(idObject);
 			logger.info("删除成功");  
 			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
@@ -128,7 +112,7 @@ public class BaseVoltageController {
 	 * @saveOrUpdate:保存或更新
 	 * @param params
 	 * @return WrappedResult 保存或更新的结果
-	 * @date 2020-12-21 17:22:38
+	 * @date 2021-01-29 10:15:44
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -141,7 +125,7 @@ public class BaseVoltageController {
 			List<Map<String,Object>> items = params.getItems();
 			if(items != null && !items.isEmpty()){
 				for(Map<String,Object> map : items){
-					result.setFormItems(baseVoltageService.saveBaseVoltage(map));
+					result.setFormItems(elecErrorCountService.saveElecErrorCount(map));
 				}
 			}
 			logger.info("保存数据成功"); 
@@ -162,17 +146,55 @@ public class BaseVoltageController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
+	/**
+	 * 测试用   公司被惩罚，修改所有旗下电工的状态
+	 */
+	@RequestMapping(value = "/saveElecErrorCountByCompany", method = RequestMethod.POST)
+	public WrappedResult saveElecErrorCountByCompany(@RequestBody FormRequestObject<Map<String,Object>> params) {
+		try {
+			List<String> electricianIdList = new ArrayList<String>();
+			if(params == null){
+				throw new NullArgumentException("params");
+			}
+			QueryResultObject result = new QueryResultObject();
+			List<Map<String,Object>> items = params.getItems();
+			if(items != null && !items.isEmpty()){
+				for(Map<String,Object> map : items){
+					electricianIdList.add((String) map.get("electricianId"));
+				}
+				elecErrorCountService.saveElecErrorCountByCompany(electricianIdList);
+			}
+			logger.info("保存数据成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (ServiceValidatorBaseException e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "校验异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedValidateWrappedResult(errorMessage);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "保存异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
 	/**
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2020-12-21 17:22:38
+	 * @date 2021-01-29 10:15:44
 	 * @author 18511
 	 */
 	@RequestMapping("/")
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			QueryResultObject queryResult = baseVoltageService.query(requestCondition);
+			QueryResultObject queryResult = elecErrorCountService.query(requestCondition);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
@@ -188,7 +210,7 @@ public class BaseVoltageController {
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2020-12-21 17:22:38
+	 * @date 2021-01-29 10:15:44
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -199,7 +221,7 @@ public class BaseVoltageController {
 				throw new NullArgumentException("columns");
 			}
 			List<ViewAttributeData> datas = null;
-			datas = ViewAttributeUtils.getViewAttributes(columns, BaseVoltageVO.class);
+			datas = ViewAttributeUtils.getViewAttributes(columns, ElecErrorCountVO.class);
 			WrappedResult wrappedResult = WrappedResult
 					.successWrapedResult(new ViewMetaData(datas));
 			return wrappedResult;
@@ -217,7 +239,7 @@ public class BaseVoltageController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2020-12-21 17:22:38
+	 * @date 2021-01-29 10:15:44
 	 * @author 18511
 	 */
 	@InitBinder

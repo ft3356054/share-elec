@@ -32,16 +32,44 @@ public class AuthorizeAspect {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    @Pointcut("execution(public * com.sgcc.uap.share.controller.*.*(..))" +
+    /*@Pointcut("execution(public * com.sgcc.uap.share.controller.*.*(..))" +
     "&& execution(public * com.sgcc.uap.share.customer.controller.*.*(..))" +
     "&& execution(public * com.sgcc.uap.share.electrician.controller.*.*(..))" +
     "&& !execution(public * com.sgcc.uap.share.controller.AuthorityUserController.*(..))" +
     "&& !execution(public * com.sgcc.uap.share.controller.LoginController.*(..))")
+    public void verify() {
+    	System.out.println("@@@@@@@ 进入 verify @@@@@@@");
+    }*/
+    
+    @Pointcut("execution(public * com.sgcc.uap.share.customer.controller.*.*(..))")
+    public void verifyCust() {}
+    
+    @Before("verifyCust()")
+    public void doVerifyCust() {
+    	System.out.println("@@@@@@@@@@@@@@@@@@@@@@@ verifyCust @@@@@@@@@@@@@@@@@@@@@@");
+    	checkTimeOut();
+    }
+    
+    @Pointcut("execution(public * com.sgcc.uap.share.common.controller.*.*(..))")
     public void verify() {}
-
+    
     @Before("verify()")
     public void doVerify() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+    	System.out.println("@@@@@@@@@@@@@@@@@@@@@@@ verify @@@@@@@@@@@@@@@@@@@@@@");
+    	checkTimeOut();
+    }
+
+    @Pointcut("execution(public * com.sgcc.uap.share.electrician.controller.*.*(..))")
+    public void verifyElec() {}
+    
+    @Before("verifyElec()")
+    public void doVerifyElec() {
+    	System.out.println("@@@@@@@@@@@@@@@@@@@@@@@ verifyElec @@@@@@@@@@@@@@@@@@@@@@");
+    	checkTimeOut();
+    }
+    
+    private void checkTimeOut(){
+    	ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
         //查询cookie

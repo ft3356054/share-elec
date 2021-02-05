@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.controller;
+package com.sgcc.uap.share.common.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -28,8 +28,8 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.services.IBaseCityService;
-import com.sgcc.uap.share.vo.BaseCityVO;
+import com.sgcc.uap.share.services.IBaseVoltageService;
+import com.sgcc.uap.share.vo.BaseVoltageVO;
 
 
 /**
@@ -43,12 +43,12 @@ import com.sgcc.uap.share.vo.BaseCityVO;
  */
 @RestController
 @Transactional
-@RequestMapping("/baseCity")
-public class BaseCityController {
+@RequestMapping("/baseVoltage")
+public class BaseVoltageController {
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseCityController.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseVoltageController.class);
 	/**
 	 * 方法绑定属性中不允许的参数
 	 */
@@ -59,21 +59,21 @@ public class BaseCityController {
 	@Value("${uapmicServer.dev}")
 	private boolean isDev;
 	/** 
-     * BaseCity服务
+     * BaseVoltage服务
      */
 	@Autowired
-	private IBaseCityService baseCityService;
+	private IBaseVoltageService baseVoltageService;
 	/**
-	 * @getById:根据id查询
-	 * @param id
+	 * @getByVoltageId:根据voltageId查询
+	 * @param voltageId
 	 * @return WrappedResult 查询结果
-	 * @date 2020-11-30 13:16:25
+	 * @date 2020-12-21 17:22:38
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/{id}")
-	public WrappedResult getById(@PathVariable String id) {
+	@RequestMapping(value = "/{voltageId}")
+	public WrappedResult getByVoltageId(@PathVariable String voltageId) {
 		try {
-			QueryResultObject result = baseCityService.getBaseCityById(id);
+			QueryResultObject result = baseVoltageService.getBaseVoltageByVoltageId(voltageId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -85,17 +85,34 @@ public class BaseCityController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
+	@RequestMapping("/queryAll/")
+	public WrappedResult queryAll() {
+		try {
+			QueryResultObject queryResult = baseVoltageService.queryAll();
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
 	/**
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2020-11-30 13:16:25
+	 * @date 2020-12-21 17:22:38
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public WrappedResult deleteByIds(@RequestBody IDRequestObject idObject) {
 		try {
-			baseCityService.remove(idObject);
+			baseVoltageService.remove(idObject);
 			logger.info("删除成功");  
 			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
@@ -111,7 +128,7 @@ public class BaseCityController {
 	 * @saveOrUpdate:保存或更新
 	 * @param params
 	 * @return WrappedResult 保存或更新的结果
-	 * @date 2020-11-30 13:16:25
+	 * @date 2020-12-21 17:22:38
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -124,7 +141,7 @@ public class BaseCityController {
 			List<Map<String,Object>> items = params.getItems();
 			if(items != null && !items.isEmpty()){
 				for(Map<String,Object> map : items){
-					result.setFormItems(baseCityService.saveBaseCity(map));
+					result.setFormItems(baseVoltageService.saveBaseVoltage(map));
 				}
 			}
 			logger.info("保存数据成功"); 
@@ -149,13 +166,13 @@ public class BaseCityController {
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2020-11-30 13:16:25
+	 * @date 2020-12-21 17:22:38
 	 * @author 18511
 	 */
 	@RequestMapping("/")
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			QueryResultObject queryResult = baseCityService.query(requestCondition);
+			QueryResultObject queryResult = baseVoltageService.query(requestCondition);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
@@ -171,7 +188,7 @@ public class BaseCityController {
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2020-11-30 13:16:25
+	 * @date 2020-12-21 17:22:38
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -182,7 +199,7 @@ public class BaseCityController {
 				throw new NullArgumentException("columns");
 			}
 			List<ViewAttributeData> datas = null;
-			datas = ViewAttributeUtils.getViewAttributes(columns, BaseCityVO.class);
+			datas = ViewAttributeUtils.getViewAttributes(columns, BaseVoltageVO.class);
 			WrappedResult wrappedResult = WrappedResult
 					.successWrapedResult(new ViewMetaData(datas));
 			return wrappedResult;
@@ -200,7 +217,7 @@ public class BaseCityController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2020-11-30 13:16:25
+	 * @date 2020-12-21 17:22:38
 	 * @author 18511
 	 */
 	@InitBinder

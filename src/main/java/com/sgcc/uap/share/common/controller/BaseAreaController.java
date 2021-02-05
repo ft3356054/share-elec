@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.controller;
+package com.sgcc.uap.share.common.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -28,8 +28,8 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.services.IBaseIdentityDetailService;
-import com.sgcc.uap.share.vo.BaseIdentityDetailVO;
+import com.sgcc.uap.share.services.IBaseAreaService;
+import com.sgcc.uap.share.vo.BaseAreaVO;
 
 
 /**
@@ -43,12 +43,12 @@ import com.sgcc.uap.share.vo.BaseIdentityDetailVO;
  */
 @RestController
 @Transactional
-@RequestMapping("/baseIdentityDetail")
-public class BaseIdentityDetailController {
+@RequestMapping("/baseArea")
+public class BaseAreaController {
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseIdentityDetailController.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseAreaController.class);
 	/**
 	 * 方法绑定属性中不允许的参数
 	 */
@@ -59,21 +59,21 @@ public class BaseIdentityDetailController {
 	@Value("${uapmicServer.dev}")
 	private boolean isDev;
 	/** 
-     * BaseIdentityDetail服务
+     * BaseArea服务
      */
 	@Autowired
-	private IBaseIdentityDetailService baseIdentityDetailService;
+	private IBaseAreaService baseAreaService;
 	/**
-	 * @getByIdentityId:根据identityId查询
-	 * @param identityId
+	 * @getById:根据id查询
+	 * @param id
 	 * @return WrappedResult 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 13:16:23
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/{identityId}")
-	public WrappedResult getByIdentityId(@PathVariable String identityId) {
+	@RequestMapping(value = "/{id}")
+	public WrappedResult getById(@PathVariable String id) {
 		try {
-			QueryResultObject result = baseIdentityDetailService.getBaseIdentityDetailByIdentityId(identityId);
+			QueryResultObject result = baseAreaService.getBaseAreaById(id);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -89,13 +89,13 @@ public class BaseIdentityDetailController {
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 13:16:23
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public WrappedResult deleteByIds(@RequestBody IDRequestObject idObject) {
 		try {
-			baseIdentityDetailService.remove(idObject);
+			baseAreaService.remove(idObject);
 			logger.info("删除成功");  
 			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
@@ -111,7 +111,7 @@ public class BaseIdentityDetailController {
 	 * @saveOrUpdate:保存或更新
 	 * @param params
 	 * @return WrappedResult 保存或更新的结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 13:16:23
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -124,7 +124,7 @@ public class BaseIdentityDetailController {
 			List<Map<String,Object>> items = params.getItems();
 			if(items != null && !items.isEmpty()){
 				for(Map<String,Object> map : items){
-					result.setFormItems(baseIdentityDetailService.saveBaseIdentityDetail(map));
+					result.setFormItems(baseAreaService.saveBaseArea(map));
 				}
 			}
 			logger.info("保存数据成功"); 
@@ -149,28 +149,13 @@ public class BaseIdentityDetailController {
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 13:16:23
 	 * @author 18511
 	 */
 	@RequestMapping("/")
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			QueryResultObject queryResult = baseIdentityDetailService.query(requestCondition);
-			logger.info("查询数据成功"); 
-			return WrappedResult.successWrapedResult(queryResult);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "查询异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
-	}
-	@RequestMapping("/queryAll/")
-	public WrappedResult queryAll() {
-		try {
-			QueryResultObject queryResult = baseIdentityDetailService.queryAll();
+			QueryResultObject queryResult = baseAreaService.query(requestCondition);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
@@ -186,7 +171,7 @@ public class BaseIdentityDetailController {
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 13:16:23
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -197,7 +182,7 @@ public class BaseIdentityDetailController {
 				throw new NullArgumentException("columns");
 			}
 			List<ViewAttributeData> datas = null;
-			datas = ViewAttributeUtils.getViewAttributes(columns, BaseIdentityDetailVO.class);
+			datas = ViewAttributeUtils.getViewAttributes(columns, BaseAreaVO.class);
 			WrappedResult wrappedResult = WrappedResult
 					.successWrapedResult(new ViewMetaData(datas));
 			return wrappedResult;
@@ -215,7 +200,7 @@ public class BaseIdentityDetailController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 13:16:23
 	 * @author 18511
 	 */
 	@InitBinder

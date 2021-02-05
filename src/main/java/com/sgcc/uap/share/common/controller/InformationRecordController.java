@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.controller;
+package com.sgcc.uap.share.common.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -28,8 +28,8 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.services.IBaseIdentityPriceService;
-import com.sgcc.uap.share.vo.BaseIdentityPriceVO;
+import com.sgcc.uap.share.services.impl.IInformationRecordService;
+import com.sgcc.uap.share.vo.InformationRecordVO;
 
 
 /**
@@ -43,12 +43,12 @@ import com.sgcc.uap.share.vo.BaseIdentityPriceVO;
  */
 @RestController
 @Transactional
-@RequestMapping("/baseIdentityPrice")
-public class BaseIdentityPriceController {
+@RequestMapping("/informationRecord")
+public class InformationRecordController {
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseIdentityPriceController.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(InformationRecordController.class);
 	/**
 	 * 方法绑定属性中不允许的参数
 	 */
@@ -59,21 +59,21 @@ public class BaseIdentityPriceController {
 	@Value("${uapmicServer.dev}")
 	private boolean isDev;
 	/** 
-     * BaseIdentityPrice服务
+     * InformationRecord服务
      */
 	@Autowired
-	private IBaseIdentityPriceService baseIdentityPriceService;
+	private IInformationRecordService informationRecordService;
 	/**
-	 * @getByIdentityId:根据identityId查询
-	 * @param identityId
+	 * @getByInformationRecordId:根据informationRecordId查询
+	 * @param informationRecordId
 	 * @return WrappedResult 查询结果
-	 * @date 2020-11-30 14:16:50
+	 * @date 2021-01-20 12:31:14
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/{identityId}")
-	public WrappedResult getByIdentityId(@PathVariable String identityId) {
+	@RequestMapping(value = "/{informationRecordId}")
+	public WrappedResult getByInformationRecordId(@PathVariable String informationRecordId) {
 		try {
-			QueryResultObject result = baseIdentityPriceService.getBaseIdentityPriceByIdentityId(identityId);
+			QueryResultObject result = informationRecordService.getInformationRecordByInformationRecordId(informationRecordId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -89,13 +89,13 @@ public class BaseIdentityPriceController {
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2020-11-30 14:16:50
+	 * @date 2021-01-20 12:31:14
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public WrappedResult deleteByIds(@RequestBody IDRequestObject idObject) {
 		try {
-			baseIdentityPriceService.remove(idObject);
+			informationRecordService.remove(idObject);
 			logger.info("删除成功");  
 			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
@@ -111,7 +111,7 @@ public class BaseIdentityPriceController {
 	 * @saveOrUpdate:保存或更新
 	 * @param params
 	 * @return WrappedResult 保存或更新的结果
-	 * @date 2020-11-30 14:16:50
+	 * @date 2021-01-20 12:31:14
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -124,7 +124,7 @@ public class BaseIdentityPriceController {
 			List<Map<String,Object>> items = params.getItems();
 			if(items != null && !items.isEmpty()){
 				for(Map<String,Object> map : items){
-					result.setFormItems(baseIdentityPriceService.saveBaseIdentityPrice(map));
+					result.setFormItems(informationRecordService.saveInformationRecord(map));
 				}
 			}
 			logger.info("保存数据成功"); 
@@ -149,13 +149,13 @@ public class BaseIdentityPriceController {
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2020-11-30 14:16:50
+	 * @date 2021-01-20 12:31:14
 	 * @author 18511
 	 */
 	@RequestMapping("/")
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			QueryResultObject queryResult = baseIdentityPriceService.query(requestCondition);
+			QueryResultObject queryResult = informationRecordService.query(requestCondition);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
@@ -171,7 +171,7 @@ public class BaseIdentityPriceController {
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2020-11-30 14:16:50
+	 * @date 2021-01-20 12:31:14
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -182,7 +182,7 @@ public class BaseIdentityPriceController {
 				throw new NullArgumentException("columns");
 			}
 			List<ViewAttributeData> datas = null;
-			datas = ViewAttributeUtils.getViewAttributes(columns, BaseIdentityPriceVO.class);
+			datas = ViewAttributeUtils.getViewAttributes(columns, InformationRecordVO.class);
 			WrappedResult wrappedResult = WrappedResult
 					.successWrapedResult(new ViewMetaData(datas));
 			return wrappedResult;
@@ -200,7 +200,7 @@ public class BaseIdentityPriceController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2020-11-30 14:16:50
+	 * @date 2021-01-20 12:31:14
 	 * @author 18511
 	 */
 	@InitBinder

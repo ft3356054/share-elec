@@ -1,8 +1,12 @@
-package com.sgcc.uap.share.controller;
+package com.sgcc.uap.share.common.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +18,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.util.WebUtils;
 
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.rest.annotation.ColumnRequestParam;
 import com.sgcc.uap.rest.annotation.QueryRequestParam;
 import com.sgcc.uap.rest.annotation.attribute.ViewAttributeData;
-import com.sgcc.uap.rest.support.FormRequestObject;
 import com.sgcc.uap.rest.support.IDRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
@@ -28,8 +35,9 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.services.IAssessRecordService;
-import com.sgcc.uap.share.vo.AssessRecordVO;
+import com.sgcc.uap.share.services.IOrderRealAuditService;
+import com.sgcc.uap.share.vo.OrderRealAuditVO;
+import com.sgcc.uap.util.JsonUtils;
 
 
 /**
@@ -43,12 +51,12 @@ import com.sgcc.uap.share.vo.AssessRecordVO;
  */
 @RestController
 @Transactional
-@RequestMapping("/assessRecord")
-public class AssessRecordController {
+@RequestMapping("/orderRealAudit")
+public class OrderRealAuditController {
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(AssessRecordController.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(OrderRealAuditController.class);
 	/**
 	 * 方法绑定属性中不允许的参数
 	 */
@@ -59,21 +67,21 @@ public class AssessRecordController {
 	@Value("${uapmicServer.dev}")
 	private boolean isDev;
 	/** 
-     * AssessRecord服务
+     * OrderRealAudit服务
      */
 	@Autowired
-	private IAssessRecordService assessRecordService;
+	private IOrderRealAuditService orderRealAuditService;
 	/**
-	 * @getByAssessId:根据assessId查询
-	 * @param assessId
+	 * @getByOrderId:根据orderId查询
+	 * @param orderId
 	 * @return WrappedResult 查询结果
-	 * @date 2021-01-15 11:35:09
+	 * @date 2021-02-02 11:49:33
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/{assessId}")
-	public WrappedResult getByAssessId(@PathVariable String assessId) {
+	@RequestMapping(value = "/{orderId}")
+	public WrappedResult getByOrderId(@PathVariable String orderId) {
 		try {
-			QueryResultObject result = assessRecordService.getAssessRecordByAssessId(assessId);
+			QueryResultObject result = orderRealAuditService.getOrderRealAuditByOrderId(orderId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -89,13 +97,13 @@ public class AssessRecordController {
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2021-01-15 11:35:09
+	 * @date 2021-02-02 11:49:33
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public WrappedResult deleteByIds(@RequestBody IDRequestObject idObject) {
 		try {
-			assessRecordService.remove(idObject);
+			orderRealAuditService.remove(idObject);
 			logger.info("删除成功");  
 			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
@@ -111,22 +119,32 @@ public class AssessRecordController {
 	 * @saveOrUpdate:保存或更新
 	 * @param params
 	 * @return WrappedResult 保存或更新的结果
-	 * @date 2021-01-15 11:35:09
+	 * @date 2021-02-02 11:49:33
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public WrappedResult saveOrUpdate(@RequestBody FormRequestObject<Map<String,Object>> params) {
+	public WrappedResult saveOrUpdate(
+		@RequestParam(value = "items", required = false) String items
+		,HttpServletRequest request
+		) throws IOException {
 		try {
-			if(params == null){
-				throw new NullArgumentException("params");
-			}
+			MultipartFile idCardFirst = null;
+			MultipartFile idCardSecond = null;
+	        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+	        if (isMultipart){ 
+	            MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
+	            idCardFirst = multipartRequest.getFile("idCardFirst");
+	            idCardSecond = multipartRequest.getFile("idCardSecond");
+	        }
+			
+			
 			QueryResultObject result = new QueryResultObject();
-			List<Map<String,Object>> items = params.getItems();
+			
 			if(items != null && !items.isEmpty()){
-				for(Map<String,Object> map : items){
-					result.setFormItems(assessRecordService.saveAssessRecord(map));
-				}
+				Map<String,Object> map = JsonUtils.parseJSONstr2Map(items); 
+				result.setFormItems(orderRealAuditService.saveOrderRealAudit(map,idCardFirst,idCardSecond));
 			}
+			
 			logger.info("保存数据成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (ServiceValidatorBaseException e) {
@@ -149,13 +167,13 @@ public class AssessRecordController {
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2021-01-15 11:35:09
+	 * @date 2021-02-02 11:49:33
 	 * @author 18511
 	 */
 	@RequestMapping("/")
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			QueryResultObject queryResult = assessRecordService.query(requestCondition);
+			QueryResultObject queryResult = orderRealAuditService.query(requestCondition);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
@@ -171,7 +189,7 @@ public class AssessRecordController {
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2021-01-15 11:35:09
+	 * @date 2021-02-02 11:49:33
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -182,7 +200,7 @@ public class AssessRecordController {
 				throw new NullArgumentException("columns");
 			}
 			List<ViewAttributeData> datas = null;
-			datas = ViewAttributeUtils.getViewAttributes(columns, AssessRecordVO.class);
+			datas = ViewAttributeUtils.getViewAttributes(columns, OrderRealAuditVO.class);
 			WrappedResult wrappedResult = WrappedResult
 					.successWrapedResult(new ViewMetaData(datas));
 			return wrappedResult;
@@ -200,7 +218,7 @@ public class AssessRecordController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2021-01-15 11:35:09
+	 * @date 2021-02-02 11:49:33
 	 * @author 18511
 	 */
 	@InitBinder

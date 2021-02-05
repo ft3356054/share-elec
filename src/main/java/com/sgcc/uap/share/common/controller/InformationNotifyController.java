@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.controller;
+package com.sgcc.uap.share.common.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -28,8 +28,8 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.services.IBaseEnumsService;
-import com.sgcc.uap.share.vo.BaseEnumsVO;
+import com.sgcc.uap.share.services.impl.IInformationNotifyService;
+import com.sgcc.uap.share.vo.InformationNotifyVO;
 
 
 /**
@@ -43,12 +43,12 @@ import com.sgcc.uap.share.vo.BaseEnumsVO;
  */
 @RestController
 @Transactional
-@RequestMapping("/baseEnums")
-public class BaseEnumsController {
+@RequestMapping("/informationNotify")
+public class InformationNotifyController {
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseEnumsController.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(InformationNotifyController.class);
 	/**
 	 * 方法绑定属性中不允许的参数
 	 */
@@ -59,21 +59,21 @@ public class BaseEnumsController {
 	@Value("${uapmicServer.dev}")
 	private boolean isDev;
 	/** 
-     * BaseEnums服务
+     * InformationNotify服务
      */
 	@Autowired
-	private IBaseEnumsService baseEnumsService;
+	private IInformationNotifyService informationNotifyService;
 	/**
-	 * @getByEnumsId:根据enumsId查询
-	 * @param enumsId
+	 * @getByInformationId:根据informationId查询
+	 * @param informationId
 	 * @return WrappedResult 查询结果
-	 * @date 2020-12-11 10:02:24
+	 * @date 2021-01-20 12:31:14
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/{enumsId}")
-	public WrappedResult getByEnumsId(@PathVariable String enumsId) {
+	@RequestMapping(value = "/{informationId}")
+	public WrappedResult getByInformationId(@PathVariable String informationId) {
 		try {
-			QueryResultObject result = baseEnumsService.getBaseEnumsByEnumsId(enumsId);
+			QueryResultObject result = informationNotifyService.getInformationNotifyByInformationId(informationId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -89,13 +89,13 @@ public class BaseEnumsController {
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2020-12-11 10:02:24
+	 * @date 2021-01-20 12:31:14
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public WrappedResult deleteByIds(@RequestBody IDRequestObject idObject) {
 		try {
-			baseEnumsService.remove(idObject);
+			informationNotifyService.remove(idObject);
 			logger.info("删除成功");  
 			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
@@ -111,7 +111,7 @@ public class BaseEnumsController {
 	 * @saveOrUpdate:保存或更新
 	 * @param params
 	 * @return WrappedResult 保存或更新的结果
-	 * @date 2020-12-11 10:02:24
+	 * @date 2021-01-20 12:31:14
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -124,7 +124,7 @@ public class BaseEnumsController {
 			List<Map<String,Object>> items = params.getItems();
 			if(items != null && !items.isEmpty()){
 				for(Map<String,Object> map : items){
-					result.setFormItems(baseEnumsService.saveBaseEnums(map));
+					result.setFormItems(informationNotifyService.saveInformationNotify(map));
 				}
 			}
 			logger.info("保存数据成功"); 
@@ -149,13 +149,13 @@ public class BaseEnumsController {
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2020-12-11 10:02:24
+	 * @date 2021-01-20 12:31:14
 	 * @author 18511
 	 */
 	@RequestMapping("/")
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			QueryResultObject queryResult = baseEnumsService.query(requestCondition);
+			QueryResultObject queryResult = informationNotifyService.query(requestCondition);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
@@ -171,7 +171,7 @@ public class BaseEnumsController {
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2020-12-11 10:02:24
+	 * @date 2021-01-20 12:31:14
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -182,7 +182,7 @@ public class BaseEnumsController {
 				throw new NullArgumentException("columns");
 			}
 			List<ViewAttributeData> datas = null;
-			datas = ViewAttributeUtils.getViewAttributes(columns, BaseEnumsVO.class);
+			datas = ViewAttributeUtils.getViewAttributes(columns, InformationNotifyVO.class);
 			WrappedResult wrappedResult = WrappedResult
 					.successWrapedResult(new ViewMetaData(datas));
 			return wrappedResult;
@@ -200,7 +200,7 @@ public class BaseEnumsController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2020-12-11 10:02:24
+	 * @date 2021-01-20 12:31:14
 	 * @author 18511
 	 */
 	@InitBinder

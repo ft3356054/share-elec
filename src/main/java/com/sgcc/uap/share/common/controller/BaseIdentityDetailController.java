@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.controller;
+package com.sgcc.uap.share.common.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -28,8 +28,8 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.services.IBaseAreaPriceService;
-import com.sgcc.uap.share.vo.BaseAreaPriceVO;
+import com.sgcc.uap.share.services.IBaseIdentityDetailService;
+import com.sgcc.uap.share.vo.BaseIdentityDetailVO;
 
 
 /**
@@ -43,12 +43,12 @@ import com.sgcc.uap.share.vo.BaseAreaPriceVO;
  */
 @RestController
 @Transactional
-@RequestMapping("/baseAreaPrice")
-public class BaseAreaPriceController {
+@RequestMapping("/baseIdentityDetail")
+public class BaseIdentityDetailController {
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseAreaPriceController.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseIdentityDetailController.class);
 	/**
 	 * 方法绑定属性中不允许的参数
 	 */
@@ -59,21 +59,21 @@ public class BaseAreaPriceController {
 	@Value("${uapmicServer.dev}")
 	private boolean isDev;
 	/** 
-     * BaseAreaPrice服务
+     * BaseIdentityDetail服务
      */
 	@Autowired
-	private IBaseAreaPriceService baseAreaPriceService;
+	private IBaseIdentityDetailService baseIdentityDetailService;
 	/**
-	 * @getById:根据id查询
-	 * @param id
+	 * @getByIdentityId:根据identityId查询
+	 * @param identityId
 	 * @return WrappedResult 查询结果
-	 * @date 2020-11-30 13:16:19
+	 * @date 2020-11-26 14:32:47
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/{id}")
-	public WrappedResult getById(@PathVariable String id) {
+	@RequestMapping(value = "/{identityId}")
+	public WrappedResult getByIdentityId(@PathVariable String identityId) {
 		try {
-			QueryResultObject result = baseAreaPriceService.getBaseAreaPriceById(id);
+			QueryResultObject result = baseIdentityDetailService.getBaseIdentityDetailByIdentityId(identityId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -89,13 +89,13 @@ public class BaseAreaPriceController {
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2020-11-30 13:16:19
+	 * @date 2020-11-26 14:32:47
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public WrappedResult deleteByIds(@RequestBody IDRequestObject idObject) {
 		try {
-			baseAreaPriceService.remove(idObject);
+			baseIdentityDetailService.remove(idObject);
 			logger.info("删除成功");  
 			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
@@ -111,7 +111,7 @@ public class BaseAreaPriceController {
 	 * @saveOrUpdate:保存或更新
 	 * @param params
 	 * @return WrappedResult 保存或更新的结果
-	 * @date 2020-11-30 13:16:19
+	 * @date 2020-11-26 14:32:47
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -124,7 +124,7 @@ public class BaseAreaPriceController {
 			List<Map<String,Object>> items = params.getItems();
 			if(items != null && !items.isEmpty()){
 				for(Map<String,Object> map : items){
-					result.setFormItems(baseAreaPriceService.saveBaseAreaPrice(map));
+					result.setFormItems(baseIdentityDetailService.saveBaseIdentityDetail(map));
 				}
 			}
 			logger.info("保存数据成功"); 
@@ -149,13 +149,28 @@ public class BaseAreaPriceController {
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2020-11-30 13:16:19
+	 * @date 2020-11-26 14:32:47
 	 * @author 18511
 	 */
 	@RequestMapping("/")
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			QueryResultObject queryResult = baseAreaPriceService.query(requestCondition);
+			QueryResultObject queryResult = baseIdentityDetailService.query(requestCondition);
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	@RequestMapping("/queryAll/")
+	public WrappedResult queryAll() {
+		try {
+			QueryResultObject queryResult = baseIdentityDetailService.queryAll();
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
@@ -171,7 +186,7 @@ public class BaseAreaPriceController {
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2020-11-30 13:16:19
+	 * @date 2020-11-26 14:32:47
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -182,7 +197,7 @@ public class BaseAreaPriceController {
 				throw new NullArgumentException("columns");
 			}
 			List<ViewAttributeData> datas = null;
-			datas = ViewAttributeUtils.getViewAttributes(columns, BaseAreaPriceVO.class);
+			datas = ViewAttributeUtils.getViewAttributes(columns, BaseIdentityDetailVO.class);
 			WrappedResult wrappedResult = WrappedResult
 					.successWrapedResult(new ViewMetaData(datas));
 			return wrappedResult;
@@ -200,7 +215,7 @@ public class BaseAreaPriceController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2020-11-30 13:16:19
+	 * @date 2020-11-26 14:32:47
 	 * @author 18511
 	 */
 	@InitBinder

@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.controller;
+package com.sgcc.uap.share.common.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -28,8 +28,8 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.services.IBaseOrderTypeService;
-import com.sgcc.uap.share.vo.BaseOrderTypeVO;
+import com.sgcc.uap.share.services.IAssessRecordService;
+import com.sgcc.uap.share.vo.AssessRecordVO;
 
 
 /**
@@ -43,12 +43,12 @@ import com.sgcc.uap.share.vo.BaseOrderTypeVO;
  */
 @RestController
 @Transactional
-@RequestMapping("/baseOrderType")
-public class BaseOrderTypeController {
+@RequestMapping("/assessRecord")
+public class AssessRecordController {
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseOrderTypeController.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(AssessRecordController.class);
 	/**
 	 * 方法绑定属性中不允许的参数
 	 */
@@ -59,21 +59,21 @@ public class BaseOrderTypeController {
 	@Value("${uapmicServer.dev}")
 	private boolean isDev;
 	/** 
-     * BaseOrderType服务
+     * AssessRecord服务
      */
 	@Autowired
-	private IBaseOrderTypeService baseOrderTypeService;
+	private IAssessRecordService assessRecordService;
 	/**
-	 * @getByOrderTypeId:根据orderTypeId查询
-	 * @param orderTypeId
+	 * @getByAssessId:根据assessId查询
+	 * @param assessId
 	 * @return WrappedResult 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/{orderTypeId}")
-	public WrappedResult getByOrderTypeId(@PathVariable String orderTypeId) {
+	@RequestMapping(value = "/{assessId}")
+	public WrappedResult getByAssessId(@PathVariable String assessId) {
 		try {
-			QueryResultObject result = baseOrderTypeService.getBaseOrderTypeByOrderTypeId(orderTypeId);
+			QueryResultObject result = assessRecordService.getAssessRecordByAssessId(assessId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -89,13 +89,13 @@ public class BaseOrderTypeController {
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public WrappedResult deleteByIds(@RequestBody IDRequestObject idObject) {
 		try {
-			baseOrderTypeService.remove(idObject);
+			assessRecordService.remove(idObject);
 			logger.info("删除成功");  
 			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
@@ -111,7 +111,7 @@ public class BaseOrderTypeController {
 	 * @saveOrUpdate:保存或更新
 	 * @param params
 	 * @return WrappedResult 保存或更新的结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -124,7 +124,7 @@ public class BaseOrderTypeController {
 			List<Map<String,Object>> items = params.getItems();
 			if(items != null && !items.isEmpty()){
 				for(Map<String,Object> map : items){
-					result.setFormItems(baseOrderTypeService.saveBaseOrderType(map));
+					result.setFormItems(assessRecordService.saveAssessRecord(map));
 				}
 			}
 			logger.info("保存数据成功"); 
@@ -149,13 +149,13 @@ public class BaseOrderTypeController {
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	@RequestMapping("/")
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			QueryResultObject queryResult = baseOrderTypeService.query(requestCondition);
+			QueryResultObject queryResult = assessRecordService.query(requestCondition);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
@@ -167,28 +167,11 @@ public class BaseOrderTypeController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
-	
-	@RequestMapping("/queryAll/")
-	public WrappedResult queryAll() {
-		try {
-			QueryResultObject queryResult = baseOrderTypeService.queryAll();
-			logger.info("查询数据成功"); 
-			return WrappedResult.successWrapedResult(queryResult);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "查询异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
-	}
-	
 	/**
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2020-11-26 14:32:47
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -199,7 +182,7 @@ public class BaseOrderTypeController {
 				throw new NullArgumentException("columns");
 			}
 			List<ViewAttributeData> datas = null;
-			datas = ViewAttributeUtils.getViewAttributes(columns, BaseOrderTypeVO.class);
+			datas = ViewAttributeUtils.getViewAttributes(columns, AssessRecordVO.class);
 			WrappedResult wrappedResult = WrappedResult
 					.successWrapedResult(new ViewMetaData(datas));
 			return wrappedResult;
@@ -217,7 +200,7 @@ public class BaseOrderTypeController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2020-11-26 14:32:47
+	 * @date 2021-01-15 11:35:09
 	 * @author 18511
 	 */
 	@InitBinder

@@ -1,6 +1,5 @@
-package com.sgcc.uap.share.controller;
+package com.sgcc.uap.share.common.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,10 +28,8 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.services.INotifyAnnounceService;
-import com.sgcc.uap.share.vo.NotifyAnnounceVO;
-import com.sgcc.uap.util.MapUtil;
-import com.sgcc.uap.utils.json.JsonUtils;
+import com.sgcc.uap.share.services.IBaseProvinceService;
+import com.sgcc.uap.share.vo.BaseProvinceVO;
 
 
 /**
@@ -46,12 +43,12 @@ import com.sgcc.uap.utils.json.JsonUtils;
  */
 @RestController
 @Transactional
-@RequestMapping("/notifyAnnounce")
-public class NotifyAnnounceController {
+@RequestMapping("/baseProvince")
+public class BaseProvinceController {
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(NotifyAnnounceController.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseProvinceController.class);
 	/**
 	 * 方法绑定属性中不允许的参数
 	 */
@@ -62,22 +59,39 @@ public class NotifyAnnounceController {
 	@Value("${uapmicServer.dev}")
 	private boolean isDev;
 	/** 
-     * NotifyAnnounce服务
+     * BaseProvince服务
      */
 	@Autowired
-	private INotifyAnnounceService notifyAnnounceService;
+	private IBaseProvinceService baseProvinceService;
+	
+	
+	@RequestMapping("/queryAll/")
+	public WrappedResult queryAll() {
+		try {
+			QueryResultObject queryResult = baseProvinceService.queryAll();
+			logger.info("查询数据成功"); 
+			return WrappedResult.successWrapedResult(queryResult);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
 	
 	/**
-	 * @getByAnnounceId:根据announceId查询
-	 * @param announceId
+	 * @getByProvinceId:根据provinceId查询
+	 * @param provinceId
 	 * @return WrappedResult 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 13:16:25
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/{announceId}")
-	public WrappedResult getByAnnounceId(@PathVariable String announceId) {
+	@RequestMapping(value = "/{provinceId}")
+	public WrappedResult getByProvinceId(@PathVariable String provinceId) {
 		try {
-			QueryResultObject result = notifyAnnounceService.getNotifyAnnounceByAnnounceId(announceId,"");
+			QueryResultObject result = baseProvinceService.getBaseProvinceByProvinceId(provinceId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -89,44 +103,17 @@ public class NotifyAnnounceController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
-	/**
-	 * @getByAnnounceId:根据announceId查询，并更新user notify
-	 * @param announceId
-	 * @return WrappedResult 查询结果
-	 * @date 2020-11-26 14:32:47
-	 * @author 18511
-	 */
-	@RequestMapping(value = "/read/")
-	public WrappedResult getByAnnounceId(@QueryRequestParam("params") RequestCondition requestCondition) {
-		try {
-			Map<String, String> map = MapUtil.getParam(requestCondition);
-			String announceId = map.get("announceId");
-			String announceUserId = map.get("announceUserId");
-			
-			QueryResultObject result = notifyAnnounceService.getNotifyAnnounceByAnnounceId(announceId,announceUserId);
-			logger.info("查询成功"); 
-			return WrappedResult.successWrapedResult(result);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "查询异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
-	}
-	
 	/**
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 13:16:25
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public WrappedResult deleteByIds(@RequestBody IDRequestObject idObject) {
 		try {
-			notifyAnnounceService.remove(idObject);
+			baseProvinceService.remove(idObject);
 			logger.info("删除成功");  
 			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
@@ -141,12 +128,12 @@ public class NotifyAnnounceController {
 	/**
 	 * @saveOrUpdate:保存或更新
 	 * @param params
-	 * @return WrappedResult 保存的结果
-	 * @date 2020-11-26 14:32:47
+	 * @return WrappedResult 保存或更新的结果
+	 * @date 2020-11-30 13:16:25
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public WrappedResult save(@RequestBody FormRequestObject<Map<String,Object>> params) {
+	public WrappedResult saveOrUpdate(@RequestBody FormRequestObject<Map<String,Object>> params) {
 		try {
 			if(params == null){
 				throw new NullArgumentException("params");
@@ -155,7 +142,7 @@ public class NotifyAnnounceController {
 			List<Map<String,Object>> items = params.getItems();
 			if(items != null && !items.isEmpty()){
 				for(Map<String,Object> map : items){
-					result.setFormItems(notifyAnnounceService.saveNotifyAnnounce(map));
+					result.setFormItems(baseProvinceService.saveBaseProvince(map));
 				}
 			}
 			logger.info("保存数据成功"); 
@@ -176,42 +163,17 @@ public class NotifyAnnounceController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
-	
-	
-	/**
-	 * @getByAnnounceId:根据announceId查询
-	 * @param announceId
-	 * @return WrappedResult 查询结果
-	 * @date 2020-11-26 14:32:47
-	 * @author 18511
-	 */
-	@RequestMapping(value = "/hasten/{orderId}")
-	public WrappedResult hastenByCustomer(@PathVariable String orderId) {
-		try {
-			QueryResultObject result = notifyAnnounceService.hastenByCustomer(orderId);
-			logger.info("查询成功"); 
-			return WrappedResult.successWrapedResult(result);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "查询异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
-	}
-	
 	/**
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 13:16:25
 	 * @author 18511
 	 */
 	@RequestMapping("/")
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			QueryResultObject queryResult = notifyAnnounceService.query(requestCondition);
+			QueryResultObject queryResult = baseProvinceService.query(requestCondition);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
@@ -227,7 +189,7 @@ public class NotifyAnnounceController {
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 13:16:25
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -238,7 +200,7 @@ public class NotifyAnnounceController {
 				throw new NullArgumentException("columns");
 			}
 			List<ViewAttributeData> datas = null;
-			datas = ViewAttributeUtils.getViewAttributes(columns, NotifyAnnounceVO.class);
+			datas = ViewAttributeUtils.getViewAttributes(columns, BaseProvinceVO.class);
 			WrappedResult wrappedResult = WrappedResult
 					.successWrapedResult(new ViewMetaData(datas));
 			return wrappedResult;
@@ -256,68 +218,12 @@ public class NotifyAnnounceController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2020-11-26 14:32:47
+	 * @date 2020-11-30 13:16:25
 	 * @author 18511
 	 */
 	@InitBinder
 	public void initBinder(WebDataBinder binder){
 		binder.setDisallowedFields(DISALLOWED_PARAMS);
 	}
-	
-	@RequestMapping(value = "/testWebsocket1")
-	public WrappedResult testWebsocket1() {
-		try {
-			WebSocketServer.sendInfo("群发客户端",null);
-			logger.info("查询成功"); 
-			return WrappedResult.successWrapedResult("");
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "查询异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
-	}
-	@RequestMapping(value = "/testWebsocket2")
-	public WrappedResult testWebsocket2() {
-		try {
-			WebSocketServer.sendInfo("单发客户端","123");
-			logger.info("查询成功"); 
-			return WrappedResult.successWrapedResult("");
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			String errorMessage = "查询异常";
-			if(isDev){
-				errorMessage = e.getMessage();
-			}
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
-	}
-	//http://localhost:8083/notifyAnnounce/testWebsocket/?params={"filter":["orderId=2020113016481399b534d5707d4b11bdbb0c979e800a6c","content=您有一笔待支付订单","userId=089b56b5535042d5ab63898b7a97f1d7"]}
-    @RequestMapping(value = "/testWebsocket")
-	public WrappedResult testWebsocket(@QueryRequestParam("params") RequestCondition requestCondition) {
-		try {
-			Map<String, String> map = MapUtil.getParam(requestCondition);
-			String orderId = map.get("orderId");
-			String content = map.get("content");
-			String userId = map.get("userId");
 
-			Map<String,String> mapString = new HashMap<String,String>();
-			mapString.put("orderId", orderId);
-			mapString.put("content", content);
-			String jsonString1 = JsonUtils.toJson(mapString);
-			String jsonString2 = com.sgcc.uap.util.JsonUtils.mapToJson(mapString);
-			
-			//单发
-			WebSocketServer.sendInfo(jsonString1,userId);
-			//群发
-			WebSocketServer.sendInfo(jsonString2,null);
-			
-			return WrappedResult.successWrapedResult("发送成功");
-		} catch (Exception e) {
-			String errorMessage = "查询异常";
-			return WrappedResult.failedWrappedResult(errorMessage);
-		}
-	}
 }

@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.controller;
+package com.sgcc.uap.share.common.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -28,8 +28,9 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.services.IBaseLabelService;
-import com.sgcc.uap.share.vo.BaseLabelVO;
+import com.sgcc.uap.share.domain.BaseSystemConfig;
+import com.sgcc.uap.share.services.IBaseSystemConfigService;
+import com.sgcc.uap.share.vo.BaseSystemConfigVO;
 
 
 /**
@@ -43,12 +44,12 @@ import com.sgcc.uap.share.vo.BaseLabelVO;
  */
 @RestController
 @Transactional
-@RequestMapping("/baseLabel")
-public class BaseLabelController {
+@RequestMapping("/baseSystemConfig")
+public class BaseSystemConfigController {
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseLabelController.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseSystemConfigController.class);
 	/**
 	 * 方法绑定属性中不允许的参数
 	 */
@@ -59,21 +60,21 @@ public class BaseLabelController {
 	@Value("${uapmicServer.dev}")
 	private boolean isDev;
 	/** 
-     * BaseLabel服务
+     * BaseSystemConfig服务
      */
 	@Autowired
-	private IBaseLabelService baseLabelService;
+	private IBaseSystemConfigService baseSystemConfigService;
 	/**
-	 * @getById:根据id查询
-	 * @param id
+	 * @getByConfigId:根据configId查询
+	 * @param configId
 	 * @return WrappedResult 查询结果
-	 * @date 2020-12-14 11:25:15
+	 * @date 2020-12-24 17:04:33
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/{id}")
-	public WrappedResult getById(@PathVariable String id) {
+	@RequestMapping(value = "/{configId}")
+	public WrappedResult getByConfigId(@PathVariable String configId) {
 		try {
-			QueryResultObject result = baseLabelService.getBaseLabelById(id);
+			QueryResultObject result = baseSystemConfigService.getBaseSystemConfigByConfigId(configId);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -85,17 +86,34 @@ public class BaseLabelController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
+	@RequestMapping(value = "/ConfigType/{configType}")
+	public WrappedResult getByConfigType(@PathVariable String configType) {
+		try {
+			BaseSystemConfig result = baseSystemConfigService.getBaseSystemConfigByConfigType(configType);
+			logger.info("查询成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "查询异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
 	/**
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2020-12-14 11:25:15
+	 * @date 2020-12-24 17:04:33
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public WrappedResult deleteByIds(@RequestBody IDRequestObject idObject) {
 		try {
-			baseLabelService.remove(idObject);
+			baseSystemConfigService.remove(idObject);
 			logger.info("删除成功");  
 			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
@@ -111,7 +129,7 @@ public class BaseLabelController {
 	 * @saveOrUpdate:保存或更新
 	 * @param params
 	 * @return WrappedResult 保存或更新的结果
-	 * @date 2020-12-14 11:25:15
+	 * @date 2020-12-24 17:04:33
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -124,7 +142,7 @@ public class BaseLabelController {
 			List<Map<String,Object>> items = params.getItems();
 			if(items != null && !items.isEmpty()){
 				for(Map<String,Object> map : items){
-					result.setFormItems(baseLabelService.saveBaseLabel(map));
+					result.setFormItems(baseSystemConfigService.saveBaseSystemConfig(map));
 				}
 			}
 			logger.info("保存数据成功"); 
@@ -149,13 +167,13 @@ public class BaseLabelController {
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2020-12-14 11:25:15
+	 * @date 2020-12-24 17:04:33
 	 * @author 18511
 	 */
 	@RequestMapping("/")
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			QueryResultObject queryResult = baseLabelService.query(requestCondition);
+			QueryResultObject queryResult = baseSystemConfigService.query(requestCondition);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
@@ -171,7 +189,7 @@ public class BaseLabelController {
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2020-12-14 11:25:15
+	 * @date 2020-12-24 17:04:33
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -182,7 +200,7 @@ public class BaseLabelController {
 				throw new NullArgumentException("columns");
 			}
 			List<ViewAttributeData> datas = null;
-			datas = ViewAttributeUtils.getViewAttributes(columns, BaseLabelVO.class);
+			datas = ViewAttributeUtils.getViewAttributes(columns, BaseSystemConfigVO.class);
 			WrappedResult wrappedResult = WrappedResult
 					.successWrapedResult(new ViewMetaData(datas));
 			return wrappedResult;
@@ -200,7 +218,7 @@ public class BaseLabelController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2020-12-14 11:25:15
+	 * @date 2020-12-24 17:04:33
 	 * @author 18511
 	 */
 	@InitBinder

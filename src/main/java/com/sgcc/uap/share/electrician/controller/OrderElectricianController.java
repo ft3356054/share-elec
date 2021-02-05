@@ -1,17 +1,12 @@
 package com.sgcc.uap.share.electrician.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,8 +40,6 @@ import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
-import com.sgcc.uap.share.controller.WebSocket;
-import com.sgcc.uap.share.controller.WebSocketServer;
 import com.sgcc.uap.share.customer.services.impl.CustPositionService;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerHisService;
 import com.sgcc.uap.share.customer.services.impl.OrderCustomerService;
@@ -57,28 +50,23 @@ import com.sgcc.uap.share.domain.CustPosition;
 import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.domain.ElectricianCompanyInfo;
 import com.sgcc.uap.share.domain.ElectricianInfo;
-
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderCustomerHis;
 import com.sgcc.uap.share.domain.OrderElectrician;
-import com.sgcc.uap.share.domain.OrderElectricianHis;
-import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPage;
 import com.sgcc.uap.share.electrician.bo.OrderElectricianBeginPageVO;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
 import com.sgcc.uap.share.electrician.services.impl.ElecPositionService;
 import com.sgcc.uap.share.electrician.services.impl.ElectricianCompanyInfoService;
 import com.sgcc.uap.share.electrician.services.impl.ElectricianInfoService;
-import com.sgcc.uap.share.electrician.services.impl.ElectricianSubCompanyInfoService;
 import com.sgcc.uap.share.electrician.services.impl.OrderElectricianHisService;
 import com.sgcc.uap.share.electrician.vo.OrderElectricianVO;
+import com.sgcc.uap.share.login.controller.WebSocketServer;
 import com.sgcc.uap.share.services.impl.BaseOrderTypeService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;
 import com.sgcc.uap.util.DateTimeUtil;
 import com.sgcc.uap.util.JsonUtils;
-import com.sgcc.uap.util.MapUtil;
 import com.sgcc.uap.util.PointUtil;
-import com.sgcc.uap.util.UuidUtil;
 
 
 /**

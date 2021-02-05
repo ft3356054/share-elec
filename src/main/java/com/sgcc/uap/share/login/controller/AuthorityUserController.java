@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.controller;
+package com.sgcc.uap.share.login.controller;
 
 import java.util.List;
 import java.util.Map;

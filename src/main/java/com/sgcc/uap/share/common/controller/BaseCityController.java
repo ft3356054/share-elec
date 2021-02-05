@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.controller;
+package com.sgcc.uap.share.common.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -28,8 +28,8 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.services.IBaseComplantOpeningService;
-import com.sgcc.uap.share.vo.BaseComplantOpeningVO;
+import com.sgcc.uap.share.services.IBaseCityService;
+import com.sgcc.uap.share.vo.BaseCityVO;
 
 
 /**
@@ -43,12 +43,12 @@ import com.sgcc.uap.share.vo.BaseComplantOpeningVO;
  */
 @RestController
 @Transactional
-@RequestMapping("/baseComplantOpening")
-public class BaseComplantOpeningController {
+@RequestMapping("/baseCity")
+public class BaseCityController {
 	/** 
      * 日志
      */
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseComplantOpeningController.class);
+	private final static Logger logger = (Logger) LoggerFactory.getLogger(BaseCityController.class);
 	/**
 	 * 方法绑定属性中不允许的参数
 	 */
@@ -59,21 +59,21 @@ public class BaseComplantOpeningController {
 	@Value("${uapmicServer.dev}")
 	private boolean isDev;
 	/** 
-     * BaseComplantOpening服务
+     * BaseCity服务
      */
 	@Autowired
-	private IBaseComplantOpeningService baseComplantOpeningService;
+	private IBaseCityService baseCityService;
 	/**
-	 * @getByOpeningId:根据openingId查询
-	 * @param openingId
+	 * @getById:根据id查询
+	 * @param id
 	 * @return WrappedResult 查询结果
-	 * @date 2021-01-15 10:09:45
+	 * @date 2020-11-30 13:16:25
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/{openingId}")
-	public WrappedResult getByOpeningId(@PathVariable String openingId) {
+	@RequestMapping(value = "/{id}")
+	public WrappedResult getById(@PathVariable String id) {
 		try {
-			QueryResultObject result = baseComplantOpeningService.getBaseComplantOpeningByOpeningId(openingId);
+			QueryResultObject result = baseCityService.getBaseCityById(id);
 			logger.info("查询成功"); 
 			return WrappedResult.successWrapedResult(result);
 		} catch (Exception e) {
@@ -89,13 +89,13 @@ public class BaseComplantOpeningController {
 	 * @deleteByIds:删除
 	 * @param idObject  封装ids主键值数组和idName主键名称
 	 * @return WrappedResult 删除结果
-	 * @date 2021-01-15 10:09:45
+	 * @date 2020-11-30 13:16:25
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public WrappedResult deleteByIds(@RequestBody IDRequestObject idObject) {
 		try {
-			baseComplantOpeningService.remove(idObject);
+			baseCityService.remove(idObject);
 			logger.info("删除成功");  
 			return WrappedResult.successWrapedResult(true);
 		} catch (Exception e) {
@@ -111,7 +111,7 @@ public class BaseComplantOpeningController {
 	 * @saveOrUpdate:保存或更新
 	 * @param params
 	 * @return WrappedResult 保存或更新的结果
-	 * @date 2021-01-15 10:09:45
+	 * @date 2020-11-30 13:16:25
 	 * @author 18511
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -124,7 +124,7 @@ public class BaseComplantOpeningController {
 			List<Map<String,Object>> items = params.getItems();
 			if(items != null && !items.isEmpty()){
 				for(Map<String,Object> map : items){
-					result.setFormItems(baseComplantOpeningService.saveBaseComplantOpening(map));
+					result.setFormItems(baseCityService.saveBaseCity(map));
 				}
 			}
 			logger.info("保存数据成功"); 
@@ -149,13 +149,13 @@ public class BaseComplantOpeningController {
 	 * @query:查询
 	 * @param requestCondition
 	 * @return WrappedResult 查询结果
-	 * @date 2021-01-15 10:09:45
+	 * @date 2020-11-30 13:16:25
 	 * @author 18511
 	 */
 	@RequestMapping("/")
 	public WrappedResult query(@QueryRequestParam("params") RequestCondition requestCondition) {
 		try {
-			QueryResultObject queryResult = baseComplantOpeningService.query(requestCondition);
+			QueryResultObject queryResult = baseCityService.query(requestCondition);
 			logger.info("查询数据成功"); 
 			return WrappedResult.successWrapedResult(queryResult);
 		} catch (Exception e) {
@@ -171,7 +171,7 @@ public class BaseComplantOpeningController {
 	 * @getMetaData:从vo中获取页面展示元数据信息
 	 * @param columns  将请求参数{columns:["id","name"]}封装为字符串数组
 	 * @return WrappedResult 元数据
-	 * @date 2021-01-15 10:09:45
+	 * @date 2020-11-30 13:16:25
 	 * @author 18511
 	 */
 	@RequestMapping("/meta")
@@ -182,7 +182,7 @@ public class BaseComplantOpeningController {
 				throw new NullArgumentException("columns");
 			}
 			List<ViewAttributeData> datas = null;
-			datas = ViewAttributeUtils.getViewAttributes(columns, BaseComplantOpeningVO.class);
+			datas = ViewAttributeUtils.getViewAttributes(columns, BaseCityVO.class);
 			WrappedResult wrappedResult = WrappedResult
 					.successWrapedResult(new ViewMetaData(datas));
 			return wrappedResult;
@@ -200,7 +200,7 @@ public class BaseComplantOpeningController {
 	 * @initBinder:初始化binder
 	 * @param binder  绑定器引用，用于控制各个方法绑定的属性
 	 * @return void
-	 * @date 2021-01-15 10:09:45
+	 * @date 2020-11-30 13:16:25
 	 * @author 18511
 	 */
 	@InitBinder
