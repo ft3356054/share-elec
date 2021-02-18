@@ -129,6 +129,19 @@ public class AuthorityUserService implements IAuthorityUserService{
 	}
 	
 	@Override
+	public AuthorityUser updateAuthorityUser(Map<String,Object> map) throws Exception{
+		String userAccount = (String) map.get("userId");
+		AuthorityUser authorityUser = authorityUserRepository.findByUserAccount(userAccount);
+		if(null!=authorityUser){
+			map.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
+			CrudUtils.mapToObject(map, authorityUser,  "id");
+		}else{
+			throw new Exception("验证码错误或验证码已过期");
+		}
+		return authorityUserRepository.save(authorityUser);
+	}
+	
+	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
 		if(queryCondition == null){
 			throw new NullArgumentException("queryCondition");

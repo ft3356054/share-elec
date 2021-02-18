@@ -30,6 +30,7 @@ import com.sgcc.uap.rest.utils.RestUtils;
 import com.sgcc.uap.share.customer.services.ICustomerInfoService;
 import com.sgcc.uap.share.domain.OrderRealAudit;
 import com.sgcc.uap.share.repositories.OrderRealAuditRepository;
+import com.sgcc.uap.share.services.IAuthorityUserService;
 import com.sgcc.uap.share.services.IOrderRealAuditService;
 import com.sgcc.uap.util.DateTimeUtil;
 import com.sgcc.uap.util.FileUtil;
@@ -55,6 +56,8 @@ public class OrderRealAuditService implements IOrderRealAuditService{
 	private ValidateService validateService;
 	@Autowired
 	private ICustomerInfoService customerInfoService;
+	@Autowired
+	private IAuthorityUserService authorityUserService;
 	
 	@Override
 	public QueryResultObject getOrderRealAuditByOrderId(String orderId) {
@@ -82,19 +85,37 @@ public class OrderRealAuditService implements IOrderRealAuditService{
 			CrudUtils.mapToObject(map, orderRealAudit,  "orderId");
 		}else{
 			String userId = (String) map.get("userId");
+			String userName = (String) map.get("userName");
+			String idCardNum = (String) map.get("idCardNum");
+			String idCardFirstUrl = null;
+			String idCardSecondUrl = null;
 			//上传图片
 			if (null!=idCardFirst&&!"".equals(idCardFirst)&&null!=idCardSecond&&!"".equals(idCardSecond)) {
 				map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
-				String idCardFirstUrl = FileUtil.uploadFile(idCardFirst, userId,"AUTHORITY_USER","idCardFirst");
+				idCardFirstUrl = FileUtil.uploadFile(idCardFirst, userId,"AUTHORITY_USER","idCardFirst");
 				map.put("idCardFirst", idCardFirstUrl);
-				String idCardSecondUrl = FileUtil.uploadFile(idCardSecond, userId,"AUTHORITY_USER","idCardSecond");
+				idCardSecondUrl = FileUtil.uploadFile(idCardSecond, userId,"AUTHORITY_USER","idCardSecond");
 				map.put("idCardSecond", idCardSecondUrl);
 			}
 			//修改客户表实名认证状态
-			Map<String,Object> customerInfoMap = new HashMap<String,Object>();
+			/*Map<String,Object> customerInfoMap = new HashMap<String,Object>();
 			customerInfoMap.put("customerId", userId);
 			customerInfoMap.put("realNameAuth", "2");
+			customerInfoService.saveCustomerInfo(customerInfoMap);*/
+			//修改客户表
+			Map<String,Object> customerInfoMap = new HashMap<String,Object>();
+			customerInfoMap.put("customerId", userId);
+			customerInfoMap.put("customerName", userName);
+			customerInfoMap.put("realNameAuth", "0");
 			customerInfoService.saveCustomerInfo(customerInfoMap);
+			//修改用户表
+			Map<String,Object> userInfoMap = new HashMap<String,Object>();
+			userInfoMap.put("userId", userId);
+			userInfoMap.put("userName", userName);
+			userInfoMap.put("idCardNum", idCardNum);
+			userInfoMap.put("idCardFirst", idCardFirstUrl);
+			userInfoMap.put("idCardSecond", idCardSecondUrl);
+			authorityUserService.saveAuthorityUser(userInfoMap);
 			
 			CrudUtils.transMap2Bean(map, orderRealAudit);
 		}

@@ -44,6 +44,7 @@ public interface IAuthorityUserService {
 	 * @author 18511
 	 */
 	public AuthorityUser saveAuthorityUser(Map<String,Object> map) throws Exception;
+	public AuthorityUser updateAuthorityUser(Map<String,Object> map) throws Exception;
 	/**
 	 * @query:根据查询条件 查询
 	 * @param queryCondition 查询条件
