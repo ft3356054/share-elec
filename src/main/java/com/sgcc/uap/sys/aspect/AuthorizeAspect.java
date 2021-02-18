@@ -69,7 +69,7 @@ public class AuthorizeAspect {
     }
     
     private void checkTimeOut(){
-    	ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+    	/*ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
         //查询cookie
@@ -84,6 +84,6 @@ public class AuthorizeAspect {
         if (StringUtils.isEmpty(tokenValue)) {
         	logger.warn("【登录校验】Redis中查不到token");
         	throw new ReturnException(ExceptionEnum.COOKIE_TIME_OUT);
-        }
+        }*/
     }
 }
