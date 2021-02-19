@@ -115,7 +115,7 @@ public class OrderRealAuditService implements IOrderRealAuditService{
 			userInfoMap.put("idCardNum", idCardNum);
 			userInfoMap.put("idCardFirst", idCardFirstUrl);
 			userInfoMap.put("idCardSecond", idCardSecondUrl);
-			authorityUserService.saveAuthorityUser(userInfoMap);
+			authorityUserService.updateAuthorityUser(userInfoMap);
 			
 			CrudUtils.transMap2Bean(map, orderRealAudit);
 		}

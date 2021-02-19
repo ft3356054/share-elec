@@ -82,7 +82,7 @@ public class AuthorityUserService implements IAuthorityUserService{
 		}
 	}
 	
-	@Override
+	/*@Override
 	public AuthorityUser saveAuthorityUser(Map<String,Object> map) throws Exception{
 		validateService.validateWithException(AuthorityUser.class,map);
 		AuthorityUser authorityUser = new AuthorityUser();
@@ -114,6 +114,75 @@ public class AuthorityUserService implements IAuthorityUserService{
 				customerInfoMap.put("areaId", null);
 				customerInfoMap.put("realNameAuth", "1");
 				customerInfoService.saveCustomerInfo(customerInfoMap);
+			}else{
+				String _password = (String) map.get("userPsw");
+				//密码加密
+				String password = Md5Util.string2MD5(_password);
+				map.put("userPsw", password);
+				map.put("updateTime", DateTimeUtil.formatDateTime(new Date()));
+				CrudUtils.mapToObject(map, authorityUser,  "id");
+			}
+		}else{
+			throw new Exception("验证码错误或验证码已过期");
+		}
+		return authorityUserRepository.save(authorityUser);
+	}*/
+	
+	@Override
+	public AuthorityUser addAuthorityUser(Map<String,Object> map) throws Exception{
+		validateService.validateWithException(AuthorityUser.class,map);
+		AuthorityUser authorityUser = new AuthorityUser();
+		
+		String userAccount = (String) map.get("phonenumber");
+		String authCode = (String) map.get("authCode");
+		
+		String redisAuthCode = stringRedisTemplate.opsForValue().get("phonenum"+userAccount);
+		
+		if(authCode.equals(redisAuthCode)){
+			authorityUser = authorityUserRepository.findByUserAccount(userAccount);
+			if(null==authorityUser){
+				authorityUser = new AuthorityUser();
+				String getNewId = UuidUtil.getIntUuid32();
+				map.put("id", getNewId);
+				map.put("userAccount", userAccount);
+				String _password = (String) map.get("userPsw");
+				//密码加密
+				String password = Md5Util.string2MD5(_password);
+				map.put("userPsw", password);
+				map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
+				CrudUtils.transMap2Bean(map, authorityUser);
+				
+				Map<String, Object> customerInfoMap = new HashMap<String, Object>();
+				customerInfoMap.put("customerId", getNewId);
+				customerInfoMap.put("customerPhonenumber", userAccount);
+				customerInfoMap.put("provinceId", null);
+				customerInfoMap.put("cityId", null);
+				customerInfoMap.put("areaId", null);
+				customerInfoMap.put("realNameAuth", "1");
+				customerInfoService.saveCustomerInfo(customerInfoMap);
+			}else{
+				throw new Exception("该账号已被注册");
+			}
+		}else{
+			throw new Exception("验证码错误或验证码已过期");
+		}
+		return authorityUserRepository.save(authorityUser);
+	}
+	
+	@Override
+	public AuthorityUser changeAuthorityUserPs(Map<String,Object> map) throws Exception{
+		validateService.validateWithException(AuthorityUser.class,map);
+		AuthorityUser authorityUser = new AuthorityUser();
+		
+		String userAccount = (String) map.get("phonenumber");
+		String authCode = (String) map.get("authCode");
+		
+		String redisAuthCode = stringRedisTemplate.opsForValue().get("phonenum"+userAccount);
+		
+		if(authCode.equals(redisAuthCode)){
+			authorityUser = authorityUserRepository.findByUserAccount(userAccount);
+			if(null==authorityUser){
+				throw new Exception("该手机号尚未注册");
 			}else{
 				String _password = (String) map.get("userPsw");
 				//密码加密

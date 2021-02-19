@@ -114,7 +114,7 @@ public class AuthorityUserController {
 	 * @date 2021-02-02 11:49:33
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public WrappedResult saveOrUpdate(@RequestBody FormRequestObject<Map<String,Object>> params) {
 		try {
 			if(params == null){
@@ -144,7 +144,87 @@ public class AuthorityUserController {
 			}
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
+	}*/
+	
+	/**
+	 * @saveOrUpdate:新增
+	 * @param params
+	 * @return WrappedResult 保存或更新的结果
+	 * @date 2021-02-02 11:49:33
+	 * @author 18511
+	 */
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	public WrappedResult addUser(@RequestBody FormRequestObject<Map<String,Object>> params) {
+		try {
+			if(params == null){
+				throw new NullArgumentException("params");
+			}
+			QueryResultObject result = new QueryResultObject();
+			List<Map<String,Object>> items = params.getItems();
+			if(items != null && !items.isEmpty()){
+				for(Map<String,Object> map : items){
+					result.setFormItems(authorityUserService.addAuthorityUser(map));
+				}
+			}
+			logger.info("保存数据成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (ServiceValidatorBaseException e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "校验异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedValidateWrappedResult(errorMessage);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "保存异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
 	}
+	
+	/**
+	 * @saveOrUpdate:修改密码
+	 * @param params
+	 * @return WrappedResult 保存或更新的结果
+	 * @date 2021-02-02 11:49:33
+	 * @author 18511
+	 */
+	@RequestMapping(value = "/change", method = RequestMethod.POST)
+	public WrappedResult changePs(@RequestBody FormRequestObject<Map<String,Object>> params) {
+		try {
+			if(params == null){
+				throw new NullArgumentException("params");
+			}
+			QueryResultObject result = new QueryResultObject();
+			List<Map<String,Object>> items = params.getItems();
+			if(items != null && !items.isEmpty()){
+				for(Map<String,Object> map : items){
+					result.setFormItems(authorityUserService.changeAuthorityUserPs(map));
+				}
+			}
+			logger.info("保存数据成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (ServiceValidatorBaseException e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "校验异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedValidateWrappedResult(errorMessage);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "保存异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
+	
 	/**
 	 * @query:查询
 	 * @param requestCondition

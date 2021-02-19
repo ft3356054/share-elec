@@ -28,7 +28,7 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.services.impl.IInformationNotifyService;
+import com.sgcc.uap.share.services.IInformationNotifyService;
 import com.sgcc.uap.share.vo.InformationNotifyVO;
 
 

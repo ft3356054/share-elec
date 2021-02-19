@@ -43,7 +43,9 @@ public interface IAuthorityUserService {
 	 * @date 2021-02-02 11:49:33
 	 * @author 18511
 	 */
-	public AuthorityUser saveAuthorityUser(Map<String,Object> map) throws Exception;
+	/*public AuthorityUser saveAuthorityUser(Map<String,Object> map) throws Exception;*/
+	public AuthorityUser addAuthorityUser(Map<String,Object> map) throws Exception;
+	public AuthorityUser changeAuthorityUserPs(Map<String,Object> map) throws Exception;
 	public AuthorityUser updateAuthorityUser(Map<String,Object> map) throws Exception;
 	/**
 	 * @query:根据查询条件 查询
