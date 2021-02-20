@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.services;
+package com.sgcc.uap.share.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +24,9 @@ import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.RequestCondition;
 import com.sgcc.uap.rest.utils.CrudUtils;
 import com.sgcc.uap.rest.utils.RestUtils;
-import com.sgcc.uap.share.domain.InformationNotify;
-import com.sgcc.uap.share.repositories.InformationNotifyRepository;
-import com.sgcc.uap.share.services.impl.IInformationNotifyService;
+import com.sgcc.uap.share.domain.InformationRecord;
+import com.sgcc.uap.share.repositories.InformationRecordRepository;
+import com.sgcc.uap.share.services.IInformationRecordService;
 import com.sgcc.uap.utils.string.StringUtil;
 
 
@@ -40,19 +40,19 @@ import com.sgcc.uap.utils.string.StringUtil;
  * @author 18511
  */
 @Service
-public class InformationNotifyService implements IInformationNotifyService{
+public class InformationRecordService implements IInformationRecordService{
 	/** 
-     * 注入informationNotifyRepository
+     * 注入informationRecordRepository
      */
 	@Autowired
-	private InformationNotifyRepository informationNotifyRepository;
+	private InformationRecordRepository informationRecordRepository;
 	@Autowired
 	private ValidateService validateService;
 	
 	@Override
-	public QueryResultObject getInformationNotifyByInformationId(String informationId) {
-		InformationNotify informationNotify = informationNotifyRepository.findOne(informationId);
-		return RestUtils.wrappQueryResult(informationNotify);
+	public QueryResultObject getInformationRecordByInformationRecordId(String informationRecordId) {
+		InformationRecord informationRecord = informationRecordRepository.findOne(informationRecordId);
+		return RestUtils.wrappQueryResult(informationRecord);
 	}
 	@Override
 	public void remove(IDRequestObject idObject) {
@@ -61,21 +61,21 @@ public class InformationNotifyService implements IInformationNotifyService{
 		}
 		String[] ids = idObject.getIds();
 		for (String id : ids){
-			informationNotifyRepository.delete(id);
+			informationRecordRepository.delete(id);
 		}
 	}
 	@Override
-	public InformationNotify saveInformationNotify(Map<String,Object> map) throws Exception{
-		validateService.validateWithException(InformationNotify.class,map);
-		InformationNotify informationNotify = new InformationNotify();
-		if (map.containsKey("informationId")) {
-			String informationId = (String) map.get("informationId");
-			informationNotify = informationNotifyRepository.findOne(informationId);
-			CrudUtils.mapToObject(map, informationNotify,  "informationId");
+	public InformationRecord saveInformationRecord(Map<String,Object> map) throws Exception{
+		validateService.validateWithException(InformationRecord.class,map);
+		InformationRecord informationRecord = new InformationRecord();
+		if (map.containsKey("informationRecordId")) {
+			String informationRecordId = (String) map.get("informationRecordId");
+			informationRecord = informationRecordRepository.findOne(informationRecordId);
+			CrudUtils.mapToObject(map, informationRecord,  "informationRecordId");
 		}else{
-			CrudUtils.transMap2Bean(map, informationNotify);
+			CrudUtils.transMap2Bean(map, informationRecord);
 		}
-		return informationNotifyRepository.save(informationNotify);
+		return informationRecordRepository.save(informationRecord);
 	}
 	@Override
 	public QueryResultObject query(RequestCondition queryCondition) {
@@ -115,9 +115,9 @@ public class InformationNotifyService implements IInformationNotifyService{
 	 */
 	private QueryResultObject querySingle(RequestCondition queryCondition) {
 		List<QueryFilter> qList = getFilterList(queryCondition);
-		Specification<InformationNotify> specification = new Specification<InformationNotify>() {
+		Specification<InformationRecord> specification = new Specification<InformationRecord>() {
 			@Override
-			public Predicate toPredicate(Root<InformationNotify> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<InformationRecord> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -132,12 +132,12 @@ public class InformationNotifyService implements IInformationNotifyService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<InformationNotify> informationNotify = informationNotifyRepository.findAll(specification,request);
-		List<InformationNotify> result = new ArrayList<InformationNotify>();
+		Page<InformationRecord> informationRecord = informationRecordRepository.findAll(specification,request);
+		List<InformationRecord> result = new ArrayList<InformationRecord>();
 		long count = 0;
 		if(null != qList && !qList.isEmpty()){
-			result = informationNotify.getContent();
-			count = informationNotify.getTotalElements();
+			result = informationRecord.getContent();
+			count = informationRecord.getTotalElements();
 		}
 		return RestUtils.wrappQueryResult(result, count);
 	}
@@ -160,9 +160,9 @@ public class InformationNotifyService implements IInformationNotifyService{
 	 */
 	private QueryResultObject queryCommon(RequestCondition queryCondition) {
 		List<QueryFilter> qList = queryCondition.getQueryFilter(); 
-		Specification<InformationNotify> specification = new Specification<InformationNotify>() {
+		Specification<InformationRecord> specification = new Specification<InformationRecord>() {
 			@Override
-			public Predicate toPredicate(Root<InformationNotify> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+			public Predicate toPredicate(Root<InformationRecord> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> preList = new ArrayList<Predicate>();
 				if(qList != null && !qList.isEmpty()){
 					for(QueryFilter queryFilter : qList){
@@ -177,11 +177,11 @@ public class InformationNotifyService implements IInformationNotifyService{
 			}
 		};
 		PageRequest request = this.buildPageRequest(queryCondition);
-		Page<InformationNotify> informationNotify = informationNotifyRepository.findAll(specification,request);
-		List<InformationNotify> result = new ArrayList<InformationNotify>();
+		Page<InformationRecord> informationRecord = informationRecordRepository.findAll(specification,request);
+		List<InformationRecord> result = new ArrayList<InformationRecord>();
 		long count = 0;
-		result = informationNotify.getContent();
-		count = informationNotify.getTotalElements();
+		result = informationRecord.getContent();
+		count = informationRecord.getTotalElements();
 		return RestUtils.wrappQueryResult(result, count);
 	}
 	

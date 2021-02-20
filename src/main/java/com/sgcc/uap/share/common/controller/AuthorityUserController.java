@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.login.controller;
+package com.sgcc.uap.share.common.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -114,7 +114,7 @@ public class AuthorityUserController {
 	 * @date 2021-02-02 11:49:33
 	 * @author 18511
 	 */
-	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public WrappedResult saveOrUpdate(@RequestBody FormRequestObject<Map<String,Object>> params) {
 		try {
 			if(params == null){
@@ -144,7 +144,9 @@ public class AuthorityUserController {
 			}
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
-	}
+	}*/
+	
+	
 	/**
 	 * @query:查询
 	 * @param requestCondition

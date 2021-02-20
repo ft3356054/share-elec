@@ -1,4 +1,4 @@
-package com.sgcc.uap.share.login.controller;
+package com.sgcc.uap;
 
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArraySet;

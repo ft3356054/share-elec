@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.util.WebUtils;
 
+import com.sgcc.uap.WebSocketServer;
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.rest.annotation.ColumnRequestParam;
 import com.sgcc.uap.rest.annotation.QueryRequestParam;
@@ -60,7 +61,6 @@ import com.sgcc.uap.share.electrician.services.impl.ElectricianCompanyInfoServic
 import com.sgcc.uap.share.electrician.services.impl.ElectricianInfoService;
 import com.sgcc.uap.share.electrician.services.impl.OrderElectricianHisService;
 import com.sgcc.uap.share.electrician.vo.OrderElectricianVO;
-import com.sgcc.uap.share.login.controller.WebSocketServer;
 import com.sgcc.uap.share.services.impl.BaseOrderTypeService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceService;
 import com.sgcc.uap.share.services.impl.NotifyAnnounceUserService;

@@ -14,12 +14,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import com.sgcc.uap.WebSocketServer;
 import com.sgcc.uap.share.customer.services.IOrderCustomerService;
 import com.sgcc.uap.share.customer.services.IOrderFlowService;
 import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.BaseSystemConfig;
 import com.sgcc.uap.share.domain.OrderCustomer;
-import com.sgcc.uap.share.login.controller.WebSocketServer;
 import com.sgcc.uap.share.services.IBaseEnumsService;
 import com.sgcc.uap.share.services.IBaseSystemConfigService;
 import com.sgcc.uap.share.services.INotifyAnnounceService;

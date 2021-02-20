@@ -21,6 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.sgcc.uap.WebSocketServer;
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.mdd.runtime.validate.ValidateService;
 import com.sgcc.uap.rest.support.IDRequestObject;
@@ -35,7 +36,6 @@ import com.sgcc.uap.share.domain.BaseEnums;
 import com.sgcc.uap.share.domain.NotifyAnnounce;
 import com.sgcc.uap.share.domain.NotifyAnnounceUser;
 import com.sgcc.uap.share.domain.OrderElectrician;
-import com.sgcc.uap.share.login.controller.WebSocketServer;
 import com.sgcc.uap.share.repositories.NotifyAnnounceAndUserRepository;
 import com.sgcc.uap.share.repositories.NotifyAnnounceRepository;
 import com.sgcc.uap.share.repositories.NotifyAnnounceUserRepository;

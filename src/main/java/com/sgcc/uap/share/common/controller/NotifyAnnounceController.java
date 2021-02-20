@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sgcc.uap.WebSocketServer;
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.rest.annotation.ColumnRequestParam;
 import com.sgcc.uap.rest.annotation.QueryRequestParam;
@@ -29,7 +30,6 @@ import com.sgcc.uap.rest.support.ViewMetaData;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.ViewAttributeUtils;
 import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
-import com.sgcc.uap.share.login.controller.WebSocketServer;
 import com.sgcc.uap.share.services.INotifyAnnounceService;
 import com.sgcc.uap.share.vo.NotifyAnnounceVO;
 import com.sgcc.uap.util.MapUtil;
