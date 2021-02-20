@@ -31,6 +31,7 @@ import com.sgcc.uap.rest.support.FormRequestObject;
 import com.sgcc.uap.rest.support.QueryResultObject;
 import com.sgcc.uap.rest.support.WrappedResult;
 import com.sgcc.uap.rest.utils.RestUtils;
+import com.sgcc.uap.service.validator.ServiceValidatorBaseException;
 import com.sgcc.uap.share.customer.services.ICustomerInfoService;
 import com.sgcc.uap.share.customer.services.IGetElectricianInfoService;
 import com.sgcc.uap.share.domain.AuthorityUser;
@@ -176,6 +177,89 @@ public class LoginController {
 			return WrappedResult.failedWrappedResult(errorMessage);
 		}
 	}
+	
+	/**
+	 * @saveOrUpdate:新增
+	 * @param params
+	 * @return WrappedResult 保存或更新的结果
+	 * @date 2021-02-02 11:49:33
+	 * @author 18511
+	 */
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	public WrappedResult addUser(@RequestBody FormRequestObject<Map<String,Object>> params) {
+		try {
+			if(params == null){
+				throw new NullArgumentException("params");
+			}
+			QueryResultObject result = new QueryResultObject();
+			List<Map<String,Object>> items = params.getItems();
+			if(items != null && !items.isEmpty()){
+				for(Map<String,Object> map : items){
+					result.setFormItems(authorityUserService.addAuthorityUser(map));
+				}
+			}
+			logger.info("保存数据成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (ServiceValidatorBaseException e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "校验异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedValidateWrappedResult(errorMessage);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "保存异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
+	/**
+	 * @saveOrUpdate:修改密码
+	 * @param params
+	 * @return WrappedResult 保存或更新的结果
+	 * @date 2021-02-02 11:49:33
+	 * @author 18511
+	 */
+	@RequestMapping(value = "/change", method = RequestMethod.POST)
+	public WrappedResult changePs(@RequestBody FormRequestObject<Map<String,Object>> params) {
+		try {
+			if(params == null){
+				throw new NullArgumentException("params");
+			}
+			QueryResultObject result = new QueryResultObject();
+			List<Map<String,Object>> items = params.getItems();
+			if(items != null && !items.isEmpty()){
+				for(Map<String,Object> map : items){
+					result.setFormItems(authorityUserService.changeAuthorityUserPs(map));
+				}
+			}
+			logger.info("保存数据成功"); 
+			return WrappedResult.successWrapedResult(result);
+		} catch (ServiceValidatorBaseException e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "校验异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedValidateWrappedResult(errorMessage);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "保存异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}
+	
+	
+	
+	
+	
 	
 	/**
 	 * 登录方法的编写——用户登录后，通过判断是否为电工，如果为电工则跳转电工首页，并获取位置信息储存，如果没有获取到，则提示打开定位；

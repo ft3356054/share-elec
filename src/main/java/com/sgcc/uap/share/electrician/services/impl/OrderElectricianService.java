@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sgcc.uap.WebSocketServer;
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.mdd.runtime.validate.ValidateService;
 import com.sgcc.uap.rest.support.IDRequestObject;
@@ -61,7 +62,6 @@ import com.sgcc.uap.share.electrician.repositories.ElectricainQueryOrderReposito
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianHisRepository;
 import com.sgcc.uap.share.electrician.repositories.OrderElectricianRepository;
 import com.sgcc.uap.share.electrician.services.IOrderElectricianService;
-import com.sgcc.uap.share.login.controller.WebSocketServer;
 import com.sgcc.uap.share.repositories.OrderCustomerMoreVORepository;
 import com.sgcc.uap.share.services.impl.BaseAreaPriceService;
 import com.sgcc.uap.share.services.impl.BaseEnumsService;

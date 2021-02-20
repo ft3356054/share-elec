@@ -24,6 +24,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sgcc.uap.WebSocketServer;
 import com.sgcc.uap.exception.NullArgumentException;
 import com.sgcc.uap.mdd.runtime.validate.ValidateService;
 import com.sgcc.uap.rest.support.IDRequestObject;
@@ -46,7 +47,6 @@ import com.sgcc.uap.share.domain.ElecPosition;
 import com.sgcc.uap.share.domain.OrderCustomer;
 import com.sgcc.uap.share.domain.OrderElectrician;
 import com.sgcc.uap.share.electrician.services.impl.ElecPositionService;
-import com.sgcc.uap.share.login.controller.WebSocketServer;
 import com.sgcc.uap.share.services.IBaseEnumsService;
 import com.sgcc.uap.share.services.IElecErrorCountService;
 import com.sgcc.uap.share.services.impl.AssessRecordService;
