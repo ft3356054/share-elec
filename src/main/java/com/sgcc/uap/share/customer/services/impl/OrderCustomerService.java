@@ -257,8 +257,8 @@ public class OrderCustomerService implements IOrderCustomerService{
 			}
 					
 			map.put("createAreaId", areaId);
-			map.put("customerPrice", getPrice(identityId, areaId));
-			map.put("orderStatus", "0");
+			//map.put("customerPrice", getPrice(identityId, areaId)); 取消上门费
+			map.put("orderStatus", "1");
 			map.put("payStatus", "0");
 			map.put("orderFrom", "0");
 			map.put("createTime", DateTimeUtil.formatDateTime(new Date()));
@@ -548,7 +548,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 				result.put("key", "1");
 				result.put("desc", "该订单不处于可取消状态");
 			}
-		}else if("8".equals(orderStatus)){
+		}else if("9".equals(orderStatus)){
 			ArrayList<String> sites = new ArrayList<>();
 	        sites.add("25"); //待用户验收
 			if(sites.contains(orderCustomer.getOrderStatus())){
@@ -597,8 +597,6 @@ public class OrderCustomerService implements IOrderCustomerService{
 							elecErrorCountService.saveElecErrorCount(elecErrorCountMap);
 						}
 						
-						//费用划转
-						
 						String dateString = TimeStamp.toString(new Date());
 						map.put("updateTime", dateString);
 						map.put("finishTime", dateString);
@@ -622,7 +620,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 				result.put("key", "1");
 				result.put("desc", "该订单不处于可验收状态");
 			}
-		}else if("9".equals(orderStatus)){
+		}/*else if("9".equals(orderStatus)){
 			ArrayList<String> sites = new ArrayList<>();
 	        sites.add("8"); //待用户评价
 			if(sites.contains(orderCustomer.getOrderStatus())){
@@ -635,7 +633,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 				result.put("key", "1");
 				result.put("desc", "该订单不处于待评价状态");
 			}
-		}else if("26".equals(orderStatus)){
+		}*/else if("26".equals(orderStatus)){
 			ArrayList<String> sites = new ArrayList<>();
 	        sites.add("23"); //待用户支付
 			if(sites.contains(orderCustomer.getOrderStatus())){
@@ -672,6 +670,58 @@ public class OrderCustomerService implements IOrderCustomerService{
 		}else{
 			result.put("key", "1");
 			result.put("desc", "该订单不处于待支付状态");
+		}
+	}else if("3".equals(orderStatus)){
+		if("23".equals(orderCustomer.getOrderStatus())){
+			//修改电工表状态
+			List<String> listStatus = new ArrayList<String>();
+			listStatus.add("1");
+			listStatus.add("4");
+			listStatus.add("5");
+			//获取当前子订单
+			OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderCustomer.getOrderId(), listStatus);
+			if(null!=orderElectrician){
+				//修改电工订单状态 由 23 改为3
+				if("23".equals(orderElectrician.getOrderElectricianStatus())){
+					orderElectrician.setUpdateTime(nowDate);
+					orderElectrician.setOrderElectricianStatus(orderStatus);
+					getOrderElectricianRepository.save(orderElectrician);
+					//插入电工流水
+					sendNotify(map, orderCustomer , orderElectrician,2,"1");
+				}else{
+					throw new Exception("子订单状态异常");
+				}
+			}else{
+				throw new Exception("未查询到子订单");
+			}
+		}else{
+			throw new Exception("该订单未处于待支付状态");
+		}
+	}else if("32".equals(orderStatus)){
+		if("25".equals(orderCustomer.getOrderStatus())){
+			//修改电工表状态
+			List<String> listStatus = new ArrayList<String>();
+			listStatus.add("1");
+			listStatus.add("4");
+			listStatus.add("5");
+			//获取当前子订单
+			OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderCustomer.getOrderId(), listStatus);
+			if(null!=orderElectrician){
+				//修改电工订单状态 由 25 改为32
+				if("25".equals(orderElectrician.getOrderElectricianStatus())){
+					orderElectrician.setUpdateTime(nowDate);
+					orderElectrician.setOrderElectricianStatus(orderStatus);
+					getOrderElectricianRepository.save(orderElectrician);
+					//插入电工流水
+					sendNotify(map, orderCustomer , orderElectrician,2,"1");
+				}else{
+					throw new Exception("子订单状态异常");
+				}
+			}else{
+				throw new Exception("未查询到子订单");
+			}
+		}else{
+			throw new Exception("该订单未处于待支付状态");
 		}
 	}
 		return result;
@@ -778,6 +828,10 @@ public class OrderCustomerService implements IOrderCustomerService{
 		return list;
 	}
 	
+	
+	/* 测试接口
+	 * 有上门费
+	 */
 	@Override
 	@Transactional
 	public OrderCustomer payPrice(String orderId,String orderStatus) throws Exception{
@@ -848,6 +902,73 @@ public class OrderCustomerService implements IOrderCustomerService{
 					throw new Exception("该订单未处于待支付状态");
 				}
 			}
+			
+			
+		return result;
+	}
+	
+	/* 测试接口
+	 * 只有维修费的支付
+	 */
+	@Override
+	@Transactional
+	public OrderCustomer payPrice(String orderId) throws Exception{
+		Timestamp nowDate =new Timestamp(System.currentTimeMillis());
+		OrderCustomer orderCustomer = new OrderCustomer();
+		OrderCustomer result = new OrderCustomer();
+		//调用支付接口
+		boolean payFlag = false;
+		
+		payFlag = true;
+		
+		if(payFlag){
+			//修改
+			orderCustomer = orderCustomerRepository.findOne(orderId);
+			
+			String dateString = TimeStamp.toString(new Date());
+			Map<String, Object> newMap = new HashMap<String, Object>();
+			newMap.put("orderId", orderId);
+			newMap.put("updateTime", dateString);
+			newMap.put("orderStatus", "8");
+			newMap.put("payStatus", "1");
+			
+			if("32".equals(orderCustomer.getOrderStatus())){
+				CrudUtils.mapToObject(newMap, orderCustomer,  "orderId");
+				result = orderCustomerRepository.save(orderCustomer);
+				//插入流水
+				sendNotify(newMap, orderCustomer , null ,2,"0");
+				//删除cust_position
+				custPositionService.delete(orderId);
+				
+				//修改电工表状态
+				List<String> listStatus = new ArrayList<String>();
+				listStatus.add("1");
+				listStatus.add("4");
+				listStatus.add("5");
+				//获取当前子订单
+				OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderCustomer.getOrderId(), listStatus);
+				if(null!=orderElectrician){
+					//修改电工订单状态 由 32 改为8
+					if("23".equals(orderElectrician.getOrderElectricianStatus())){
+						orderElectrician.setUpdateTime(nowDate);
+						orderElectrician.setOrderElectricianStatus("8");
+						getOrderElectricianRepository.save(orderElectrician);
+						//插入电工流水
+						sendNotify(newMap, orderCustomer , orderElectrician,2,"1");
+						
+					}else{
+						throw new Exception("子订单状态异常");
+					}
+				}else{
+					throw new Exception("未查询到子订单");
+				}
+			}else{
+				throw new Exception("该订单未处于待支付状态");
+			}
+		}else{
+			throw new Exception("支付失败");
+		}
+		
 			
 			
 		return result;

@@ -426,7 +426,40 @@ public class OrderCustomerController {
 	}
 	
 	/**
-	 * @saveOrUpdate: 支付上门费 
+	 * @saveOrUpdate: 支付上门费 或维修费
+	 * @param requestCondition
+	 * @return WrappedResult 
+	 * @date 2020-12-30 14:32:47
+	 * @author 18511
+	 * 
+	 */
+	/*@RequestMapping(value = "/pay", method = RequestMethod.POST)
+	public WrappedResult payCustomerPrice(@RequestParam(value = "items", required = false) String items) {
+		try {
+			Map<String,Object> map = JsonUtils.parseJSONstr2Map(items); 
+			String orderId = (String) map.get("orderId");
+			//String price = (String) map.get("price");
+			String type = (String) map.get("type"); //0上门费 1维修费
+			
+			OrderCustomer orderCustomer = null;
+			if("0".equals(type)){
+				orderCustomer = orderCustomerService.payPrice(orderId,"1");
+			}else{
+				orderCustomer = orderCustomerService.payPrice(orderId,"3");
+			}
+			return WrappedResult.successWrapedResult(orderCustomer);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "支付异常";
+			if(isDev){
+				errorMessage = e.getMessage();
+			}
+			return WrappedResult.failedWrappedResult(errorMessage);
+		}
+	}*/
+	
+	/**
+	 * @saveOrUpdate: 支付维修费
 	 * @param requestCondition
 	 * @return WrappedResult 
 	 * @date 2020-12-30 14:32:47
@@ -442,11 +475,12 @@ public class OrderCustomerController {
 			String type = (String) map.get("type"); //0上门费 1维修费
 			
 			OrderCustomer orderCustomer = null;
-			if("0".equals(type)){
+			orderCustomer = orderCustomerService.payPrice(orderId);
+			/*if("0".equals(type)){
 				orderCustomer = orderCustomerService.payPrice(orderId,"1");
 			}else{
 				orderCustomer = orderCustomerService.payPrice(orderId,"3");
-			}
+			}*/
 			return WrappedResult.successWrapedResult(orderCustomer);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

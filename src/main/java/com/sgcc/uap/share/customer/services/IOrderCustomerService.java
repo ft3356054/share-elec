@@ -112,7 +112,7 @@ public interface IOrderCustomerService {
 	 * @throws Exception
 	 */
 	public OrderCustomer payPrice(String orderId,String orderStatus) throws Exception;
-	
+	public OrderCustomer payPrice(String orderId) throws Exception;
 	
 	
 	

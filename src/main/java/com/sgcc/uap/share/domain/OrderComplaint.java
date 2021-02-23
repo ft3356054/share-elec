@@ -143,6 +143,21 @@ public class OrderComplaint implements Serializable {
     @Column(name = "REMARK2", nullable = true, length = 512)
     private String remark2 ;
     
+    /** 
+     * 是否需要重派单
+     */
+    @Column(name = "IS_NEED_RESEND", nullable = true, length = 2)
+    private String isNeedResend ;
+    
+    
+	public String getIsNeedResend() {
+		return isNeedResend;
+	}
+	public void setIsNeedResend(String isNeedResend) {
+		this.isNeedResend = isNeedResend;
+	}
+
+
 	/**
 	  *虚拟主键
 	  */
