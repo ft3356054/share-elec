@@ -49,21 +49,21 @@ public class CustomerInfo implements Serializable {
      */
     @Nullable
     @Column(name = "PROVINCE_ID", nullable = true, length = 8)
-    private int provinceId ;
+    private Integer provinceId ;
     
     /** 
      * CITY_ID
      */
     @Nullable
     @Column(name = "CITY_ID", nullable = true, length = 8)
-    private int cityId ;
+    private Integer cityId ;
     
     /** 
      * AREA_ID
      */
     @Nullable
     @Column(name = "AREA_ID", nullable = true, length = 8)
-    private int areaId ;
+    private Integer areaId ;
     
     /** 
      * IDENTITY_ID
@@ -213,22 +213,22 @@ public class CustomerInfo implements Serializable {
 		this.customerPhonenumber = customerPhonenumber;
 	} 
     
-    public int getProvinceId() {
+    public Integer getProvinceId() {
 		return provinceId;
 	}
-	public void setProvinceId(int provinceId) {
+	public void setProvinceId(Integer provinceId) {
 		this.provinceId = provinceId;
 	}
-	public int getCityId() {
+	public Integer getCityId() {
 		return cityId;
 	}
-	public void setCityId(int cityId) {
+	public void setCityId(Integer cityId) {
 		this.cityId = cityId;
 	}
-	public int getAreaId() {
+	public Integer getAreaId() {
 		return areaId;
 	}
-	public void setAreaId(int areaId) {
+	public void setAreaId(Integer areaId) {
 		this.areaId = areaId;
 	}
     /**
@@ -494,7 +494,7 @@ public class CustomerInfo implements Serializable {
     
     /**
      * hashcode方法
-     * @return int
+     * @return Integer
      * 
      */
     @Override
