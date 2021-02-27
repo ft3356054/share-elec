@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sgcc.uap.rest.support.WrappedResult;
@@ -50,7 +49,7 @@ public class IndexController {
     private IGetElectricianInfoService iGetElectricianInfoService;
 	
 	
-	@RequestMapping(value = "/findIndexPage", method = RequestMethod.POST)
+	@RequestMapping(value = "/findIndexPage")
 	public WrappedResult authCodeVerify() {
 		try {
 			IndexPageBo indexPageBo = new IndexPageBo();
@@ -72,7 +71,9 @@ public class IndexController {
 					Map<String, Object> customerInfoMap = new HashMap<String, Object>();
 					customerInfoMap.put("customerId", getNewId);
 					customerInfoMap.put("realNameAuth", "0");
+					customerInfoMap.put("openId",openId);
 					customerInfoService.saveCustomerInfo(customerInfoMap);
+					indexPageBo.setUserId(getNewId);
 				}else{
 					indexPageBo.setUserId(customerInfo.getCustomerId());
 				}
