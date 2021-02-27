@@ -174,8 +174,8 @@ public class CustomerInfoService implements ICustomerInfoService{
 			orderAuditElectrician.setCreateTime(dateString);
 			orderAuditElectrician.setUpdateTime(dateString);
 			orderAuditElectrician.setElectricianId(customerId);
-			orderAuditElectrician.setElectricianName(customerInfo.getCustomerName());
-			orderAuditElectrician.setElectricianPhonenumber(customerInfo.getCustomerPhonenumber());
+			//orderAuditElectrician.setElectricianName(customerInfo.getCustomerName());
+			//orderAuditElectrician.setElectricianPhonenumber(customerInfo.getCustomerPhonenumber());
 			orderAuditElectrician.setCompanyId((String) map.get("companyId"));
 			orderAuditElectrician.setSubCompanyId((String) map.get("subCompanyId"));
 			orderAuditElectrician.setCompanyName((String) map.get("companyName"));

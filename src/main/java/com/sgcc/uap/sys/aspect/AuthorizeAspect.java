@@ -4,14 +4,12 @@ package com.sgcc.uap.sys.aspect;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -23,8 +21,8 @@ import com.sgcc.uap.sys.exception.ReturnException;
 import com.sgcc.uap.util.CookieUtil;
 
 
-@Aspect
-@Component
+/*@Aspect
+@Component*/
 public class AuthorizeAspect {
 	
 	private final static Logger logger = (Logger) LoggerFactory.getLogger(AuthorizeAspect.class);

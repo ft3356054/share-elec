@@ -2,6 +2,7 @@ package com.sgcc.uap.share.domain;
 
 import java.io.Serializable;
 
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -46,18 +47,21 @@ public class CustomerInfo implements Serializable {
     /** 
      * PROVINCE_ID
      */
+    @Nullable
     @Column(name = "PROVINCE_ID", nullable = true, length = 8)
     private int provinceId ;
     
     /** 
      * CITY_ID
      */
+    @Nullable
     @Column(name = "CITY_ID", nullable = true, length = 8)
     private int cityId ;
     
     /** 
      * AREA_ID
      */
+    @Nullable
     @Column(name = "AREA_ID", nullable = true, length = 8)
     private int areaId ;
     
@@ -109,6 +113,32 @@ public class CustomerInfo implements Serializable {
     @Transient
     private String AuditStatus ;
     
+    /** 
+     * OPEN_ID
+     */
+    @Column(name = "OPEN_ID", nullable = true, length = 64)
+    private String openId ;
+    
+    /** 
+     * NICK_NAME
+     */
+    @Column(name = "NICK_NAME", nullable = true, length = 32)
+    private String nickName ;
+    
+	public String getOpenId() {
+		return openId;
+	}
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
+	public String getNickName() {
+		return nickName;
+	}
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+
 	/**
 	  *虚拟主键
 	  */

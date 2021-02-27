@@ -175,6 +175,20 @@ public class OrderAuditElectrician implements Serializable {
     @Column(name = "ELECTRICIAN_ADDRESS", nullable = true, length = 512)
     private String electricianAddress ;
     
+    
+    /** 
+     * OPEN_ID
+     */
+    @Column(name = "OPEN_ID", nullable = true, length = 64)
+    private String openId ;
+    
+	public String getOpenId() {
+		return openId;
+	}
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
+	
 	/**
 	  *虚拟主键
 	  */
