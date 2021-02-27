@@ -35,6 +35,12 @@ public class GetElectricianInfoService implements IGetElectricianInfoService{
 		}
 		return result;
 	}
+	
+	@Override
+	public ElectricianInfo getElectricianInfoByOpenId(String openId) {
+		ElectricianInfo electricianInfo = getElectricianInfoRepository.findElectricianInfoByOpenId(openId);
+		return electricianInfo;
+	}
 
 	@Override
 	public ElectricianInfo getElectricianInfoByElectricianId(String electricianId) {

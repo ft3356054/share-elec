@@ -30,4 +30,8 @@ public interface GetElectricianInfoRepository extends JpaRepository<ElectricianI
 	,nativeQuery = true)
 	Integer updateElectricianInfo(@Param("electricianInfoIds")List<String> electricianInfoIds);
 	
+	public ElectricianInfo findElectricianInfoByOpenId(String openId);
+	
+	
+	
 }

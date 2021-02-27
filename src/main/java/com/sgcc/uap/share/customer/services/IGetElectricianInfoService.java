@@ -24,7 +24,7 @@ public interface IGetElectricianInfoService {
 	 * @author 18511
 	 */
 	public boolean getElectricianInfoNumberByElectricianId(String electricianId);
-
+	public ElectricianInfo getElectricianInfoByOpenId(String openId);
 	/**
 	 * @getElectricianInfoByElectricianId:根据主键 查询
 	 * @param queryCondition 查询条件

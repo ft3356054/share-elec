@@ -74,6 +74,12 @@ public class CustomerInfoService implements ICustomerInfoService{
 	}
 	
 	@Override
+	public CustomerInfo getCustomerInfoByOpenId(String openId) {
+		CustomerInfo customerInfo = customerInfoRepository.findCustomerInfoByOpenId(openId);
+		return customerInfo;
+	}
+	
+	@Override
 	public CustomerInfo getCustomerInfoByCustomerId(String customerId) {
 		
 		List<String> statusList = new ArrayList<String>();

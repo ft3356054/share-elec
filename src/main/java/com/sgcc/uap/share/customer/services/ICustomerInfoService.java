@@ -30,6 +30,7 @@ public interface ICustomerInfoService {
 	 * @author 18511
 	 */
 	public CustomerInfo getCustomerInfoByCustomerId(String customerId);
+	public CustomerInfo getCustomerInfoByOpenId(String openId);
 	public boolean getNumberByCustomerId(String electricianId);
 	/**
 	 * @remove:根据idObject删除

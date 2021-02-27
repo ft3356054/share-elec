@@ -27,4 +27,6 @@ public interface CustomerInfoRepository extends JpaRepository<CustomerInfo,Strin
 	
 	public Integer countByCustomerId(String customerId);
 	
+	public CustomerInfo findCustomerInfoByOpenId(String openId);
+	
 }
