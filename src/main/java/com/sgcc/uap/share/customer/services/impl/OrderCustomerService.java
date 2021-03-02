@@ -173,7 +173,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 		if("beginPage".equals(pageType)){
 			if("0".equals(tagType)){
 				custStatus.add("0");
-				custStatus.add("23");
+				custStatus.add("32");
 			}else if("1".equals(tagType)){
 				custStatus.add("25");
 			}else if("2".equals(tagType)){
@@ -271,6 +271,18 @@ public class OrderCustomerService implements IOrderCustomerService{
 			
 			CrudUtils.transMap2Bean(map, orderCustomer);
 			result = orderCustomerRepository.save(orderCustomer);
+			
+			//插入 客户订单位置表
+			HashMap<String, Object> positionMap = new HashMap<>();
+			positionMap.put("orderId", getNewOrderId);
+			positionMap.put("customerId", orderCustomer.getCustomerId());
+			positionMap.put("areaId", orderCustomer.getCreateAreaId());
+			positionMap.put("lon",  orderCustomer.getAddressLongitude());
+			positionMap.put("lat",  orderCustomer.getAddressLatitude());
+			custPositionService.saveCustPosition(positionMap);
+			
+			//放入队列中，电工侧获取队列消息，群发给就近电工
+			redisTemplate.opsForList().rightPush("newCustomerOrder", orderCustomer);
 			
 			//获取Enum通知类
 			BaseEnums baseEnums = baseEnumsService.getBaseEnumsByTypeAndStatus("0", "0");	
@@ -635,7 +647,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 			}
 		}*/else if("26".equals(orderStatus)){
 			ArrayList<String> sites = new ArrayList<>();
-	        sites.add("23"); //待用户支付
+	        sites.add("23"); //待用户确认金额
 			if(sites.contains(orderCustomer.getOrderStatus())){
 				List<String> listStatus = new ArrayList<String>();
 				listStatus.add("1");
@@ -937,8 +949,8 @@ public class OrderCustomerService implements IOrderCustomerService{
 				result = orderCustomerRepository.save(orderCustomer);
 				//插入流水
 				sendNotify(newMap, orderCustomer , null ,2,"0");
-				//删除cust_position
-				custPositionService.delete(orderId);
+				//删除cust_position 应该在电工发起验收时，电工侧删除
+				//custPositionService.delete(orderId);
 				
 				//修改电工表状态
 				List<String> listStatus = new ArrayList<String>();
