@@ -735,6 +735,32 @@ public class OrderCustomerService implements IOrderCustomerService{
 		}else{
 			throw new Exception("该订单未处于待支付状态");
 		}
+	}else if("8".equals(orderStatus)){
+		if("25".equals(orderCustomer.getOrderStatus())){
+			//修改电工表状态
+			List<String> listStatus = new ArrayList<String>();
+			listStatus.add("1");
+			listStatus.add("4");
+			listStatus.add("5");
+			//获取当前子订单
+			OrderElectrician orderElectrician = getOrderElectricianRepository.findByOrderIdAndOrderElectricianStatusNotIn(orderCustomer.getOrderId(), listStatus);
+			if(null!=orderElectrician){
+				//修改电工订单状态 由 25 改为8
+				if("25".equals(orderElectrician.getOrderElectricianStatus())){
+					orderElectrician.setUpdateTime(nowDate);
+					orderElectrician.setOrderElectricianStatus(orderStatus);
+					getOrderElectricianRepository.save(orderElectrician);
+					//插入电工流水
+					sendNotify(map, orderCustomer , orderElectrician,2,"1");
+				}else{
+					throw new Exception("子订单状态异常");
+				}
+			}else{
+				throw new Exception("未查询到子订单");
+			}
+		}else{
+			throw new Exception("该订单未处于待支付状态");
+		}
 	}
 		return result;
 	}

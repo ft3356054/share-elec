@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,13 +50,13 @@ public class IndexController {
     private IGetElectricianInfoService iGetElectricianInfoService;
 	
 	
-	@RequestMapping(value = "/findIndexPage")
-	public WrappedResult authCodeVerify() {
+	@RequestMapping(value = "/findIndexPage/{openId}")
+	public WrappedResult authCodeVerify(@PathVariable String openId) {
 		try {
 			IndexPageBo indexPageBo = new IndexPageBo();
 			
 			//调用国网接口 获取登录用户的信息
-			String openId = "123456";
+			//String openId = userId;
 			indexPageBo.setOpenId(openId);
 			
 			//查询是否为电工
