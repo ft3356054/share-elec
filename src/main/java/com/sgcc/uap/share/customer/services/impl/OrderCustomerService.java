@@ -173,7 +173,7 @@ public class OrderCustomerService implements IOrderCustomerService{
 		if("beginPage".equals(pageType)){
 			if("0".equals(tagType)){
 				custStatus.add("0");
-				custStatus.add("32");
+				custStatus.add("23");
 			}else if("1".equals(tagType)){
 				custStatus.add("25");
 			}else if("2".equals(tagType)){
